@@ -1353,35 +1353,42 @@
 }
 
 
-/* --- WhatsApp Floating Button (Circle) --- */
+/* --- WhatsApp Floating Button (Premium Circle) --- */
 .whatsapp-float {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  width: 70px;
+  height: 70px;
   background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   z-index: 5000;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
   text-decoration: none;
+  animation: wa-pulse 2.5s infinite;
 }
 
 .whatsapp-float svg {
-  width: 38px !important;
-  height: 38px !important;
+  width: 42px !important;
+  height: 42px !important;
   display: block;
 }
 
+@keyframes wa-pulse {
+  0% { transform: scale(1); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); }
+  50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(37, 211, 102, 0.25); }
+  100% { transform: scale(1); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); }
+}
+
 .whatsapp-float:hover {
-  transform: scale(1.1) translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  transform: scale(1.12) translateY(-8px);
+  box-shadow: 0 20px 45px rgba(37, 211, 102, 0.2);
 }
 
 .wa-label {

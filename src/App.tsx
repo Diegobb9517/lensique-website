@@ -519,22 +519,22 @@ function App() {
           </div>
           <div className="pro-services-grid">
             {[
-              { id: 's1', title: 'Examen de la Vista', desc: 'Tecnología computarizada para una graduación exacta.', icon: <Eye size={32} /> },
-              { id: 's2', title: 'Consulta Oftalmológica', desc: 'Atención médica especializada para tu salud ocular.', icon: <Stethoscope size={32} /> },
-              { id: 's3', title: 'Actualización de Micas', desc: 'Renueva tus lentes actuales con nuestra última tecnología.', icon: <RefreshCcw size={32} /> },
-              { id: 's4', title: 'Lentes de Contacto', desc: 'Adaptación y venta de las mejores marcas del mercado.', icon: <Layers size={32} /> },
-              { id: 's5', title: 'Armazones', desc: 'Selección curada de diseños internacionales.', icon: <Glasses size={32} /> }
+              { id: 's1', title: 'Examen de la Vista', desc: 'Tecnología computarizada para una graduación exacta.', icon: <Eye size={32} />, cta: 'Agendar ahora', action: () => handleOpenBooking('Examen de la Vista') },
+              { id: 's2', title: 'Consulta Oftalmológica', desc: 'Atención médica especializada para tu salud ocular.', icon: <Stethoscope size={32} />, cta: 'Agendar ahora', action: () => handleOpenBooking('Consulta Oftalmológica') },
+              { id: 's3', title: 'Actualización de Micas', desc: 'Renueva tus lentes actuales con nuestra última tecnología.', icon: <RefreshCcw size={32} />, cta: 'Ver tecnologías', action: () => { window.location.hash = 'micas'; } },
+              { id: 's4', title: 'Lentes de Contacto', desc: 'Adaptación y venta de las mejores marcas del mercado.', icon: <Layers size={32} />, cta: 'Ver catálogo', action: () => { window.location.hash = 'lentes-contacto'; } },
+              { id: 's5', title: 'Armazones', desc: 'Selección curada de diseños internacionales.', icon: <Glasses size={32} />, cta: 'Ver catálogo', action: () => setIsCatalogOpen(true) }
             ].map((service) => (
               <motion.div 
                 key={service.id}
                 className="pro-service-card"
                 whileHover={{ y: -10 }}
-                onClick={() => handleOpenBooking(service.title)}
+                onClick={service.action}
               >
                 <div className="pro-service-icon">{service.icon}</div>
                 <h3>{service.title}</h3>
                 <p>{service.desc}</p>
-                <span className="pro-service-link">Agendar ahora →</span>
+                <span className="pro-service-link">{service.cta} →</span>
               </motion.div>
             ))}
           </div>

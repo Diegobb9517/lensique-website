@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, 
-  MessageCircle, 
+  MessageCircle, Eye, Stethoscope, RefreshCcw, Layers, Glasses,
   Calendar, Clock, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import logo from './assets/logo.png';
@@ -177,7 +177,8 @@ function App() {
     nav_links: JSON.stringify([
       { name: 'Catálogo', href: '#armazones' },
       { name: 'Servicios', href: '#servicios' },
-      { name: 'Examen', href: '#' },
+      { name: 'Examen', href: '#servicios' },
+      { name: 'Micas', href: '#micas' },
       { name: 'Nosotros', href: '#nosotros' }
     ]),
     category_bricks: JSON.stringify([
@@ -510,10 +511,40 @@ function App() {
           </div>
         </section>
 
-        <section id="servicios" className="services-section">
+        <section id="servicios" className="pro-services-section">
+          <div className="section-header">
+            <span className="hero-eyebrow">Servicios Profesionales</span>
+            <h2 className="section-title">Cuidamos tu salud visual.</h2>
+            <p className="section-subtitle">Atención médica especializada con tecnología de última generación.</p>
+          </div>
+          <div className="pro-services-grid">
+            {[
+              { id: 's1', title: 'Examen de la Vista', desc: 'Tecnología computarizada para una graduación exacta.', icon: <Eye size={32} /> },
+              { id: 's2', title: 'Consulta Oftalmológica', desc: 'Atención médica especializada para tu salud ocular.', icon: <Stethoscope size={32} /> },
+              { id: 's3', title: 'Actualización de Micas', desc: 'Renueva tus lentes actuales con nuestra última tecnología.', icon: <RefreshCcw size={32} /> },
+              { id: 's4', title: 'Lentes de Contacto', desc: 'Adaptación y venta de las mejores marcas del mercado.', icon: <Layers size={32} /> },
+              { id: 's5', title: 'Armazones', desc: 'Selección curada de diseños internacionales.', icon: <Glasses size={32} /> }
+            ].map((service) => (
+              <motion.div 
+                key={service.id}
+                className="pro-service-card"
+                whileHover={{ y: -10 }}
+                onClick={() => handleOpenBooking(service.title)}
+              >
+                <div className="pro-service-icon">{service.icon}</div>
+                <h3>{service.title}</h3>
+                <p>{service.desc}</p>
+                <span className="pro-service-link">Agendar ahora →</span>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section id="micas" className="services-section">
           <div className="section-header-left">
-            <span className="hero-eyebrow">Nuestros Servicios</span>
-            <h2 className="section-title">Tecnología en cada mirada.</h2>
+            <span className="hero-eyebrow">Tecnología en Lentes</span>
+            <h2 className="section-title">La mejor solución para tus ojos.</h2>
+            <p className="section-subtitle">Micas de alta precisión adaptadas a tu estilo de vida.</p>
           </div>
           <div className="bento-container compact-grid">
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (

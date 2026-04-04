@@ -519,6 +519,55 @@ function App() {
           </div>
         </section>
 
+        <section id="populares" className="popular-carousel-section">
+          <div className="section-header-flex">
+            <div className="section-header-left">
+              <span className="hero-eyebrow">Lo más buscado</span>
+              <h2 className="section-title">Nuestros más populares.</h2>
+            </div>
+            <div className="slider-controls">
+              <button className="slider-btn" onClick={() => scrollCarousel('left')} aria-label="Anterior">
+                <ChevronLeft size={24} />
+              </button>
+              <button className="slider-btn" onClick={() => scrollCarousel('right')} aria-label="Siguiente">
+                <ChevronRight size={24} />
+              </button>
+            </div>
+          </div>
+          
+          <div className="comparison-slider" ref={sliderRef}>
+            {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]')).map((product: any, idx: number) => (
+              <motion.div 
+                key={`popular-${idx}-${product.id}`}
+                className="comparison-card"
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <div className="comp-img-box">
+                  <img 
+                    src={resolveImageUrl(product.image_url, product.image)} 
+                    alt={product.name} 
+                    className="comp-img" 
+                    onError={(e: any) => {
+                      e.target.onerror = null;
+                      e.target.src = product.image;
+                    }}
+                  />
+                </div>
+                <div className="comp-info">
+                  <span className="comp-tag">{product.category}</span>
+                  <h3>{product.name}</h3>
+                  <button className="btn btn-outline small" onClick={() => handleOpenBooking(`${product.brand} ${product.name}`)}>
+                    Ver Detalles
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
         <section id="servicios" className="pro-services-section">
           <div className="section-header">
             <span className="hero-eyebrow">Servicios Profesionales</span>

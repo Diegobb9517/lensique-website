@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, 
@@ -13,16 +13,13 @@ import blueFilterImg from './assets/blue-filter.png';
 import photochromicImg from './assets/photochromic.png';
 import flatTopImg from './assets/bifocal-flat-top.png';
 import invisibleImg from './assets/bifocal-invisible.png';
-import img1 from './assets/DSC09628.jpg';
-import img2 from './assets/DSC09639.jpg';
-import img3 from './assets/DSC09650.jpg';
-import img4 from './assets/DSC09657.jpg';
+// Unused local images removed
 import './App.css';
 
 const API_BASE = 'https://lensique-pos.onrender.com';
 
-const resolveImageUrl = (url: string, fallback: string) => {
-  if (!url) return fallback;
+const resolveImageUrl = (url: string, fallback: string | undefined) => {
+  if (!url || url === 'undefined' || url === 'null' || url === '') return fallback || '';
   if (url.startsWith('http')) return url;
   return `${API_BASE}${url}`;
 };
@@ -34,16 +31,27 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData }: { isOpen: bool
 
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('Arnette');
+
+  const availableBrands = Array.from(new Set((catalogData || []).map(p => p.brand || 'Varios')));
+  const [selectedBrand, setSelectedBrand] = useState(availableBrands[0] || 'Arnette');
+
+  // Update selectedBrand if it becomes invalid (e.g. data changes)
+  useEffect(() => {
+    if (availableBrands.length > 0 && !availableBrands.includes(selectedBrand)) {
+      setSelectedBrand(availableBrands[0]);
+    }
+  }, [availableBrands]);
 
   const filteredProducts = (catalogData || []).map(p => ({
     ...p,
-    image: resolveImageUrl(p.image_url, p.image)
+    image: resolveImageUrl(p.image_url, p.image),
+    model: p.sku 
   })).filter(p => {
-    const matchesFilter = filter === 'Todas' || p.category?.includes(filter);
-    const matchesSearch = (p.model || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesFilter = filter === 'Todas' || (p.category || '').toLowerCase().includes(filter.toLowerCase());
+    const matchesSearch = (p.sku || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (p.name || '').toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch && p.brand === selectedBrand;
+    const matchesBrand = (p.brand || 'Varios') === selectedBrand;
+    return matchesFilter && matchesSearch && matchesBrand;
   });
 
 
@@ -79,7 +87,7 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData }: { isOpen: bool
             <div className="catalog-sidebar">
               <h3>Marca</h3>
               <div className="filter-list" style={{ marginBottom: '30px' }}>
-                {['Arnette'].map(b => (
+                {availableBrands.map(b => (
                   <button 
                     key={b} 
                     className={`filter-btn ${selectedBrand === b ? 'active' : ''}`}
@@ -122,7 +130,14 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData }: { isOpen: bool
                     className="product-card"
                   >
                     <div className="product-img-box">
-                      <img src={product.image} alt={product.name} />
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        onError={(e: any) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/400x400?text=Sin+Imagen';
+                        }}
+                      />
                       <div className="product-overlay">
                         <button className="btn btn-primary small" onClick={() => onAgendar(`${product.brand} ${product.model}`)}>
                           Agendar
@@ -253,6 +268,28 @@ function App() {
     setIsBookingOpen(false);
   };
 
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (sliderRef.current) {
+      const scrollAmount = 400;
+      sliderRef.current.scrollBy({ 
+        left: direction === 'left' ? -scrollAmount : scrollAmount, 
+        behavior: 'smooth' 
+      });
+    }
+  };
+
+  const contactSliderRef = useRef<HTMLDivElement>(null);
+  const scrollContacts = (direction: 'left' | 'right') => {
+    if (contactSliderRef.current) {
+      const scrollAmount = 400;
+      contactSliderRef.current.scrollBy({ 
+        left: direction === 'left' ? -scrollAmount : scrollAmount, 
+        behavior: 'smooth' 
+      });
+    }
+  };
+
   const timeSlots = [
     '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
     '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM'
@@ -264,7 +301,7 @@ function App() {
       <FullCatalog 
         isOpen={isCatalogOpen} 
         onClose={() => setIsCatalogOpen(false)} 
-        catalogData={JSON.parse(settings.full_catalog || '[]')}
+        catalogData={settings.full_catalog_data || []}
         onAgendar={(prod) => {
           setIsCatalogOpen(false);
           handleOpenBooking(prod);
@@ -463,6 +500,10 @@ function App() {
                 src={resolveImageUrl(settings.hero_image_url, heroImg)} 
                 className="hero-main-img" 
                 alt="Clinic"
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src = heroImg;
+                }}
               />
               <div className="hero-blur-backdrop"></div>
             </motion.div>
@@ -481,7 +522,15 @@ function App() {
                 className="bento-card"
               >
                 <div className="bento-img-wrapper">
-                  <img src={brick.image} alt={brick.title} className="bento-img" />
+                  <img 
+                    src={resolveImageUrl(brick.image_url, brick.image)} 
+                    alt={brick.title} 
+                    className="bento-img" 
+                    onError={(e: any) => {
+                      e.target.onerror = null;
+                      e.target.src = brick.image;
+                    }}
+                  />
                 </div>
                 <div className="bento-content">
                   <h3>{brick.title}</h3>
@@ -493,19 +542,41 @@ function App() {
         </section>
 
         <section id="armazones" className="comparison-section">
-          <div className="section-header">
-            <h2 className="section-title">Diseños que inspiran.</h2>
-            <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
+          <div className="section-header-flex">
+            <div className="section-header">
+              <h2 className="section-title">Diseños que inspiran.</h2>
+              <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
+            </div>
+            <div className="slider-controls">
+              <button className="slider-btn" onClick={() => scrollCarousel('left')} aria-label="Anterior">
+                <ChevronLeft size={24} />
+              </button>
+              <button className="slider-btn" onClick={() => scrollCarousel('right')} aria-label="Siguiente">
+                <ChevronRight size={24} />
+              </button>
+            </div>
           </div>
-          <div className="comparison-grid">
+          
+          <div className="comparison-slider" ref={sliderRef}>
             {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]')).map((product: any, idx: number) => (
               <div className="comparison-card" key={`prod-fix-${idx}-${product.id}`}>
                 <div className="comp-img-box">
-                  <img src={resolveImageUrl(product.image_url, product.image)} alt={product.name} className="comp-img" />
+                  <img 
+                    src={resolveImageUrl(product.image_url, product.image)} 
+                    alt={product.name} 
+                    className="comp-img" 
+                    onError={(e: any) => {
+                      e.target.onerror = null;
+                      e.target.src = product.image;
+                    }}
+                  />
                 </div>
                 <div className="comp-info">
                   <span className="comp-tag">{product.category}</span>
                   <h3>{product.name}</h3>
+                  <button className="btn btn-outline small" onClick={() => handleOpenBooking(`${product.brand} ${product.name}`)}>
+                    Agendar Cita
+                  </button>
                 </div>
               </div>
             ))}
@@ -519,6 +590,50 @@ function App() {
             <p className="about-text">{settings.about_text}</p>
           </div>
         </section>
+
+        {settings.featured_contact_lenses && (Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses.length > 0 : JSON.parse(settings.featured_contact_lenses || '[]').length > 0) && (
+          <section id="lentes-contacto" className="contact-lenses-section">
+            <div className="section-header-flex">
+              <div className="section-header">
+                <h2 className="section-title">Claridad sin límites.</h2>
+                <p className="section-subtitle">Lentes de contacto de última generación.</p>
+              </div>
+              <div className="slider-controls">
+                <button className="slider-btn" onClick={() => scrollContacts('left')} aria-label="Anterior">
+                  <ChevronLeft size={24} />
+                </button>
+                <button className="slider-btn" onClick={() => scrollContacts('right')} aria-label="Siguiente">
+                  <ChevronRight size={24} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="comparison-slider contact-slider" ref={contactSliderRef}>
+              {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => (
+                <div className="comparison-card contact-card" key={`lc-fix-${idx}-${product.id}`}>
+                  <div className="comp-img-box">
+                    <img 
+                      src={resolveImageUrl(product.image_url, product.image)} 
+                      alt={product.name} 
+                      className="comp-img" 
+                      onError={(e: any) => {
+                        e.target.onerror = null;
+                        e.target.src = product.image;
+                      }}
+                    />
+                  </div>
+                  <div className="comp-info">
+                    <span className="comp-tag lc-tag">{product.brand}</span>
+                    <h3>{product.name}</h3>
+                    <button className="btn btn-outline lc-btn small" onClick={() => handleOpenBooking(`${product.brand} ${product.name}`)}>
+                      Agendar Cita
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section id="contacto" className="location-section">
           <div className="location-grid">
@@ -572,15 +687,19 @@ function App() {
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="WhatsApp"
       >
-        <MessageCircle size={24} />
-        <span className="wa-label">WhatsApp</span>
+        <svg viewBox="0 0 448 512" width="38" height="38">
+          <path fill="#25D366" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.7 17.4 69.4 26.5 106.3 26.5h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.3-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.4-8.6-44.6-27.4-16.4-14.7-27.5-32.8-30.7-38.4-3.2-5.6-.3-8.6 2.5-11.4 2.5-2.5 5.5-6.5 8.3-9.7 2.8-3.2 3.7-5.5 5.5-9.2 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.6 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
       </a>
 
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-top">
-            <div className="footer-logo">Lensique</div>
+            <div className="footer-logo">
+              <img src={logo} alt="Lensique" className="footer-logo-img" />
+            </div>
             <div className="footer-links-grid">
               <div className="footer-col">
                 <h4>Servicios</h4>

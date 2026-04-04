@@ -551,9 +551,16 @@
 }
 
 .footer-logo {
-  font-weight: 800;
-  font-size: 28px;
-  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.footer-logo-img {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
+  margin-left: -20px; /* Aligns with content by offsetting whitespace */
 }
 
 .footer-links-grid {
@@ -1177,3 +1184,206 @@
   }
 }
 
+/* --- Carousel / Slider Styles --- */
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+}
+
+.slider-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.slider-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--swift);
+  color: var(--text-primary);
+}
+
+.slider-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+.comparison-slider {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  padding: 20px 0 60px 0;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.comparison-slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.comparison-card {
+  flex: 0 0 380px;
+  scroll-snap-align: start;
+  background: var(--bg-primary);
+  border-radius: 28px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  transition: all 0.4s var(--swift);
+}
+
+.comparison-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.06);
+}
+
+.comp-img-box {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.comp-img {
+  width: 85%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.4s var(--smooth);
+}
+
+.comparison-card:hover .comp-img {
+  transform: scale(1.1);
+}
+
+.comp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comp-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.comp-info h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .section-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .comparison-card {
+    flex: 0 0 300px;
+  }
+  
+  .comp-info h3 {
+    font-size: 20px;
+  }
+}
+
+/* --- Lentes de Contacto Section Styles --- */
+.contact-lenses-section {
+  padding: 100px 40px;
+  background-color: #f0f7ff; /* Very soft light blue */
+  border-top: 1px solid rgba(0, 102, 204, 0.05);
+  overflow: hidden;
+}
+
+.contact-card {
+  background: #ffffff;
+  border-color: rgba(0, 102, 204, 0.1);
+}
+
+.contact-card:hover {
+  border-color: #0066cc;
+  box-shadow: 0 30px 60px rgba(0, 102, 204, 0.08);
+}
+
+.lc-tag {
+  color: #0066cc;
+  background: rgba(0, 102, 204, 0.05);
+  padding: 4px 10px;
+  border-radius: 6px;
+  width: fit-content;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lc-btn {
+  border-color: #0066cc;
+  color: #0066cc;
+}
+
+.lc-btn:hover {
+  background: #0066cc;
+  color: #fff;
+}
+
+/* Slider specifically for Contact Lenses */
+.contact-slider {
+  margin-top: 40px;
+  padding-bottom: 40px;
+}
+
+
+/* --- WhatsApp Floating Button (Circle) --- */
+.whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 5000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.whatsapp-float svg {
+  width: 38px !important;
+  height: 38px !important;
+  display: block;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.wa-label {
+  display: none !important;
+}

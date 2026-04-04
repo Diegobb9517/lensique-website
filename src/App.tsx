@@ -27,13 +27,19 @@ const resolveImageUrl = (url: string, fallback: string | undefined) => {
 // Catalog will be fetched from API
 
 
-function FullCatalog({ isOpen, onClose, onAgendar, catalogData }: { isOpen: boolean, onClose: () => void, onAgendar: (model: string) => void, catalogData: any[] }) {
+function FullCatalog({ isOpen, onClose, onAgendar, catalogData, initialFilter = 'Todas' }: { isOpen: boolean, onClose: () => void, onAgendar: (model: string) => void, catalogData: any[], initialFilter?: string }) {
 
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
 
   const availableBrands = Array.from(new Set((catalogData || []).map(p => p.brand || 'Varios')));
   const [selectedBrand, setSelectedBrand] = useState(availableBrands[0] || 'Arnette');
+
+  useEffect(() => {
+    if (isOpen) {
+      setFilter(initialFilter);
+    }
+  }, [isOpen, initialFilter]);
 
   // Update selectedBrand if it becomes invalid (e.g. data changes)
   useEffect(() => {
@@ -100,7 +106,7 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData }: { isOpen: bool
 
               <h3>Categoría</h3>
               <div className="filter-list">
-                {['Todas', 'Sol', 'Vista'].map(f => (
+                {['Todas', 'Sol', 'Vista', 'Lentes de Contacto'].map(f => (
                   <button 
                     key={f} 
                     className={`filter-btn ${filter === f ? 'active' : ''}`}
@@ -201,6 +207,7 @@ function App() {
   
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -303,6 +310,7 @@ function App() {
         isOpen={isCatalogOpen} 
         onClose={() => setIsCatalogOpen(false)} 
         catalogData={settings.full_catalog_data || []}
+        initialFilter={catalogInitialFilter}
         onAgendar={(prod) => {
           setIsCatalogOpen(false);
           handleOpenBooking(prod);
@@ -522,8 +530,8 @@ function App() {
               { id: 's1', title: 'Examen de la Vista', desc: 'Tecnología computarizada para una graduación exacta.', icon: <Eye size={32} />, cta: 'Agendar ahora', action: () => handleOpenBooking('Examen de la Vista') },
               { id: 's2', title: 'Consulta Oftalmológica', desc: 'Atención médica especializada para tu salud ocular.', icon: <Stethoscope size={32} />, cta: 'Agendar ahora', action: () => handleOpenBooking('Consulta Oftalmológica') },
               { id: 's3', title: 'Actualización de Micas', desc: 'Renueva tus lentes actuales con nuestra última tecnología.', icon: <RefreshCcw size={32} />, cta: 'Ver tecnologías', action: () => { window.location.hash = 'micas'; } },
-              { id: 's4', title: 'Lentes de Contacto', desc: 'Adaptación y venta de las mejores marcas del mercado.', icon: <Layers size={32} />, cta: 'Ver catálogo', action: () => { window.location.hash = 'lentes-contacto'; } },
-              { id: 's5', title: 'Armazones', desc: 'Selección curada de diseños internacionales.', icon: <Glasses size={32} />, cta: 'Ver catálogo', action: () => setIsCatalogOpen(true) }
+              { id: 's4', title: 'Lentes de Contacto', desc: 'Adaptación y venta de las mejores marcas del mercado.', icon: <Layers size={32} />, cta: 'Ver catálogo', action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
+              { id: 's5', title: 'Armazones', desc: 'Selección curada de diseños internacionales.', icon: <Glasses size={32} />, cta: 'Ver catálogo', action: () => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); } }
             ].map((service) => (
               <motion.div 
                 key={service.id}

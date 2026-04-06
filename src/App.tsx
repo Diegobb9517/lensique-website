@@ -201,6 +201,7 @@ function App() {
       { id: 3, name: 'Baker', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7241U__2900.jpg?v=1773129723&width=1500' },
       { id: 4, name: 'Laflor', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7246U__2758.jpg?v=1773129715&width=1500' }
     ]),
+    featured_contact_lenses: JSON.stringify([]),
     full_catalog: JSON.stringify([])
   });
 

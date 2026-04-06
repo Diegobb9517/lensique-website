@@ -147,6 +147,24 @@
   z-index: 10;
 }
 
+.glasses-brand {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1d1d1f; /* Premium dark black */
+  margin-bottom: 4px;
+}
+
+.glasses-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1d1d1f;
+  line-height: 1.1;
+  margin: 0;
+}
+
 .hero-eyebrow {
   display: block;
   font-size: 14px;
@@ -377,8 +395,14 @@
 
 /* Bifocal Comparison Section */
 .comparison-section {
-  padding: 120px 40px;
-  background-color: var(--bg-primary);
+  padding: 120px 40px 80px;
+  background-color: #f5f5f7;
+  overflow: hidden;
+  position: relative;
+}
+
+#populares {
+  padding-top: 140px; /* Extra space for navbar */
 }
 
 .comparison-grid {

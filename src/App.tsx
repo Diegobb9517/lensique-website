@@ -21,7 +21,8 @@ const API_BASE = 'https://lensique-pos.onrender.com';
 const resolveImageUrl = (url: string, fallback: string | undefined) => {
   if (!url || url === 'undefined' || url === 'null' || url === '') return fallback || '';
   if (url.startsWith('http')) return url;
-  return `${API_BASE}${url}`;
+  const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+  return `${API_BASE}${cleanUrl}`;
 };
 
 // Catalog will be fetched from API
@@ -196,10 +197,10 @@ function App() {
       { id: 'm6', title: 'Invisible', description: 'Bifocal estético sin líneas visibles.', image: invisibleImg }
     ]),
     featured_products: JSON.stringify([
-      { id: 1, name: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg?v=1773129646&width=1500' },
-      { id: 2, name: 'Maybe Mae', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN6136__760.jpg?v=1773129687&width=1500' },
-      { id: 3, name: 'Baker', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7241U__2900.jpg?v=1773129723&width=1500' },
-      { id: 4, name: 'Laflor', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7246U__2758.jpg?v=1773129715&width=1500' }
+      { id: 1, name: 'AN4347U', brand: 'Arnette', model: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg' },
+      { id: 2, name: 'AN6136', brand: 'Arnette', model: 'Maybe Mae', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN6136__760.jpg' },
+      { id: 3, name: 'AN7241U', brand: 'Arnette', model: 'Baker', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7241U__2900.jpg' },
+      { id: 4, name: 'AN7246U', brand: 'Arnette', model: 'Laflor', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7246U__2758.jpg' }
     ]),
     featured_contact_lenses: JSON.stringify([]),
     full_catalog: JSON.stringify([])

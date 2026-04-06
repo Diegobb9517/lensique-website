@@ -647,24 +647,34 @@ function App() {
           </div>
           
           <div className="comparison-slider" ref={sliderRef}>
-            {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]')).map((product: any, idx: number) => (
-              <div className="comparison-card" key={`prod-fix-${idx}-${product.id}`}>
-                <div className="comp-img-box">
+            {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
+              .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
+              .map((product: any, idx: number) => (
+              <div 
+                className="glasses-card" 
+                key={`prod-fix-${idx}-${product.id}`}
+                onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
+              >
+                <div className="glasses-overlay-text">
+                  <span className="glasses-brand">{product.brand || 'Colección'}</span>
+                  <h3 className="glasses-name">{product.name}</h3>
+                </div>
+                
+                <div className="glasses-img-area">
                   <img 
                     src={resolveImageUrl(product.image_url, product.image)} 
                     alt={product.name} 
-                    className="comp-img" 
+                    className="glasses-card-img" 
                     onError={(e: any) => {
                       e.target.onerror = null;
                       e.target.src = product.image;
                     }}
                   />
                 </div>
-                <div className="comp-info">
-                  <span className="comp-tag">{product.category}</span>
-                  <h3>{product.name}</h3>
-                  <button className="btn btn-outline small" onClick={() => handleOpenBooking(`${product.brand} ${product.name}`)}>
-                    Agendar Cita
+
+                <div className="glasses-footer">
+                  <button className="glasses-btn">
+                    Agendar
                   </button>
                 </div>
               </div>

@@ -1392,6 +1392,99 @@
   }
 }
 
+/* --- Premium Glasses Card (Apple Store Style) --- */
+.glasses-card {
+  flex: 0 0 320px;
+  height: 400px;
+  scroll-snap-align: start;
+  background: #fbfbfd;
+  border-radius: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  transition: all 0.5s var(--smooth);
+  position: relative;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.glasses-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  background: #ffffff;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+  border-color: rgba(0,0,0,0.1);
+}
+
+.glasses-overlay-text {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.glasses-brand {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #86868b;
+  letter-spacing: 0.1em;
+}
+
+.glasses-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.02em;
+}
+
+.glasses-img-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px 60px 32px;
+}
+
+.glasses-card-img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: contain;
+  transition: transform 0.8s var(--smooth);
+}
+
+.glasses-card:hover .glasses-card-img {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.glasses-footer {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10;
+}
+
+.glasses-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s var(--swift);
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2);
+}
+
+.glasses-card:hover .glasses-btn {
+  background: #0077ed;
+  transform: scale(1.05);
+}
+
 /* --- Lentes de Contacto Section Styles --- */
 .contact-lenses-section {
   padding: 100px 40px;

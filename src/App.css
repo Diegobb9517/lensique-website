@@ -147,6 +147,20 @@
   z-index: 10;
 }
 
+/* Contact Card Specific Adjustments (Boxes) */
+.glasses-card.contact-card {
+  padding: 30px;
+}
+
+.glasses-card.contact-card .glasses-img-area {
+  padding: 20px;
+}
+
+.glasses-card.contact-card .glasses-card-img {
+  object-fit: contain !important; /* Don't crop contact box art */
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));
+}
+
 .glasses-brand {
   display: block;
   font-size: 14px;

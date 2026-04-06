@@ -717,23 +717,31 @@ function App() {
             
             <div className="comparison-slider contact-slider" ref={contactSliderRef}>
               {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => (
-                <div className="comparison-card contact-card" key={`lc-fix-${idx}-${product.id}`}>
-                  <div className="comp-img-box">
+                <div 
+                  className="glasses-card contact-card" 
+                  key={`lc-fix-${idx}-${product.id}`}
+                  onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
+                >
+                  <div className="glasses-overlay-text">
+                    <span className="glasses-brand">{product.brand || 'Lentes de Contacto'}</span>
+                    <h3 className="glasses-name">{product.name}</h3>
+                  </div>
+                  
+                  <div className="glasses-img-area">
                     <img 
                       src={resolveImageUrl(product.image_url, product.image)} 
                       alt={product.name} 
-                      className="comp-img" 
+                      className="glasses-card-img" 
                       onError={(e: any) => {
                         e.target.onerror = null;
                         e.target.src = product.image;
                       }}
                     />
                   </div>
-                  <div className="comp-info">
-                    <span className="comp-tag lc-tag">{product.brand}</span>
-                    <h3>{product.name}</h3>
-                    <button className="btn btn-outline lc-btn small" onClick={() => handleOpenBooking(`${product.brand} ${product.name}`)}>
-                      Agendar Cita
+
+                  <div className="glasses-footer">
+                    <button className="glasses-btn">
+                      Agendar
                     </button>
                   </div>
                 </div>

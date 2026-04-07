@@ -1693,8 +1693,21 @@
   transition: transform 1.2s var(--smooth);
 }
 
-.apple-hero-card:hover .apple-hero-img {
-  transform: scale(1.08) rotate(-2deg);
+.apple-hero-card.dark-theme {
+  background: #000 !important;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.apple-hero-card.dark-theme .apple-hero-brand {
+  color: #0066cc;
+}
+
+.apple-hero-card.dark-theme .apple-hero-name {
+  color: #ffffff;
+}
+
+.apple-hero-card.dark-theme .apple-hero-subtitle {
+  color: #86868b;
 }
 
 /* --- Dark Bento Cards (MacBook Pro Style) --- */

@@ -255,14 +255,18 @@
 }
 
 .pro-services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 32px;
   max-width: var(--max-width);
   margin: 60px auto 0;
 }
 
 .pro-service-card {
+  flex: 1 1 300px;
+  max-width: 350px;
+  min-height: 380px;
   padding: 48px 32px;
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);

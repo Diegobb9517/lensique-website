@@ -19,7 +19,12 @@ import './App.css';
 const API_BASE = 'https://lensique-pos.onrender.com';
 
 const resolveImageUrl = (url: string, fallback: string | undefined) => {
-  if (!url || url === 'undefined' || url === 'null' || url === '') return fallback || '';
+  const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
+  
+  if (isInvalid(url)) {
+    return isInvalid(fallback) ? '' : fallback as string;
+  }
+  
   if (url.startsWith('http')) return url;
   const cleanUrl = url.startsWith('/') ? url : `/${url}`;
   return `${API_BASE}${cleanUrl}`;

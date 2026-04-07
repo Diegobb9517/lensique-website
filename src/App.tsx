@@ -670,40 +670,45 @@ function App() {
             {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
               .slice(0, 4) // Show the top 4 as high-impact ads
-              .map((product: any, idx: number) => (
-                <motion.div 
-                  key={`hero-ad-${idx}-${product.id}`}
-                  className="hero-ad-card"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: idx * 0.1 }}
-                  viewport={{ once: true }}
-                  onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
-                >
-                  <div className="hero-ad-header">
-                    <span className="hero-ad-brand">{product.brand || 'Colección'}</span>
-                    <h3 className="hero-ad-name">{product.name}</h3>
-                  </div>
+              .map((product: any, idx: number) => {
+                const imageUrl = resolveImageUrl(product.image_url, product.image);
+                const modelName = product.model || product.name;
+                
+                return (
+                  <motion.div 
+                    key={`hero-ad-${idx}-${product.id}`}
+                    className="hero-ad-card"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: idx * 0.1 }}
+                    viewport={{ once: true }}
+                    onClick={() => handleOpenBooking(`${product.brand || ''} ${modelName}`)}
+                  >
+                    <div className="hero-ad-header">
+                      <span className="hero-ad-brand">{product.brand || 'Colección'}</span>
+                      <h3 className="hero-ad-name">{modelName}</h3>
+                    </div>
 
-                  <div className="hero-ad-img-box">
-                    <img 
-                      src={resolveImageUrl(product.image_url, product.image)} 
-                      alt={product.name} 
-                      className="hero-ad-img" 
-                      onError={(e: any) => {
-                        e.target.onerror = null;
-                        e.target.src = product.image;
-                      }}
-                    />
-                  </div>
+                    <div className="hero-ad-img-box">
+                      <img 
+                        src={imageUrl || 'https://placehold.co/600x400?text=Lensique+Premium'} 
+                        alt={modelName} 
+                        className="hero-ad-img" 
+                        onError={(e: any) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/600x400?text=Lensique+Premium';
+                        }}
+                      />
+                    </div>
 
-                  <div className="hero-ad-footer">
-                    <button className="hero-ad-btn">
-                      Agendar
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="hero-ad-footer">
+                      <button className="hero-ad-btn">
+                        Agendar
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
           </div>
         </section>
 

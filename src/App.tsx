@@ -606,17 +606,21 @@ function App() {
           </div>
         </section>
 
-        <section id="micas" className="services-section">
-          <div className="section-header-left">
-            <span className="hero-eyebrow">Tecnología en Lentes</span>
-            <h2 className="section-title">La mejor solución para tus ojos.</h2>
-            <p className="section-subtitle">Micas de alta precisión adaptadas a tu estilo de vida.</p>
+        <section id="micas" className="services-section dark-bg" style={{ backgroundColor: '#000', padding: '100px 40px' }}>
+          <div className="section-header-left" style={{ marginBottom: '60px' }}>
+            <span className="hero-eyebrow" style={{ color: '#0066cc' }}>Tecnología en Lentes</span>
+            <h2 className="section-title" style={{ color: '#fff' }}>La mejor solución para tus ojos.</h2>
+            <p className="section-subtitle" style={{ color: '#86868b' }}>Micas de alta precisión adaptadas a tu estilo de vida.</p>
           </div>
           <div className="bento-container compact-grid">
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
               <motion.div 
                 key={`brick-fix-${idx}-${brick.id}`}
-                className="bento-card"
+                className="bento-card dark-theme"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                viewport={{ once: true }}
               >
                 <div className="bento-img-wrapper">
                   <img 
@@ -638,54 +642,55 @@ function App() {
           </div>
         </section>
 
-        <section id="armazones" className="comparison-section">
-          <div className="section-header-flex">
-            <div className="section-header">
-              <h2 className="section-title">Diseños que inspiran.</h2>
-              <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
-            </div>
-            <div className="slider-controls">
-              <button className="slider-btn" onClick={() => scrollCarousel('left')} aria-label="Anterior">
-                <ChevronLeft size={24} />
-              </button>
-              <button className="slider-btn" onClick={() => scrollCarousel('right')} aria-label="Siguiente">
-                <ChevronRight size={24} />
-              </button>
-            </div>
+        <section id="armazones" className="hero-grid-section">
+          <div className="section-header" style={{ padding: '80px 40px 20px', textAlign: 'center' }}>
+            <h2 className="section-title">Diseños que inspiran.</h2>
+            <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
           </div>
           
-          <div className="comparison-slider" ref={sliderRef}>
+          <div className="apple-hero-grid">
             {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
+              .slice(0, 6) // Top 6 for maximum Apple-style impact
               .map((product: any, idx: number) => (
-              <div 
-                className="glasses-card" 
-                key={`prod-fix-${idx}-${product.id}`}
-                onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
+              <motion.div 
+                key={`hero-fix-${idx}-${product.id}`}
+                className={`apple-hero-card ${idx < 2 ? 'full-width' : ''}`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: idx * 0.1 }}
+                viewport={{ once: true }}
               >
-                <div className="glasses-overlay-text">
-                  <span className="glasses-brand">{product.brand || 'Colección'}</span>
-                  <h3 className="glasses-name">{product.name}</h3>
+                <div className="apple-hero-content">
+                  <span className="apple-hero-brand">{product.brand || 'Arnette'}</span>
+                  <h3 className="apple-hero-name">{product.name}</h3>
+                  <p className="apple-hero-subtitle">
+                    {product.name === 'Turbine' ? 'Estilo audaz para el día a día.' : 
+                     product.name === 'Maybe Mae' ? 'Elegancia atemporal en cada trazo.' :
+                     'Diseño vanguardista con ajuste perfecto.'}
+                  </p>
+                  <div className="apple-hero-actions">
+                    <button className="btn-pill btn-pill-primary" onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}>
+                      Agendar
+                    </button>
+                    <button className="btn-pill btn-pill-secondary" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
+                      Más información
+                    </button>
+                  </div>
                 </div>
-                
-                <div className="glasses-img-area">
+
+                <div className="apple-hero-img-box">
                   <img 
                     src={resolveImageUrl(product.image_url, product.image)} 
                     alt={product.name} 
-                    className="glasses-card-img" 
+                    className="apple-hero-img" 
                     onError={(e: any) => {
                       e.target.onerror = null;
                       e.target.src = product.image;
                     }}
                   />
                 </div>
-
-                <div className="glasses-footer">
-                  <button className="glasses-btn">
-                    Agendar
-                  </button>
-                </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>

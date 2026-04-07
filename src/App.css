@@ -1570,6 +1570,165 @@
 }
 
 
+/* --- Apple Store Style Hero Grid --- */
+.apple-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 40px;
+}
+
+.apple-hero-card {
+  height: 600px;
+  background: #fbfbfd;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60px 40px;
+  text-align: center;
+  transition: transform 0.6s var(--smooth), box-shadow 0.6s var(--smooth);
+  cursor: pointer;
+}
+
+.apple-hero-card.full-width {
+  grid-column: 1 / -1;
+  height: 700px;
+}
+
+.apple-hero-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+}
+
+.apple-hero-content {
+  z-index: 10;
+  max-width: 500px;
+}
+
+.apple-hero-brand {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1d1d1f;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.apple-hero-name {
+  font-size: clamp(32px, 5vw, 50px);
+  font-weight: 700;
+  color: #1d1d1f;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.apple-hero-subtitle {
+  font-size: 19px;
+  color: #1d1d1f;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.apple-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.btn-pill {
+  padding: 12px 28px;
+  border-radius: 980px;
+  font-size: 17px;
+  font-weight: 400;
+  transition: all 0.3s var(--swift);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-pill-primary {
+  background: #0066cc;
+  color: #fff;
+}
+
+.btn-pill-primary:hover {
+  background: #0077ed;
+  transform: scale(1.05);
+}
+
+.btn-pill-secondary {
+  background: transparent;
+  color: #0066cc;
+  border: 1px solid #0066cc;
+}
+
+.btn-pill-secondary:hover {
+  background: rgba(0, 102, 204, 0.05);
+  transform: scale(1.05);
+}
+
+.apple-hero-img-box {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 40px 40px 40px;
+  z-index: 1;
+}
+
+.apple-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 1.2s var(--smooth);
+}
+
+.apple-hero-card:hover .apple-hero-img {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+/* --- Dark Bento Cards (MacBook Pro Style) --- */
+.bento-card.dark-theme {
+  background: #000 !important;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.bento-card.dark-theme h3 {
+  color: #fff;
+}
+
+.bento-card.dark-theme p {
+  color: #86868b;
+}
+
+.bento-card.dark-theme .bento-img-wrapper {
+  background: radial-gradient(circle at center, #1d1d1f 0%, #000 100%);
+}
+
+@media (max-width: 1068px) {
+  .apple-hero-grid {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  .apple-hero-card, .apple-hero-card.full-width {
+    height: 550px;
+  }
+  .apple-hero-name {
+    font-size: 32px;
+  }
+}
+
+
 /* --- WhatsApp Floating Button (Premium Circle) --- */
 .whatsapp-float {
   position: fixed;

@@ -1592,6 +1592,7 @@
   text-align: center;
   transition: transform 0.6s var(--smooth), box-shadow 0.6s var(--smooth);
   cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.05); /* Subtle border for definition on white */
 }
 
 .apple-hero-card.full-width {
@@ -1605,6 +1606,7 @@
 }
 
 .apple-hero-content {
+  position: relative;
   z-index: 10;
   max-width: 500px;
 }
@@ -1613,7 +1615,7 @@
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #1d1d1f;
+  color: #0066cc; /* Premium Blue for brand */
   letter-spacing: 0.1em;
   margin-bottom: 8px;
   display: block;
@@ -1622,7 +1624,7 @@
 .apple-hero-name {
   font-size: clamp(32px, 5vw, 50px);
   font-weight: 700;
-  color: #1d1d1f;
+  color: #1d1d1f; /* Black for titles */
   letter-spacing: -0.03em;
   line-height: 1.1;
   margin-bottom: 12px;
@@ -1630,7 +1632,7 @@
 
 .apple-hero-subtitle {
   font-size: 19px;
-  color: #1d1d1f;
+  color: #424245; /* Dark gray for subtitles */
   font-weight: 400;
   margin-bottom: 24px;
 }

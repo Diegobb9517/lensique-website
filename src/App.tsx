@@ -606,33 +606,33 @@ function App() {
           </div>
         </section>
 
-        <section id="micas" className="hero-grid-section dark-bg" style={{ backgroundColor: '#000', padding: '100px 0' }}>
+        <section id="micas" className="hero-grid-section" style={{ backgroundColor: '#fff', padding: '100px 0' }}>
           <div className="section-header" style={{ padding: '0 40px 60px', textAlign: 'center' }}>
-            <span className="hero-eyebrow" style={{ color: '#0066cc' }}>Tecnología en Lentes</span>
-            <h2 className="section-title" style={{ color: '#fff' }}>La mejor solución para tus ojos.</h2>
-            <p className="section-subtitle" style={{ color: '#86868b' }}>Micas de alta precisión adaptadas a tu estilo de vida.</p>
+            <span className="hero-eyebrow">Tecnología en Lentes</span>
+            <h2 className="section-title">La mejor solución para tus ojos.</h2>
+            <p className="section-subtitle">Micas de alta precisión adaptadas a tu estilo de vida.</p>
           </div>
           
           <div className="apple-hero-grid">
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
               <motion.div 
                 key={`hero-brick-${idx}-${brick.id}`}
-                className={`apple-hero-card dark-theme ${idx === 0 ? 'full-width' : ''}`}
+                className="apple-hero-card"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="apple-hero-content">
-                  <span className="apple-hero-brand" style={{ color: '#0066cc' }}>Tecnología</span>
-                  <h3 className="apple-hero-name" style={{ color: '#fff' }}>{brick.title}</h3>
-                  <p className="apple-hero-subtitle" style={{ color: '#86868b' }}>{brick.description}</p>
+                <div className="apple-hero-content" style={{ backgroundColor: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)', padding: '20px', borderRadius: '20px', width: '90%' }}>
+                  <span className="apple-hero-brand">Tecnología</span>
+                  <h3 className="apple-hero-name" style={{ fontSize: '28px' }}>{brick.title}</h3>
+                  <p className="apple-hero-subtitle" style={{ fontSize: '16px', marginBottom: '15px' }}>{brick.description}</p>
                   <div className="apple-hero-actions">
                     <button className="btn-pill btn-pill-primary" onClick={() => handleOpenBooking(`Consulta sobre ${brick.title}`)}>
-                      Agendar Examen
+                      Agendar
                     </button>
-                    <button className="btn-pill btn-pill-secondary" style={{ borderColor: '#86868b', color: '#fff' }} onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
-                      Más información
+                    <button className="btn-pill btn-pill-secondary" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
+                      Ver más
                     </button>
                   </div>
                 </div>

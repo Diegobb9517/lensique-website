@@ -1434,6 +1434,117 @@
   }
 }
 
+/* --- High-Impact Ad Grid (Acuvue Style) --- */
+.hero-ad-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  max-width: var(--max-width);
+  margin: 60px auto 0;
+  padding: 0 40px;
+}
+
+.hero-ad-card {
+  height: 500px;
+  background: #fbfbfd;
+  border-radius: 32px;
+  position: relative;
+  overflow: hidden;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.6s var(--smooth);
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.hero-ad-card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.08);
+}
+
+.hero-ad-header {
+  text-align: left;
+}
+
+.hero-ad-brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: #86868b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.hero-ad-name {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.hero-ad-img-box {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hero-ad-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.8s var(--smooth);
+}
+
+.hero-ad-card:hover .hero-ad-img {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.hero-ad-footer {
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.hero-ad-btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 980px;
+  font-weight: 600;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--swift);
+}
+
+.hero-ad-btn:hover {
+  background: #0077ed;
+  transform: scale(1.05);
+}
+
+@media (max-width: 1068px) {
+  .hero-ad-grid {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+  .hero-ad-card {
+    height: 450px;
+    padding: 40px;
+  }
+}
+
 /* --- Premium Glasses Card (Apple Store Style) --- */
 .glasses-card {
   flex: 0 0 320px;

@@ -654,55 +654,51 @@ function App() {
           </div>
         </section>
 
-        <section id="armazones" className="comparison-section">
-          <div className="section-header-flex">
-            <div className="section-header">
-              <h2 className="section-title">Diseños que inspiran.</h2>
-              <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
-            </div>
-            <div className="slider-controls">
-              <button className="slider-btn" onClick={() => scrollCarousel('left')} aria-label="Anterior">
-                <ChevronLeft size={24} />
-              </button>
-              <button className="slider-btn" onClick={() => scrollCarousel('right')} aria-label="Siguiente">
-                <ChevronRight size={24} />
-              </button>
-            </div>
+        <section id="armazones" className="comparison-section" style={{ backgroundColor: '#fff', padding: '100px 0' }}>
+          <div className="section-header" style={{ padding: '0 40px' }}>
+            <span className="hero-eyebrow">Diseños que inspiran</span>
+            <h2 className="section-title">Encuentra tu estilo ideal.</h2>
+            <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
           </div>
-          
-          <div className="comparison-slider" ref={sliderRef}>
+
+          <div className="hero-ad-grid">
             {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
+              .slice(0, 4) // Show the top 4 as high-impact ads
               .map((product: any, idx: number) => (
-              <div 
-                className="glasses-card" 
-                key={`prod-fix-${idx}-${product.id}`}
-                onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
-              >
-                <div className="glasses-overlay-text">
-                  <span className="glasses-brand">{product.brand || 'Colección'}</span>
-                  <h3 className="glasses-name">{product.name}</h3>
-                </div>
-                
-                <div className="glasses-img-area">
-                  <img 
-                    src={resolveImageUrl(product.image_url, product.image)} 
-                    alt={product.name} 
-                    className="glasses-card-img" 
-                    onError={(e: any) => {
-                      e.target.onerror = null;
-                      e.target.src = product.image;
-                    }}
-                  />
-                </div>
+                <motion.div 
+                  key={`hero-ad-${idx}-${product.id}`}
+                  className="hero-ad-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
+                >
+                  <div className="hero-ad-header">
+                    <span className="hero-ad-brand">{product.brand || 'Colección'}</span>
+                    <h3 className="hero-ad-name">{product.name}</h3>
+                  </div>
 
-                <div className="glasses-footer">
-                  <button className="glasses-btn">
-                    Agendar
-                  </button>
-                </div>
-              </div>
-            ))}
+                  <div className="hero-ad-img-box">
+                    <img 
+                      src={resolveImageUrl(product.image_url, product.image)} 
+                      alt={product.name} 
+                      className="hero-ad-img" 
+                      onError={(e: any) => {
+                        e.target.onerror = null;
+                        e.target.src = product.image;
+                      }}
+                    />
+                  </div>
+
+                  <div className="hero-ad-footer">
+                    <button className="hero-ad-btn">
+                      Agendar
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
           </div>
         </section>
 

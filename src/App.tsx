@@ -738,36 +738,42 @@ function App() {
             </div>
             
             <div className="comparison-slider contact-slider" ref={contactSliderRef}>
-              {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => (
-                <div 
-                  className="glasses-card contact-card" 
+              {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => {
+                const imageUrl = resolveImageUrl(product.image_url, product.image);
+                return (
+                <motion.div 
+                  className="glasses-card contact-card with-top-gradient" 
                   key={`lc-fix-${idx}-${product.id}`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.1 }}
+                  viewport={{ once: true }}
                   onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
                 >
-                  <div className="glasses-overlay-text">
-                    <span className="glasses-brand">{product.brand || 'Lentes de Contacto'}</span>
-                    <h3 className="glasses-name">{product.name}</h3>
+                  <div className="glasses-overlay-text" style={{ zIndex: 10 }}>
+                    <span className="glasses-brand" style={{ color: '#1d1d1f' }}>{product.brand || 'Lentes de Contacto'}</span>
+                    <h3 className="glasses-name" style={{ color: '#1d1d1f' }}>{product.name}</h3>
                   </div>
                   
                   <div className="glasses-img-area">
                     <img 
-                      src={resolveImageUrl(product.image_url, product.image)} 
+                      src={imageUrl || 'https://placehold.co/600x600?text=Lensique+Contact'} 
                       alt={product.name} 
                       className="glasses-card-img" 
                       onError={(e: any) => {
                         e.target.onerror = null;
-                        e.target.src = product.image;
+                        e.target.src = 'https://placehold.co/600x600?text=Lensique+Contact';
                       }}
                     />
                   </div>
 
-                  <div className="glasses-footer">
+                  <div className="glasses-footer" style={{ zIndex: 10 }}>
                     <button className="glasses-btn">
                       Agendar
                     </button>
                   </div>
-                </div>
-              ))}
+                </motion.div>
+              );})}
             </div>
           </section>
         )}

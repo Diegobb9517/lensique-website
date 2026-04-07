@@ -1677,21 +1677,20 @@
 
 .apple-hero-img-box {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 60%;
+  height: 100%; /* Fill the whole card */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 40px 40px 40px;
   z-index: 1;
 }
 
 .apple-hero-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover; /* Fill to edges as requested */
   transition: transform 1.2s var(--smooth);
 }
 

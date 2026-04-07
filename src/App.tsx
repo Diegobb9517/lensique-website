@@ -617,17 +617,17 @@ function App() {
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
               <motion.div 
                 key={`hero-brick-${idx}-${brick.id}`}
-                className="apple-hero-card"
+                className="apple-hero-card with-top-gradient"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                style={{ justifyContent: 'center' }} 
+                style={{ justifyContent: 'flex-start', padding: '60px 40px' }} // Top align
               >
                 <div className="apple-hero-content" style={{ position: 'relative', zIndex: 10 }}>
-                  <span className="apple-hero-brand">Tecnología</span>
-                  <h3 className="apple-hero-name" style={{ fontSize: '32px', textShadow: '0 0 20px rgba(255,255,255,0.8)' }}>{brick.title}</h3>
-                  <p className="apple-hero-subtitle" style={{ fontSize: '18px', marginBottom: '24px', color: '#1d1d1f', textShadow: '0 0 15px rgba(255,255,255,0.8)' }}>{brick.description}</p>
+                  <span className="apple-hero-brand" style={{ color: '#0066cc', marginBottom: '8px', display: 'block' }}>Tecnología</span>
+                  <h3 className="apple-hero-name" style={{ fontSize: '32px', color: '#1d1d1f', marginBottom: '12px' }}>{brick.title}</h3>
+                  <p className="apple-hero-subtitle" style={{ fontSize: '18px', color: '#1d1d1f', marginBottom: '24px', opacity: 0.8 }}>{brick.description}</p>
                   <div className="apple-hero-actions">
                     <button className="btn-pill btn-pill-primary" onClick={() => handleOpenBooking(`Consulta sobre ${brick.title}`)}>
                       Agendar

@@ -622,12 +622,12 @@ function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                style={{ justifyContent: 'center' }} // Center content over the full background
+                style={{ justifyContent: 'center' }} 
               >
-                <div className="apple-hero-content" style={{ backgroundColor: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(15px)', padding: '24px', borderRadius: '24px', width: '90%', position: 'relative', zIndex: 10 }}>
+                <div className="apple-hero-content" style={{ position: 'relative', zIndex: 10 }}>
                   <span className="apple-hero-brand">Tecnología</span>
-                  <h3 className="apple-hero-name" style={{ fontSize: '28px' }}>{brick.title}</h3>
-                  <p className="apple-hero-subtitle" style={{ fontSize: '16px', marginBottom: '20px' }}>{brick.description}</p>
+                  <h3 className="apple-hero-name" style={{ fontSize: '32px', textShadow: '0 0 20px rgba(255,255,255,0.8)' }}>{brick.title}</h3>
+                  <p className="apple-hero-subtitle" style={{ fontSize: '18px', marginBottom: '24px', color: '#1d1d1f', textShadow: '0 0 15px rgba(255,255,255,0.8)' }}>{brick.description}</p>
                   <div className="apple-hero-actions">
                     <button className="btn-pill btn-pill-primary" onClick={() => handleOpenBooking(`Consulta sobre ${brick.title}`)}>
                       Agendar

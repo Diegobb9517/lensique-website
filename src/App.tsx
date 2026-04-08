@@ -25,8 +25,9 @@ const resolveImageUrl = (url: string, fallback: string | undefined) => {
     return isInvalid(fallback) ? '' : fallback as string;
   }
   
-  if (url.startsWith('http')) return url;
-  const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+  const targetUrl = url.trim();
+  if (targetUrl.startsWith('http')) return targetUrl;
+  const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
   return `${API_BASE}${cleanUrl}`;
 };
 
@@ -561,15 +562,20 @@ function App() {
                 </div>
                 
                 <div className="glasses-img-area">
-                  <img 
-                    src={resolveImageUrl(product.image_url, product.image)} 
-                    alt={product.name} 
-                    className="glasses-card-img" 
-                    onError={(e: any) => {
-                      e.target.onerror = null;
-                      e.target.src = product.image;
-                    }}
-                  />
+                  {(() => {
+                    const imageUrl = resolveImageUrl(product.image_url, product.image);
+                    return (
+                      <img 
+                        src={imageUrl || 'https://placehold.co/400x400?text=Lensique+Premium'} 
+                        alt={product.name} 
+                        className="glasses-card-img" 
+                        onError={(e: any) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://placehold.co/400x400?text=Lensique+Premium';
+                        }}
+                      />
+                    );
+                  })()}
                 </div>
 
                 <div className="glasses-footer">

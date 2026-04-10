@@ -596,48 +596,40 @@ function App() {
           </div>
         </section>
 
-        <section id="micas" className="hero-grid-section" style={{ backgroundColor: '#fff', padding: '100px 0' }}>
-          <div className="section-header" style={{ padding: '0 40px 60px', textAlign: 'center' }}>
-            <span className="hero-eyebrow">Tecnología en Lentes</span>
-            <h2 className="section-title">La mejor solución para tus ojos.</h2>
-            <p className="section-subtitle">Micas de alta precisión adaptadas a tu estilo de vida.</p>
+        <section id="micas" className="wp-micas-section">
+          <div className="wp-section-header" style={{ marginBottom: '40px' }}>
+            <h2 className="wp-section-title">Tecnología de lentes.</h2>
+            <p className="wp-section-subtitle">Micas de alta precisión adaptadas a tu estilo de vida.</p>
           </div>
           
-          <div className="apple-hero-grid">
+          <div className="wp-micas-grid">
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
               <motion.div 
-                key={`hero-brick-${idx}-${brick.id}`}
-                className="apple-hero-card with-top-gradient"
+                key={`mica-${idx}-${brick.id}`}
+                className="wp-mica-card"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                style={{ justifyContent: 'flex-start', padding: '60px 40px' }} // Top align
               >
-                <div className="apple-hero-content" style={{ position: 'relative', zIndex: 10 }}>
-                  <span className="apple-hero-brand" style={{ color: '#0066cc', marginBottom: '8px', display: 'block' }}>Tecnología</span>
-                  <h3 className="apple-hero-name" style={{ fontSize: '32px', color: '#1d1d1f', marginBottom: '12px' }}>{brick.title}</h3>
-                  <p className="apple-hero-subtitle" style={{ fontSize: '18px', color: '#1d1d1f', marginBottom: '24px', opacity: 0.8 }}>{brick.description}</p>
-                  <div className="apple-hero-actions">
-                    <button className="btn-pill btn-pill-primary" onClick={() => handleOpenBooking(`Consulta sobre ${brick.title}`)}>
-                      Agendar
-                    </button>
-                    <button className="btn-pill btn-pill-secondary" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
-                      Ver más
-                    </button>
-                  </div>
-                </div>
-
-                <div className="apple-hero-img-box">
+                <div className="wp-mica-img-box">
                   <img 
                     src={resolveImageUrl(brick.image_url, brick.image)} 
                     alt={brick.title} 
-                    className="apple-hero-img" 
+                    className="wp-mica-img" 
                     onError={(e: any) => {
                       e.target.onerror = null;
                       e.target.src = brick.image;
                     }}
                   />
+                </div>
+                <div className="wp-mica-content">
+                  <span className="wp-mica-eyebrow">TECNOLOGÍA</span>
+                  <h3 className="wp-mica-title">{brick.title}</h3>
+                  <p className="wp-mica-desc">{brick.description}</p>
+                  <button className="wp-mica-link" onClick={() => handleOpenBooking(`Consulta sobre ${brick.title}`)}>
+                    Agendar consulta →
+                  </button>
                 </div>
               </motion.div>
             ))}

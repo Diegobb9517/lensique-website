@@ -545,12 +545,12 @@ function App() {
                 
                 <div className="wp-card-img-area">
                   <img 
-                    src={resolveImageUrl(product.image_url, product.image) || 'https://placehold.co/400x400?text=Lensique+Premium'} 
+                    src={resolveImageUrl(product.image_url, product.image) || heroImg} 
                     alt={product.name} 
                     className="wp-card-img" 
                     onError={(e: any) => {
                       e.target.onerror = null;
-                      e.target.src = 'https://placehold.co/400x400?text=Lensique+Premium';
+                      e.target.src = heroImg;
                     }}
                   />
                 </div>
@@ -673,12 +673,12 @@ function App() {
 
                     <div className="hero-ad-img-box">
                       <img 
-                        src={imageUrl || 'https://placehold.co/600x400?text=Lensique+Premium'} 
+                        src={imageUrl || heroImg} 
                         alt={modelName} 
                         className="hero-ad-img" 
                         onError={(e: any) => {
                           e.target.onerror = null;
-                          e.target.src = 'https://placehold.co/600x400?text=Lensique+Premium';
+                          e.target.src = heroImg;
                         }}
                       />
                     </div>
@@ -731,12 +731,12 @@ function App() {
                   
                   <div className="wp-card-img-area">
                     <img 
-                      src={resolveImageUrl(product.image_url, product.image) || 'https://placehold.co/400x400?text=Lensique+Contact'} 
+                      src={resolveImageUrl(product.image_url, product.image) || heroImg} 
                       alt={product.name} 
                       className="wp-card-img" 
                       onError={(e: any) => {
                         e.target.onerror = null;
-                        e.target.src = 'https://placehold.co/400x400?text=Lensique+Contact';
+                        e.target.src = heroImg;
                       }}
                     />
                   </div>

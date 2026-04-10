@@ -492,7 +492,15 @@ function App() {
 
       <main>
         <section className="hero">
-          <div className="hero-background" style={{ backgroundImage: `url(${resolveImageUrl(settings.hero_image_url, heroImg)})` }}></div>
+          <img 
+            src={resolveImageUrl(settings.hero_image_url, heroImg)} 
+            alt="Lensique Eyewear" 
+            className="hero-background-img"
+            onError={(e: any) => {
+              e.target.onerror = null;
+              e.target.src = heroImg;
+            }}
+          />
           <div className="hero-content">
             <span className="hero-eyebrow">{settings.hero_eyebrow}</span>
             <h1 className="hero-title">{settings.hero_title}</h1>

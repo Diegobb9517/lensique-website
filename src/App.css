@@ -2093,4 +2093,86 @@
   .wp-slider {
     padding: 0 5% 30px;
   }
+  .wp-services-grid {
+    padding: 0 5% 30px;
+  }
+}
+
+/* WP Services Section */
+.wp-services-section {
+  padding: 80px 40px;
+  background-color: #fafafa;
+}
+
+.wp-services-grid {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 30px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.wp-services-grid::-webkit-scrollbar {
+  height: 6px;
+}
+.wp-services-grid::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+
+.wp-service-card {
+  min-width: 300px;
+  width: 300px;
+  height: 420px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: transform 0.4s;
+}
+
+.wp-service-card:hover {
+  transform: translateY(-8px);
+}
+
+.wp-service-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.0) 40%);
+  z-index: 1;
+}
+
+.wp-service-pill {
+  position: relative;
+  z-index: 2;
+  background: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 980px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1d1d1f;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s;
+  width: auto;
+}
+
+.wp-service-card:hover .wp-service-pill {
+  transform: scale(1.04);
 }

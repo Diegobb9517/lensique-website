@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Search, Menu, X, MapPin, 
-  MessageCircle, Eye, Stethoscope, RefreshCcw, Layers, Glasses,
-  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag
+  Search, Menu, X, MapPin, MessageCircle,
+  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag, Eye 
 } from 'lucide-react';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
+import cv7600Img from './assets/cv-7600.jpg';
+import clinicRoomImg from './assets/DSC09650.jpg'; // O la de cuartos blancos
+import storeInteriorImg from './assets/DSC09639.jpg'; // O la de los estantes de madera
+import contactLensesImg from './assets/contact_lenses.png';
 import monofocalImg from './assets/monofocal.png';
 import progressiveImg from './assets/progressive.png';
 import blueFilterImg from './assets/blue-filter.png';
@@ -564,30 +567,28 @@ function App() {
           </div>
         </section>
 
-        <section id="servicios" className="pro-services-section">
-          <div className="section-header">
-            <span className="hero-eyebrow">Servicios Profesionales</span>
-            <h2 className="section-title">Cuidamos tu salud visual.</h2>
-            <p className="section-subtitle">Atención médica especializada con tecnología de última generación.</p>
+        <section id="servicios" className="wp-services-section">
+          <div className="wp-section-header">
+            <h2 className="wp-section-title">Cuatro formas de aprovechar tus beneficios.</h2>
           </div>
-          <div className="pro-services-grid">
+          <div className="wp-services-grid">
             {[
-              { id: 's1', title: 'Examen de la Vista', desc: 'Tecnología computarizada para una graduación exacta.', icon: <Eye size={32} />, cta: 'Agendar ahora', action: () => handleOpenBooking('Examen de la Vista') },
-              { id: 's2', title: 'Consulta Oftalmológica', desc: 'Atención médica especializada para tu salud ocular.', icon: <Stethoscope size={32} />, cta: 'Agendar ahora', action: () => handleOpenBooking('Consulta Oftalmológica') },
-              { id: 's3', title: 'Actualización de Micas', desc: 'Renueva tus lentes actuales con nuestra última tecnología.', icon: <RefreshCcw size={32} />, cta: 'Ver tecnologías', action: () => { window.location.hash = 'micas'; } },
-              { id: 's4', title: 'Lentes de Contacto', desc: 'Adaptación y venta de las mejores marcas del mercado.', icon: <Layers size={32} />, cta: 'Ver catálogo', action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
-              { id: 's5', title: 'Armazones', desc: 'Selección curada de diseños internacionales.', icon: <Glasses size={32} />, cta: 'Ver catálogo', action: () => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); } }
+              { id: 's1', title: 'Examen de la vista', img: cv7600Img, action: () => handleOpenBooking('Examen de la Vista') },
+              { id: 's2', title: 'Consulta Médica', img: clinicRoomImg, action: () => handleOpenBooking('Consulta Oftalmológica') },
+              { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
+              { id: 's5', title: 'Armazones', img: storeInteriorImg, action: () => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); } }
             ].map((service) => (
               <motion.div 
                 key={service.id}
-                className="pro-service-card"
-                whileHover={{ y: -10 }}
+                className="wp-service-card"
+                style={{ backgroundImage: `url(${service.img})` }}
                 onClick={service.action}
+                whileHover={{ y: -5 }}
               >
-                <div className="pro-service-icon">{service.icon}</div>
-                <h3>{service.title}</h3>
-                <p>{service.desc}</p>
-                <span className="pro-service-link">{service.cta} →</span>
+                <div className="wp-service-card-overlay"></div>
+                <button className="wp-service-pill">
+                  {service.title}
+                </button>
               </motion.div>
             ))}
           </div>

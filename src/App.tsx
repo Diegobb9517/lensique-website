@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
-  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag, Eye 
+  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag 
 } from 'lucide-react';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -308,6 +308,13 @@ function App() {
     }
   };
 
+  const scrollPopulares = (direction: 'left' | 'right') => {
+    if (sliderRef.current) {
+      const scrollAmount = direction === 'left' ? -284 : 284;
+      sliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const timeSlots = [
     '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
     '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM'
@@ -539,9 +546,11 @@ function App() {
         <section id="populares" className="wp-carousel-section">
           <div className="wp-section-header">
             <h2 className="wp-section-title">Nuestros más populares.</h2>
-            <button className="btn-wp-outline" onClick={() => setIsCatalogOpen(true)}>
-              Ver catálogo completo
-            </button>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollPopulares('left')}><ChevronLeft size={24} /></button>
+              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollPopulares('right')}><ChevronRight size={24} /></button>
+              <button className="btn-wp-outline" onClick={() => setIsCatalogOpen(true)}>Ver catálogo completo</button>
+            </div>
           </div>
           
           <div className="wp-slider" ref={sliderRef}>
@@ -555,15 +564,8 @@ function App() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
+                onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}
               >
-                <div className="wp-card-header">
-                  <button className="wp-icon-ghost" aria-label="Favoritos" onClick={(e) => e.stopPropagation()}><Heart size={16}/></button>
-                  <button className="wp-try-on" onClick={(e) => { e.stopPropagation(); handleOpenBooking(`${product.brand || ''} ${product.name}`); }}>
-                    <Eye size={14} /> Agendar
-                  </button>
-                </div>
-                
                 <div className="wp-card-img-area">
                   <img 
                     src={resolveImageUrl(product.image_url, product.image) || heroImg} 
@@ -726,15 +728,8 @@ function App() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
+                  onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
                 >
-                  <div className="wp-card-header">
-                    <button className="wp-icon-ghost" aria-label="Favoritos" onClick={(e) => e.stopPropagation()}><Heart size={16}/></button>
-                    <button className="wp-try-on" onClick={(e) => { e.stopPropagation(); handleOpenBooking(`${product.brand || ''} ${product.name}`); }}>
-                      <Eye size={14} /> Agendar
-                    </button>
-                  </div>
-                  
                   <div className="wp-card-img-area">
                     <img 
                       src={resolveImageUrl(product.image_url, product.image) || heroImg} 

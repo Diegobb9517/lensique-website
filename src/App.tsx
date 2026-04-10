@@ -6,7 +6,7 @@ import {
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag
 } from 'lucide-react';
 import logo from './assets/logo.png';
-import heroImg from './assets/clinic-room.jpg';
+import heroImg from './assets/hero_glasses.png';
 import monofocalImg from './assets/monofocal.png';
 import progressiveImg from './assets/progressive.png';
 import blueFilterImg from './assets/blue-filter.png';

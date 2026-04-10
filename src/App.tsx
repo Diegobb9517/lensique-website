@@ -18,6 +18,7 @@ import lsPhotochromic from './assets/lifestyle_photochromic.png';
 import lsFlattop from './assets/lifestyle_flattop.png';
 import lsInvisible from './assets/lifestyle_invisible.png';
 import lsCustom from './assets/lifestyle_custom.png';
+import lsAntireflective from './assets/lifestyle_antireflective.png';
 import './App.css';
 
 const API_BASE = 'https://lensique-pos.onrender.com';
@@ -205,7 +206,8 @@ function App() {
       { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: lsProgressives },
       { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: lsPhotochromic },
       { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.', image: lsBluelight },
-      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: lsCustom }
+      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: lsCustom },
+      { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.', image: lsAntireflective }
     ]),
     featured_products: JSON.stringify([
       { id: 1, name: 'AN4347U', brand: 'Arnette', model: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg' },

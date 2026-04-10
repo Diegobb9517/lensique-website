@@ -285,26 +285,7 @@ function App() {
   };
 
   const sliderRef = useRef<HTMLDivElement>(null);
-  const scrollCarousel = (direction: 'left' | 'right') => {
-    if (sliderRef.current) {
-      const scrollAmount = 400;
-      sliderRef.current.scrollBy({ 
-        left: direction === 'left' ? -scrollAmount : scrollAmount, 
-        behavior: 'smooth' 
-      });
-    }
-  };
-
   const contactSliderRef = useRef<HTMLDivElement>(null);
-  const scrollContacts = (direction: 'left' | 'right') => {
-    if (contactSliderRef.current) {
-      const scrollAmount = 400;
-      contactSliderRef.current.scrollBy({ 
-        left: direction === 'left' ? -scrollAmount : scrollAmount, 
-        behavior: 'smooth' 
-      });
-    }
-  };
 
   const timeSlots = [
     '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
@@ -534,61 +515,49 @@ function App() {
           <div className="perk-item">Garantía total<br/>de 30 días</div>
         </section>
 
-        <section id="populares" className="popular-carousel-section">
-          <div className="section-header-flex">
-            <div className="section-header-left">
-              <span className="hero-eyebrow">Lo más buscado</span>
-              <h2 className="section-title">Nuestros más populares.</h2>
-            </div>
-            <div className="slider-controls">
-              <button className="slider-btn" onClick={() => scrollCarousel('left')} aria-label="Anterior">
-                <ChevronLeft size={24} />
-              </button>
-              <button className="slider-btn" onClick={() => scrollCarousel('right')} aria-label="Siguiente">
-                <ChevronRight size={24} />
-              </button>
-            </div>
+        <section id="populares" className="wp-carousel-section">
+          <div className="wp-section-header">
+            <h2 className="wp-section-title">Nuestros más populares.</h2>
+            <button className="btn-wp-outline" onClick={() => setIsCatalogOpen(true)}>
+              Ver catálogo completo
+            </button>
           </div>
           
-          <div className="comparison-slider" ref={sliderRef}>
+          <div className="wp-slider" ref={sliderRef}>
             {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
               .map((product: any, idx: number) => (
               <motion.div 
                 key={`popular-${idx}-${product.id}`}
-                className="glasses-card"
+                className="wp-product-card"
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
                 onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
               >
-                <div className="glasses-overlay-text">
-                  <span className="glasses-brand">{product.brand || 'Colección'}</span>
-                  <h3 className="glasses-name">{product.name}</h3>
+                <div className="wp-card-header">
+                  <button className="wp-icon-ghost" aria-label="Favoritos" onClick={(e) => e.stopPropagation()}><Heart size={16}/></button>
+                  <button className="wp-try-on" onClick={(e) => { e.stopPropagation(); handleOpenBooking(`${product.brand || ''} ${product.name}`); }}>
+                    <Eye size={14} /> Agendar
+                  </button>
                 </div>
                 
-                <div className="glasses-img-area">
-                  {(() => {
-                    const imageUrl = resolveImageUrl(product.image_url, product.image);
-                    return (
-                      <img 
-                        src={imageUrl || 'https://placehold.co/400x400?text=Lensique+Premium'} 
-                        alt={product.name} 
-                        className="glasses-card-img" 
-                        onError={(e: any) => {
-                          e.target.onerror = null;
-                          e.target.src = 'https://placehold.co/400x400?text=Lensique+Premium';
-                        }}
-                      />
-                    );
-                  })()}
+                <div className="wp-card-img-area">
+                  <img 
+                    src={resolveImageUrl(product.image_url, product.image) || 'https://placehold.co/400x400?text=Lensique+Premium'} 
+                    alt={product.name} 
+                    className="wp-card-img" 
+                    onError={(e: any) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://placehold.co/400x400?text=Lensique+Premium';
+                    }}
+                  />
                 </div>
 
-                <div className="glasses-footer">
-                  <button className="glasses-btn">
-                    Agendar
-                  </button>
+                <div className="wp-card-info">
+                  <h3 className="wp-product-name">{product.name}</h3>
+                  <span className="wp-product-model">{product.model || product.category || 'Premium'}</span>
                 </div>
               </motion.div>
             ))}
@@ -734,59 +703,50 @@ function App() {
         </section>
 
         {settings.featured_contact_lenses && (Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses.length > 0 : JSON.parse(settings.featured_contact_lenses || '[]').length > 0) && (
-          <section id="lentes-contacto" className="contact-lenses-section">
-            <div className="section-header-flex">
-              <div className="section-header">
-                <h2 className="section-title">Claridad sin límites.</h2>
-                <p className="section-subtitle">Lentes de contacto de última generación.</p>
-              </div>
-              <div className="slider-controls">
-                <button className="slider-btn" onClick={() => scrollContacts('left')} aria-label="Anterior">
-                  <ChevronLeft size={24} />
-                </button>
-                <button className="slider-btn" onClick={() => scrollContacts('right')} aria-label="Siguiente">
-                  <ChevronRight size={24} />
-                </button>
-              </div>
+          <section id="lentes-contacto" className="wp-carousel-section">
+            <div className="wp-section-header">
+              <h2 className="wp-section-title">Claridad sin límites.</h2>
+              <button className="btn-wp-outline" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
+                Ver lentes de contacto
+              </button>
             </div>
             
-            <div className="comparison-slider contact-slider" ref={contactSliderRef}>
-              {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => {
-                const imageUrl = resolveImageUrl(product.image_url, product.image);
-                return (
+            <div className="wp-slider" ref={contactSliderRef}>
+              {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => (
                 <motion.div 
-                  className="glasses-card contact-card with-top-gradient" 
                   key={`lc-fix-${idx}-${product.id}`}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  className="wp-product-card"
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
                   viewport={{ once: true }}
                   onClick={() => handleOpenBooking(`${product.brand || ''} ${product.name}`)}
                 >
-                  <div className="glasses-overlay-text" style={{ zIndex: 10 }}>
-                    <span className="glasses-brand" style={{ color: '#1d1d1f' }}>{product.brand || 'Lentes de Contacto'}</span>
-                    <h3 className="glasses-name" style={{ color: '#1d1d1f' }}>{product.name}</h3>
+                  <div className="wp-card-header">
+                    <button className="wp-icon-ghost" aria-label="Favoritos" onClick={(e) => e.stopPropagation()}><Heart size={16}/></button>
+                    <button className="wp-try-on" onClick={(e) => { e.stopPropagation(); handleOpenBooking(`${product.brand || ''} ${product.name}`); }}>
+                      <Eye size={14} /> Agendar
+                    </button>
                   </div>
                   
-                  <div className="glasses-img-area">
+                  <div className="wp-card-img-area">
                     <img 
-                      src={imageUrl || 'https://placehold.co/600x600?text=Lensique+Contact'} 
+                      src={resolveImageUrl(product.image_url, product.image) || 'https://placehold.co/400x400?text=Lensique+Contact'} 
                       alt={product.name} 
-                      className="glasses-card-img" 
+                      className="wp-card-img" 
                       onError={(e: any) => {
                         e.target.onerror = null;
-                        e.target.src = 'https://placehold.co/600x600?text=Lensique+Contact';
+                        e.target.src = 'https://placehold.co/400x400?text=Lensique+Contact';
                       }}
                     />
                   </div>
 
-                  <div className="glasses-footer" style={{ zIndex: 10 }}>
-                    <button className="glasses-btn">
-                      Agendar
-                    </button>
+                  <div className="wp-card-info">
+                    <h3 className="wp-product-name">{product.name}</h3>
+                    <span className="wp-product-model">{product.brand || 'Contacto'}</span>
                   </div>
                 </motion.div>
-              );})}
+              ))}
             </div>
           </section>
         )}

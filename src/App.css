@@ -1928,3 +1928,169 @@
 .wa-label {
   display: none !important;
 }
+
+/* WP Product Carousel */
+.wp-carousel-section {
+  padding: 80px 40px;
+  background-color: #fff;
+}
+
+.wp-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--max-width);
+  margin: 0 auto 40px;
+}
+
+.wp-section-title {
+  font-size: 28px;
+  font-weight: 500;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: #1d1d1f;
+}
+
+.btn-wp-outline {
+  background: white;
+  border: 1px solid #0b3d91;
+  color: #0b3d91;
+  padding: 10px 24px;
+  border-radius: 980px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-wp-outline:hover {
+  background: #0b3d91;
+  color: white;
+}
+
+.wp-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 30px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.wp-slider::-webkit-scrollbar {
+  height: 6px;
+}
+.wp-slider::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+
+.wp-product-card {
+  min-width: 280px;
+  width: 280px;
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  padding: 20px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: box-shadow 0.3s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.wp-product-card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.wp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.wp-icon-ghost {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wp-icon-ghost:hover {
+  color: #d11a2a;
+  border-color: #fcc;
+}
+
+.wp-try-on {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wp-try-on:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.wp-card-img-area {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.wp-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s;
+}
+.wp-product-card:hover .wp-card-img {
+  transform: scale(1.05);
+}
+
+.wp-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.wp-product-name {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #1d1d1f;
+  margin: 0;
+}
+
+.wp-product-model {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .wp-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0 5%;
+  }
+  .wp-slider {
+    padding: 0 5% 30px;
+  }
+}

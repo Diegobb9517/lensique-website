@@ -294,11 +294,17 @@ function App() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const contactSliderRef = useRef<HTMLDivElement>(null);
   const micasSliderRef = useRef<HTMLDivElement>(null);
-
   const scrollMicas = (direction: 'left' | 'right') => {
     if (micasSliderRef.current) {
       const scrollAmount = direction === 'left' ? -320 : 320;
       micasSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const scrollContact = (direction: 'left' | 'right') => {
+    if (contactSliderRef.current) {
+      const scrollAmount = direction === 'left' ? -304 : 304;
+      contactSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -702,9 +708,13 @@ function App() {
           <section id="lentes-contacto" className="wp-carousel-section">
             <div className="wp-section-header">
               <h2 className="wp-section-title">Claridad sin límites.</h2>
-              <button className="btn-wp-outline" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
-                Ver lentes de contacto
-              </button>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
+                <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
+                <button className="btn-wp-outline" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
+                  Ver todos
+                </button>
+              </div>
             </div>
             
             <div className="wp-slider" ref={contactSliderRef}>

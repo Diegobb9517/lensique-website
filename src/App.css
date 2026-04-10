@@ -1971,34 +1971,33 @@
   gap: 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding-bottom: 30px;
+  padding-bottom: 8px;
   max-width: var(--max-width);
   margin: 0 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .wp-slider::-webkit-scrollbar {
-  height: 6px;
-}
-.wp-slider::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.1);
-  border-radius: 10px;
+  display: none;
 }
 
 .wp-product-card {
-  min-width: 280px;
-  width: 280px;
-  background-color: #fcfcfc;
-  border-radius: 12px;
+  min-width: 260px;
+  width: 260px;
+  background-color: #fff;
+  border-radius: 16px;
   padding: 20px;
   flex-shrink: 0;
   scroll-snap-align: start;
-  border: 1px solid rgba(0,0,0,0.04);
-  transition: box-shadow 0.3s;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s, transform 0.3s;
   cursor: pointer;
   display: flex;
   flex-direction: column;
 }
 .wp-product-card:hover {
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.07);
+  transform: translateY(-4px);
 }
 
 .wp-card-header {
@@ -2045,11 +2044,15 @@
 }
 
 .wp-card-img-area {
-  height: 160px;
+  height: 180px;
+  background: #f7f7f7;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  padding: 12px;
 }
 
 .wp-card-img {

@@ -437,7 +437,7 @@ function App() {
 
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="nav-top-banner">
-          <p>Envíos gratis en todos los lentes de vista y sol. Compra ahora.</p>
+          <p>Agenda tu examen de vista hoy. <span style={{ fontWeight: 600 }}>Atención personalizada en Zapopan.</span></p>
         </div>
         <div className="nav-content">
           <div className="nav-left">

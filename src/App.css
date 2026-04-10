@@ -1969,16 +1969,18 @@
 .wp-slider {
   display: flex;
   gap: 24px;
-  overflow-x: auto;
+  overflow-x: scroll;
   scroll-snap-type: x mandatory;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   max-width: var(--max-width);
   margin: 0 auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 .wp-slider::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .wp-product-card {
@@ -2045,7 +2047,7 @@
 
 .wp-card-img-area {
   height: 180px;
-  background: #f7f7f7;
+  background: #fff;
   border-radius: 10px;
   display: flex;
   align-items: center;

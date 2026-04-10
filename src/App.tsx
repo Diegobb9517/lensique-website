@@ -15,7 +15,9 @@ import lsBluelight from './assets/lifestyle_bluelight.png';
 import lsProgressives from './assets/lifestyle_progressives.png';
 import lsAntifatigue from './assets/lifestyle_antifatigue.png';
 import lsPhotochromic from './assets/lifestyle_photochromic.png';
-// Unused local images removed
+import lsFlattop from './assets/lifestyle_flattop.png';
+import lsInvisible from './assets/lifestyle_invisible.png';
+import lsCustom from './assets/lifestyle_custom.png';
 import './App.css';
 
 const API_BASE = 'https://lensique-pos.onrender.com';
@@ -197,10 +199,13 @@ function App() {
       { name: 'Nosotros', href: '#nosotros' }
     ]),
     category_bricks: JSON.stringify([
-      { id: 'm4', title: 'Blue-light', description: 'Protección para pantallas digitales.', image: lsBluelight },
-      { id: 'm2', title: 'Progressives', description: 'Visión fluida en todas las distancias.', image: lsProgressives },
-      { id: 'm1', title: 'Anti-fatigue', description: 'Visión nítida en una sola distancia.', image: lsAntifatigue },
-      { id: 'm3', title: 'Light-responsive', description: 'Lentes que se adaptan a la luz solar.', image: lsPhotochromic }
+      { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: lsAntifatigue },
+      { id: 'm2', title: 'Bifocales Flat Top', description: 'Bifocal clásico con segmento definido.', image: lsFlattop },
+      { id: 'm3', title: 'Bifocales Invisibles', description: 'Bifocal estético sin líneas visibles.', image: lsInvisible },
+      { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: lsProgressives },
+      { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: lsPhotochromic },
+      { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.', image: lsBluelight },
+      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: lsCustom }
     ]),
     featured_products: JSON.stringify([
       { id: 1, name: 'AN4347U', brand: 'Arnette', model: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg' },

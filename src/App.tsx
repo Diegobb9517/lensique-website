@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, 
   MessageCircle, Eye, Stethoscope, RefreshCcw, Layers, Glasses,
-  Calendar, Clock, ChevronLeft, ChevronRight
+  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag
 } from 'lucide-react';
 import logo from './assets/logo.png';
 import heroImg from './assets/clinic-room.jpg';
@@ -427,40 +427,47 @@ function App() {
       </AnimatePresence>
 
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="nav-top-banner">
+          <p>Envíos gratis en todos los lentes de vista y sol. Compra ahora.</p>
+        </div>
         <div className="nav-content">
-          <div className="logo">
-            <img src={logo} alt="Lensique" className="logo-img" />
+          <div className="nav-left">
+            <div className="logo">
+              <img src={logo} alt="Lensique" className="logo-img" />
+            </div>
+
+            <div className="nav-links d-none-mobile">
+              {JSON.parse(settings.nav_links || '[]').map((link: any, i: number) => (
+                <a 
+                  key={`nav-${i}-${link.name}`} 
+                  href={link.href} 
+                  className="nav-link"
+                  onClick={(e) => {
+                    if (link.name === 'Catálogo') {
+                      e.preventDefault();
+                      setIsCatalogOpen(true);
+                    }
+                  }}
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
           </div>
 
-          <div className="nav-links">
-            {JSON.parse(settings.nav_links || '[]').map((link: any, i: number) => (
-              <a 
-                key={`nav-${i}-${link.name}`} 
-                href={link.href} 
-                className="nav-link"
-                onClick={(e) => {
-                  if (link.name === 'Catálogo') {
-                    e.preventDefault();
-                    setIsCatalogOpen(true);
-                  }
-                }}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-
-          <div className="nav-actions">
+          <div className="nav-right">
+            <button className="nav-icon-text-btn d-none-mobile">
+              <User size={18} />
+              <span>Ingresar</span>
+            </button>
             <button className="nav-icon-btn"><Search size={20} /></button>
+            <button className="nav-icon-btn d-none-mobile"><Heart size={20} /></button>
+            <button className="nav-icon-btn" onClick={() => setIsBookingOpen(true)}>
+              <ShoppingBag size={20} />
+            </button>
+
             <button className="nav-icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-            <button 
-              className="btn btn-primary d-none-mobile" 
-              style={{ marginLeft: '10px' }}
-              onClick={() => setIsBookingOpen(true)}
-            >
-              Agendar
             </button>
           </div>
         </div>
@@ -485,46 +492,38 @@ function App() {
 
       <main>
         <section className="hero">
-          <div className="hero-grid">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="hero-text-content"
-            >
-              <span className="hero-eyebrow">{settings.hero_eyebrow}</span>
-              <h1 className="hero-title">{settings.hero_title}</h1>
-              <p className="hero-subheading">{settings.hero_subtitle}</p>
-              <div className="hero-actions">
-                <button 
-                  className="btn btn-primary" 
-                  onClick={() => setIsBookingOpen(true)}
-                  style={{ position: 'relative', zIndex: 20 }}
-                >
-                  Agendar Cita
-                </button>
-                <button className="btn btn-outline" onClick={() => setIsCatalogOpen(true)}>
-                  Ver Catálogo
-                </button>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="hero-visual"
-            >
-              <img 
-                src={resolveImageUrl(settings.hero_image_url, heroImg)} 
-                className="hero-main-img" 
-                alt="Clinic"
-                onError={(e: any) => {
-                  e.target.onerror = null;
-                  e.target.src = heroImg;
-                }}
-              />
-              <div className="hero-blur-backdrop"></div>
-            </motion.div>
+          <div className="hero-background" style={{ backgroundImage: `url(${resolveImageUrl(settings.hero_image_url, heroImg)})` }}></div>
+          <div className="hero-content">
+            <span className="hero-eyebrow">{settings.hero_eyebrow}</span>
+            <h1 className="hero-title">{settings.hero_title}</h1>
+            <p className="hero-subheading">{settings.hero_subtitle}</p>
+            <div className="hero-actions-left">
+              <button 
+                className="btn btn-wp-primary" 
+                onClick={() => setIsBookingOpen(true)}
+              >
+                Agendar Cita
+              </button>
+              <button className="btn btn-wp-secondary" onClick={() => setIsCatalogOpen(true)}>
+                Ver Catálogo
+              </button>
+            </div>
+            <div className="hero-link">
+              <a href="#populares" onClick={(e) => { e.preventDefault(); document.getElementById('populares')?.scrollIntoView({behavior: 'smooth'})}}>
+                Descubre nuestra colección &gt;
+              </a>
+            </div>
           </div>
+        </section>
+
+        <section className="perks-bar">
+          <div className="perk-item">Examen de vista<br/>gratis y profesional</div>
+          <div className="perk-separator"></div>
+          <div className="perk-item">Ajustes de armazón<br/>gratuitos de por vida</div>
+          <div className="perk-separator"></div>
+          <div className="perk-item">Asesoría de imagen<br/>personalizada</div>
+          <div className="perk-separator"></div>
+          <div className="perk-item">Garantía total<br/>de 30 días</div>
         </section>
 
         <section id="populares" className="popular-carousel-section">

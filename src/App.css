@@ -2112,14 +2112,12 @@
   padding-bottom: 30px;
   max-width: var(--max-width);
   margin: 0 auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
 .wp-services-grid::-webkit-scrollbar {
-  height: 6px;
-}
-.wp-services-grid::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.1);
-  border-radius: 10px;
+  display: none; /* Chrome/Safari */
 }
 
 .wp-service-card {

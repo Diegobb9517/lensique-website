@@ -7,8 +7,9 @@ import {
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import cv7600Img from './assets/cv-7600.jpg';
-import clinicRoomImg from './assets/DSC09650.jpg'; // O la de cuartos blancos
-import storeInteriorImg from './assets/DSC09639.jpg'; // O la de los estantes de madera
+import clinicRoomImg from './assets/DSC09650.jpg';
+import storeInteriorImg from './assets/DSC09639.jpg';
+import micasImg from './assets/DSC09628.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
 import monofocalImg from './assets/monofocal.png';
 import progressiveImg from './assets/progressive.png';
@@ -569,12 +570,13 @@ function App() {
 
         <section id="servicios" className="wp-services-section">
           <div className="wp-section-header">
-            <h2 className="wp-section-title">Cuatro formas de aprovechar tus beneficios.</h2>
+            <h2 className="wp-section-title">Nuestros servicios visuales.</h2>
           </div>
           <div className="wp-services-grid">
             {[
               { id: 's1', title: 'Examen de la vista', img: cv7600Img, action: () => handleOpenBooking('Examen de la Vista') },
               { id: 's2', title: 'Consulta Médica', img: clinicRoomImg, action: () => handleOpenBooking('Consulta Oftalmológica') },
+              { id: 's3', title: 'Actualización de micas', img: micasImg, action: () => window.location.hash = 'micas' },
               { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
               { id: 's5', title: 'Armazones', img: storeInteriorImg, action: () => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); } }
             ].map((service) => (

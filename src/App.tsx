@@ -293,6 +293,14 @@ function App() {
 
   const sliderRef = useRef<HTMLDivElement>(null);
   const contactSliderRef = useRef<HTMLDivElement>(null);
+  const micasSliderRef = useRef<HTMLDivElement>(null);
+
+  const scrollMicas = (direction: 'left' | 'right') => {
+    if (micasSliderRef.current) {
+      const scrollAmount = direction === 'left' ? -320 : 320;
+      micasSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const timeSlots = [
     '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
@@ -600,11 +608,15 @@ function App() {
         </section>
 
         <section id="micas" className="wp-micas-lifestyle-section">
-          <div className="wp-section-header" style={{ marginBottom: '40px' }}>
+          <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
             <h2 className="wp-section-title">Tecnologías de visión.</h2>
+            <div className="wp-slider-nav" style={{ display: 'flex', gap: '10px' }}>
+              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollMicas('left')}><ChevronLeft size={24} /></button>
+              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollMicas('right')}><ChevronRight size={24} /></button>
+            </div>
           </div>
           
-          <div className="wp-micas-lifestyle-grid">
+          <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
               <motion.div 
                 key={`mica-ls-${idx}-${brick.id}`}

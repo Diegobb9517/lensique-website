@@ -1892,8 +1892,8 @@
   position: fixed;
   bottom: 40px;
   right: 40px;
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   background-color: #ffffff;
   border-radius: 50%;
   display: flex;
@@ -1909,8 +1909,8 @@
 }
 
 .whatsapp-float svg {
-  width: 42px !important;
-  height: 42px !important;
+  width: 56px !important;
+  height: 56px !important;
   display: block;
 }
 

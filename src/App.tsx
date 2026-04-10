@@ -11,12 +11,10 @@ import clinicRoomImg from './assets/DSC09650.jpg';
 import storeInteriorImg from './assets/DSC09639.jpg';
 import micasImg from './assets/DSC09628.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
-import monofocalImg from './assets/monofocal.png';
-import progressiveImg from './assets/progressive.png';
-import blueFilterImg from './assets/blue-filter.png';
-import photochromicImg from './assets/photochromic.png';
-import flatTopImg from './assets/bifocal-flat-top.png';
-import invisibleImg from './assets/bifocal-invisible.png';
+import lsBluelight from './assets/lifestyle_bluelight.png';
+import lsProgressives from './assets/lifestyle_progressives.png';
+import lsAntifatigue from './assets/lifestyle_antifatigue.png';
+import lsPhotochromic from './assets/lifestyle_photochromic.png';
 // Unused local images removed
 import './App.css';
 
@@ -199,12 +197,10 @@ function App() {
       { name: 'Nosotros', href: '#nosotros' }
     ]),
     category_bricks: JSON.stringify([
-      { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: monofocalImg },
-      { id: 'm2', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: progressiveImg },
-      { id: 'm3', title: 'Fotocromáticos', description: 'Lentes que se adaptan a la luz solar.', image: photochromicImg },
-      { id: 'm4', title: 'Luz Azul', description: 'Protección para pantallas digitales.', image: blueFilterImg },
-      { id: 'm5', title: 'Flat Top', description: 'Bifocal clásico con segmento definido.', image: flatTopImg },
-      { id: 'm6', title: 'Invisible', description: 'Bifocal estético sin líneas visibles.', image: invisibleImg }
+      { id: 'm4', title: 'Blue-light', description: 'Protección para pantallas digitales.', image: lsBluelight },
+      { id: 'm2', title: 'Progressives', description: 'Visión fluida en todas las distancias.', image: lsProgressives },
+      { id: 'm1', title: 'Anti-fatigue', description: 'Visión nítida en una sola distancia.', image: lsAntifatigue },
+      { id: 'm3', title: 'Light-responsive', description: 'Lentes que se adaptan a la luz solar.', image: lsPhotochromic }
     ]),
     featured_products: JSON.stringify([
       { id: 1, name: 'AN4347U', brand: 'Arnette', model: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg' },
@@ -596,41 +592,27 @@ function App() {
           </div>
         </section>
 
-        <section id="micas" className="wp-micas-section">
+        <section id="micas" className="wp-micas-lifestyle-section">
           <div className="wp-section-header" style={{ marginBottom: '40px' }}>
-            <h2 className="wp-section-title">Tecnología de lentes.</h2>
-            <p className="wp-section-subtitle">Micas de alta precisión adaptadas a tu estilo de vida.</p>
+            <h2 className="wp-section-title">Tecnologías de visión.</h2>
           </div>
           
-          <div className="wp-micas-grid">
+          <div className="wp-micas-lifestyle-grid">
             {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
               <motion.div 
-                key={`mica-${idx}-${brick.id}`}
-                className="wp-mica-card"
+                key={`mica-ls-${idx}-${brick.id}`}
+                className="wp-mica-lifestyle-card"
+                style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
+                onClick={() => handleOpenBooking(`Consulta ${brick.title}`)}
               >
-                <div className="wp-mica-img-box">
-                  <img 
-                    src={resolveImageUrl(brick.image_url, brick.image)} 
-                    alt={brick.title} 
-                    className="wp-mica-img" 
-                    onError={(e: any) => {
-                      e.target.onerror = null;
-                      e.target.src = brick.image;
-                    }}
-                  />
-                </div>
-                <div className="wp-mica-content">
-                  <span className="wp-mica-eyebrow">TECNOLOGÍA</span>
-                  <h3 className="wp-mica-title">{brick.title}</h3>
-                  <p className="wp-mica-desc">{brick.description}</p>
-                  <button className="wp-mica-link" onClick={() => handleOpenBooking(`Consulta sobre ${brick.title}`)}>
-                    Agendar consulta →
-                  </button>
-                </div>
+                <div className="wp-mica-ls-overlay"></div>
+                <button className="wp-service-pill" onClick={(e) => { e.stopPropagation(); handleOpenBooking(`Consulta ${brick.title}`); }}>
+                  {brick.title}
+                </button>
               </motion.div>
             ))}
           </div>

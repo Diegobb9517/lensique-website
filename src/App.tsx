@@ -224,6 +224,7 @@ function App() {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -322,6 +323,67 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Product Detail Modal */}
+      <AnimatePresence>
+        {selectedProductDetail && (
+          <motion.div
+            className="product-detail-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProductDetail(null)}
+          >
+            <motion.div
+              className="product-detail-modal"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="product-detail-close" onClick={() => setSelectedProductDetail(null)}><X size={20} /></button>
+
+              {/* Left: Image */}
+              <div className="product-detail-img-col">
+                <div className="product-detail-img-box">
+                  <img
+                    src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || heroImg}
+                    alt={selectedProductDetail.name}
+                    className="product-detail-img"
+                    onError={(e: any) => { e.target.onerror = null; e.target.src = heroImg; }}
+                  />
+                </div>
+              </div>
+
+              {/* Right: Info */}
+              <div className="product-detail-info-col">
+                <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
+                <h2 className="product-detail-name">{selectedProductDetail.model || selectedProductDetail.name}</h2>
+                <p className="product-detail-code">{selectedProductDetail.name}</p>
+                <p className="product-detail-desc">{selectedProductDetail.category || 'Armazón Premium'}</p>
+
+                <div className="product-detail-divider" />
+
+                <p className="product-detail-note">¿Te interesa este modelo? Agenda una cita con nosotros y te asesoramos en persona.</p>
+
+                <button
+                  className="product-detail-cta"
+                  onClick={() => { setSelectedProductDetail(null); handleOpenBooking(`${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`); }}
+                >
+                  Agendar cita ahora
+                </button>
+
+                <div className="product-detail-perks">
+                  <span>✓ Asesoría personalizada</span>
+                  <span>✓ Ajustes de por vida</span>
+                  <span>✓ Examen de vista incluido</span>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Full Catalog View */}
       <FullCatalog 
         isOpen={isCatalogOpen} 
@@ -564,7 +626,7 @@ function App() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}
+                onClick={() => setSelectedProductDetail(product)}
               >
                 <div className="wp-card-img-area">
                   <img 

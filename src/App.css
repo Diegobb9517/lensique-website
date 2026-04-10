@@ -2259,11 +2259,175 @@
   transform: scale(1.05);
 }
 
+
+/* ========== Product Detail Modal (WP Style) ========== */
+.product-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(4px);
+}
+
+.product-detail-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+}
+
+.product-detail-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.product-detail-close:hover {
+  background: #f5f5f5;
+}
+
+.product-detail-img-col {
+  background: #f7f7f7;
+  border-radius: 20px 0 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  min-height: 500px;
+}
+
+.product-detail-img-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-detail-img {
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  transition: transform 0.4s;
+}
+.product-detail-img-col:hover .product-detail-img {
+  transform: scale(1.03);
+}
+
+.product-detail-info-col {
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-detail-category {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #999;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.product-detail-name {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #1d1d1f;
+  margin: 0 0 6px;
+  line-height: 1.1;
+}
+
+.product-detail-code {
+  font-size: 14px;
+  color: #aaa;
+  margin: 0 0 4px;
+}
+
+.product-detail-desc {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+}
+
+.product-detail-divider {
+  height: 1px;
+  background: #eee;
+  margin: 28px 0;
+}
+
+.product-detail-note {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.product-detail-cta {
+  background: #1d1d1f;
+  color: #fff;
+  border: none;
+  border-radius: 980px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s, transform 0.2s;
+  letter-spacing: 0.3px;
+}
+.product-detail-cta:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.product-detail-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+.product-detail-perks span {
+  font-size: 13px;
+  color: #777;
+}
+
 @media (max-width: 768px) {
-  .wp-micas-lifestyle-grid {
-    padding: 0 5% 30px;
+  .product-detail-modal {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    border-radius: 16px;
   }
-  .wp-micas-lifestyle-section {
-    padding: 60px 0;
+  .product-detail-img-col {
+    border-radius: 16px 16px 0 0;
+    min-height: 260px;
+    padding: 24px;
+  }
+  .product-detail-info-col {
+    padding: 28px 24px;
+  }
+  .product-detail-name {
+    font-size: 28px;
   }
 }

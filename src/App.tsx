@@ -316,6 +316,14 @@ function App() {
     }
   };
 
+  const servicesSliderRef = useRef<HTMLDivElement>(null);
+  const scrollServicios = (direction: 'left' | 'right') => {
+    if (servicesSliderRef.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      servicesSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const timeSlots = [
     '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
     '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM'
@@ -652,8 +660,12 @@ function App() {
         <section id="servicios" className="wp-services-section">
           <div className="wp-section-header">
             <h2 className="wp-section-title">Nuestros servicios visuales.</h2>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollServicios('left')}><ChevronLeft size={24} /></button>
+              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollServicios('right')}><ChevronRight size={24} /></button>
+            </div>
           </div>
-          <div className="wp-services-grid">
+          <div className="wp-services-grid" ref={servicesSliderRef}>
             {[
               { id: 's1', title: 'Examen de la vista', img: cv7600Img, action: () => handleOpenBooking('Examen de la Vista') },
               { id: 's2', title: 'Consulta Médica', img: clinicRoomImg, action: () => handleOpenBooking('Consulta Oftalmológica') },

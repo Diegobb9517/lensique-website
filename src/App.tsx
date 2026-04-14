@@ -2,12 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
-  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag 
+  Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
+  Maximize, Camera, Trash2, Sliders
 } from 'lucide-react';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import cv7600Img from './assets/cv-7600.jpg';
 import clinicRoomImg from './assets/DSC09650.jpg';
+import editorialImg1 from './assets/DSC09657.jpg';
+import editorialSol from './assets/editorial_sol.jpg';
+import editorialSol2 from './assets/editorial_sol2.jpg';
+import editorialArmazon from './assets/editorial_armazon.jpg';
 import storeInteriorImg from './assets/DSC09639.jpg';
 import micasImg from './assets/DSC09628.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
@@ -19,6 +24,7 @@ import lsFlattop from './assets/lifestyle_flattop.png';
 import lsInvisible from './assets/lifestyle_invisible.png';
 import lsCustom from './assets/lifestyle_custom.png';
 import lsAntireflective from './assets/lifestyle_antireflective.png';
+import arnette4373 from './assets/arnette_0AN4373.png';
 import './App.css';
 
 const API_BASE = 'https://lensique-pos.onrender.com';
@@ -36,10 +42,35 @@ const resolveImageUrl = (url: string, fallback: string | undefined) => {
   return `${API_BASE}${cleanUrl}`;
 };
 
+const safeJsonParse = (str: any, fallback: any = []) => {
+  if (!str) return fallback;
+  if (typeof str !== 'string') return Array.isArray(str) ? str : fallback;
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.warn('JSON Parse Error:', e, 'on string:', str);
+    return fallback;
+  }
+};
+
 // Catalog will be fetched from API
 
 
-function FullCatalog({ isOpen, onClose, onAgendar, catalogData, initialFilter = 'Todas' }: { isOpen: boolean, onClose: () => void, onAgendar: (model: string) => void, catalogData: any[], initialFilter?: string }) {
+function FullCatalog({ 
+  isOpen, 
+  onClose, 
+  onViewProduct, 
+  onTryOn,
+  catalogData, 
+  initialFilter = 'Todas' 
+}: { 
+  isOpen: boolean, 
+  onClose: () => void, 
+  onViewProduct: (product: any) => void, 
+  onTryOn: (product: any) => void,
+  catalogData: any[], 
+  initialFilter?: string 
+}) {
 
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,11 +96,21 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData, initialFilter = 
     image: resolveImageUrl(p.image_url, p.image),
     model: p.sku 
   })).filter(p => {
-    const matchesFilter = filter === 'Todas' || (p.category || '').toLowerCase().includes(filter.toLowerCase());
-    const matchesSearch = (p.sku || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (p.name || '').toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesBrand = (p.brand || 'Varios') === selectedBrand;
-    return matchesFilter && matchesSearch && matchesBrand;
+    const searchLower = searchQuery.toLowerCase();
+    const nameLower = (p.name || '').toLowerCase();
+    const brandLower = (p.brand || '').toLowerCase();
+    const modelLower = (p.model || '').toLowerCase();
+    
+    const matchesSearch = searchQuery === '' || 
+                         nameLower.includes(searchLower) || 
+                         brandLower.includes(searchLower) ||
+                         modelLower.includes(searchLower);
+
+    // If searching, we relax the brand/category requirement unless they specifically filter
+    const matchesBrand = searchQuery !== '' || selectedBrand === 'Todas' || (p.brand || 'Varios') === selectedBrand;
+    const matchesCategory = searchQuery !== '' || filter === 'Todas' || (p.category || '').toLowerCase().includes(filter.toLowerCase());
+    
+    return matchesSearch && matchesBrand && matchesCategory;
   });
 
 
@@ -83,56 +124,74 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData, initialFilter = 
           className="full-catalog-view"
         >
           <div className="catalog-header">
-            <button className="catalog-back" onClick={onClose}>
-              <ChevronLeft size={24} /> Volver
-            </button>
-            <div className="catalog-brand-title">
-              <h2>{selectedBrand}</h2>
-              <span>Explora la colección completa</span>
+            <div className="catalog-header-left">
+              <button className="catalog-back" onClick={onClose}>
+                <ChevronLeft size={20} /> Volver
+              </button>
             </div>
-            <div className="catalog-search">
-              <Search size={18} className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Buscar modelo o código..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            
+            <div className="catalog-brand-title">
+              <span className="catalog-brand-eyebrow">Catálogo Exclusivo</span>
+              <h2>{selectedBrand}</h2>
+              <div className="catalog-brand-divider"></div>
+            </div>
+
+            <div className="catalog-header-right">
+              <div className="catalog-search">
+                <Search size={16} className="search-icon" />
+                <input 
+                  type="text" 
+                  placeholder="Buscar modelo..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
           <div className="catalog-content">
-            <div className="catalog-sidebar">
-              <h3>Marca</h3>
-              <div className="filter-list" style={{ marginBottom: '30px' }}>
-                {availableBrands.map(b => (
-                  <button 
-                    key={b} 
-                    className={`filter-btn ${selectedBrand === b ? 'active' : ''}`}
-                    onClick={() => setSelectedBrand(b)}
-                  >
-                    {b}
-                  </button>
-                ))}
-              </div>
+            <div className="catalog-sidebar-v2">
+              <section className="catalog-sidebar-section">
+                <h3 className="catalog-sidebar-label">Marca</h3>
+                <div className="catalog-sidebar-links">
+                  {availableBrands.map(b => (
+                    <button 
+                      key={b} 
+                      className={`catalog-sidebar-link ${selectedBrand === b ? 'active' : ''}`}
+                      onClick={() => setSelectedBrand(b)}
+                    >
+                      {b}
+                      {selectedBrand === b && <motion.div layoutId="activeDot" className="active-dot" />}
+                    </button>
+                  ))}
+                </div>
+              </section>
 
-              <h3>Categoría</h3>
-              <div className="filter-list">
-                {['Todas', 'Sol', 'Vista', 'Lentes de Contacto'].map(f => (
-                  <button 
-                    key={f} 
-                    className={`filter-btn ${filter === f ? 'active' : ''}`}
-                    onClick={() => setFilter(f)}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-              <div className="sidebar-promo">
-                <h4>Agendar Examen</h4>
-                <p>¿No conoces tu graduación? Nosotros te ayudamos.</p>
-                <button className="btn btn-outline small" onClick={() => { onClose(); onAgendar(''); }}>
-                  Agendar Cita
+              <section className="catalog-sidebar-section">
+                <h3 className="catalog-sidebar-label">Categoría</h3>
+                <div className="catalog-sidebar-links">
+                  {['Todas', 'Sol', 'Vista', 'Lentes de Contacto'].map(f => (
+                    <button 
+                      key={f} 
+                      className={`catalog-sidebar-link ${filter === f ? 'active' : ''}`}
+                      onClick={() => setFilter(f)}
+                    >
+                      {f}
+                      {filter === f && <motion.div layoutId="activeDotCat" className="active-dot" />}
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <div className="catalog-sidebar-promo">
+                <div className="promo-tag">Servicio</div>
+                <h4>Examen de vista</h4>
+                <p>Agenda una consulta profesional en Guadalajara.</p>
+                <button 
+                  className="promo-btn" 
+                  onClick={() => { onClose(); onViewProduct({ name: 'Examen de la Vista', category: 'Servicio' }); }}
+                >
+                  Agendar ahora
                 </button>
               </div>
             </div>
@@ -142,30 +201,48 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData, initialFilter = 
                 {filteredProducts.map(product => (
                   <motion.div 
                     layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     key={product.id}
-                    className="product-card"
+                    className="product-card-editorial"
                   >
-                    <div className="product-img-box">
+                    <div className="product-img-area">
                       <img 
                         src={product.image} 
                         alt={product.name} 
+                        className="product-main-img"
                         onError={(e: any) => {
                           e.target.onerror = null;
-                          e.target.src = 'https://placehold.co/400x400?text=Sin+Imagen';
+                          e.target.src = 'https://placehold.co/600x400?text=Lensique+Eyewear';
                         }}
                       />
-                      <div className="product-overlay">
-                        <button className="btn btn-primary small" onClick={() => onAgendar(`${product.brand} ${product.model}`)}>
-                          Agendar
+                      
+                      <div className="product-card-btns">
+                        <button className="card-icon-btn heart" aria-label="Favorito">
+                          <Heart size={18} />
+                        </button>
+                        <button 
+                          className="card-try-on-btn" 
+                          onClick={(e) => { e.stopPropagation(); onTryOn(product); }}
+                        >
+                          <Maximize size={16} /> Try on
                         </button>
                       </div>
                     </div>
-                    <div className="product-info">
-                      <span className="product-tag">{product.category}</span>
-                      <h3>{product.name}</h3>
-                      <p className="product-code">{product.model}</p>
+
+                    <div className="product-info-editorial">
+                      <div className="product-name-row">
+                        <h3 className="product-name-serif">{product.name}</h3>
+                        <span className="product-price-label">$1,200</span>
+                      </div>
+                      <p className="product-brand-sub">{product.brand || 'Colección Lensique'}</p>
+                      
+                      <button 
+                        className="product-main-view-btn"
+                        onClick={() => onViewProduct(product)}
+                      >
+                        Ver detalle
+                      </button>
                     </div>
                   </motion.div>
                 ))}
@@ -179,6 +256,154 @@ function FullCatalog({ isOpen, onClose, onAgendar, catalogData, initialFilter = 
           </div>
         </motion.div>
       )}
+    </AnimatePresence>
+  );
+}
+
+function VirtualTryOn({ 
+  isOpen, 
+  onClose, 
+  product 
+}: { 
+  isOpen: boolean, 
+  onClose: () => void, 
+  product: any 
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [scale, setScale] = useState(1.0);
+  const [positionX, setPositionX] = useState(0);
+  const [positionY, setPositionY] = useState(0);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      startCamera();
+    } else {
+      stopCamera();
+    }
+    return () => stopCamera();
+  }, [isOpen]);
+
+  const startCamera = async () => {
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } } 
+      });
+      setStream(s);
+      if (videoRef.current) {
+        videoRef.current.srcObject = s;
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("No se pudo acceder a la cámara. Por favor permite los permisos.");
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div 
+        className="vto-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <div className="vto-container">
+          <div className="vto-header">
+            <h3>Prueba Virtual: {product?.name}</h3>
+            <button className="vto-close" onClick={onClose}><X size={24} /></button>
+          </div>
+
+          <div className="vto-viewport">
+            <video 
+              ref={videoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              className="vto-video"
+            />
+            
+            {/* The Glasses Overlay */}
+            <motion.div 
+              drag
+              dragMomentum={false}
+              className="vto-glasses-box"
+              style={{ 
+                x: positionX, 
+                y: positionY, 
+                scale: scale,
+                cursor: 'grab' 
+              }}
+            >
+              <img 
+                src={product?.image} 
+                alt="Try on glasses" 
+                className="vto-glasses-img"
+              />
+            </motion.div>
+
+            <div className="vto-hint">
+              Arrastra los lentes para ajustarlos a tu rostro
+            </div>
+          </div>
+
+          <div className="vto-controls">
+            <div className="control-group">
+              <label><Maximize size={16} /> Tamaño</label>
+              <input 
+                type="range" 
+                min="0.5" 
+                max="2.0" 
+                step="0.01" 
+                value={scale} 
+                onChange={(e) => setScale(parseFloat(e.target.value))} 
+              />
+            </div>
+            
+            <div className="control-group-grid">
+              <div className="control-group">
+                <label><Sliders size={16} /> Vertical</label>
+                <input 
+                  type="range" 
+                  min="-200" 
+                  max="200" 
+                  step="1" 
+                  value={positionY} 
+                  onChange={(e) => setPositionY(parseInt(e.target.value))} 
+                />
+              </div>
+              <div className="control-group">
+                <label><Sliders size={16} /> Horizontal</label>
+                <input 
+                  type="range" 
+                  min="-200" 
+                  max="200" 
+                  step="1" 
+                  value={positionX} 
+                  onChange={(e) => setPositionX(parseInt(e.target.value))} 
+                />
+              </div>
+            </div>
+
+            <div className="vto-actions">
+              <button className="btn btn-outline" onClick={() => { setScale(1.0); setPositionX(0); setPositionY(0); }}>
+                Resetear
+              </button>
+              <button className="btn btn-primary" onClick={onClose}>
+                Me encantan
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </AnimatePresence>
   );
 }
@@ -211,9 +436,9 @@ function App() {
     ]),
     featured_products: JSON.stringify([
       { id: 1, name: 'AN4347U', brand: 'Arnette', model: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg' },
+      { id: 5, name: 'AN4373', brand: 'Arnette', model: 'Negro Mate', category: 'Lente de Sol', image: arnette4373 },
       { id: 2, name: 'AN6136', brand: 'Arnette', model: 'Maybe Mae', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN6136__760.jpg' },
       { id: 3, name: 'AN7241U', brand: 'Arnette', model: 'Baker', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7241U__2900.jpg' },
-      { id: 4, name: 'AN7246U', brand: 'Arnette', model: 'Laflor', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7246U__2758.jpg' }
     ]),
     featured_contact_lenses: JSON.stringify([]),
     full_catalog: JSON.stringify([])
@@ -222,6 +447,8 @@ function App() {
   
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [isTryOnOpen, setIsTryOnOpen] = useState(false);
+  const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
@@ -249,7 +476,24 @@ function App() {
         const res = await fetch(`${API_BASE}/api/website/content`, { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
-          setSettings((prev: any) => ({ ...prev, ...data }));
+          setSettings((prev: any) => {
+            const apiFeatured = safeJsonParse(data.featured_products);
+            const localFeatured = safeJsonParse(prev.featured_products);
+            
+            // Merge: Keep local ones if they don't exist in API by ID or Name
+            const mergedFeatured = [...apiFeatured];
+            localFeatured.forEach((lp: any) => {
+              if (!apiFeatured.find((ap: any) => ap.id === lp.id || ap.name === lp.name)) {
+                mergedFeatured.push(lp);
+              }
+            });
+
+            return { 
+              ...prev, 
+              ...data, 
+              featured_products: JSON.stringify(mergedFeatured) 
+            };
+          });
         }
       } catch (err) {
         console.warn('API fallback:', err);
@@ -261,6 +505,20 @@ function App() {
     fetchContent();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // UseEffect for body scroll lock when any overlay is open
+  useEffect(() => {
+    const isAnyOverlayOpen = isBookingOpen || isCatalogOpen || selectedProductDetail !== null || isMobileMenuOpen || isTryOnOpen;
+    if (isAnyOverlayOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    
+    return () => {
+      document.body.classList.remove('no-scroll');
+    };
+  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, isMobileMenuOpen, isTryOnOpen]);
 
   // Calendar Logic
   const getDaysInMonth = (date: Date) => {
@@ -396,12 +654,21 @@ function App() {
       <FullCatalog 
         isOpen={isCatalogOpen} 
         onClose={() => setIsCatalogOpen(false)} 
-        catalogData={settings.full_catalog_data || []}
+        catalogData={safeJsonParse(settings.full_catalog_data)}
         initialFilter={catalogInitialFilter}
-        onAgendar={(prod) => {
-          setIsCatalogOpen(false);
-          handleOpenBooking(prod);
-        }} 
+        onViewProduct={(prod) => {
+          setSelectedProductDetail(prod);
+        }}
+        onTryOn={(prod) => {
+          setTryOnProduct(prod);
+          setIsTryOnOpen(true);
+        }}
+      />
+
+      <VirtualTryOn 
+        isOpen={isTryOnOpen}
+        onClose={() => setIsTryOnOpen(false)}
+        product={tryOnProduct}
       />
 
 
@@ -516,7 +783,7 @@ function App() {
             </div>
 
             <div className="nav-links d-none-mobile">
-              {JSON.parse(settings.nav_links || '[]').map((link: any, i: number) => (
+              {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
                 <a 
                   key={`nav-${i}-${link.name}`} 
                   href={link.href} 
@@ -560,7 +827,7 @@ function App() {
             exit={{ opacity: 0, y: -20 }}
             className="mobile-menu"
           >
-            {JSON.parse(settings.nav_links || '[]').map((link: any, i: number) => (
+            {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
               <a key={`mob-${i}-${link.name}`} href={link.href} className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>
                 {link.name}
               </a>
@@ -624,7 +891,7 @@ function App() {
           </div>
           
           <div className="wp-slider" ref={sliderRef}>
-            {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
+            {safeJsonParse(settings.featured_products)
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
               .map((product: any, idx: number) => (
               <motion.div 
@@ -654,6 +921,62 @@ function App() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </section>
+
+        {/* Editorial Cards Section - Warby Parker Style */}
+        <section className="editorial-cards-section">
+          <div className="editorial-cards-grid">
+            {/* Card izquierda - gafas de sol Positano */}
+            <motion.div
+              className="editorial-card editorial-card--tall"
+              style={{ backgroundImage: `url(${editorialSol})` }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0 }}
+              viewport={{ once: true }}
+              onClick={() => { setCatalogInitialFilter('Sol'); setIsCatalogOpen(true); }}
+            >
+              <div className="editorial-card-overlay" />
+              <div className="editorial-card-content">
+                <p className="editorial-card-headline">Ve a donde el verano te lleve.</p>
+                <button className="editorial-card-btn">Ver lentes de sol</button>
+              </div>
+            </motion.div>
+
+            {/* Card central - gafas bordeaux, offset hacia abajo */}
+            <motion.div
+              className="editorial-card editorial-card--offset"
+              style={{ backgroundImage: `url(${editorialSol2})` }}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              viewport={{ once: true }}
+              onClick={() => setIsBookingOpen(true)}
+            >
+              <div className="editorial-card-overlay" />
+              <div className="editorial-card-content">
+                <p className="editorial-card-headline">Estilo que define tu personalidad.</p>
+                <button className="editorial-card-btn" onClick={(e) => { e.stopPropagation(); setIsBookingOpen(true); }}>Agendar cita</button>
+              </div>
+            </motion.div>
+
+            {/* Card derecha - Calvin Klein premium */}
+            <motion.div
+              className="editorial-card editorial-card--tall"
+              style={{ backgroundImage: `url(${editorialArmazon})` }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              viewport={{ once: true }}
+              onClick={() => { setCatalogInitialFilter('Vista'); setIsCatalogOpen(true); }}
+            >
+              <div className="editorial-card-overlay" />
+              <div className="editorial-card-content">
+                <p className="editorial-card-headline">Armazón con elegancia arquitectónica.</p>
+                <button className="editorial-card-btn">Explorar armazón vista</button>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -689,6 +1012,63 @@ function App() {
           </div>
         </section>
 
+        {/* Typographic Statement + Lifestyle Banner */}
+        <section className="statement-banner-section">
+          {/* Part 1: Typographic Statement */}
+          <div className="statement-block">
+            <span className="statement-eyebrow">Todo lo que tus ojos necesitan</span>
+            <p className="statement-headline">
+              Agenda un{' '}
+              <button className="statement-link" onClick={() => handleOpenBooking('Examen de la Vista')}>
+                examen de vista
+              </button>
+              , pruébate{' '}
+              <button className="statement-link" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
+                armazones
+              </button>
+              {' '}y compra{' '}
+              <button className="statement-link" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
+                lentes de contacto
+              </button>
+              {'\u2014'}todo en tu óptica de confianza.
+            </p>
+          </div>
+
+          {/* Part 2: Lifestyle Banner */}
+          <motion.div
+            className="lifestyle-banner"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="lifestyle-banner-text">
+              <h2 className="lifestyle-banner-title">Compra junto a quien más quieres.</h2>
+              <p className="lifestyle-banner-desc">
+                Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
+              </p>
+              <div className="lifestyle-banner-btns">
+                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { setCatalogInitialFilter('Vista'); setIsCatalogOpen(true); }}>
+                  Ver armazones
+                </button>
+                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { setCatalogInitialFilter('Sol'); setIsCatalogOpen(true); }}>
+                  Ver lentes de sol
+                </button>
+              </div>
+              <button className="lifestyle-banner-link" onClick={() => setIsBookingOpen(true)}>
+                Agenda tu cita &rsaquo;
+              </button>
+            </div>
+            <div className="lifestyle-banner-img-col">
+              <img
+                src={storeInteriorImg}
+                alt="Óptica Lensique - Atención personalizada"
+                className="lifestyle-banner-img"
+              />
+            </div>
+          </motion.div>
+        </section>
+
         <section id="micas" className="wp-micas-lifestyle-section">
           <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
             <h2 className="wp-section-title">Tecnologías de visión.</h2>
@@ -699,7 +1079,7 @@ function App() {
           </div>
           
           <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
-            {JSON.parse(settings.category_bricks || '[]').map((brick: any, idx: number) => (
+            {safeJsonParse(settings.category_bricks).map((brick: any, idx: number) => (
               <motion.div 
                 key={`mica-ls-${idx}-${brick.id}`}
                 className="wp-mica-lifestyle-card"
@@ -727,7 +1107,7 @@ function App() {
           </div>
 
           <div className="hero-ad-grid">
-            {(Array.isArray(settings.featured_products) ? settings.featured_products : JSON.parse(settings.featured_products || '[]'))
+            {safeJsonParse(settings.featured_products)
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
               .slice(0, 4) // Show the top 4 as high-impact ads
               .map((product: any, idx: number) => {
@@ -780,7 +1160,7 @@ function App() {
           </div>
         </section>
 
-        {settings.featured_contact_lenses && (Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses.length > 0 : JSON.parse(settings.featured_contact_lenses || '[]').length > 0) && (
+        {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
           <section id="lentes-contacto" className="wp-carousel-section">
             <div className="wp-section-header">
               <h2 className="wp-section-title">Claridad sin límites.</h2>
@@ -794,7 +1174,7 @@ function App() {
             </div>
             
             <div className="wp-slider" ref={contactSliderRef}>
-              {(Array.isArray(settings.featured_contact_lenses) ? settings.featured_contact_lenses : JSON.parse(settings.featured_contact_lenses || '[]')).map((product: any, idx: number) => (
+              {safeJsonParse(settings.featured_contact_lenses).map((product: any, idx: number) => (
                 <motion.div 
                   key={`lc-fix-${idx}-${product.id}`}
                   className="wp-product-card"

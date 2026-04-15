@@ -441,7 +441,14 @@ function App() {
       { id: 3, name: 'AN7241U', brand: 'Arnette', model: 'Baker', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7241U__2900.jpg' },
     ]),
     featured_contact_lenses: JSON.stringify([]),
-    full_catalog: JSON.stringify([])
+    full_catalog: JSON.stringify([
+      { id: 'f1', name: 'Arnette Dean', brand: 'Arnette', price: 2100, image: 'arnette_dean.jpg', sku: 'AN4272' },
+      { id: 'f2', name: 'Ray-Ban Aviator', brand: 'Ray-Ban', price: 3500, image: 'rb_aviator.jpg', sku: 'RB3025' }
+    ]),
+    full_catalog_data: [
+      { id: 'f1', name: 'Arnette Dean', brand: 'Arnette', price: 2100, image: 'arnette_dean.jpg', sku: 'AN4272' },
+      { id: 'f2', name: 'Ray-Ban Aviator', brand: 'Ray-Ban', price: 3500, image: 'rb_aviator.jpg', sku: 'RB3025' }
+    ]
   });
 
   
@@ -470,7 +477,10 @@ function App() {
     
     const fetchContent = async () => {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s for live API
+      const timeoutId = setTimeout(() => {
+        console.warn('API fetch timed out after 60s - checking if server is waking up...');
+        controller.abort();
+      }, 60000); 
 
       try {
         const res = await fetch(`${API_BASE}/api/website/content`, { signal: controller.signal });
@@ -495,8 +505,12 @@ function App() {
             };
           });
         }
-      } catch (err) {
-        console.warn('API fallback:', err);
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          console.error('Fetch aborted: The server took too long to respond (Render sleep?).');
+        } else {
+          console.error('Error fetching website content:', err);
+        }
       } finally {
         clearTimeout(timeoutId);
       }

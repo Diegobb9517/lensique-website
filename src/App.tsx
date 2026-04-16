@@ -806,6 +806,9 @@ function App() {
                     if (link.name === 'Catálogo') {
                       e.preventDefault();
                       setIsCatalogOpen(true);
+                    } else if (link.name === 'Examen') {
+                      e.preventDefault();
+                      handleOpenBooking('Examen de la Vista');
                     }
                   }}
                 >
@@ -842,7 +845,21 @@ function App() {
             className="mobile-menu"
           >
             {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
-              <a key={`mob-${i}-${link.name}`} href={link.href} className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>
+              <a 
+                key={`mob-${i}-${link.name}`} 
+                href={link.href} 
+                className="mobile-link" 
+                onClick={(e) => {
+                  if (link.name === 'Catálogo') {
+                    e.preventDefault();
+                    setIsCatalogOpen(true);
+                  } else if (link.name === 'Examen') {
+                    e.preventDefault();
+                    handleOpenBooking('Examen de la Vista');
+                  }
+                  setIsMobileMenuOpen(false);
+                }}
+              >
                 {link.name}
               </a>
             ))}

@@ -27,7 +27,7 @@ import lsAntireflective from './assets/lifestyle_antireflective.png';
 import arnette4373 from './assets/arnette_0AN4373.png';
 import './App.css';
 
-const API_BASE = 'https://lensique-pos.onrender.com';
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 
 const resolveImageUrl = (url: string, fallback: string | undefined) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
@@ -434,21 +434,10 @@ function App() {
       { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: lsCustom },
       { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.', image: lsAntireflective }
     ]),
-    featured_products: JSON.stringify([
-      { id: 1, name: 'AN4347U', brand: 'Arnette', model: 'Turbine', category: 'Lente de Sol', image: 'https://visual-click.com/cdn/shop/files/0AN4347U__27581W.jpg' },
-      { id: 5, name: 'AN4373', brand: 'Arnette', model: 'Negro Mate', category: 'Lente de Sol', image: arnette4373 },
-      { id: 2, name: 'AN6136', brand: 'Arnette', model: 'Maybe Mae', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN6136__760.jpg' },
-      { id: 3, name: 'AN7241U', brand: 'Arnette', model: 'Baker', category: 'Armazón Vista', image: 'https://visual-click.com/cdn/shop/files/0AN7241U__2900.jpg' },
-    ]),
+    featured_products: JSON.stringify([]),
     featured_contact_lenses: JSON.stringify([]),
-    full_catalog: JSON.stringify([
-      { id: 'f1', name: 'Arnette Dean', brand: 'Arnette', price: 2100, image: 'arnette_dean.jpg', sku: 'AN4272' },
-      { id: 'f2', name: 'Ray-Ban Aviator', brand: 'Ray-Ban', price: 3500, image: 'rb_aviator.jpg', sku: 'RB3025' }
-    ]),
-    full_catalog_data: [
-      { id: 'f1', name: 'Arnette Dean', brand: 'Arnette', price: 2100, image: 'arnette_dean.jpg', sku: 'AN4272' },
-      { id: 'f2', name: 'Ray-Ban Aviator', brand: 'Ray-Ban', price: 3500, image: 'rb_aviator.jpg', sku: 'RB3025' }
-    ]
+    full_catalog: JSON.stringify([]),
+    full_catalog_data: []
   });
 
   
@@ -487,21 +476,15 @@ function App() {
         if (res.ok) {
           const data = await res.json();
           setSettings((prev: any) => {
-            const apiFeatured = safeJsonParse(data.featured_products);
-            const localFeatured = safeJsonParse(prev.featured_products);
+            // Option B: No merge. API is the source of truth.
+            const featuredProducts = safeJsonParse(data.featured_products);
+            const featuredContact = safeJsonParse(data.featured_contact_lenses);
             
-            // Merge: Keep local ones if they don't exist in API by ID or Name
-            const mergedFeatured = [...apiFeatured];
-            localFeatured.forEach((lp: any) => {
-              if (!apiFeatured.find((ap: any) => ap.id === lp.id || ap.name === lp.name)) {
-                mergedFeatured.push(lp);
-              }
-            });
-
             return { 
               ...prev, 
               ...data, 
-              featured_products: JSON.stringify(mergedFeatured) 
+              featured_products: JSON.stringify(featuredProducts),
+              featured_contact_lenses: JSON.stringify(featuredContact)
             };
           });
         }

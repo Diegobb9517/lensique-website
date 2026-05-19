@@ -5,6 +5,7 @@ import {
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
   Maximize, Camera, Trash2, Sliders
 } from 'lucide-react';
+import ProductCarousel from './components/ProductCarousel';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import cv7600Img from './assets/cv-7600.jpg';
@@ -150,106 +151,111 @@ function FullCatalog({
           </div>
 
           <div className="catalog-content">
-            <div className="catalog-sidebar-v2">
-              <section className="catalog-sidebar-section">
-                <h3 className="catalog-sidebar-label">Marca</h3>
-                <div className="catalog-sidebar-links">
-                  {availableBrands.map(b => (
-                    <button 
-                      key={b} 
-                      className={`catalog-sidebar-link ${selectedBrand === b ? 'active' : ''}`}
-                      onClick={() => setSelectedBrand(b)}
-                    >
-                      {b}
-                      {selectedBrand === b && <motion.div layoutId="activeDot" className="active-dot" />}
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <section className="catalog-sidebar-section">
-                <h3 className="catalog-sidebar-label">Categoría</h3>
-                <div className="catalog-sidebar-links">
+            <div className="catalog-filters-top">
+              <div className="filter-group">
+                <span className="filter-label">Categoría:</span>
+                <div className="filter-pills">
                   {['Todas', 'Sol', 'Vista', 'Lentes de Contacto'].map(f => (
                     <button 
                       key={f} 
-                      className={`catalog-sidebar-link ${filter === f ? 'active' : ''}`}
+                      className={`filter-pill ${filter === f ? 'active' : ''}`}
                       onClick={() => setFilter(f)}
                     >
                       {f}
-                      {filter === f && <motion.div layoutId="activeDotCat" className="active-dot" />}
                     </button>
                   ))}
                 </div>
-              </section>
-
-              <div className="catalog-sidebar-promo">
-                <div className="promo-tag">Servicio</div>
-                <h4>Examen de vista</h4>
-                <p>Agenda una consulta profesional en Guadalajara.</p>
-                <button 
-                  className="promo-btn" 
-                  onClick={() => { onClose(); onViewProduct({ name: 'Examen de la Vista', category: 'Servicio' }); }}
-                >
-                  Agendar ahora
-                </button>
+              </div>
+              <div className="filter-group">
+                <span className="filter-label">Marca:</span>
+                <div className="filter-pills">
+                  <button 
+                    className={`filter-pill ${selectedBrand === 'Todas' ? 'active' : ''}`}
+                    onClick={() => setSelectedBrand('Todas')}
+                  >
+                    Todas
+                  </button>
+                  {availableBrands.map(b => (
+                    <button 
+                      key={b} 
+                      className={`filter-pill ${selectedBrand === b ? 'active' : ''}`}
+                      onClick={() => setSelectedBrand(b)}
+                    >
+                      {b}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div className="catalog-products">
-              <div className="products-grid">
-                {filteredProducts.map(product => (
-                  <motion.div 
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    key={product.id}
-                    className="product-card-editorial"
-                  >
-                    <div className="product-img-area">
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        className="product-main-img"
-                        onError={(e: any) => {
-                          e.target.onerror = null;
-                          e.target.src = 'https://placehold.co/600x400?text=Lensique+Eyewear';
-                        }}
-                      />
-                      
-                      <div className="product-card-btns">
-                        <button className="card-icon-btn heart" aria-label="Favorito">
-                          <Heart size={18} />
-                        </button>
-                        <button 
-                          className="card-try-on-btn" 
-                          onClick={(e) => { e.stopPropagation(); onTryOn(product); }}
-                        >
-                          <Maximize size={16} /> Try on
-                        </button>
+              {(catalogData && catalogData.length > 0) ? (
+                <div className="products-grid">
+                  {filteredProducts.map(product => (
+                    <motion.div 
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      key={product.id}
+                      className="product-card-editorial hover-scale"
+                    >
+                      <div className="product-img-area">
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="product-main-img smooth-img"
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src = heroImg; // Premium fallback
+                          }}
+                        />
+                        
+                        <div className="product-card-btns">
+                          <button className="card-icon-btn heart" aria-label="Favorito">
+                            <Heart size={18} />
+                          </button>
+                          <button 
+                            className="card-try-on-btn" 
+                            onClick={(e) => { e.stopPropagation(); onTryOn(product); }}
+                          >
+                            <Maximize size={16} /> Try on
+                          </button>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="product-info-editorial">
-                      <div className="product-name-row">
-                        <h3 className="product-name-serif">{product.name}</h3>
-                        <span className="product-price-label">$1,200</span>
+                      <div className="product-info-editorial">
+                        <div className="product-name-row">
+                          <h3 className="product-name-serif">{product.name}</h3>
+                          <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+                        </div>
+                        <p className="product-brand-sub">{product.brand || 'Colección Lensique'}</p>
+                        
+                        <button 
+                          className="product-main-view-btn"
+                          onClick={() => onViewProduct(product)}
+                        >
+                          Ver detalle
+                        </button>
                       </div>
-                      <p className="product-brand-sub">{product.brand || 'Colección Lensique'}</p>
-                      
-                      <button 
-                        className="product-main-view-btn"
-                        onClick={() => onViewProduct(product)}
-                      >
-                        Ver detalle
-                      </button>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="products-grid">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                    <div key={i} className="product-card-editorial skeleton-card">
+                      <div className="skeleton-img"></div>
+                      <div className="skeleton-text skeleton-title"></div>
+                      <div className="skeleton-text skeleton-sub"></div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-              {filteredProducts.length === 0 && (
+                  ))}
+                </div>
+              )}
+              {(catalogData && catalogData.length > 0 && filteredProducts.length === 0) && (
                 <div className="no-results">
-                  <p>No encontramos modelos que coincidan con tu búsqueda.</p>
+                  <div className="no-results-icon"><Search size={32} /></div>
+                  <h3>No encontramos modelos</h3>
+                  <p>Intenta con otra marca o categoría.</p>
                 </div>
               )}
             </div>
@@ -606,15 +612,25 @@ function App() {
             >
               <button className="product-detail-close" onClick={() => setSelectedProductDetail(null)}><X size={20} /></button>
 
-              {/* Left: Image */}
+              {/* Left: Image Carousel */}
               <div className="product-detail-img-col">
-                <div className="product-detail-img-box">
-                  <img
-                    src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || heroImg}
-                    alt={selectedProductDetail.name}
-                    className="product-detail-img"
-                    onError={(e: any) => { e.target.onerror = null; e.target.src = heroImg; }}
-                  />
+                <div className="product-detail-img-box w-full max-w-full">
+                  {(selectedProductDetail.images && selectedProductDetail.images.length > 0) ? (
+                    <ProductCarousel 
+                      images={selectedProductDetail.images.map((img: any) => ({
+                        id: img.id,
+                        image_url: resolveImageUrl(img.image_url, undefined)
+                      }))} 
+                      alt={selectedProductDetail.name} 
+                    />
+                  ) : (
+                    <img
+                      src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || heroImg}
+                      alt={selectedProductDetail.name}
+                      className="product-detail-img"
+                      onError={(e: any) => { e.target.onerror = null; e.target.src = heroImg; }}
+                    />
+                  )}
                 </div>
               </div>
 

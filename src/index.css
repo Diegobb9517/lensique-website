@@ -11,8 +11,9 @@
   --border: rgba(0, 0, 0, 0.08);
   --glass: rgba(255, 255, 255, 0.8);
   
-  /* Font Family - Outfit for that modern look */
-  --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Font Family */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   
   /* Layout */
   --max-width: 1200px;
@@ -51,6 +52,7 @@ body {
 }
 
 h1, h2, h3, h4 {
+  font-family: var(--font-heading);
   font-weight: 600;
   letter-spacing: -0.015em;
 }

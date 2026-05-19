@@ -168,23 +168,16 @@ function FullCatalog({
               </div>
               <div className="filter-group">
                 <span className="filter-label">Marca:</span>
-                <div className="filter-pills">
-                  <button 
-                    className={`filter-pill ${selectedBrand === 'Todas' ? 'active' : ''}`}
-                    onClick={() => setSelectedBrand('Todas')}
-                  >
-                    Todas
-                  </button>
+                <select 
+                  className="brand-select"
+                  value={selectedBrand}
+                  onChange={(e) => setSelectedBrand(e.target.value)}
+                >
+                  <option value="Todas">Todas las marcas</option>
                   {availableBrands.map(b => (
-                    <button 
-                      key={b} 
-                      className={`filter-pill ${selectedBrand === b ? 'active' : ''}`}
-                      onClick={() => setSelectedBrand(b)}
-                    >
-                      {b}
-                    </button>
+                    <option key={b} value={b}>{b}</option>
                   ))}
-                </div>
+                </select>
               </div>
             </div>
 

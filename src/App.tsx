@@ -197,9 +197,10 @@ function FullCatalog({
                           src={product.image} 
                           alt={product.name} 
                           className="product-main-img smooth-img"
-                          onError={(e: any) => {
-                            e.target.onerror = null;
-                            e.target.src = heroImg; // Premium fallback
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src = heroImg; // Premium fallback
                           }}
                         />
                         

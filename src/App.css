@@ -611,8 +611,27 @@ body.no-scroll {
 
 .info-item {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   margin-bottom: 40px;
+}
+
+.info-item h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.info-item p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.location-info .section-title {
+  margin-bottom: 48px;
 }
 
 .info-icon {

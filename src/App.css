@@ -1017,8 +1017,12 @@ body.no-scroll {
 }
 
 .catalog-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   background: white;
-  padding: 28px 40px;
+  padding: 0 40px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1027,14 +1031,15 @@ body.no-scroll {
 
 .catalog-header {
   position: sticky;
-  top: 0;
+  top: 72px;
+  z-index: 10;
   background: white;
-  padding: 14px 40px;
+  padding: 0 40px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  z-index: 10;
 }
 
 .catalog-back {
@@ -1042,16 +1047,16 @@ body.no-scroll {
   border: none;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  color: var(--accent);
+  gap: 6px;
+  font-size: 14px;
+  color: #1d1d1f;
   cursor: pointer;
   font-weight: 500;
   transition: opacity 0.3s;
 }
 
 .catalog-back:hover {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .catalog-brand-title {
@@ -1059,9 +1064,9 @@ body.no-scroll {
 }
 
 .catalog-header-logo {
-  height: 56px;
+  height: 32px;
   width: auto;
-  max-width: 280px;
+  max-width: 220px;
   object-fit: contain;
   display: block;
   margin: 0 auto;

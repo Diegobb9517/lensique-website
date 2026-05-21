@@ -1963,15 +1963,7 @@ body.no-scroll {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.5s var(--smooth);
   border: 1px solid var(--border);
-  cursor: pointer;
-}
-
-.face-guide-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
-  border-color: var(--accent);
 }
 
 .face-guide-img-box {

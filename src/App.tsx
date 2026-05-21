@@ -1169,12 +1169,11 @@ function App() {
             {faceShapeGuide.map((guide, idx) => (
               <motion.div 
                 key={`face-guide-${idx}-${guide.id}`}
-                className="face-guide-card hover-scale"
+                className="face-guide-card"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                onClick={() => handleOpenBooking(`Consulta armazón ${guide.glassesShape}`)}
               >
                 <div className="face-guide-img-box">
                   <img src={guide.image} alt={guide.glassesShape} className="face-guide-img" />

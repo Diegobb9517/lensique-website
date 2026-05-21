@@ -113,7 +113,7 @@ function FullCatalog({
 
   const availableBrands = Array.from(new Set(
     (catalogData || [])
-      .filter(p => filter === 'Todas' || (p.category || '').toLowerCase().includes(filter.toLowerCase()))
+      .filter(p => filter === 'Todas' || (p.category || 'vista').toLowerCase().includes(filter.toLowerCase()))
       .map(p => p.brand || 'Varios')
   )).sort();
   
@@ -150,7 +150,7 @@ function FullCatalog({
 
     // If searching, we relax the brand/category requirement unless they specifically filter
     const matchesBrand = searchQuery !== '' || selectedBrand === 'Todas' || (p.brand || 'Varios') === selectedBrand;
-    const matchesCategory = searchQuery !== '' || filter === 'Todas' || (p.category || '').toLowerCase().includes(filter.toLowerCase());
+    const matchesCategory = searchQuery !== '' || filter === 'Todas' || (p.category || 'vista').toLowerCase().includes(filter.toLowerCase());
     
     return matchesSearch && matchesBrand && matchesCategory;
   });

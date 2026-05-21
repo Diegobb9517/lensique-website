@@ -111,21 +111,27 @@ function FullCatalog({
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const availableBrands = Array.from(new Set((catalogData || []).map(p => p.brand || 'Varios')));
-  const [selectedBrand, setSelectedBrand] = useState(availableBrands[0] || 'Arnette');
+  const availableBrands = Array.from(new Set(
+    (catalogData || [])
+      .filter(p => filter === 'Todas' || (p.category || '').toLowerCase().includes(filter.toLowerCase()))
+      .map(p => p.brand || 'Varios')
+  )).sort();
+  
+  const [selectedBrand, setSelectedBrand] = useState('Todas');
 
   useEffect(() => {
     if (isOpen) {
       setFilter(initialFilter);
+      setSelectedBrand('Todas');
     }
   }, [isOpen, initialFilter]);
 
   // Update selectedBrand if it becomes invalid (e.g. data changes)
   useEffect(() => {
-    if (availableBrands.length > 0 && !availableBrands.includes(selectedBrand)) {
-      setSelectedBrand(availableBrands[0]);
+    if (selectedBrand !== 'Todas' && availableBrands.length > 0 && !availableBrands.includes(selectedBrand)) {
+      setSelectedBrand('Todas');
     }
-  }, [availableBrands]);
+  }, [availableBrands, selectedBrand]);
 
   const filteredProducts = (catalogData || []).map(p => ({
     ...p,

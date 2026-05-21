@@ -1322,23 +1322,20 @@ body.no-scroll {
 
 /* --- Editorial Catalog Redesign (Warby Parker Style) --- */
 .product-card-editorial {
-  background: #f5f5f7; /* Gris más premium */
-  border-radius: 16px;
-  overflow: hidden;
+  background: transparent;
   display: flex;
   flex-direction: column;
   transition: all 0.4s var(--swift);
 }
 
 .product-img-area {
-  background: #e8e8ed; /* Fondo gris para resaltar el armazón que suele ser blanco/transparente */
+  background: #f8f8f8;
   aspect-ratio: 1/1;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: 12px;
-  margin: 12px;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -1364,8 +1361,7 @@ body.no-scroll {
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
   aspect-ratio: 1/1;
-  border-radius: 12px;
-  margin: 12px;
+  border-radius: 16px;
 }
 
 .skeleton-text {
@@ -1373,7 +1369,6 @@ body.no-scroll {
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
   border-radius: 4px;
-  margin: 0 20px;
 }
 
 .skeleton-title {
@@ -1440,7 +1435,7 @@ body.no-scroll {
 }
 
 .product-info-editorial {
-  padding: 12px 20px 20px;
+  padding: 16px 0 0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -1450,19 +1445,20 @@ body.no-scroll {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .product-name-serif {
   font-family: 'Georgia', serif;
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
   color: #1d1d1f;
   font-weight: 500;
 }
 
 .product-price-label {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
   color: #1d1d1f;
 }
 

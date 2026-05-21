@@ -273,7 +273,7 @@ function FullCatalog({
                           className="product-main-view-btn"
                           onClick={() => onViewProduct(product)}
                         >
-                          Ver detalle
+                          Seleccionar y comprar
                         </button>
                       </div>
                     </motion.div>

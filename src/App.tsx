@@ -1183,9 +1183,6 @@ function App() {
                   <span className="face-guide-tag">Ideal para: {guide.faceShape}</span>
                   <h3 className="face-guide-title">{guide.glassesShape}</h3>
                   <p className="face-guide-desc">{guide.description}</p>
-                  <button className="btn btn-outline" style={{ marginTop: 'auto', alignSelf: 'flex-start' }}>
-                    Agendar Cita
-                  </button>
                 </div>
               </motion.div>
             ))}

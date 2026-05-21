@@ -1072,6 +1072,16 @@ body.no-scroll {
   margin: 0 auto;
 }
 
+.catalog-wordmark {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: #1d1d1f;
+  text-transform: uppercase;
+  display: block;
+}
+
 .catalog-search {
   position: relative;
   width: 300px;

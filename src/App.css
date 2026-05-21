@@ -1052,7 +1052,7 @@ body.no-scroll {
 }
 
 .catalog-header-logo {
-  height: 24px;
+  height: 60px;
   width: auto;
   object-fit: contain;
   display: block;

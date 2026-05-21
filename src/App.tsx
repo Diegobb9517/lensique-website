@@ -113,7 +113,11 @@ function FullCatalog({
 
   const availableBrands = Array.from(new Set(
     (catalogData || [])
-      .filter(p => filter === 'Todas' || (p.category || 'vista').toLowerCase().includes(filter.toLowerCase()))
+      .filter(p => filter === 'Todas' || (
+        filter === 'Armazones' ? !(p.category || 'vista').toLowerCase().includes('contacto') :
+        filter === 'Lentes de Contacto' ? (p.category || 'vista').toLowerCase().includes('contacto') :
+        (p.category || 'vista').toLowerCase().includes(filter.toLowerCase())
+      ))
       .map(p => p.brand || 'Varios')
   )).sort();
   
@@ -150,7 +154,11 @@ function FullCatalog({
 
     // If searching, we relax the brand/category requirement unless they specifically filter
     const matchesBrand = searchQuery !== '' || selectedBrand === 'Todas' || (p.brand || 'Varios') === selectedBrand;
-    const matchesCategory = searchQuery !== '' || filter === 'Todas' || (p.category || 'vista').toLowerCase().includes(filter.toLowerCase());
+    const matchesCategory = searchQuery !== '' || filter === 'Todas' || (
+      filter === 'Armazones' ? !(p.category || 'vista').toLowerCase().includes('contacto') :
+      filter === 'Lentes de Contacto' ? (p.category || 'vista').toLowerCase().includes('contacto') :
+      (p.category || 'vista').toLowerCase().includes(filter.toLowerCase())
+    );
     
     return matchesSearch && matchesBrand && matchesCategory;
   });
@@ -196,7 +204,7 @@ function FullCatalog({
               <div className="filter-group">
                 <span className="filter-label">Categoría:</span>
                 <div className="filter-pills">
-                  {['Todas', 'Sol', 'Vista', 'Lentes de Contacto'].map(f => (
+                  {['Todas', 'Armazones', 'Lentes de Contacto'].map(f => (
                     <button 
                       key={f} 
                       className={`filter-pill ${filter === f ? 'active' : ''}`}
@@ -1008,7 +1016,7 @@ function App() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0 }}
               viewport={{ once: true }}
-              onClick={() => { setCatalogInitialFilter('Sol'); setIsCatalogOpen(true); }}
+              onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}
             >
               <div className="editorial-card-overlay" />
               <div className="editorial-card-content">
@@ -1042,7 +1050,7 @@ function App() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
               viewport={{ once: true }}
-              onClick={() => { setCatalogInitialFilter('Vista'); setIsCatalogOpen(true); }}
+              onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}
             >
               <div className="editorial-card-overlay" />
               <div className="editorial-card-content">
@@ -1067,7 +1075,7 @@ function App() {
               { id: 's2', title: 'Consulta Médica', img: clinicRoomImg, action: () => handleOpenBooking('Consulta Oftalmológica') },
               { id: 's3', title: 'Actualización de micas', img: micasImg, action: () => window.location.hash = 'micas' },
               { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
-              { id: 's5', title: 'Armazones', img: storeInteriorImg, action: () => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); } }
+              { id: 's5', title: 'Armazones', img: storeInteriorImg, action: () => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
             ].map((service) => (
               <motion.div 
                 key={service.id}
@@ -1121,10 +1129,10 @@ function App() {
                 Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
               </p>
               <div className="lifestyle-banner-btns">
-                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { setCatalogInitialFilter('Vista'); setIsCatalogOpen(true); }}>
+                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
                   Ver armazones
                 </button>
-                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { setCatalogInitialFilter('Sol'); setIsCatalogOpen(true); }}>
+                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
                   Ver lentes de sol
                 </button>
               </div>

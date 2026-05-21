@@ -251,12 +251,14 @@ function FullCatalog({
                           <button className="card-icon-btn heart" aria-label="Favorito">
                             <Heart size={18} />
                           </button>
-                          <button 
-                            className="card-try-on-btn" 
-                            onClick={(e) => { e.stopPropagation(); onTryOn(product); }}
-                          >
-                            <Maximize size={16} /> Try on
-                          </button>
+                          {!String(product.category || '').toLowerCase().includes('contacto') && (
+                            <button 
+                              className="card-try-on-btn" 
+                              onClick={(e) => { e.stopPropagation(); onTryOn(product); }}
+                            >
+                              <Maximize size={16} /> Try on
+                            </button>
+                          )}
                         </div>
                       </div>
 

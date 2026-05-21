@@ -1051,30 +1051,12 @@ body.no-scroll {
   text-align: center;
 }
 
-.catalog-brand-title h2 {
-  font-size: 28px;
-  margin: 0;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: #1d1d1f;
-}
-
-.catalog-brand-eyebrow {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #86868b;
-  font-weight: 600;
+.catalog-header-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
   display: block;
-  margin-bottom: 4px;
-}
-
-.catalog-brand-divider {
-  width: 40px;
-  height: 2px;
-  background: var(--accent);
-  margin: 12px auto 0;
-  border-radius: 2px;
+  margin: 0 auto;
 }
 
 .catalog-search {
@@ -1655,7 +1637,7 @@ body.no-scroll {
     width: 100%;
     max-width: 200px;
   }
-  .catalog-brand-title h2 { font-size: 20px; }
+
   .catalog-header {
     padding: 15px 20px;
     flex-wrap: wrap;

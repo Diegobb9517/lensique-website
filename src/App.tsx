@@ -173,9 +173,7 @@ function FullCatalog({
             </div>
             
             <div className="catalog-brand-title">
-              <span className="catalog-brand-eyebrow">Catálogo Exclusivo</span>
-              <h2>{selectedBrand}</h2>
-              <div className="catalog-brand-divider"></div>
+              <img src={logo} alt="Lensique" className="catalog-header-logo" />
             </div>
 
             <div className="catalog-header-right">

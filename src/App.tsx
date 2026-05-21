@@ -229,13 +229,15 @@ function FullCatalog({
                     >
                       <div className="product-img-area">
                         <img 
-                          src={product.image} 
+                          src={product.image || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
                           alt={product.name} 
                           className="product-main-img smooth-img"
                           onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.onerror = null;
-                            target.src = heroImg; // Premium fallback
+                            const target = e.currentTarget;
+                            const fallback = String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
+                            if (!target.src.includes(fallback)) {
+                              target.src = fallback;
+                            }
                           }}
                         />
                         
@@ -654,10 +656,14 @@ function App() {
                     />
                   ) : (
                     <img
-                      src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || heroImg}
+                      src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || (String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg)}
                       alt={selectedProductDetail.name}
-                      className="product-detail-img"
-                      onError={(e: any) => { e.target.onerror = null; e.target.src = heroImg; }}
+                      className="product-detail-img smooth-img"
+                      onError={(e) => { 
+                        const target = e.currentTarget;
+                        const fallback = String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
+                        if (!target.src.includes(fallback)) target.src = fallback; 
+                      }}
                     />
                   )}
                 </div>
@@ -1222,12 +1228,12 @@ function App() {
                 >
                   <div className="wp-card-img-area">
                     <img 
-                      src={resolveImageUrl(product.image_url, product.image) || heroImg} 
+                      src={resolveImageUrl(product.image_url, product.image) || contactLensesImg} 
                       alt={product.name} 
                       className="wp-card-img" 
-                      onError={(e: any) => {
-                        e.target.onerror = null;
-                        e.target.src = heroImg;
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes(contactLensesImg)) target.src = contactLensesImg;
                       }}
                     />
                   </div>

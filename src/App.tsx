@@ -165,15 +165,17 @@ function FullCatalog({
           exit={{ opacity: 0, x: '100%' }}
           className="full-catalog-view"
         >
+          {/* Top bar: solo logo */}
+          <div className="catalog-topbar">
+            <img src={logo} alt="Lensique" className="catalog-header-logo" />
+          </div>
+
+          {/* Second bar: Volver + Buscar */}
           <div className="catalog-header">
             <div className="catalog-header-left">
               <button className="catalog-back" onClick={onClose}>
                 <ChevronLeft size={20} /> Volver
               </button>
-            </div>
-            
-            <div className="catalog-brand-title">
-              <img src={logo} alt="Lensique" className="catalog-header-logo" />
             </div>
 
             <div className="catalog-header-right">

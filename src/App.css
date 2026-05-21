@@ -1016,13 +1016,20 @@ body.no-scroll {
   flex-direction: column;
 }
 
+.catalog-topbar {
+  background: white;
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border);
+}
+
 .catalog-header {
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 20px 40px;
+  background: white;
+  padding: 14px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1052,12 +1059,12 @@ body.no-scroll {
 }
 
 .catalog-header-logo {
-  height: 60px;
+  height: 56px;
   width: auto;
+  max-width: 280px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
-  transform: scale(2.5);
 }
 
 .catalog-search {

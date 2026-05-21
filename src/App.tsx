@@ -167,7 +167,7 @@ function FullCatalog({
         >
           {/* Top bar: solo logo */}
           <div className="catalog-topbar">
-            <span className="catalog-wordmark">Lensique</span>
+            <img src={logo} alt="Lensique" className="catalog-header-logo" />
           </div>
 
           {/* Second bar: Volver + Buscar */}

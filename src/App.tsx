@@ -26,7 +26,42 @@ import lsInvisible from './assets/lifestyle_invisible.png';
 import lsCustom from './assets/lifestyle_custom.png';
 import lsAntireflective from './assets/lifestyle_antireflective.png';
 import arnette4373 from './assets/arnette_0AN4373.png';
+import styleAviator from './assets/style_aviator.png';
+import styleCateye from './assets/style_cateye.png';
+import styleRectangular from './assets/style_rectangular.png';
+import styleRound from './assets/style_round.png';
 import './App.css';
+
+const faceShapeGuide = [
+  { 
+    id: 'f1',
+    glassesShape: 'Rectangulares',
+    faceShape: 'Rostros redondos u ovalados',
+    description: 'Añaden ángulos y definen tus facciones, alargando visualmente el rostro.',
+    image: styleRectangular
+  },
+  {
+    id: 'f2',
+    glassesShape: 'Redondos o Pantos',
+    faceShape: 'Rostros cuadrados o angulares',
+    description: 'Sus curvas suavizan las líneas fuertes de la mandíbula y equilibran las proporciones.',
+    image: styleRound
+  },
+  {
+    id: 'f3',
+    glassesShape: 'Cat Eye / Mariposa',
+    faceShape: 'Rostros diamante o triángulo',
+    description: 'Acentúan los pómulos y dirigen la atención hacia la parte superior del rostro.',
+    image: styleCateye
+  },
+  {
+    id: 'f4',
+    glassesShape: 'Estilo Aviador',
+    faceShape: 'Rostros tipo corazón u ovalados',
+    description: 'La silueta ancha en la parte inferior equilibra perfectamente una frente amplia.',
+    image: styleAviator
+  }
+];
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 
@@ -1130,49 +1165,30 @@ function App() {
             <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
           </div>
 
-          <div className="hero-ad-grid">
-            {safeJsonParse(settings.featured_products)
-              .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
-              .slice(0, 4) // Show the top 4 as high-impact ads
-              .map((product: any, idx: number) => {
-                const imageUrl = resolveImageUrl(product.image_url, product.image);
-                const modelName = product.model || product.name;
-                
-                return (
-                  <motion.div 
-                    key={`hero-ad-${idx}-${product.id}`}
-                    className="hero-ad-card"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: idx * 0.1 }}
-                    viewport={{ once: true }}
-                    onClick={() => handleOpenBooking(`${product.brand || ''} ${modelName}`)}
-                  >
-                    <div className="hero-ad-header">
-                      <span className="hero-ad-brand">{product.brand || 'Colección'}</span>
-                      <h3 className="hero-ad-name">{modelName}</h3>
-                    </div>
-
-                    <div className="hero-ad-img-box">
-                      <img 
-                        src={imageUrl || heroImg} 
-                        alt={modelName} 
-                        className="hero-ad-img" 
-                        onError={(e: any) => {
-                          e.target.onerror = null;
-                          e.target.src = heroImg;
-                        }}
-                      />
-                    </div>
-
-                    <div className="hero-ad-footer">
-                      <button className="hero-ad-btn">
-                        Agendar
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })}
+          <div className="face-guide-grid">
+            {faceShapeGuide.map((guide, idx) => (
+              <motion.div 
+                key={`face-guide-${idx}-${guide.id}`}
+                className="face-guide-card hover-scale"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                onClick={() => handleOpenBooking(`Consulta armazón ${guide.glassesShape}`)}
+              >
+                <div className="face-guide-img-box">
+                  <img src={guide.image} alt={guide.glassesShape} className="face-guide-img" />
+                </div>
+                <div className="face-guide-content">
+                  <span className="face-guide-tag">Ideal para: {guide.faceShape}</span>
+                  <h3 className="face-guide-title">{guide.glassesShape}</h3>
+                  <p className="face-guide-desc">{guide.description}</p>
+                  <button className="btn btn-outline" style={{ marginTop: 'auto', alignSelf: 'flex-start' }}>
+                    Agendar Cita
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </section>
 

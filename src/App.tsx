@@ -986,7 +986,7 @@ function App() {
               >
                 <div className="wp-card-img-area">
                   <img 
-                    src={resolveImageUrl(product.image_url, product.image) || heroImg} 
+                    src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || heroImg} 
                     alt={product.name} 
                     className="wp-card-img" 
                     onError={(e: any) => {
@@ -1244,7 +1244,7 @@ function App() {
                 >
                   <div className="wp-card-img-area">
                     <img 
-                      src={resolveImageUrl(product.image_url, product.image) || contactLensesImg} 
+                      src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || contactLensesImg} 
                       alt={product.name} 
                       className="wp-card-img" 
                       onError={(e) => {

@@ -9,7 +9,7 @@ import ProductCarousel from './components/ProductCarousel';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import cv7600Img from './assets/cv-7600.jpg';
-import clinicRoomImg from './assets/DSC09650.jpg';
+import clinicRoomImg from './assets/DSC00118.jpg';
 import editorialImg1 from './assets/DSC09657.jpg';
 import editorialSol from './assets/editorial_sol.jpg';
 import editorialSol2 from './assets/editorial_sol2.jpg';

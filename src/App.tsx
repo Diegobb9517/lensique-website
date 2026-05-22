@@ -15,6 +15,7 @@ import editorialSol from './assets/editorial_sol.jpg';
 import editorialSol2 from './assets/editorial_sol2.jpg';
 import editorialArmazon from './assets/editorial_armazon.jpg';
 import storeInteriorImg from './assets/DSC09639.jpg';
+import armazonesServiceImg from './assets/DSC09746.jpg';
 import micasImg from './assets/DSC09628.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
 import lsBluelight from './assets/lifestyle_bluelight.png';
@@ -1082,7 +1083,7 @@ function App() {
               { id: 's2', title: 'Consulta Médica', img: clinicRoomImg, action: () => handleOpenBooking('Consulta Oftalmológica') },
               { id: 's3', title: 'Actualización de micas', img: micasImg, action: () => window.location.hash = 'micas' },
               { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
-              { id: 's5', title: 'Armazones', img: storeInteriorImg, action: () => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
+              { id: 's5', title: 'Armazones', img: armazonesServiceImg, action: () => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
             ].map((service) => (
               <motion.div 
                 key={service.id}

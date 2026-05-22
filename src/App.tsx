@@ -6,6 +6,7 @@ import {
   Maximize, Camera, Trash2, Sliders
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
+import TechnologyInfoPage from './components/TechnologyInfoPage';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import cv7600Img from './assets/cv-7600.jpg';
@@ -466,6 +467,7 @@ function VirtualTryOn({
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedTech, setSelectedTech] = useState<any>(null);
   const [settings, setSettings] = useState<any>({
     hero_title: 'La perfección en tu mirada.',
     hero_subtitle: 'Diseño minimalista y tecnología óptica de vanguardia.',
@@ -645,6 +647,20 @@ function App() {
 
   return (
     <div className="app-container">
+      <AnimatePresence>
+        {selectedTech && (
+          <TechnologyInfoPage 
+            tech={selectedTech} 
+            resolvedImage={resolveImageUrl(selectedTech.image_url, selectedTech.image) || heroImg}
+            onBack={() => setSelectedTech(null)} 
+            onBook={() => {
+              setSelectedTech(null);
+              handleOpenBooking(`Consulta ${selectedTech.title}`);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Product Detail Modal */}
       <AnimatePresence>
         {selectedProductDetail && (
@@ -1177,10 +1193,10 @@ function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                onClick={() => handleOpenBooking(`Consulta ${brick.title}`)}
+                onClick={() => setSelectedTech(brick)}
               >
                 <div className="wp-mica-ls-overlay"></div>
-                <button className="wp-service-pill" onClick={(e) => { e.stopPropagation(); handleOpenBooking(`Consulta ${brick.title}`); }}>
+                <button className="wp-service-pill" onClick={(e) => { e.stopPropagation(); setSelectedTech(brick); }}>
                   {brick.title}
                 </button>
               </motion.div>

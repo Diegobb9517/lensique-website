@@ -3262,3 +3262,200 @@ body.no-scroll {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* --- Technology Info Page Styles --- */
+.tech-info-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fbfbfd;
+  z-index: 3000;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tech-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.tech-back-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1d1d1f;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 980px;
+  transition: all 0.2s ease;
+}
+
+.tech-back-btn:hover {
+  background: #f5f5f7;
+}
+
+.tech-content-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.tech-hero-section {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.tech-hero-img-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.tech-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tech-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.2) 0%, transparent 40%);
+}
+
+.tech-info-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tech-eyebrow {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.tech-title {
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 24px;
+}
+
+.tech-description {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #86868b;
+  margin-bottom: 40px;
+}
+
+.tech-benefits {
+  margin-bottom: 48px;
+}
+
+.tech-benefits-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 20px;
+}
+
+.tech-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tech-benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 16px;
+  color: #1d1d1f;
+  line-height: 1.4;
+}
+
+.tech-benefit-icon {
+  color: #34c759;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tech-cta-box {
+  background: #f5f5f7;
+  padding: 32px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.tech-cta-box p {
+  font-size: 16px;
+  color: #1d1d1f;
+  margin-bottom: 20px;
+}
+
+.btn-tech-book {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border-radius: 980px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 968px) {
+  .tech-hero-section {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .tech-title {
+    font-size: 36px;
+  }
+
+  .tech-hero-img-container {
+    aspect-ratio: 16/9;
+  }
+}
+
+@media (max-width: 640px) {
+  .tech-nav {
+    padding: 12px 20px;
+  }
+  
+  .tech-content-wrapper {
+    padding: 20px;
+  }
+}

@@ -45,6 +45,38 @@ const TECH_INFO: Record<string, { desc: string, benefits: string[] }> = {
       'Estética perfecta sin divisiones visibles',
       'Adaptación rápida con diseños de última generación'
     ]
+  },
+  'Fotocromático': {
+    desc: 'Micas inteligentes que se oscurecen automáticamente con la luz del sol y se aclaran en interiores. Ofrecen la protección ideal sin necesidad de cambiar de lentes.',
+    benefits: [
+      'Protección 100% contra los rayos UV',
+      'Comodidad visual en cualquier condición de luz',
+      'Reducen el deslumbramiento y la fatiga'
+    ]
+  },
+  'Luz azul': {
+    desc: 'Protección especializada contra la luz azul nociva emitida por pantallas digitales. Ideal para quienes pasan muchas horas frente a la computadora, tablet o celular.',
+    benefits: [
+      'Previene la fatiga ocular y el dolor de cabeza',
+      'Mejora el ciclo de sueño',
+      'Ideal para trabajo de oficina y gamers'
+    ]
+  },
+  'Trabajos personalizados': {
+    desc: 'Realizamos tratamientos y diseños a la medida: entintados sólidos, entintados con degradados y polarizados. Dale un toque único a tu estilo y eleva tu protección visual.',
+    benefits: [
+      'Entintados de distintos colores y niveles de opacidad',
+      'Degradados perfectos para un look moderno',
+      'Micas polarizadas para eliminar reflejos extremos del sol'
+    ]
+  },
+  'Antirreflejantes': {
+    desc: 'Tratamiento de alta tecnología que elimina los reflejos molestos en la superficie de la lente. Permite que tus ojos sean el centro de atención y brinda una visión excepcionalmente nítida.',
+    benefits: [
+      'Reduce deslumbramientos al manejar de noche',
+      'Estética impecable, la mica parece invisible',
+      'Aumenta la claridad y confort visual'
+    ]
   }
 };
 

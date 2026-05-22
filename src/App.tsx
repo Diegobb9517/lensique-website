@@ -16,7 +16,7 @@ import editorialSol2 from './assets/editorial_sol2.jpg';
 import editorialArmazon from './assets/editorial_armazon.jpg';
 import storeInteriorImg from './assets/DSC09639.jpg';
 import armazonesServiceImg from './assets/DSC09746.jpg';
-import micasImg from './assets/DSC09628.jpg';
+import micasImg from './assets/DSC09710.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
 import lsBluelight from './assets/lifestyle_bluelight.png';
 import lsProgressives from './assets/lifestyle_progressives.png';

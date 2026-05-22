@@ -241,7 +241,8 @@ function FullCatalog({
                       key={product.id}
                       className="product-card-editorial hover-scale"
                     >
-                      <div className="product-img-area">
+                      <div className="product-img-area" style={{ position: 'relative' }}>
+                        {product.stock === 0 && <div className="out-of-stock-badge">Sobre pedido</div>}
                         <img 
                           src={product.image || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
                           alt={product.name} 
@@ -661,7 +662,8 @@ function App() {
 
               {/* Left: Image Carousel */}
               <div className="product-detail-img-col">
-                <div className="product-detail-img-box w-full max-w-full">
+                <div className="product-detail-img-area" style={{ position: 'relative' }}>
+                  {selectedProductDetail.stock === 0 && <div className="out-of-stock-badge" style={{ top: '20px', right: '20px' }}>Sobre pedido</div>}
                   {(selectedProductDetail.images && selectedProductDetail.images.length > 0) ? (
                     <ProductCarousel 
                       images={selectedProductDetail.images.map((img: any) => ({
@@ -984,7 +986,8 @@ function App() {
                 viewport={{ once: true }}
                 onClick={() => setSelectedProductDetail(product)}
               >
-                <div className="wp-card-img-area">
+                <div className="wp-card-img-area" style={{ position: 'relative' }}>
+                  {product.stock === 0 && <div className="out-of-stock-badge">Sobre pedido</div>}
                   <img 
                     src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || heroImg} 
                     alt={product.name} 
@@ -1242,7 +1245,8 @@ function App() {
                   viewport={{ once: true }}
                   onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
                 >
-                  <div className="wp-card-img-area">
+                  <div className="wp-card-img-area" style={{ position: 'relative' }}>
+                    {product.stock === 0 && <div className="out-of-stock-badge">Sobre pedido</div>}
                     <img 
                       src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || contactLensesImg} 
                       alt={product.name} 

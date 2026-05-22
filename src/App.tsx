@@ -662,7 +662,7 @@ function App() {
 
               {/* Left: Image Carousel */}
               <div className="product-detail-img-col">
-                <div className="product-detail-img-area" style={{ position: 'relative' }}>
+                <div className="product-detail-img-box w-full max-w-full" style={{ position: 'relative' }}>
                   {selectedProductDetail.stock === 0 && <div className="out-of-stock-badge" style={{ top: '20px', right: '20px' }}>Sobre pedido</div>}
                   {(selectedProductDetail.images && selectedProductDetail.images.length > 0) ? (
                     <ProductCarousel 

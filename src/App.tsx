@@ -633,7 +633,11 @@ function App() {
     }
   };
 
-  const timeSlots = [
+  const isEyeExam = !selectedProduct || selectedProduct.toLowerCase().includes('examen');
+  const timeSlots = isEyeExam ? [
+    '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
+    '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM'
+  ] : [
     '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', 
     '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM'
   ];
@@ -877,7 +881,7 @@ function App() {
             </button>
             <button className="nav-icon-btn"><Search size={20} /></button>
             <button className="nav-icon-btn d-none-mobile"><Heart size={20} /></button>
-            <button className="nav-icon-btn" onClick={() => setIsBookingOpen(true)}>
+            <button className="nav-icon-btn" onClick={() => handleOpenBooking()}>
               <ShoppingBag size={20} />
             </button>
 
@@ -937,7 +941,7 @@ function App() {
             <div className="hero-actions-left">
               <button 
                 className="btn btn-wp-primary" 
-                onClick={() => setIsBookingOpen(true)}
+                onClick={() => handleOpenBooking()}
               >
                 Agendar Cita
               </button>
@@ -1036,12 +1040,12 @@ function App() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
               viewport={{ once: true }}
-              onClick={() => setIsBookingOpen(true)}
+              onClick={() => handleOpenBooking()}
             >
               <div className="editorial-card-overlay" />
               <div className="editorial-card-content">
                 <p className="editorial-card-headline">Estilo que define tu personalidad.</p>
-                <button className="editorial-card-btn" onClick={(e) => { e.stopPropagation(); setIsBookingOpen(true); }}>Agendar cita</button>
+                <button className="editorial-card-btn" onClick={(e) => { e.stopPropagation(); handleOpenBooking(); }}>Agendar cita</button>
               </div>
             </motion.div>
 
@@ -1139,7 +1143,7 @@ function App() {
                   Ver lentes de sol
                 </button>
               </div>
-              <button className="lifestyle-banner-link" onClick={() => setIsBookingOpen(true)}>
+              <button className="lifestyle-banner-link" onClick={() => handleOpenBooking()}>
                 Agenda tu cita &rsaquo;
               </button>
             </div>
@@ -1289,7 +1293,7 @@ function App() {
               </div>
               <button 
                 className="btn btn-primary" 
-                onClick={() => setIsBookingOpen(true)}
+                onClick={() => handleOpenBooking()}
                 style={{ marginTop: '20px' }}
               >
                 Agendar Cita

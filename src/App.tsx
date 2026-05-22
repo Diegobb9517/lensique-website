@@ -562,8 +562,7 @@ function App() {
 
   // UseEffect for body scroll lock when any overlay is open
   useEffect(() => {
-    const isAnyOverlayOpen = isBookingOpen || isCatalogOpen || selectedProductDetail !== null || isMobileMenuOpen || isTryOnOpen;
-    if (isAnyOverlayOpen) {
+    if (isBookingOpen || isCatalogOpen || selectedProductDetail || isMobileMenuOpen || isTryOnOpen || selectedTech) {
       document.body.classList.add('no-scroll');
     } else {
       document.body.classList.remove('no-scroll');
@@ -572,7 +571,7 @@ function App() {
     return () => {
       document.body.classList.remove('no-scroll');
     };
-  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, isMobileMenuOpen, isTryOnOpen]);
+  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, isMobileMenuOpen, isTryOnOpen, selectedTech]);
 
   // Calendar Logic
   const getDaysInMonth = (date: Date) => {

@@ -5,8 +5,6 @@ import {
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
   Maximize, Camera, Trash2, Sliders
 } from 'lucide-react';
-import CustomWorkFlow from './components/CustomWorkFlow';
-import GlassesTryOn from './components/GlassesTryOn';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import logo from './assets/logo.png';

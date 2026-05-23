@@ -1455,8 +1455,8 @@ body.no-scroll {
 }
 
 .product-name-serif {
-  font-family: 'Georgia', serif;
-  font-size: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 18px;
   margin: 0;
   color: #1d1d1f;
   font-weight: 500;

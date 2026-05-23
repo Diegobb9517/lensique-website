@@ -17,16 +17,7 @@ const FormatProductName = ({ name, brand }: { name: string, brand?: string }) =>
   }
   if (cleanName.startsWith('- ')) cleanName = cleanName.substring(2).trim();
   
-  const parts = cleanName.split(' - ');
-  if (parts.length > 1) {
-    return (
-      <span className="fpn-wrapper">
-        <span className="fpn-main">{parts[0]}</span>
-        <span className="fpn-sub">{parts.slice(1).join(' - ')}</span>
-      </span>
-    );
-  }
-  return <span className="fpn-main">{cleanName}</span>;
+  return <>{cleanName}</>;
 };
 
 import cv7600Img from './assets/cv-7600.jpg';

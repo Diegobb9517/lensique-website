@@ -5,10 +5,32 @@ import {
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
   Maximize, Camera, Trash2, Sliders
 } from 'lucide-react';
+import CustomWorkFlow from './components/CustomWorkFlow';
+import GlassesTryOn from './components/GlassesTryOn';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import logo from './assets/logo.png';
-import heroImg from './assets/hero_glasses.png';
+import heroImg from './assets/hero-premium.png';
+
+const FormatProductName = ({ name, brand }: { name: string, brand?: string }) => {
+  let cleanName = name || '';
+  if (brand && cleanName.toUpperCase().startsWith(brand.toUpperCase())) {
+    cleanName = cleanName.substring(brand.length).trim();
+  }
+  if (cleanName.startsWith('- ')) cleanName = cleanName.substring(2).trim();
+  
+  const parts = cleanName.split(' - ');
+  if (parts.length > 1) {
+    return (
+      <span className="fpn-wrapper">
+        <span className="fpn-main">{parts[0]}</span>
+        <span className="fpn-sub">{parts.slice(1).join(' - ')}</span>
+      </span>
+    );
+  }
+  return <span className="fpn-main">{cleanName}</span>;
+};
+
 import cv7600Img from './assets/cv-7600.jpg';
 import clinicRoomImg from './assets/DSC00118.jpg';
 import editorialImg1 from './assets/DSC09657.jpg';
@@ -275,7 +297,7 @@ function FullCatalog({
 
                       <div className="product-info-editorial">
                         <div className="product-name-row">
-                          <h3 className="product-name-serif">{product.name}</h3>
+                          <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} /></h3>
                           <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                         </div>
                         <p className="product-brand-sub">{product.brand || 'Colección Lensique'}</p>
@@ -1020,7 +1042,7 @@ function App() {
                 </div>
 
                 <div className="wp-card-info">
-                  <h3 className="wp-product-name">{product.name}</h3>
+                  <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} /></h3>
                   <span className="wp-product-model">{product.model || product.category || 'Premium'}</span>
                 </div>
               </motion.div>
@@ -1279,7 +1301,7 @@ function App() {
                   </div>
 
                   <div className="wp-card-info">
-                    <h3 className="wp-product-name">{product.name}</h3>
+                    <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} /></h3>
                     <span className="wp-product-model">{product.brand || 'Contacto'}</span>
                   </div>
                 </motion.div>

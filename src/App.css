@@ -3461,7 +3461,7 @@ body.no-scroll {
 }
 
 .fpn-wrapper { display: flex; flex-direction: column; gap: 4px; }
-.fpn-main { font-weight: 600; display: block; }
+.fpn-main { display: block; }
 .fpn-sub { font-family: 'Inter', sans-serif; font-size: 0.75em; font-weight: 400; color: #86868b; letter-spacing: 0; line-height: 1.2; text-transform: none; }
 .product-name-serif .fpn-sub { font-family: 'Inter', sans-serif; }
 

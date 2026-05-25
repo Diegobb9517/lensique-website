@@ -8,7 +8,7 @@ import {
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import logo from './assets/logo.png';
-import heroImg from './assets/hero-premium.png';
+import heroImg from './assets/hero_glasses.png';
 
 const FormatProductName = ({ name, brand }: { name: string, brand?: string }) => {
   let cleanName = name || '';

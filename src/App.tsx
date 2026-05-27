@@ -554,14 +554,18 @@ function App() {
           const data = await res.json();
           setSettings((prev: any) => {
             // Option B: No merge. API is the source of truth.
-            const featuredProducts = safeJsonParse(data.featured_products);
-            const featuredContact = safeJsonParse(data.featured_contact_lenses);
+            const filterCH = (arr: any[]) => arr.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
+            
+            const featuredProducts = filterCH(safeJsonParse(data.featured_products));
+            const featuredContact = filterCH(safeJsonParse(data.featured_contact_lenses));
+            const catalog = filterCH(safeJsonParse(data.full_catalog_data));
             
             return { 
               ...prev, 
               ...data, 
               featured_products: JSON.stringify(featuredProducts),
-              featured_contact_lenses: JSON.stringify(featuredContact)
+              featured_contact_lenses: JSON.stringify(featuredContact),
+              full_catalog_data: JSON.stringify(catalog)
             };
           });
         }

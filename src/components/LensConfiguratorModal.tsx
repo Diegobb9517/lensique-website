@@ -200,16 +200,16 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
 
       case 7:
         return (
-          <div className="config-step-content text-center py-8">
-            <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="config-step-content config-text-center">
+            <div className="config-success-icon">
               <CheckCircle size={40} />
             </div>
-            <h2 className="config-title text-2xl">¡Configuración Completa!</h2>
-            <p className="config-subtitle mb-8">Tu armazón está listo con las micas perfectas para ti.</p>
+            <h2 className="config-title">¡Configuración Completa!</h2>
+            <p className="config-subtitle">Tu armazón está listo con las micas perfectas para ti.</p>
             
-            <div className="bg-slate-50 p-6 rounded-2xl text-left mb-8">
-              <h4 className="font-bold text-slate-900 mb-4">Resumen:</h4>
-              <ul className="space-y-2 text-sm text-slate-600">
+            <div className="config-summary-box">
+              <h4>Resumen:</h4>
+              <ul>
                 <li>• Armazón: {product?.name} {product?.brand}</li>
                 {config.graduacion && <li>• Graduación: {FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion)?.name}</li>}
                 {config.ar && <li>• AR: {AR_OPTIONS.find(o => o.id === config.ar)?.name}</li>}
@@ -217,14 +217,14 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 {config.tinting && config.tinting !== 'NONE' && <li>• Entintado: {TINTING_OPTIONS.find(o => o.id === config.tinting)?.name}</li>}
                 {config.material === 'HI_INDEX' && <li>• Adelgazado: Sí (Hi-Index)</li>}
               </ul>
-              <div className="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center">
-                <span className="font-bold text-slate-900">Total Estimado</span>
-                <span className="text-xl font-black text-indigo-600">${calculateTotal().toLocaleString('es-MX')}</span>
+              <div className="config-summary-total">
+                <span>Total Estimado</span>
+                <strong>${calculateTotal().toLocaleString('es-MX')}</strong>
               </div>
             </div>
 
             <button 
-              className="config-btn-primary w-full"
+              className="config-btn-primary config-btn-full"
               onClick={() => onComplete(config)}
             >
               Continuar por WhatsApp
@@ -237,46 +237,46 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
   return (
     <AnimatePresence>
       <motion.div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+        className="config-modal-overlay"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
         <motion.div 
-          className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[90vh] md:h-auto md:max-h-[85vh]"
+          className="config-modal-container"
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white relative z-10">
-            <div className="flex items-center gap-3">
+          <div className="config-modal-header">
+            <div className="config-modal-header-left">
               {step > 1 && step < 7 && (
-                <button onClick={prevStep} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
+                <button onClick={prevStep} className="config-icon-btn">
                   <ChevronLeft size={20} />
                 </button>
               )}
-              <h3 className="font-bold text-slate-900">Configurar Micas</h3>
+              <h3>Configurar Micas</h3>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
+            <button onClick={onClose} className="config-icon-btn">
               <X size={20} />
             </button>
           </div>
 
           {/* Progress Bar */}
           {step < 7 && (
-            <div className="w-full bg-slate-100 h-1.5">
+            <div className="config-progress-bg">
               <div 
-                className="bg-indigo-600 h-full transition-all duration-300 ease-out" 
+                className="config-progress-fill" 
                 style={{ width: `${(step / 6) * 100}%` }} 
               />
             </div>
           )}
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50">
+          <div className="config-modal-body">
             {renderStepContent()}
           </div>
         </motion.div>

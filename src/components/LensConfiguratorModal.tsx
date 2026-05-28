@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, Upload, Edit3, User, CheckCircle } from 'lucide-react';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from '../lib/configuratorConstants';
 import './LensConfiguratorModal.css';
+import heroImg from '../assets/hero_glasses.png';
+import contactLensesImg from '../assets/contact_lenses.png';
 
 const API_BASE = 'https://lensique-backend-m21d.onrender.com';
 const resolveImageUrl = (url: any, fallback?: any) => {
@@ -22,11 +24,12 @@ const resolveImageUrl = (url: any, fallback?: any) => {
 
 interface LensConfiguratorModalProps {
   product: any;
+  catalogData?: any[];
   onClose: () => void;
   onComplete: (config: any) => void;
 }
 
-export default function LensConfiguratorModal({ product, onClose, onComplete }: LensConfiguratorModalProps) {
+export default function LensConfiguratorModal({ product, catalogData = [], onClose, onComplete }: LensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
   const [config, setConfig] = useState({
     prescriptionMethod: '',
@@ -37,6 +40,11 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
     tinting: '',
     material: ''
   });
+
+  const getDynamicPrice = (name: string, fallbackPrice: number) => {
+    const item = catalogData.find((p: any) => p.name.toLowerCase() === name.toLowerCase());
+    return item ? (item.price || 0) : (fallbackPrice * 1.16);
+  };
 
   const handleNext = (overridePhotochromic?: string) => {
     const currentPhoto = overridePhotochromic !== undefined ? overridePhotochromic : config.photochromic;
@@ -70,19 +78,19 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
     let total = product?.price_incl_tax || 0;
     
     const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);
-    if (grad) total += grad.price * 1.16;
+    if (grad) total += getDynamicPrice(grad.name, grad.price);
     
     const ar = AR_OPTIONS.find(o => o.id === config.ar);
-    if (ar) total += ar.price * 1.16;
+    if (ar && config.graduacion !== 'NONE') total += getDynamicPrice(ar.name, ar.price);
 
     const photo = PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic);
-    if (photo) total += photo.price * 1.16;
+    if (photo && config.photochromic !== 'NONE') total += getDynamicPrice(photo.name, photo.price);
 
     const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
-    if (tint && config.photochromic === 'NONE') total += tint.price * 1.16;
+    if (tint && config.photochromic === 'NONE') total += getDynamicPrice(tint.name, tint.price);
 
     const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
-    if (mat) total += mat.price * 1.16;
+    if (mat && config.graduacion !== 'NONE') total += getDynamicPrice(mat.name, mat.price);
 
     return Math.round(total);
   };
@@ -141,7 +149,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
-                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
                   </div>
                   {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
@@ -164,7 +172,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
-                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
                   </div>
                   {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
@@ -187,7 +195,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
-                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
                   </div>
                   {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
@@ -210,7 +218,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
-                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
                   </div>
                   {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
@@ -236,7 +244,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
-                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
                   </div>
                   {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
@@ -308,6 +316,11 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                   src={resolveImageUrl(product?.displayImage || product?.image_url, product?.image)} 
                   alt={product?.name} 
                   className="config-summary-image" 
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = String(product?.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
+                  }}
                 />
               </div>
               <div className="config-summary-details">

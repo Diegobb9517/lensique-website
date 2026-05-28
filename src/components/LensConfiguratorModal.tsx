@@ -22,6 +22,23 @@ const resolveImageUrl = (url: any, fallback?: any) => {
   return '';
 };
 
+const generateOptions = (min: number, max: number, step: number, prefixPlus = false) => {
+  const options = [];
+  for (let i = min; i <= max; i += step) {
+    const val = i.toFixed(2);
+    const label = (prefixPlus && i > 0) ? `+${val}` : val;
+    options.push({ value: val, label });
+  }
+  return options;
+};
+
+const SPH_OPTIONS = generateOptions(-20, 20, 0.25, true);
+const CYL_OPTIONS = generateOptions(-10, 10, 0.25, true);
+const AXIS_OPTIONS = Array.from({length: 181}, (_, i) => ({ value: String(i), label: String(i) }));
+const ADD_OPTIONS = generateOptions(0.75, 3.5, 0.25, true);
+const PD_OPTIONS = generateOptions(40, 80, 0.5);
+const DUAL_PD_OPTIONS = generateOptions(20, 40, 0.5);
+
 interface LensConfiguratorModalProps {
   product: any;
   catalogData?: any[];
@@ -31,6 +48,15 @@ interface LensConfiguratorModalProps {
 
 export default function LensConfiguratorModal({ product, catalogData = [], onClose, onComplete }: LensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
+  const [prescriptionMode, setPrescriptionMode] = useState<'SELECTION' | 'MANUAL' | 'PHOTO'>('SELECTION');
+  const [manualPrescription, setManualPrescription] = useState({
+    od: { sph: '', cyl: '', axis: '', add: '' },
+    oi: { sph: '', cyl: '', axis: '', add: '' },
+    pdType: 'SINGLE', // 'SINGLE' or 'DUAL'
+    pd: '',
+    pdLeft: '',
+    pdRight: ''
+  });
   const [config, setConfig] = useState({
     prescriptionMethod: '',
     prescriptionValues: { od: '', oi: '' },
@@ -57,6 +83,11 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
   };
 
   const handlePrev = () => {
+    if (step === 1 && prescriptionMode !== 'SELECTION') {
+      setPrescriptionMode('SELECTION');
+      return;
+    }
+
     // If going back from Step 6 (Material) and a photochromic option is selected, skip Step 5 (Tinting)
     if (step === 6 && config.photochromic && config.photochromic !== 'NONE') {
       setStep(4);
@@ -98,42 +129,199 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
   const renderStepContent = () => {
     switch (step) {
       case 1:
-        return (
-          <div className="config-step-content">
-            <h2 className="config-title">¿Tienes tu receta a la mano?</h2>
-            <p className="config-subtitle">Añádela ahora para ahorrar tiempo o hazlo después.</p>
-            
-            <div className="config-options-list">
-              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'MANUAL'); handleNext(); }}>
-                <div className="config-icon-wrapper"><Edit3 size={20} /></div>
-                <div className="config-option-text">
-                  <h3>Ingresar valores manualmente</h3>
-                  <p>Escribe los valores de tu receta.</p>
-                </div>
-              </button>
+        if (prescriptionMode === 'SELECTION') {
+          return (
+            <div className="config-step-content">
+              <h2 className="config-title">¿Tienes tu receta a la mano?</h2>
+              <p className="config-subtitle">Añádela ahora para ahorrar tiempo o hazlo después.</p>
               
-              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'PHOTO'); handleNext(); }}>
-                <div className="config-icon-wrapper"><Upload size={20} /></div>
-                <div className="config-option-text">
-                  <h3>Subir una foto</h3>
-                  <p>Usa tu cámara o sube una imagen.</p>
-                </div>
-              </button>
+              <div className="config-options-list">
+                <button className="config-option-btn" onClick={() => setPrescriptionMode('MANUAL')}>
+                  <div className="config-icon-wrapper"><Edit3 size={20} /></div>
+                  <div className="config-option-text">
+                    <h3>Ingresar valores manualmente</h3>
+                    <p>Escribe los valores de tu receta.</p>
+                  </div>
+                </button>
+                
+                <button className="config-option-btn" onClick={() => setPrescriptionMode('PHOTO')}>
+                  <div className="config-icon-wrapper"><Upload size={20} /></div>
+                  <div className="config-option-text">
+                    <h3>Subir una foto</h3>
+                    <p>Usa tu cámara o sube una imagen.</p>
+                  </div>
+                </button>
 
-              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'ACCOUNT'); handleNext(); }}>
-                <div className="config-icon-wrapper"><User size={20} /></div>
-                <div className="config-option-text">
-                  <h3>Añadir de mi cuenta</h3>
-                  <p>Inicia sesión para ver recetas guardadas.</p>
-                </div>
-              </button>
+                <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'ACCOUNT'); handleNext(); }}>
+                  <div className="config-icon-wrapper"><User size={20} /></div>
+                  <div className="config-option-text">
+                    <h3>Añadir de mi cuenta</h3>
+                    <p>Inicia sesión para ver recetas guardadas.</p>
+                  </div>
+                </button>
 
-              <button className="config-option-btn-secondary" onClick={() => { updateConfig('prescriptionMethod', 'LATER'); handleNext(); }}>
-                Saltar por ahora, lo haré después
-              </button>
+                <button className="config-option-btn-secondary" onClick={() => { updateConfig('prescriptionMethod', 'LATER'); handleNext(); }}>
+                  Saltar por ahora, lo haré después
+                </button>
+              </div>
             </div>
-          </div>
-        );
+          );
+        }
+
+        if (prescriptionMode === 'MANUAL') {
+          return (
+            <div className="config-step-content config-prescription-form">
+              <h2 className="config-title" style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Ingresa tu receta</h2>
+              <p className="config-subtitle" style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                Nota: Está bien si tu receta no incluye un valor para cada campo mostrado abajo.
+              </p>
+
+              <div className="prescription-eye-section">
+                <h3>Ojo Derecho (OD)</h3>
+                <div className="prescription-grid">
+                  <div className="presc-field">
+                    <label>SPH</label>
+                    <select value={manualPrescription.od.sph} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, sph: e.target.value}})}>
+                      <option value="">0.00</option>
+                      {SPH_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="presc-field">
+                    <label>CYL</label>
+                    <select value={manualPrescription.od.cyl} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, cyl: e.target.value}})}>
+                      <option value="">0.00</option>
+                      {CYL_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="presc-field">
+                    <label>Axis</label>
+                    <select value={manualPrescription.od.axis} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, axis: e.target.value}})}>
+                      <option value="">0</option>
+                      {AXIS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="presc-field">
+                    <label>ADD</label>
+                    <select value={manualPrescription.od.add} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, add: e.target.value}})}>
+                      <option value="">Ninguna</option>
+                      {ADD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="prescription-eye-section">
+                <h3>Ojo Izquierdo (OS)</h3>
+                <div className="prescription-grid">
+                  <div className="presc-field">
+                    <label>SPH</label>
+                    <select value={manualPrescription.oi.sph} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, sph: e.target.value}})}>
+                      <option value="">0.00</option>
+                      {SPH_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="presc-field">
+                    <label>CYL</label>
+                    <select value={manualPrescription.oi.cyl} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, cyl: e.target.value}})}>
+                      <option value="">0.00</option>
+                      {CYL_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="presc-field">
+                    <label>Axis</label>
+                    <select value={manualPrescription.oi.axis} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, axis: e.target.value}})}>
+                      <option value="">0</option>
+                      {AXIS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="presc-field">
+                    <label>ADD</label>
+                    <select value={manualPrescription.oi.add} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, add: e.target.value}})}>
+                      <option value="">Ninguna</option>
+                      {ADD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="prescription-pd-section">
+                <div className="pd-header">
+                  <h3>Distancia Pupilar (PD)</h3>
+                  <label className="dual-pd-toggle">
+                    <input type="checkbox" checked={manualPrescription.pdType === 'DUAL'} onChange={(e) => setManualPrescription({...manualPrescription, pdType: e.target.checked ? 'DUAL' : 'SINGLE'})} />
+                    Mi receta tiene dos valores de PD
+                  </label>
+                </div>
+                
+                {manualPrescription.pdType === 'SINGLE' ? (
+                  <div className="presc-field full-width">
+                    <select value={manualPrescription.pd} onChange={(e) => setManualPrescription({...manualPrescription, pd: e.target.value})}>
+                      <option value="">Selecciona tu PD</option>
+                      {PD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                    </select>
+                  </div>
+                ) : (
+                  <div className="prescription-grid dual-pd-grid">
+                    <div className="presc-field">
+                      <label>PD Derecho</label>
+                      <select value={manualPrescription.pdRight} onChange={(e) => setManualPrescription({...manualPrescription, pdRight: e.target.value})}>
+                        <option value="">Derecho</option>
+                        {DUAL_PD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                      </select>
+                    </div>
+                    <div className="presc-field">
+                      <label>PD Izquierdo</label>
+                      <select value={manualPrescription.pdLeft} onChange={(e) => setManualPrescription({...manualPrescription, pdLeft: e.target.value})}>
+                        <option value="">Izquierdo</option>
+                        {DUAL_PD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="config-form-actions" style={{marginTop: '2rem'}}>
+                <button 
+                  className="config-btn-primary config-btn-full"
+                  onClick={() => {
+                    updateConfig('prescriptionMethod', 'MANUAL');
+                    updateConfig('prescriptionValues', manualPrescription);
+                    handleNext();
+                  }}
+                >
+                  Continuar
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        if (prescriptionMode === 'PHOTO') {
+          return (
+            <div className="config-step-content">
+              <h2 className="config-title">Sube tu receta</h2>
+              <p className="config-subtitle">Asegúrate de que la foto sea clara.</p>
+              
+              <div className="config-upload-area">
+                 <Upload size={48} color="#ccc" style={{margin: '0 auto 1rem', display: 'block'}} />
+                 <p style={{textAlign: 'center', color: '#666'}}>Haz clic aquí para seleccionar o tomar foto</p>
+              </div>
+
+              <div className="config-form-actions" style={{marginTop: '2rem'}}>
+                <button 
+                  className="config-btn-primary config-btn-full"
+                  onClick={() => {
+                    updateConfig('prescriptionMethod', 'PHOTO');
+                    handleNext();
+                  }}
+                >
+                  Continuar
+                </button>
+              </div>
+            </div>
+          );
+        }
+        return null;
       
       case 2:
         return (
@@ -313,7 +501,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           {/* Header (Mobile Only) */}
           <div className="config-modal-header d-md-none">
             <div className="config-modal-header-left">
-              {step > 1 && step < 7 && (
+              {(step > 1 || prescriptionMode !== 'SELECTION') && step < 7 && (
                 <button onClick={handlePrev} className="config-icon-btn">
                   <ChevronLeft size={20} />
                 </button>
@@ -396,7 +584,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
               {/* Header (Desktop Only) */}
               <div className="config-modal-header d-none-mobile">
                 <div className="config-modal-header-left">
-                  {step > 1 && step < 7 && (
+                  {(step > 1 || prescriptionMode !== 'SELECTION') && step < 7 && (
                     <button onClick={handlePrev} className="config-icon-btn">
                       <ChevronLeft size={20} /> Volver
                     </button>

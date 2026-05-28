@@ -274,6 +274,26 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
     }
   };
 
+  const getProductImage = () => {
+    if (product?.displayImage) return resolveImageUrl(product.displayImage);
+    
+    // Check parsed images array
+    if (product?.images && product.images.length > 0) {
+      return resolveImageUrl(product.images[0].image_url || product.images[0]);
+    }
+    
+    // Check if image_url is a JSON string
+    let parsedUrl = product?.image_url;
+    if (typeof parsedUrl === 'string' && parsedUrl.trim().startsWith('[')) {
+      try {
+        const arr = JSON.parse(parsedUrl);
+        if (arr.length > 0) parsedUrl = arr[0].image_url || arr[0];
+      } catch (e) {}
+    }
+    
+    return resolveImageUrl(parsedUrl, product?.image);
+  };
+
   return (
     <AnimatePresence>
       <motion.div 
@@ -313,7 +333,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
               </button>
               <div className="config-summary-image-wrapper">
                 <img 
-                  src={resolveImageUrl(product?.displayImage || product?.image_url, product?.image)} 
+                  src={getProductImage()} 
                   alt={product?.name} 
                   className="config-summary-image" 
                   onError={(e) => {

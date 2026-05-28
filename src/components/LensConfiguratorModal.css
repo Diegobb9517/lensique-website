@@ -1,0 +1,176 @@
+.config-step-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.config-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.config-subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.config-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.config-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  text-align: left;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.config-option-btn:hover {
+  border-color: #4f46e5;
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.config-icon-wrapper {
+  background: #f1f5f9;
+  color: #64748b;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.config-option-btn:hover .config-icon-wrapper {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+
+.config-option-text h3 {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.config-option-text p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.config-option-btn-secondary {
+  color: #4f46e5;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: all 0.2s;
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.config-option-btn-secondary:hover {
+  text-decoration-color: #4f46e5;
+}
+
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.config-grid-item {
+  position: relative;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.config-grid-item:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.config-grid-item.selected {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
+.config-check {
+  color: #e2e8f0;
+  transition: all 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.config-grid-item.selected .config-check {
+  color: #4f46e5;
+}
+
+.config-grid-item h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.config-price {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.config-grid-item.selected .config-price {
+  color: #4f46e5;
+}
+
+.config-btn-primary {
+  background: #4f46e5;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.config-btn-primary:hover {
+  background: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

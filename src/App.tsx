@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
+import LensConfiguratorModal, { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './components/LensConfiguratorModal';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 
@@ -120,11 +121,13 @@ function FullCatalog({
   onViewProduct, 
   onTryOn,
   catalogData, 
-  initialFilter = 'Todas' 
+  initialFilter = 'Todas',
+  onConfigureProduct
 }: { 
   isOpen: boolean, 
   onClose: () => void, 
-  onViewProduct: (product: any) => void, 
+  onViewProduct: (product: any) => void,
+  onConfigureProduct: (product: any) => void,
   onTryOn: (product: any) => void,
   catalogData: any[], 
   initialFilter?: string 
@@ -302,7 +305,7 @@ function FullCatalog({
                         
                         <button 
                           className="product-main-view-btn"
-                          onClick={() => onViewProduct(product)}
+                          onClick={() => onConfigureProduct(product)}
                         >
                           Seleccionar y comprar
                         </button>
@@ -525,6 +528,7 @@ function App() {
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
+  const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -586,7 +590,7 @@ function App() {
 
   // UseEffect for body scroll lock when any overlay is open
   useEffect(() => {
-    if (isBookingOpen || isCatalogOpen || selectedProductDetail || isMobileMenuOpen || isTryOnOpen || selectedTech) {
+    if (isBookingOpen || isCatalogOpen || selectedProductDetail || configuratorProduct || isMobileMenuOpen || isTryOnOpen || selectedTech) {
       document.body.classList.add('no-scroll');
     } else {
       document.body.classList.remove('no-scroll');
@@ -595,7 +599,7 @@ function App() {
     return () => {
       document.body.classList.remove('no-scroll');
     };
-  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, isMobileMenuOpen, isTryOnOpen, selectedTech]);
+  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, configuratorProduct, isMobileMenuOpen, isTryOnOpen, selectedTech]);
 
   // Calendar Logic
   const getDaysInMonth = (date: Date) => {
@@ -744,9 +748,9 @@ function App() {
 
                 <button
                   className="product-detail-cta"
-                  onClick={() => { setSelectedProductDetail(null); handleOpenBooking(`${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`); }}
+                  onClick={() => { setSelectedProductDetail(null); setConfiguratorProduct(selectedProductDetail); }}
                 >
-                  Agendar cita ahora
+                  Seleccionar micas y comprar
                 </button>
 
                 <div className="product-detail-perks">
@@ -769,6 +773,9 @@ function App() {
         onViewProduct={(prod) => {
           setSelectedProductDetail(prod);
         }}
+        onConfigureProduct={(prod) => {
+          setConfiguratorProduct(prod);
+        }}
         onTryOn={(prod) => {
           setTryOnProduct(prod);
           setIsTryOnOpen(true);
@@ -780,6 +787,59 @@ function App() {
         onClose={() => setIsTryOnOpen(false)}
         product={tryOnProduct}
       />
+
+      {configuratorProduct && (
+        <LensConfiguratorModal
+          product={configuratorProduct}
+          onClose={() => setConfiguratorProduct(null)}
+          onComplete={(config) => {
+            setConfiguratorProduct(null);
+            
+            // Format WhatsApp Message with Configuration
+            let configText = `¡Hola! Me interesa comprar el armazón ${configuratorProduct.name} ${configuratorProduct.brand}.\n\nEsta es mi configuración de micas:\n`;
+            
+            if (config.graduacion) {
+              const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);
+              if (grad) configText += `- Graduación: ${grad.name}\n`;
+            }
+            if (config.ar) {
+              const ar = AR_OPTIONS.find(o => o.id === config.ar);
+              if (ar) configText += `- Tratamiento: ${ar.name}\n`;
+            }
+            if (config.photochromic && config.photochromic !== 'NONE') {
+              const photo = PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic);
+              if (photo) configText += `- Fotocromático: ${photo.name}\n`;
+            }
+            if (config.tinting && config.tinting !== 'NONE') {
+              const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
+              if (tint) configText += `- Entintado: ${tint.name}\n`;
+            }
+            if (config.material === 'HI_INDEX') {
+              configText += `- Adelgazamiento: Sí (Hi-Index)\n`;
+            }
+            
+            // Calculate Total
+            let total = configuratorProduct.price_incl_tax || 0;
+            const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);
+            if (grad) total += grad.price * 1.16;
+            const ar = AR_OPTIONS.find(o => o.id === config.ar);
+            if (ar) total += ar.price * 1.16;
+            const photo = PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic);
+            if (photo) total += photo.price * 1.16;
+            const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
+            if (tint) total += tint.price * 1.16;
+            const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
+            if (mat) total += mat.price * 1.16;
+
+            configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
+            
+            const phone = settings.contact_whatsapp || '523316929111';
+            const cleanPhone = phone.replace(/\D/g, '');
+            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(configText)}`;
+            window.open(url, '_blank');
+          }}
+        />
+      )}
 
 
       {/* Booking Modal */}

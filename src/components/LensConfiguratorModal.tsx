@@ -46,6 +46,61 @@ interface LensConfiguratorModalProps {
   onComplete: (config: any) => void;
 }
 
+const CustomSelect = ({ value, onChange, options, placeholder = "" }: { value: string, onChange: (val: string) => void, options: {value: string, label: string}[], placeholder?: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options.find(o => o.value === value);
+  const label = selectedOption ? selectedOption.label : placeholder;
+
+  return (
+    <div className="custom-select-container" style={{ position: 'relative' }}>
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          padding: '0.75rem', border: '1px solid #ddd', borderRadius: '8px', 
+          backgroundColor: '#fff', fontSize: '0.95rem', color: '#333', 
+          cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          userSelect: 'none'
+        }}
+      >
+        {label}
+        <ChevronLeft size={16} style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(270deg)', transition: '0.2s', color: '#999' }} />
+      </div>
+      
+      {isOpen && (
+        <div 
+          style={{
+            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50, 
+            backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px', 
+            marginTop: '4px', maxHeight: '220px', overflowY: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+          }}
+        >
+          {placeholder && (
+            <div 
+              onClick={() => { onChange(''); setIsOpen(false); }}
+              style={{ padding: '0.75rem', cursor: 'pointer', borderBottom: '1px solid #eee', color: '#666', fontSize: '0.9rem' }}
+            >
+              {placeholder}
+            </div>
+          )}
+          {options.map(opt => (
+            <div 
+              key={opt.value}
+              onClick={() => { onChange(opt.value); setIsOpen(false); }}
+              style={{ padding: '0.6rem 0.75rem', cursor: 'pointer', backgroundColor: value === opt.value ? '#f0f7ff' : 'transparent', color: value === opt.value ? '#0056b3' : '#333', fontSize: '0.95rem' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = value === opt.value ? '#f0f7ff' : 'transparent'}
+            >
+              {opt.label}
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isOpen && <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setIsOpen(false)} />}
+    </div>
+  );
+};
+
 export default function LensConfiguratorModal({ product, catalogData = [], onClose, onComplete }: LensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
   const [prescriptionMode, setPrescriptionMode] = useState<'SELECTION' | 'MANUAL' | 'PHOTO'>('SELECTION');
@@ -57,7 +112,16 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
     pdLeft: '',
     pdRight: ''
   });
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<{
+    prescriptionMethod: string;
+    prescriptionValues: any;
+    graduacion: string;
+    ar: string;
+    photochromic: string;
+    tinting: string;
+    material: string;
+    prescriptionPhotoFile?: File;
+  }>({
     prescriptionMethod: '',
     prescriptionValues: { od: '', oi: '' },
     graduacion: '',
@@ -181,31 +245,19 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
                 <div className="prescription-grid">
                   <div className="presc-field">
                     <label>SPH</label>
-                    <select value={manualPrescription.od.sph} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, sph: e.target.value}})}>
-                      <option value="">0.00</option>
-                      {SPH_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="0.00" value={manualPrescription.od.sph} onChange={(val) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, sph: val}})} options={SPH_OPTIONS} />
                   </div>
                   <div className="presc-field">
                     <label>CYL</label>
-                    <select value={manualPrescription.od.cyl} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, cyl: e.target.value}})}>
-                      <option value="">0.00</option>
-                      {CYL_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="0.00" value={manualPrescription.od.cyl} onChange={(val) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, cyl: val}})} options={CYL_OPTIONS} />
                   </div>
                   <div className="presc-field">
                     <label>Axis</label>
-                    <select value={manualPrescription.od.axis} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, axis: e.target.value}})}>
-                      <option value="">0</option>
-                      {AXIS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="0" value={manualPrescription.od.axis} onChange={(val) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, axis: val}})} options={AXIS_OPTIONS} />
                   </div>
                   <div className="presc-field">
                     <label>ADD</label>
-                    <select value={manualPrescription.od.add} onChange={(e) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, add: e.target.value}})}>
-                      <option value="">Ninguna</option>
-                      {ADD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="Ninguna" value={manualPrescription.od.add} onChange={(val) => setManualPrescription({...manualPrescription, od: {...manualPrescription.od, add: val}})} options={ADD_OPTIONS} />
                   </div>
                 </div>
               </div>
@@ -215,31 +267,19 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
                 <div className="prescription-grid">
                   <div className="presc-field">
                     <label>SPH</label>
-                    <select value={manualPrescription.oi.sph} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, sph: e.target.value}})}>
-                      <option value="">0.00</option>
-                      {SPH_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="0.00" value={manualPrescription.oi.sph} onChange={(val) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, sph: val}})} options={SPH_OPTIONS} />
                   </div>
                   <div className="presc-field">
                     <label>CYL</label>
-                    <select value={manualPrescription.oi.cyl} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, cyl: e.target.value}})}>
-                      <option value="">0.00</option>
-                      {CYL_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="0.00" value={manualPrescription.oi.cyl} onChange={(val) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, cyl: val}})} options={CYL_OPTIONS} />
                   </div>
                   <div className="presc-field">
                     <label>Axis</label>
-                    <select value={manualPrescription.oi.axis} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, axis: e.target.value}})}>
-                      <option value="">0</option>
-                      {AXIS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="0" value={manualPrescription.oi.axis} onChange={(val) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, axis: val}})} options={AXIS_OPTIONS} />
                   </div>
                   <div className="presc-field">
                     <label>ADD</label>
-                    <select value={manualPrescription.oi.add} onChange={(e) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, add: e.target.value}})}>
-                      <option value="">Ninguna</option>
-                      {ADD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="Ninguna" value={manualPrescription.oi.add} onChange={(val) => setManualPrescription({...manualPrescription, oi: {...manualPrescription.oi, add: val}})} options={ADD_OPTIONS} />
                   </div>
                 </div>
               </div>
@@ -255,26 +295,17 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
                 
                 {manualPrescription.pdType === 'SINGLE' ? (
                   <div className="presc-field full-width">
-                    <select value={manualPrescription.pd} onChange={(e) => setManualPrescription({...manualPrescription, pd: e.target.value})}>
-                      <option value="">Selecciona tu PD</option>
-                      {PD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                    <CustomSelect placeholder="Selecciona tu PD" value={manualPrescription.pd} onChange={(val) => setManualPrescription({...manualPrescription, pd: val})} options={PD_OPTIONS} />
                   </div>
                 ) : (
                   <div className="prescription-grid dual-pd-grid">
                     <div className="presc-field">
                       <label>PD Derecho</label>
-                      <select value={manualPrescription.pdRight} onChange={(e) => setManualPrescription({...manualPrescription, pdRight: e.target.value})}>
-                        <option value="">Derecho</option>
-                        {DUAL_PD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
+                      <CustomSelect placeholder="Derecho" value={manualPrescription.pdRight} onChange={(val) => setManualPrescription({...manualPrescription, pdRight: val})} options={DUAL_PD_OPTIONS} />
                     </div>
                     <div className="presc-field">
                       <label>PD Izquierdo</label>
-                      <select value={manualPrescription.pdLeft} onChange={(e) => setManualPrescription({...manualPrescription, pdLeft: e.target.value})}>
-                        <option value="">Izquierdo</option>
-                        {DUAL_PD_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
+                      <CustomSelect placeholder="Izquierdo" value={manualPrescription.pdLeft} onChange={(val) => setManualPrescription({...manualPrescription, pdLeft: val})} options={DUAL_PD_OPTIONS} />
                     </div>
                   </div>
                 )}
@@ -302,9 +333,27 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
               <h2 className="config-title">Sube tu receta</h2>
               <p className="config-subtitle">Asegúrate de que la foto sea clara.</p>
               
-              <div className="config-upload-area">
+              <div className="config-upload-area" style={{ position: 'relative' }}>
+                 <input 
+                   type="file" 
+                   accept="image/*,.pdf" 
+                   onChange={(e) => {
+                     if (e.target.files && e.target.files.length > 0) {
+                        updateConfig('prescriptionPhotoFile', e.target.files[0]);
+                     }
+                   }}
+                   style={{
+                     position: 'absolute', inset: 0, width: '100%', height: '100%',
+                     opacity: 0, cursor: 'pointer'
+                   }} 
+                 />
                  <Upload size={48} color="#ccc" style={{margin: '0 auto 1rem', display: 'block'}} />
                  <p style={{textAlign: 'center', color: '#666'}}>Haz clic aquí para seleccionar o tomar foto</p>
+                 {config.prescriptionPhotoFile && (
+                   <div style={{textAlign: 'center', marginTop: '1rem', color: '#10b981', fontWeight: 500}}>
+                     Archivo cargado: {(config.prescriptionPhotoFile as any).name}
+                   </div>
+                 )}
               </div>
 
               <div className="config-form-actions" style={{marginTop: '2rem'}}>

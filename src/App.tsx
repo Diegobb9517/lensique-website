@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
-import LensConfiguratorModal, { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './components/LensConfiguratorModal';
+import LensConfiguratorModal from './components/LensConfiguratorModal';
+import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 
@@ -305,7 +306,13 @@ function FullCatalog({
                         
                         <button 
                           className="product-main-view-btn"
-                          onClick={() => onConfigureProduct(product)}
+                          onClick={() => {
+                            if (String(product.category || '').toLowerCase().includes('contacto')) {
+                              onViewProduct(product);
+                            } else {
+                              onConfigureProduct(product);
+                            }
+                          }}
                         >
                           Seleccionar y comprar
                         </button>
@@ -748,9 +755,16 @@ function App() {
 
                 <button
                   className="product-detail-cta"
-                  onClick={() => { setSelectedProductDetail(null); setConfiguratorProduct(selectedProductDetail); }}
+                  onClick={() => { 
+                    setSelectedProductDetail(null); 
+                    if (String(selectedProductDetail.category || '').toLowerCase().includes('contacto')) {
+                      handleOpenBooking(`${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`);
+                    } else {
+                      setConfiguratorProduct(selectedProductDetail); 
+                    }
+                  }}
                 >
-                  Seleccionar micas y comprar
+                  {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? 'Agendar cita ahora' : 'Seleccionar micas y comprar'}
                 </button>
 
                 <div className="product-detail-perks">

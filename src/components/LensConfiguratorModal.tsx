@@ -103,6 +103,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "" }: { value: s
 
 export default function LensConfiguratorModal({ product, catalogData = [], onClose, onComplete }: LensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
+  const [isSending, setIsSending] = useState(false);
   const [prescriptionMode, setPrescriptionMode] = useState<'SELECTION' | 'MANUAL' | 'PHOTO'>('SELECTION');
   const [manualPrescription, setManualPrescription] = useState({
     od: { sph: '', cyl: '', axis: '', add: '' },
@@ -188,6 +189,32 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
     if (mat && config.graduacion !== 'NONE') total += getDynamicPrice(mat.name, mat.price);
 
     return Math.round(total);
+  };
+
+  const handleComplete = async () => {
+    setIsSending(true);
+    try {
+      const formData = new FormData();
+      formData.append('config', JSON.stringify({
+        ...config,
+        productName: product?.name,
+        productPrice: calculateTotal()
+      }));
+
+      if (config.prescriptionPhotoFile) {
+        formData.append('prescriptionPhotoFile', config.prescriptionPhotoFile);
+      }
+
+      await fetch(`${API_BASE}/api/quotes/send`, {
+        method: 'POST',
+        body: formData
+      });
+    } catch (e) {
+      console.error('Error sending quote email:', e);
+    } finally {
+      setIsSending(false);
+      onComplete(config);
+    }
   };
 
   const renderStepContent = () => {
@@ -501,10 +528,11 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
 
             <button 
               className="config-btn-primary config-btn-full"
-              onClick={() => onComplete(config)}
-              style={{ marginTop: '2rem', padding: '1.25rem' }}
+              onClick={handleComplete}
+              disabled={isSending}
+              style={{ marginTop: '2rem', padding: '1.25rem', opacity: isSending ? 0.7 : 1 }}
             >
-              Continuar por WhatsApp
+              {isSending ? 'Enviando...' : 'Continuar por WhatsApp'}
             </button>
           </div>
         );

@@ -6,7 +6,7 @@ import './LensConfiguratorModal.css';
 import heroImg from '../assets/hero_glasses.png';
 import contactLensesImg from '../assets/contact_lenses.png';
 
-const API_BASE = 'https://lensique-backend-m21d.onrender.com';
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 const resolveImageUrl = (url: any, fallback?: any) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
   

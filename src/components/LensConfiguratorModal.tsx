@@ -113,12 +113,14 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
               {FRAME_GRADUACION_OPTIONS.map(opt => (
                 <button 
                   key={opt.id}
-                  className={`config-grid-item ${config.graduacion === opt.id ? 'selected' : ''}`}
+                  className={`config-list-item ${config.graduacion === opt.id ? 'selected' : ''}`}
                   onClick={() => { updateConfig('graduacion', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={22} /></div>
-                  <h3>{opt.name}</h3>
-                  {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
+                  <div className="config-list-item-top">
+                    <h3>{opt.name}</h3>
+                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                  </div>
+                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
               ))}
             </div>
@@ -134,12 +136,14 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
               {AR_OPTIONS.map(opt => (
                 <button 
                   key={opt.id}
-                  className={`config-grid-item ${config.ar === opt.id ? 'selected' : ''}`}
+                  className={`config-list-item ${config.ar === opt.id ? 'selected' : ''}`}
                   onClick={() => { updateConfig('ar', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={22} /></div>
-                  <h3>{opt.name}</h3>
-                  {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
+                  <div className="config-list-item-top">
+                    <h3>{opt.name}</h3>
+                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                  </div>
+                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
               ))}
             </div>
@@ -155,12 +159,14 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
               {PHOTOCHROMIC_OPTIONS.map(opt => (
                 <button 
                   key={opt.id}
-                  className={`config-grid-item ${config.photochromic === opt.id ? 'selected' : ''}`}
+                  className={`config-list-item ${config.photochromic === opt.id ? 'selected' : ''}`}
                   onClick={() => { updateConfig('photochromic', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={22} /></div>
-                  <h3>{opt.name}</h3>
-                  {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
+                  <div className="config-list-item-top">
+                    <h3>{opt.name}</h3>
+                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                  </div>
+                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
               ))}
             </div>
@@ -176,12 +182,14 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
               {TINTING_OPTIONS.map(opt => (
                 <button 
                   key={opt.id}
-                  className={`config-grid-item ${config.tinting === opt.id ? 'selected' : ''}`}
+                  className={`config-list-item ${config.tinting === opt.id ? 'selected' : ''}`}
                   onClick={() => { updateConfig('tinting', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={22} /></div>
-                  <h3>{opt.name}</h3>
-                  {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
+                  <div className="config-list-item-top">
+                    <h3>{opt.name}</h3>
+                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                  </div>
+                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
               ))}
             </div>
@@ -197,15 +205,17 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
               {MATERIAL_OPTIONS.map(opt => (
                 <button 
                   key={opt.id}
-                  className={`config-grid-item ${config.material === opt.id ? 'selected' : ''}`}
+                  className={`config-list-item ${config.material === opt.id ? 'selected' : ''}`}
                   onClick={() => { 
                     updateConfig('material', opt.id); 
                     setStep(7); 
                   }}
                 >
-                  <div className="config-check"><CheckCircle size={22} /></div>
-                  <h3>{opt.name}</h3>
-                  {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
+                  <div className="config-list-item-top">
+                    <h3>{opt.name}</h3>
+                    <span className="config-price">{opt.price === 0 ? 'Incluido' : `+$${Math.round(opt.price * 1.16).toLocaleString('es-MX')}`}</span>
+                  </div>
+                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>
               ))}
             </div>

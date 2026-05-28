@@ -314,7 +314,7 @@ function FullCatalog({
                             }
                           }}
                         >
-                          Seleccionar y comprar
+                          Seleccionar
                         </button>
                       </div>
                     </motion.div>

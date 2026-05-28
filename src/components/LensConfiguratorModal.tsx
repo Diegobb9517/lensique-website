@@ -6,11 +6,18 @@ import './LensConfiguratorModal.css';
 
 const API_BASE = 'https://lensique-backend-m21d.onrender.com';
 const resolveImageUrl = (url: any, fallback?: any) => {
-  if (!url || url === 'undefined' || url === 'null' || url === '') return fallback || '';
-  const targetUrl = String(url).trim();
-  if (targetUrl.startsWith('http')) return targetUrl;
-  const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
-  return `${API_BASE}${cleanUrl}`;
+  const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
+  
+  const processUrl = (u: string) => {
+    const targetUrl = String(u).trim();
+    if (targetUrl.startsWith('http') || targetUrl.startsWith('data:')) return targetUrl;
+    const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
+    return `${API_BASE}${cleanUrl}`;
+  };
+
+  if (!isInvalid(url)) return processUrl(url);
+  if (!isInvalid(fallback)) return processUrl(fallback);
+  return '';
 };
 
 interface LensConfiguratorModalProps {

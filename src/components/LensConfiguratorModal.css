@@ -33,8 +33,7 @@
 @media (min-width: 768px) {
   .config-modal-container {
     max-width: 1000px;
-    height: auto;
-    max-height: 85vh;
+    height: 85vh;
     border-radius: 1.5rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }

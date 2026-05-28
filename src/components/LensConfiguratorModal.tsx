@@ -4,6 +4,15 @@ import { X, ChevronLeft, Upload, Edit3, User, CheckCircle } from 'lucide-react';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from '../lib/configuratorConstants';
 import './LensConfiguratorModal.css';
 
+const API_BASE = 'https://lensique-backend-m21d.onrender.com';
+const resolveImageUrl = (url: any, fallback?: any) => {
+  if (!url || url === 'undefined' || url === 'null' || url === '') return fallback || '';
+  const targetUrl = String(url).trim();
+  if (targetUrl.startsWith('http')) return targetUrl;
+  const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
+  return `${API_BASE}${cleanUrl}`;
+};
+
 interface LensConfiguratorModalProps {
   product: any;
   onClose: () => void;
@@ -22,8 +31,9 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
     material: ''
   });
 
-  const handleNext = () => {
-    if (step === 4 && config.photochromic && config.photochromic !== 'NONE') {
+  const handleNext = (overridePhotochromic?: string) => {
+    const currentPhoto = overridePhotochromic !== undefined ? overridePhotochromic : config.photochromic;
+    if (step === 4 && currentPhoto && currentPhoto !== 'NONE') {
       updateConfig('tinting', 'NONE');
       setStep(6);
     } else {
@@ -32,9 +42,15 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
   };
 
   const handlePrev = () => {
+    // If going back from Step 6 (Material) and a photochromic option is selected, skip Step 5 (Tinting)
     if (step === 6 && config.photochromic && config.photochromic !== 'NONE') {
       setStep(4);
-    } else {
+    } 
+    // If going back from Step 5 (Tinting), ensure we didn't skip it going forward
+    else if (step === 5 && config.photochromic && config.photochromic !== 'NONE') {
+      setStep(4);
+    }
+    else {
       setStep(s => Math.max(s - 1, 1));
     }
   };
@@ -160,7 +176,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 <button 
                   key={opt.id}
                   className={`config-list-item ${config.photochromic === opt.id ? 'selected' : ''}`}
-                  onClick={() => { updateConfig('photochromic', opt.id); handleNext(); }}
+                  onClick={() => { updateConfig('photochromic', opt.id); handleNext(opt.id); }}
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
@@ -281,7 +297,11 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 <X size={24} />
               </button>
               <div className="config-summary-image-wrapper">
-                <img src={product?.image_url || product?.image} alt={product?.name} className="config-summary-image" />
+                <img 
+                  src={resolveImageUrl(product?.displayImage || product?.image_url, product?.image)} 
+                  alt={product?.name} 
+                  className="config-summary-image" 
+                />
               </div>
               <div className="config-summary-details">
                 <span className="config-summary-brand">{product?.brand || 'Lensique'}</span>

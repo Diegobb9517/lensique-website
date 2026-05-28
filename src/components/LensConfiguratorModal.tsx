@@ -205,10 +205,15 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
         formData.append('prescriptionPhotoFile', config.prescriptionPhotoFile);
       }
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
       await fetch(`${API_BASE}/api/quotes/send`, {
         method: 'POST',
-        body: formData
+        body: formData,
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
     } catch (e) {
       console.error('Error sending quote email:', e);
     } finally {

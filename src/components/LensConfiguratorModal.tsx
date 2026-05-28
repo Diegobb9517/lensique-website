@@ -22,8 +22,22 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
     material: ''
   });
 
-  const nextStep = () => setStep(s => Math.min(s + 1, 7));
-  const prevStep = () => setStep(s => Math.max(s - 1, 1));
+  const handleNext = () => {
+    if (step === 4 && config.photochromic && config.photochromic !== 'NONE') {
+      updateConfig('tinting', 'NONE');
+      setStep(6);
+    } else {
+      setStep(s => Math.min(s + 1, 7));
+    }
+  };
+
+  const handlePrev = () => {
+    if (step === 6 && config.photochromic && config.photochromic !== 'NONE') {
+      setStep(4);
+    } else {
+      setStep(s => Math.max(s - 1, 1));
+    }
+  };
 
   const updateConfig = (key: string, value: any) => {
     setConfig(prev => ({ ...prev, [key]: value }));
@@ -42,7 +56,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
     if (photo) total += photo.price * 1.16;
 
     const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
-    if (tint) total += tint.price * 1.16;
+    if (tint && config.photochromic === 'NONE') total += tint.price * 1.16;
 
     const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
     if (mat) total += mat.price * 1.16;
@@ -59,7 +73,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
             <p className="config-subtitle">Añádela ahora para ahorrar tiempo o hazlo después.</p>
             
             <div className="config-options-list">
-              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'MANUAL'); nextStep(); }}>
+              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'MANUAL'); handleNext(); }}>
                 <div className="config-icon-wrapper"><Edit3 size={20} /></div>
                 <div className="config-option-text">
                   <h3>Ingresar valores manualmente</h3>
@@ -67,7 +81,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 </div>
               </button>
               
-              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'PHOTO'); nextStep(); }}>
+              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'PHOTO'); handleNext(); }}>
                 <div className="config-icon-wrapper"><Upload size={20} /></div>
                 <div className="config-option-text">
                   <h3>Subir una foto</h3>
@@ -75,7 +89,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 </div>
               </button>
 
-              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'ACCOUNT'); nextStep(); }}>
+              <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'ACCOUNT'); handleNext(); }}>
                 <div className="config-icon-wrapper"><User size={20} /></div>
                 <div className="config-option-text">
                   <h3>Añadir de mi cuenta</h3>
@@ -83,7 +97,7 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 </div>
               </button>
 
-              <button className="config-option-btn-secondary mt-4" onClick={() => { updateConfig('prescriptionMethod', 'LATER'); nextStep(); }}>
+              <button className="config-option-btn-secondary" onClick={() => { updateConfig('prescriptionMethod', 'LATER'); handleNext(); }}>
                 Saltar por ahora, lo haré después
               </button>
             </div>
@@ -100,9 +114,9 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 <button 
                   key={opt.id}
                   className={`config-grid-item ${config.graduacion === opt.id ? 'selected' : ''}`}
-                  onClick={() => { updateConfig('graduacion', opt.id); nextStep(); }}
+                  onClick={() => { updateConfig('graduacion', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={24} /></div>
+                  <div className="config-check"><CheckCircle size={22} /></div>
                   <h3>{opt.name}</h3>
                   {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
                 </button>
@@ -121,9 +135,9 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 <button 
                   key={opt.id}
                   className={`config-grid-item ${config.ar === opt.id ? 'selected' : ''}`}
-                  onClick={() => { updateConfig('ar', opt.id); nextStep(); }}
+                  onClick={() => { updateConfig('ar', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={24} /></div>
+                  <div className="config-check"><CheckCircle size={22} /></div>
                   <h3>{opt.name}</h3>
                   {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
                 </button>
@@ -142,9 +156,9 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 <button 
                   key={opt.id}
                   className={`config-grid-item ${config.photochromic === opt.id ? 'selected' : ''}`}
-                  onClick={() => { updateConfig('photochromic', opt.id); nextStep(); }}
+                  onClick={() => { updateConfig('photochromic', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={24} /></div>
+                  <div className="config-check"><CheckCircle size={22} /></div>
                   <h3>{opt.name}</h3>
                   {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
                 </button>
@@ -163,9 +177,9 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                 <button 
                   key={opt.id}
                   className={`config-grid-item ${config.tinting === opt.id ? 'selected' : ''}`}
-                  onClick={() => { updateConfig('tinting', opt.id); nextStep(); }}
+                  onClick={() => { updateConfig('tinting', opt.id); handleNext(); }}
                 >
-                  <div className="config-check"><CheckCircle size={24} /></div>
+                  <div className="config-check"><CheckCircle size={22} /></div>
                   <h3>{opt.name}</h3>
                   {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
                 </button>
@@ -177,8 +191,8 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
       case 6:
         return (
           <div className="config-step-content">
-            <h2 className="config-title">Adelgazar Mica (HI-INDEX)</h2>
-            <p className="config-subtitle">Recomendado para graduaciones altas.</p>
+            <h2 className="config-title">Adelgazar Mica</h2>
+            <p className="config-subtitle">Recomendado para graduaciones altas (HI-INDEX).</p>
             <div className="config-grid">
               {MATERIAL_OPTIONS.map(opt => (
                 <button 
@@ -186,10 +200,10 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
                   className={`config-grid-item ${config.material === opt.id ? 'selected' : ''}`}
                   onClick={() => { 
                     updateConfig('material', opt.id); 
-                    setStep(7); // Final step
+                    setStep(7); 
                   }}
                 >
-                  <div className="config-check"><CheckCircle size={24} /></div>
+                  <div className="config-check"><CheckCircle size={22} /></div>
                   <h3>{opt.name}</h3>
                   {opt.price > 0 && <span className="config-price">+${Math.round(opt.price * 1.16).toLocaleString('es-MX')}</span>}
                 </button>
@@ -202,30 +216,15 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
         return (
           <div className="config-step-content config-text-center">
             <div className="config-success-icon">
-              <CheckCircle size={40} />
+              <CheckCircle size={48} />
             </div>
-            <h2 className="config-title">¡Configuración Completa!</h2>
+            <h2 className="config-title" style={{ fontSize: '2rem' }}>¡Todo listo!</h2>
             <p className="config-subtitle">Tu armazón está listo con las micas perfectas para ti.</p>
-            
-            <div className="config-summary-box">
-              <h4>Resumen:</h4>
-              <ul>
-                <li>• Armazón: {product?.name} {product?.brand}</li>
-                {config.graduacion && <li>• Graduación: {FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion)?.name}</li>}
-                {config.ar && <li>• AR: {AR_OPTIONS.find(o => o.id === config.ar)?.name}</li>}
-                {config.photochromic && config.photochromic !== 'NONE' && <li>• Fotocromático: {PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic)?.name}</li>}
-                {config.tinting && config.tinting !== 'NONE' && <li>• Entintado: {TINTING_OPTIONS.find(o => o.id === config.tinting)?.name}</li>}
-                {config.material === 'HI_INDEX' && <li>• Adelgazado: Sí (Hi-Index)</li>}
-              </ul>
-              <div className="config-summary-total">
-                <span>Total Estimado</span>
-                <strong>${calculateTotal().toLocaleString('es-MX')}</strong>
-              </div>
-            </div>
 
             <button 
               className="config-btn-primary config-btn-full"
               onClick={() => onComplete(config)}
+              style={{ marginTop: '2rem', padding: '1.25rem' }}
             >
               Continuar por WhatsApp
             </button>
@@ -250,11 +249,11 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="config-modal-header">
+          {/* Header (Mobile Only) */}
+          <div className="config-modal-header d-md-none">
             <div className="config-modal-header-left">
               {step > 1 && step < 7 && (
-                <button onClick={prevStep} className="config-icon-btn">
+                <button onClick={handlePrev} className="config-icon-btn">
                   <ChevronLeft size={20} />
                 </button>
               )}
@@ -265,19 +264,102 @@ export default function LensConfiguratorModal({ product, onClose, onComplete }: 
             </button>
           </div>
 
-          {/* Progress Bar */}
-          {step < 7 && (
-            <div className="config-progress-bg">
-              <div 
-                className="config-progress-fill" 
-                style={{ width: `${(step / 6) * 100}%` }} 
-              />
-            </div>
-          )}
+          <div className="config-modal-split">
+            {/* Left Panel: Summary */}
+            <div className="config-summary-panel">
+              <button onClick={onClose} className="config-close-btn-desktop">
+                <X size={24} />
+              </button>
+              <div className="config-summary-image-wrapper">
+                <img src={product?.image_url || product?.image} alt={product?.name} className="config-summary-image" />
+              </div>
+              <div className="config-summary-details">
+                <span className="config-summary-brand">{product?.brand || 'Lensique'}</span>
+                <h3 className="config-summary-name">{product?.name}</h3>
+                
+                <div className="config-summary-selections">
+                  <div className="config-selection-item">
+                    <span>Armazón</span>
+                    <span>${Math.round(product?.price_incl_tax || 0).toLocaleString('es-MX')}</span>
+                  </div>
+                  {config.graduacion && config.graduacion !== 'SIN_GRADUACION_MICA' && (
+                    <div className="config-selection-item">
+                      <span>Graduación</span>
+                      <span>+${Math.round(FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion)?.price * 1.16 || 0).toLocaleString('es-MX')}</span>
+                    </div>
+                  )}
+                  {config.ar && config.ar !== 'AR_VERDE' && (
+                    <div className="config-selection-item">
+                      <span>Antirreflejante</span>
+                      <span>+${Math.round(AR_OPTIONS.find(o => o.id === config.ar)?.price * 1.16 || 0).toLocaleString('es-MX')}</span>
+                    </div>
+                  )}
+                  {config.photochromic && config.photochromic !== 'NONE' && (
+                    <div className="config-selection-item">
+                      <span>Fotocromático</span>
+                      <span>+${Math.round(PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic)?.price * 1.16 || 0).toLocaleString('es-MX')}</span>
+                    </div>
+                  )}
+                  {config.tinting && config.tinting !== 'NONE' && config.photochromic === 'NONE' && (
+                    <div className="config-selection-item">
+                      <span>Entintado</span>
+                      <span>+${Math.round(TINTING_OPTIONS.find(o => o.id === config.tinting)?.price * 1.16 || 0).toLocaleString('es-MX')}</span>
+                    </div>
+                  )}
+                  {config.material === 'HI_INDEX' && (
+                    <div className="config-selection-item">
+                      <span>HI-INDEX</span>
+                      <span>+${Math.round(MATERIAL_OPTIONS.find(o => o.id === config.material)?.price * 1.16 || 0).toLocaleString('es-MX')}</span>
+                    </div>
+                  )}
+                </div>
 
-          {/* Content Area */}
-          <div className="config-modal-body">
-            {renderStepContent()}
+                <div className="config-summary-total">
+                  <span>Total estimado</span>
+                  <strong>${calculateTotal().toLocaleString('es-MX')}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Panel: Interactive Steps */}
+            <div className="config-steps-panel">
+              {/* Header (Desktop Only) */}
+              <div className="config-modal-header d-none-mobile">
+                <div className="config-modal-header-left">
+                  {step > 1 && step < 7 && (
+                    <button onClick={handlePrev} className="config-icon-btn">
+                      <ChevronLeft size={20} /> Volver
+                    </button>
+                  )}
+                </div>
+                {step < 7 && <span className="config-step-indicator">Paso {step} de 6</span>}
+              </div>
+
+              {/* Progress Bar */}
+              {step < 7 && (
+                <div className="config-progress-bg">
+                  <div 
+                    className="config-progress-fill" 
+                    style={{ width: `${(step / 6) * 100}%` }} 
+                  />
+                </div>
+              )}
+
+              {/* Content Area */}
+              <div className="config-modal-body">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={step}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {renderStepContent()}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
         </motion.div>
       </motion.div>

@@ -255,14 +255,6 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
                   </div>
                 </button>
 
-                <button className="config-option-btn" onClick={() => { updateConfig('prescriptionMethod', 'ACCOUNT'); handleNext(); }}>
-                  <div className="config-icon-wrapper"><User size={20} /></div>
-                  <div className="config-option-text">
-                    <h3>Añadir de mi cuenta</h3>
-                    <p>Inicia sesión para ver recetas guardadas.</p>
-                  </div>
-                </button>
-
                 <button className="config-option-btn-secondary" onClick={() => { updateConfig('prescriptionMethod', 'LATER'); handleNext(); }}>
                   Saltar por ahora, lo haré después
                 </button>

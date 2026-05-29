@@ -65,17 +65,19 @@
   margin-bottom: 2rem;
   background: white;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid #f1f5f9;
+  overflow: hidden;
+  height: 220px;
 }
 
 .contact-lens-summary-image {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
 }
 
 .contact-lens-summary-brand {

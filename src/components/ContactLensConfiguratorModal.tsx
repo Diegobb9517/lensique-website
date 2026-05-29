@@ -19,7 +19,7 @@ const resolveImageUrl = (url: any, fallback?: any) => {
   return '';
 };
 
-const WPSelect = ({ label, value, options, onChange }: any) => {
+const WPSelect = ({ label, value, options, onChange, zeroValue, placeholder = 'Selecciona' }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   
@@ -40,7 +40,7 @@ const WPSelect = ({ label, value, options, onChange }: any) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <label>{label}</label>
-        <div className="cl-wp-dropdown-value">{value || 'Selecciona'}</div>
+        <div className="cl-wp-dropdown-value">{value || placeholder}</div>
       </div>
       <AnimatePresence>
         {isOpen && (
@@ -52,13 +52,15 @@ const WPSelect = ({ label, value, options, onChange }: any) => {
             transition={{ duration: 0.15 }}
           >
             <div className="cl-wp-dropdown-grid">
-              <div 
-                  className={`cl-wp-dropdown-item zero-item ${value === '' || value === '0.00' || value === '0' ? 'selected' : ''}`}
-                  onClick={() => { onChange(options.includes('0') ? '0' : (options.includes('0.00') ? '0.00' : '')); setIsOpen(false); }}
-                >
-                  0
-              </div>
-              {options.filter((o: string) => o !== '' && o !== '0.00' && o !== '0').map((opt: string) => (
+              {zeroValue !== undefined && (
+                <div 
+                    className={`cl-wp-dropdown-item zero-item ${value === zeroValue ? 'selected' : ''}`}
+                    onClick={() => { onChange(zeroValue); setIsOpen(false); }}
+                  >
+                    0
+                </div>
+              )}
+              {options.map((opt: string) => (
                 <div 
                   key={opt} 
                   className={`cl-wp-dropdown-item ${value === opt ? 'selected' : ''}`}
@@ -111,16 +113,16 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   };
 
   const getSpmOptions = () => {
-    const opts = [''];
-    for (let i = -10; i <= 10; i += 0.25) {
-      if (i !== 0) opts.push(i > 0 ? `+${i.toFixed(2)}` : i.toFixed(2));
-      else opts.push('0.00');
+    const opts = [];
+    for (let i = 0.25; i <= 10; i += 0.25) {
+      opts.push(`-${i.toFixed(2)}`);
+      opts.push(`+${i.toFixed(2)}`);
     }
     return opts;
   };
 
   const getCylOptions = () => {
-    const opts = [''];
+    const opts = [];
     for (let i = -0.25; i >= -6; i -= 0.25) {
       opts.push(i.toFixed(2));
     }
@@ -128,7 +130,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   };
 
   const getAxisOptions = () => {
-    const opts = [''];
+    const opts = [];
     for (let i = 10; i <= 180; i += 10) {
       opts.push(i.toString());
     }
@@ -209,6 +211,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           value={values.sph}
           options={getSpmOptions()}
           onChange={(val: string) => setValues({ ...values, sph: val })}
+          zeroValue="0.00"
         />
 
         <WPSelect 

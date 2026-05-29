@@ -811,7 +811,8 @@ function App() {
           onComplete={(config) => {
             setContactConfiguratorProduct(null);
             
-            let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name} ${contactConfiguratorProduct.brand}.\n\nEsta es mi receta:\n`;
+            const brandText = contactConfiguratorProduct.brand ? ` ${contactConfiguratorProduct.brand}` : '';
+            let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name}${brandText}.\n\nEsta es mi receta:\n`;
             
             const clConfig = config.contactLensConfig;
             if (clConfig.samePrescription) {

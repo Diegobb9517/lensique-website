@@ -132,7 +132,14 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
     material: ''
   });
 
-  const getDynamicPrice = (name: string, fallbackPrice: number) => {
+  const getDynamicPrice = (name: string, fallbackPrice: number, optId?: string) => {
+    if (optId === 'POLICARBONATO' && product?.name) {
+       const isFree = [
+         'ORX3929V- 2500', 'ORX3928V- 2501', '0VO4320B 5152', 
+         '0VO4357D 848', 'CA-8901-BK/GD', '0AN6134L (Vista)'
+       ].some(m => product.name.trim().toUpperCase() === m.toUpperCase());
+       if (isFree) return 0;
+    }
     const item = catalogData.find((p: any) => p.name.toLowerCase() === name.toLowerCase());
     return item ? (item.price || 0) : (fallbackPrice * 1.16);
   };
@@ -186,7 +193,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
     if (tint && config.photochromic === 'NONE') total += getDynamicPrice(tint.name, tint.price);
 
     const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
-    if (mat && config.graduacion !== 'NONE') total += getDynamicPrice(mat.name, mat.price);
+    if (mat && config.graduacion !== 'NONE') total += getDynamicPrice(mat.name, mat.price, mat.id);
 
     return Math.round(total);
   };
@@ -513,7 +520,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
                 >
                   <div className="config-list-item-top">
                     <h3>{opt.name}</h3>
-                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
+                    <span className="config-price">{getDynamicPrice(opt.name, opt.price, opt.id) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price, opt.id)).toLocaleString('es-MX')}`}</span>
                   </div>
                   {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
                 </button>

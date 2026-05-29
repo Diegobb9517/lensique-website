@@ -444,6 +444,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const totalQuantity = quantityOD + quantityOS;
   const totalPrice = (product?.price_incl_tax || 0) * (totalQuantity > 0 ? totalQuantity : 1);
 
+  const getUsageType = () => {
+    const n = productName;
+    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Lentes de uso diario';
+    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Lentes de uso quincenal';
+    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Lentes de uso mensual';
+    return 'Lentes de Contacto';
+  };
+
   return (
     <div className="contact-lens-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <motion.div 
@@ -471,7 +479,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           
           <span className="contact-lens-summary-brand">{product?.brand || 'ACUVUE'}</span>
           <h3 className="contact-lens-summary-name">{product?.name}</h3>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', marginTop: '0.25rem' }}>Lentes de Contacto</p>
+          <p style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', marginTop: '0.25rem' }}>{getUsageType()}</p>
           
           <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
             <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#0f172a' }}>

@@ -137,6 +137,15 @@ function FullCatalog({
 
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
+  const [contactUsageFilter, setContactUsageFilter] = useState('Todos');
+
+  const getContactLensUsage = (name: string) => {
+    const n = (name || '').toUpperCase();
+    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
+    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
+    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';
+    return 'Todos';
+  };
 
   const availableBrands = Array.from(new Set(
     (catalogData || [])
@@ -152,8 +161,9 @@ function FullCatalog({
 
   useEffect(() => {
     if (isOpen) {
-      setFilter(initialFilter);
+      setFilter(initialFilter || 'Todas');
       setSelectedBrand('Todas');
+      setContactUsageFilter('Todos');
     }
   }, [isOpen, initialFilter]);
 
@@ -183,7 +193,7 @@ function FullCatalog({
     const matchesBrand = searchQuery !== '' || selectedBrand === 'Todas' || (p.brand || 'Varios') === selectedBrand;
     const matchesCategory = searchQuery !== '' || filter === 'Todas' || (
       filter === 'Armazones' ? !(p.category || 'vista').toLowerCase().includes('contacto') :
-      filter === 'Lentes de Contacto' ? (p.category || 'vista').toLowerCase().includes('contacto') :
+      filter === 'Lentes de Contacto' ? ((p.category || 'vista').toLowerCase().includes('contacto') && (contactUsageFilter === 'Todos' || getContactLensUsage(p.name) === contactUsageFilter)) :
       (p.category || 'vista').toLowerCase().includes(filter.toLowerCase())
     );
     
@@ -255,6 +265,22 @@ function FullCatalog({
                   ))}
                 </select>
               </div>
+              {filter === 'Lentes de Contacto' && (
+                <div className="filter-group">
+                  <span className="filter-label">Uso:</span>
+                  <div className="filter-pills">
+                    {['Todos', 'Uso Diario', 'Uso Quincenal', 'Uso Mensual'].map(u => (
+                      <button 
+                        key={u} 
+                        className={`filter-pill ${contactUsageFilter === u ? 'active' : ''}`}
+                        onClick={() => setContactUsageFilter(u)}
+                      >
+                        {u}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="catalog-products">
@@ -750,7 +776,11 @@ function App() {
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
                 <h2 className="product-detail-name">{selectedProductDetail.model || selectedProductDetail.name}</h2>
                 <p className="product-detail-code">{selectedProductDetail.name}</p>
-                <p className="product-detail-desc">{selectedProductDetail.category || 'Armazón Premium'}</p>
+                <p className="product-detail-desc">
+                  {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') 
+                    ? `Lentes de Contacto${getContactLensUsage(selectedProductDetail.name) !== 'Todos' ? ` - ${getContactLensUsage(selectedProductDetail.name)}` : ''}` 
+                    : (selectedProductDetail.category || 'Armazón Premium')}
+                </p>
 
                 <div className="product-detail-divider" />
 

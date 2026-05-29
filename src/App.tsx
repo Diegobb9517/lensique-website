@@ -116,6 +116,14 @@ const safeJsonParse = (str: any, fallback: any = []) => {
 
 // Catalog will be fetched from API
 
+export const getContactLensUsage = (name: string) => {
+  const n = (name ? name.toString() : '').toUpperCase();
+  if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
+  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
+  if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';
+  return 'Todos';
+};
+
 
 function FullCatalog({ 
   isOpen, 
@@ -138,14 +146,6 @@ function FullCatalog({
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [contactUsageFilter, setContactUsageFilter] = useState('Todos');
-
-  const getContactLensUsage = (name: string) => {
-    const n = (name ? name.toString() : '').toUpperCase();
-    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
-    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
-    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';
-    return 'Todos';
-  };
 
   const availableBrands = Array.from(new Set(
     (catalogData || [])

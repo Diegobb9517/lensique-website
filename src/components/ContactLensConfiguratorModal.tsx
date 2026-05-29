@@ -439,10 +439,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           
           <span className="contact-lens-summary-brand">{product?.brand || 'ACUVUE'}</span>
           <h3 className="contact-lens-summary-name">{product?.name}</h3>
+          <p style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', marginTop: '0.25rem' }}>Lentes de Contacto</p>
           
-          <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f1f5f9', borderRadius: '8px' }}>
-            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
-              {quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'} (OD) / {quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'} (OS)
+          <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#0f172a' }}>
+              Cantidad seleccionada:
+            </p>
+            <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>
+              {quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'} (OD) • {quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'} (OS)
             </p>
           </div>
 

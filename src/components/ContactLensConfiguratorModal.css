@@ -52,32 +52,32 @@
 /* LEFT PANEL */
 .contact-lens-summary-panel {
   flex: 0 0 35%;
-  background: #fafafa;
+  background: white;
   border-right: 1px solid #e2e8f0;
-  padding: 2rem;
+  padding: 3rem;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 
 .contact-lens-summary-image-wrapper {
-  margin-top: 3rem;
+  margin-top: 1rem;
   margin-bottom: 2rem;
-  background: white;
-  border-radius: 12px;
+  background: transparent;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #f1f5f9;
-  overflow: hidden;
-  height: 220px;
+  border: none;
+  overflow: visible;
+  height: auto;
 }
 
 .contact-lens-summary-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
+  transform: scale(1.1);
 }
 
 .contact-lens-summary-brand {
@@ -90,11 +90,12 @@
 
 .contact-lens-summary-name {
   font-family: var(--font-heading, serif);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 600;
   color: #0f172a;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   margin-top: 0.25rem;
+  line-height: 1.2;
 }
 
 .contact-lens-summary-price {

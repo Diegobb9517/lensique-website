@@ -8,6 +8,7 @@ import {
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import LensConfiguratorModal from './components/LensConfiguratorModal';
+import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -536,6 +537,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
+  const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -597,7 +599,7 @@ function App() {
 
   // UseEffect for body scroll lock when any overlay is open
   useEffect(() => {
-    if (isBookingOpen || isCatalogOpen || selectedProductDetail || configuratorProduct || isMobileMenuOpen || isTryOnOpen || selectedTech) {
+    if (isBookingOpen || isCatalogOpen || selectedProductDetail || configuratorProduct || contactConfiguratorProduct || isMobileMenuOpen || isTryOnOpen || selectedTech) {
       document.body.classList.add('no-scroll');
     } else {
       document.body.classList.remove('no-scroll');
@@ -606,7 +608,7 @@ function App() {
     return () => {
       document.body.classList.remove('no-scroll');
     };
-  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, configuratorProduct, isMobileMenuOpen, isTryOnOpen, selectedTech]);
+  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, configuratorProduct, contactConfiguratorProduct, isMobileMenuOpen, isTryOnOpen, selectedTech]);
 
   // Calendar Logic
   const getDaysInMonth = (date: Date) => {
@@ -722,11 +724,12 @@ function App() {
                   {(selectedProductDetail.images && selectedProductDetail.images.length > 0) ? (
                     <ProductCarousel 
                       images={selectedProductDetail.images.map((img: any) => ({
-                        id: img.id,
-                        image_url: resolveImageUrl(img.image_url, undefined)
-                      }))} 
-                      alt={selectedProductDetail.name} 
-                    />
+                      id: img.id,
+                      image_url: resolveImageUrl(img.image_url, undefined)
+                    }))}
+                    alt={selectedProductDetail.name}
+                    hideTryOn={String(selectedProductDetail.category || '').toLowerCase().includes('contacto')}
+                  />
                   ) : (
                     <img
                       src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || (String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg)}
@@ -753,19 +756,18 @@ function App() {
 
                 <p className="product-detail-note">¿Te interesa este modelo? Agenda una cita con nosotros y te asesoramos en persona.</p>
 
-                <button
-                  className="product-detail-cta"
-                  onClick={() => { 
-                    setSelectedProductDetail(null); 
-                    if (String(selectedProductDetail.category || '').toLowerCase().includes('contacto')) {
-                      handleOpenBooking(`${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`);
-                    } else {
-                      setConfiguratorProduct(selectedProductDetail); 
-                    }
-                  }}
-                >
-                  {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? 'Agendar cita ahora' : 'Seleccionar micas y comprar'}
-                </button>
+                <button 
+                    className="btn btn-primary full-width product-detail-btn"
+                    onClick={() => {
+                      if (String(selectedProductDetail.category || '').toLowerCase().includes('contacto')) {
+                        setContactConfiguratorProduct(selectedProductDetail);
+                      } else {
+                        setConfiguratorProduct(selectedProductDetail); 
+                      }
+                    }}
+                  >
+                    Seleccionar micas y comprar
+                  </button>
 
                 <div className="product-detail-perks">
                   <span>✓ Asesoría personalizada</span>
@@ -801,6 +803,42 @@ function App() {
         onClose={() => setIsTryOnOpen(false)}
         product={tryOnProduct}
       />
+
+      {contactConfiguratorProduct && (
+        <ContactLensConfiguratorModal
+          product={contactConfiguratorProduct}
+          onClose={() => setContactConfiguratorProduct(null)}
+          onComplete={(config) => {
+            setContactConfiguratorProduct(null);
+            
+            let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name} ${contactConfiguratorProduct.brand}.\n\nEsta es mi receta:\n`;
+            
+            const clConfig = config.contactLensConfig;
+            if (clConfig.samePrescription) {
+              configText += `- Ambos ojos (OD y OS):\n`;
+              configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
+            } else {
+              configText += `- Ojo Derecho (OD):\n`;
+              configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
+              configText += `- Ojo Izquierdo (OS):\n`;
+              configText += `  Esfera: ${clConfig.prescriptionOS.sph} | Cilindro: ${clConfig.prescriptionOS.cyl} | Eje: ${clConfig.prescriptionOS.axis}\n`;
+            }
+            configText += `- Curva Base (BC): 8.6\n`;
+            configText += `- Diámetro (DIA): 14.5\n`;
+            configText += `- Cantidad: 1 caja por ojo\n`;
+            
+            if (clConfig.hasPhoto) {
+              configText += `\n*Nota: Adjunté foto de mi receta en el sistema.*\n`;
+            }
+            
+            configText += `\n*Precio Estimado Total:* $${Math.round(contactConfiguratorProduct.price_incl_tax || 0).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
+            
+            const phone = settings.contact_whatsapp || '523316929111';
+            const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;
+            window.open(url, '_blank');
+          }}
+        />
+      )}
 
       {configuratorProduct && (
         <LensConfiguratorModal

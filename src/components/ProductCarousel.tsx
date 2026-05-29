@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface ProductCarouselProps {
   images: Array<{ id: number; image_url: string }>;
   alt: string;
+  hideTryOn?: boolean;
 }
 
-export default function ProductCarousel({ images, alt }: ProductCarouselProps) {
+export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -231,10 +232,12 @@ export default function ProductCarousel({ images, alt }: ProductCarouselProps) {
           </div>
 
           {/* Try On Button */}
-          <button className="lsq-try-on-tag">
-            <Camera size={16} />
-            <span>Prueba virtual</span>
-          </button>
+          {!hideTryOn && (
+            <button className="lsq-try-on-tag">
+              <Camera size={16} />
+              <span>Prueba virtual</span>
+            </button>
+          )}
 
           {/* Navigation Arrows */}
           {images.length > 1 && (

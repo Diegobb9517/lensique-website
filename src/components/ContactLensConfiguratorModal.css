@@ -1,0 +1,315 @@
+.contact-lens-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.contact-lens-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  height: 90vh;
+  max-height: 800px;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.contact-lens-modal-close {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.contact-lens-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* LEFT PANEL */
+.contact-lens-summary-panel {
+  flex: 0 0 35%;
+  background: #fafafa;
+  border-right: 1px solid #e2e8f0;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.contact-lens-summary-image-wrapper {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #f1f5f9;
+}
+
+.contact-lens-summary-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.contact-lens-summary-brand {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.contact-lens-summary-name {
+  font-family: var(--font-heading, serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.contact-lens-summary-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* RIGHT PANEL */
+.contact-lens-content-panel {
+  flex: 1;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: white;
+}
+
+.contact-lens-step-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-lens-step-indicator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.contact-lens-title {
+  font-family: var(--font-heading, serif);
+  font-size: 2rem;
+  font-weight: 500;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+/* OPTIONS LIST */
+.contact-lens-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-lens-option-btn {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.contact-lens-option-btn:hover {
+  border-color: #0f172a;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.contact-lens-option-text h3 {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.contact-lens-option-text p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* PRESCRIPTION GRID */
+.cl-prescription-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.cl-prescription-columns {
+  display: flex;
+  gap: 2rem;
+}
+
+.cl-prescription-column {
+  flex: 1;
+}
+
+.cl-prescription-column h4 {
+  font-family: var(--font-sans, sans-serif);
+  font-weight: 600;
+  font-size: 1rem;
+  color: #0f172a;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.cl-form-group {
+  margin-bottom: 1rem;
+}
+
+.cl-form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 0.25rem;
+}
+
+.cl-form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #0f172a;
+  background-color: white;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem top 50%;
+  background-size: 0.65rem auto;
+}
+
+.cl-form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #0f172a;
+  background-color: #f8fafc;
+  cursor: not-allowed;
+}
+
+.cl-btn-primary {
+  width: 100%;
+  background-color: #1a4cd2; /* Warby Parker Blue */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 1rem;
+}
+
+.cl-btn-primary:hover {
+  background-color: #12369e;
+}
+
+.cl-btn-primary:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.cl-file-upload {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 2rem;
+}
+
+.cl-file-upload:hover {
+  border-color: #1a4cd2;
+  background-color: #f0fdfa;
+}
+
+.cl-file-upload input {
+  display: none;
+}
+
+.cl-file-upload p {
+  color: #475569;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .contact-lens-modal {
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .contact-lens-summary-panel {
+    flex: 0 0 auto;
+    padding: 1.5rem;
+    padding-top: 4rem;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .contact-lens-content-panel {
+    padding: 1.5rem;
+  }
+  
+  .cl-prescription-columns {
+    flex-direction: column;
+  }
+}

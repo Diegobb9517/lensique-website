@@ -93,7 +93,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
   const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '', add: '' });
   
-  const productName = (product?.name || '').toUpperCase();
+  const productName = (product?.name ? product.name.toString() : '').toUpperCase();
   const isToric = productName.includes('ASTIGMATISMO') || productName.includes('TORIC') || productName.includes('ASTIGMATISM');
   const isMultifocal = productName.includes('MULTIFOCAL') || productName.includes('PRESBICIA') || productName.includes('PRESBYOPIA');
   

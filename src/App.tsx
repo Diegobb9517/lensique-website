@@ -140,7 +140,7 @@ function FullCatalog({
   const [contactUsageFilter, setContactUsageFilter] = useState('Todos');
 
   const getContactLensUsage = (name: string) => {
-    const n = (name || '').toUpperCase();
+    const n = (name ? name.toString() : '').toUpperCase();
     if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
     if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
     if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';

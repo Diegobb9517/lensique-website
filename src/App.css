@@ -1122,8 +1122,10 @@ body.no-scroll {
 /* --- Top Filters --- */
 .catalog-filters-top {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
   background: #ffffff;
   position: sticky;
   top: 122px; /* 72 + 52 - 2px overlap */

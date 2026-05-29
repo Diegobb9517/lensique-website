@@ -521,6 +521,34 @@ function VirtualTryOn({
   );
 }
 
+class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div style={{ padding: '50px', background: 'red', color: 'white' }}>
+        <h1>Something went wrong!</h1>
+        <pre>{this.state.error?.toString()}</pre>
+        <pre>{this.state.error?.stack}</pre>
+      </div>;
+    }
+    return this.props.children;
+  }
+}
+
+function AppWrapper() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
+
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -747,7 +775,7 @@ function App() {
               <div className="product-detail-img-col">
                 <div className="product-detail-img-box w-full max-w-full" style={{ position: 'relative' }}>
                   {(selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0) && <div className="out-of-stock-badge" style={{ top: '20px', right: '20px' }}>Sobre pedido</div>}
-                  {(selectedProductDetail.images && selectedProductDetail.images.length > 0) ? (
+                  {(Array.isArray(selectedProductDetail.images) && selectedProductDetail.images.length > 0) ? (
                     <ProductCarousel 
                       images={selectedProductDetail.images.map((img: any) => ({
                       id: img.id,
@@ -1569,4 +1597,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppWrapper;

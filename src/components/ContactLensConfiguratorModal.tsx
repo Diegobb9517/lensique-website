@@ -60,7 +60,7 @@ const WPSelect = ({ label, value, options, onChange, zeroValue, placeholder = 'S
                     0
                 </div>
               )}
-              {options.map((opt: string) => (
+              {options && options.map((opt: string) => (
                 <div 
                   key={opt} 
                   className={`cl-wp-dropdown-item ${value === opt ? 'selected' : ''}`}

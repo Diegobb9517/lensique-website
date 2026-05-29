@@ -814,18 +814,22 @@ function App() {
             const brandText = contactConfiguratorProduct.brand ? ` ${contactConfiguratorProduct.brand}` : '';
             let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name}${brandText}.\n\nEsta es mi receta:\n`;
             
+            const formatEye = (eye: any) => {
+              let text = `Esfera: ${eye.sph}`;
+              if (eye.cyl && eye.axis) text += ` | Cilindro: ${eye.cyl} | Eje: ${eye.axis}`;
+              if (eye.add) text += ` | ADD: ${eye.add}`;
+              return text;
+            };
+
             const clConfig = config.contactLensConfig;
             if (clConfig.samePrescription) {
-              configText += `- Ambos ojos (OD y OS):\n`;
-              configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
+              configText += `- Ambos ojos (OD y OS):\n  ${formatEye(clConfig.prescriptionOD)}\n`;
             } else {
               if (clConfig.quantityOD > 0) {
-                configText += `- Ojo Derecho (OD):\n`;
-                configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
+                configText += `- Ojo Derecho (OD):\n  ${formatEye(clConfig.prescriptionOD)}\n`;
               }
               if (clConfig.quantityOS > 0) {
-                configText += `- Ojo Izquierdo (OS):\n`;
-                configText += `  Esfera: ${clConfig.prescriptionOS.sph} | Cilindro: ${clConfig.prescriptionOS.cyl} | Eje: ${clConfig.prescriptionOS.axis}\n`;
+                configText += `- Ojo Izquierdo (OS):\n  ${formatEye(clConfig.prescriptionOS)}\n`;
               }
             }
             configText += `- Curva Base (BC): 8.6\n`;

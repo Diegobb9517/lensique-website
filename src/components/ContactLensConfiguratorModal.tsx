@@ -90,8 +90,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   
   const [samePrescription, setSamePrescription] = useState<boolean | null>(null);
   
-  const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '' });
-  const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '' });
+  const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
+  const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '', add: '' });
+  
+  const productName = (product?.name || '').toUpperCase();
+  const isToric = productName.includes('ASTIGMATISMO') || productName.includes('TORIC') || productName.includes('ASTIGMATISM');
+  const isMultifocal = productName.includes('MULTIFOCAL') || productName.includes('PRESBICIA') || productName.includes('PRESBYOPIA');
   
   const [prescriptionPhotoFile, setPrescriptionPhotoFile] = useState<File | null>(null);
   const [isSending, setIsSending] = useState(false);
@@ -137,13 +141,28 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return opts;
   };
 
+  const getAddOptions = () => {
+    const opts = ['LOW', 'MED', 'HIGH'];
+    for (let i = 0.75; i <= 3.50; i += 0.25) {
+      opts.push(`+${i.toFixed(2)}`);
+    }
+    return opts;
+  };
+
   const isPrescriptionComplete = () => {
     if (samePrescription === null) return false;
+    
+    const checkEye = (eye: any) => {
+      if (eye.sph === '') return false;
+      if (isToric && (eye.cyl === '' || eye.axis === '')) return false;
+      if (isMultifocal && eye.add === '') return false;
+      return true;
+    };
+
     if (samePrescription) {
-      return prescriptionOD.sph !== '' && prescriptionOD.cyl !== '' && prescriptionOD.axis !== '';
+      return checkEye(prescriptionOD);
     } else {
-      return prescriptionOD.sph !== '' && prescriptionOD.cyl !== '' && prescriptionOD.axis !== '' &&
-             prescriptionOS.sph !== '' && prescriptionOS.cyl !== '' && prescriptionOS.axis !== '';
+      return checkEye(prescriptionOD) && checkEye(prescriptionOS);
     }
   };
 
@@ -214,19 +233,32 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           zeroValue="0.00"
         />
 
-        <WPSelect 
-          label="Cilindro (CYL)"
-          value={values.cyl}
-          options={getCylOptions()}
-          onChange={(val: string) => setValues({ ...values, cyl: val })}
-        />
+        {isToric && (
+          <>
+            <WPSelect 
+              label="Cilindro (CYL)"
+              value={values.cyl}
+              options={getCylOptions()}
+              onChange={(val: string) => setValues({ ...values, cyl: val })}
+            />
 
-        <WPSelect 
-          label="Eje (Axis)"
-          value={values.axis}
-          options={getAxisOptions()}
-          onChange={(val: string) => setValues({ ...values, axis: val })}
-        />
+            <WPSelect 
+              label="Eje (Axis)"
+              value={values.axis}
+              options={getAxisOptions()}
+              onChange={(val: string) => setValues({ ...values, axis: val })}
+            />
+          </>
+        )}
+
+        {isMultifocal && (
+          <WPSelect 
+            label="Adición (ADD)"
+            value={values.add}
+            options={getAddOptions()}
+            onChange={(val: string) => setValues({ ...values, add: val })}
+          />
+        )}
 
         <div className="cl-wp-input-wrapper is-readonly">
           <label>Curva Base (BC)</label>

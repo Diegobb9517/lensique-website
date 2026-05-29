@@ -141,53 +141,50 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
       <div className="cl-prescription-column">
         <h4>{label}</h4>
         
-        <div className="cl-form-group">
+        <div className="cl-wp-input-wrapper is-select">
           <label>Esfera (SPH/PWR/D)</label>
           <select 
-            className="cl-form-select"
             value={values.sph}
             onChange={(e) => setValues({ ...values, sph: e.target.value })}
           >
             {getSpmOptions().map(opt => (
-              <option key={opt} value={opt}>{opt || 'Selecciona'}</option>
+              <option key={`sph-${opt}`} value={opt}>{opt || 'Selecciona'}</option>
             ))}
           </select>
         </div>
 
-        <div className="cl-form-group">
+        <div className="cl-wp-input-wrapper is-select">
           <label>Cilindro (CYL)</label>
           <select 
-            className="cl-form-select"
             value={values.cyl}
             onChange={(e) => setValues({ ...values, cyl: e.target.value })}
           >
             {getCylOptions().map(opt => (
-              <option key={opt} value={opt}>{opt || 'Selecciona'}</option>
+              <option key={`cyl-${opt}`} value={opt}>{opt || 'Selecciona'}</option>
             ))}
           </select>
         </div>
 
-        <div className="cl-form-group">
+        <div className="cl-wp-input-wrapper is-select">
           <label>Eje (Axis)</label>
           <select 
-            className="cl-form-select"
             value={values.axis}
             onChange={(e) => setValues({ ...values, axis: e.target.value })}
           >
             {getAxisOptions().map(opt => (
-              <option key={opt} value={opt}>{opt || 'Selecciona'}</option>
+              <option key={`axis-${opt}`} value={opt}>{opt || 'Selecciona'}</option>
             ))}
           </select>
         </div>
 
-        <div className="cl-form-group">
+        <div className="cl-wp-input-wrapper is-readonly">
           <label>Curva Base (BC)</label>
-          <input type="text" className="cl-form-input" value="8.6" readOnly />
+          <input type="text" value="8.6" readOnly />
         </div>
 
-        <div className="cl-form-group">
+        <div className="cl-wp-input-wrapper is-readonly">
           <label>Diámetro (DIA)</label>
-          <input type="text" className="cl-form-input" value="14.5" readOnly />
+          <input type="text" value="14.5" readOnly />
         </div>
       </div>
     );

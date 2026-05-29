@@ -133,7 +133,7 @@
 
 .contact-lens-title {
   font-family: var(--font-heading, serif);
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 500;
   color: #0f172a;
   margin-bottom: 0.5rem;
@@ -203,42 +203,72 @@
   text-align: center;
 }
 
-.cl-form-group {
-  margin-bottom: 1rem;
+.cl-wp-input-wrapper {
+  position: relative;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem 0.15rem;
+  margin-bottom: 0.5rem;
+  background: white;
+  transition: border-color 0.2s;
 }
 
-.cl-form-group label {
+.cl-wp-input-wrapper:hover:not(.is-readonly) {
+  border-color: #64748b;
+}
+
+.cl-wp-input-wrapper:focus-within {
+  border-color: #1a4cd2;
+  box-shadow: 0 0 0 1px #1a4cd2;
+}
+
+.cl-wp-input-wrapper label {
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #475569;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0;
 }
 
-.cl-form-select {
+.cl-wp-input-wrapper select,
+.cl-wp-input-wrapper input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0 0.25rem 0;
   font-size: 1rem;
   color: #0f172a;
-  background-color: white;
+  outline: none;
   appearance: none;
+  cursor: pointer;
+}
+
+.cl-wp-input-wrapper select {
+  font-family: inherit;
+}
+
+.cl-wp-input-wrapper.is-select::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.75rem top 50%;
-  background-size: 0.65rem auto;
+  background-size: contain;
+  pointer-events: none;
 }
 
-.cl-form-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #0f172a;
-  background-color: #f8fafc;
+.cl-wp-input-wrapper.is-readonly {
+  background: #f8fafc;
   cursor: not-allowed;
+}
+
+.cl-wp-input-wrapper.is-readonly input {
+  cursor: not-allowed;
+  color: #64748b;
 }
 
 .cl-btn-primary {

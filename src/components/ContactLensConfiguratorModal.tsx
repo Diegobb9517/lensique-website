@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, CheckCircle, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './ContactLensConfiguratorModal.css';
@@ -19,6 +19,62 @@ const resolveImageUrl = (url: any, fallback?: any) => {
   return '';
 };
 
+const WPSelect = ({ label, value, options, onChange }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="cl-wp-dropdown-container" ref={ref}>
+      <div 
+        className={`cl-wp-input-wrapper is-select ${isOpen ? 'is-open' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <label>{label}</label>
+        <div className="cl-wp-dropdown-value">{value || 'Selecciona'}</div>
+      </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            className="cl-wp-dropdown-menu"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.15 }}
+          >
+            <div className="cl-wp-dropdown-grid">
+              <div 
+                  className={`cl-wp-dropdown-item zero-item ${value === '' || value === '0.00' || value === '0' ? 'selected' : ''}`}
+                  onClick={() => { onChange(options.includes('0') ? '0' : (options.includes('0.00') ? '0.00' : '')); setIsOpen(false); }}
+                >
+                  0
+              </div>
+              {options.filter((o: string) => o !== '' && o !== '0.00' && o !== '0').map((opt: string) => (
+                <div 
+                  key={opt} 
+                  className={`cl-wp-dropdown-item ${value === opt ? 'selected' : ''}`}
+                  onClick={() => { onChange(opt); setIsOpen(false); }}
+                >
+                  {opt}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 interface ContactLensConfiguratorModalProps {
   product: any;
   onClose: () => void;
@@ -27,6 +83,9 @@ interface ContactLensConfiguratorModalProps {
 
 export default function ContactLensConfiguratorModal({ product, onClose, onComplete }: ContactLensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
+  const [quantityOD, setQuantityOD] = useState(1);
+  const [quantityOS, setQuantityOS] = useState(1);
+  
   const [samePrescription, setSamePrescription] = useState<boolean | null>(null);
   
   const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '' });
@@ -95,6 +154,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         isContactLens: true,
         productName: product?.name,
         productPrice: product?.price_incl_tax || 0,
+        quantityOD,
+        quantityOS,
         samePrescription,
         prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
         prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
@@ -124,6 +185,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
       onComplete({
         ...product,
         contactLensConfig: {
+          quantityOD,
+          quantityOS,
           samePrescription,
           prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
           prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
@@ -141,41 +204,26 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
       <div className="cl-prescription-column">
         <h4>{label}</h4>
         
-        <div className="cl-wp-input-wrapper is-select">
-          <label>Esfera (SPH/PWR/D)</label>
-          <select 
-            value={values.sph}
-            onChange={(e) => setValues({ ...values, sph: e.target.value })}
-          >
-            {getSpmOptions().map(opt => (
-              <option key={`sph-${opt}`} value={opt}>{opt || 'Selecciona'}</option>
-            ))}
-          </select>
-        </div>
+        <WPSelect 
+          label="Esfera (SPH/PWR/D)"
+          value={values.sph}
+          options={getSpmOptions()}
+          onChange={(val: string) => setValues({ ...values, sph: val })}
+        />
 
-        <div className="cl-wp-input-wrapper is-select">
-          <label>Cilindro (CYL)</label>
-          <select 
-            value={values.cyl}
-            onChange={(e) => setValues({ ...values, cyl: e.target.value })}
-          >
-            {getCylOptions().map(opt => (
-              <option key={`cyl-${opt}`} value={opt}>{opt || 'Selecciona'}</option>
-            ))}
-          </select>
-        </div>
+        <WPSelect 
+          label="Cilindro (CYL)"
+          value={values.cyl}
+          options={getCylOptions()}
+          onChange={(val: string) => setValues({ ...values, cyl: val })}
+        />
 
-        <div className="cl-wp-input-wrapper is-select">
-          <label>Eje (Axis)</label>
-          <select 
-            value={values.axis}
-            onChange={(e) => setValues({ ...values, axis: e.target.value })}
-          >
-            {getAxisOptions().map(opt => (
-              <option key={`axis-${opt}`} value={opt}>{opt || 'Selecciona'}</option>
-            ))}
-          </select>
-        </div>
+        <WPSelect 
+          label="Eje (Axis)"
+          value={values.axis}
+          options={getAxisOptions()}
+          onChange={(val: string) => setValues({ ...values, axis: val })}
+        />
 
         <div className="cl-wp-input-wrapper is-readonly">
           <label>Curva Base (BC)</label>
@@ -196,7 +244,60 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         return (
           <div className="contact-lens-content-panel">
             <div className="contact-lens-step-header">
-              <span className="contact-lens-step-indicator">Paso 1 de 3</span>
+              <span className="contact-lens-step-indicator">Paso 1 de 4</span>
+            </div>
+            
+            <h2 className="contact-lens-title">Selecciona la cantidad</h2>
+            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Elige cuántas cajas deseas para cada ojo.</p>
+            
+            <div className="cl-qty-container">
+              <div className="cl-qty-label">
+                <input type="checkbox" checked readOnly style={{ width: '18px', height: '18px', accentColor: '#1a4cd2' }} />
+                <span>Ojo Derecho (OD)</span>
+              </div>
+              <div className="cl-qty-controls">
+                <span style={{ fontSize: '0.875rem', color: '#64748b' }}>{quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'}</span>
+                <button className="cl-qty-btn" onClick={() => setQuantityOD(Math.max(0, quantityOD - 1))} disabled={quantityOD <= 0}>-</button>
+                <button className="cl-qty-btn" onClick={() => setQuantityOD(quantityOD + 1)}>+</button>
+              </div>
+            </div>
+
+            <div className="cl-qty-container">
+              <div className="cl-qty-label">
+                <input type="checkbox" checked readOnly style={{ width: '18px', height: '18px', accentColor: '#1a4cd2' }} />
+                <span>Ojo Izquierdo (OS)</span>
+              </div>
+              <div className="cl-qty-controls">
+                <span style={{ fontSize: '0.875rem', color: '#64748b' }}>{quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'}</span>
+                <button className="cl-qty-btn" onClick={() => setQuantityOS(Math.max(0, quantityOS - 1))} disabled={quantityOS <= 0}>-</button>
+                <button className="cl-qty-btn" onClick={() => setQuantityOS(quantityOS + 1)}>+</button>
+              </div>
+            </div>
+
+            <button 
+              className="cl-btn-primary" 
+              style={{ marginTop: '2rem' }}
+              disabled={quantityOD === 0 && quantityOS === 0}
+              onClick={() => {
+                if (quantityOD > 0 && quantityOS > 0) {
+                  setStep(2); // Ask if same prescription
+                } else {
+                  setSamePrescription(false);
+                  setStep(3); // Go straight to prescription for one eye
+                }
+              }}
+            >
+              Continuar
+            </button>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="contact-lens-content-panel">
+            <div className="contact-lens-step-header">
+              <button className="contact-lens-step-indicator" onClick={() => setStep(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
+              <span className="contact-lens-step-indicator">Paso 2 de 4</span>
             </div>
             
             <h2 className="contact-lens-title">¿Tienes la misma graduación en ambos ojos?</h2>
@@ -204,7 +305,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             <div className="contact-lens-options-list" style={{ marginTop: '2rem' }}>
               <button 
                 className="contact-lens-option-btn" 
-                onClick={() => { setSamePrescription(true); setStep(2); }}
+                onClick={() => { setSamePrescription(true); setStep(3); }}
               >
                 <div className="contact-lens-option-text">
                   <h3>Sí</h3>
@@ -213,7 +314,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               
               <button 
                 className="contact-lens-option-btn" 
-                onClick={() => { setSamePrescription(false); setStep(2); }}
+                onClick={() => { setSamePrescription(false); setStep(3); }}
               >
                 <div className="contact-lens-option-text">
                   <h3>No</h3>
@@ -223,12 +324,15 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </div>
         );
 
-      case 2:
+      case 3:
         return (
           <div className="contact-lens-content-panel">
             <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => setStep(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 2 de 3</span>
+              <button className="contact-lens-step-indicator" onClick={() => {
+                if (quantityOD > 0 && quantityOS > 0) setStep(2);
+                else setStep(1);
+              }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
+              <span className="contact-lens-step-indicator">Paso 3 de 4</span>
             </div>
             
             <h2 className="contact-lens-title">Ingresa tu receta</h2>
@@ -239,8 +343,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   renderPrescriptionForm('OD', 'Ambos ojos')
                 ) : (
                   <>
-                    {renderPrescriptionForm('OD', 'Ojo Derecho (OD)')}
-                    {renderPrescriptionForm('OS', 'Ojo Izquierdo (OS)')}
+                    {quantityOD > 0 && renderPrescriptionForm('OD', 'Ojo Derecho (OD)')}
+                    {quantityOS > 0 && renderPrescriptionForm('OS', 'Ojo Izquierdo (OS)')}
                   </>
                 )}
               </div>
@@ -248,7 +352,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               <button 
                 className="cl-btn-primary" 
                 disabled={!isPrescriptionComplete()}
-                onClick={() => setStep(3)}
+                onClick={() => setStep(4)}
               >
                 Continuar
               </button>
@@ -256,12 +360,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </div>
         );
 
-      case 3:
+      case 4:
         return (
           <div className="contact-lens-content-panel">
             <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => setStep(2)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 3 de 3</span>
+              <button className="contact-lens-step-indicator" onClick={() => setStep(3)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
+              <span className="contact-lens-step-indicator">Paso 4 de 4</span>
             </div>
             
             <h2 className="contact-lens-title">Resumen y Verificación</h2>
@@ -302,6 +406,9 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     }
   };
 
+  const totalQuantity = quantityOD + quantityOS;
+  const totalPrice = (product?.price_incl_tax || 0) * (totalQuantity > 0 ? totalQuantity : 1);
+
   return (
     <div className="contact-lens-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <motion.div 
@@ -330,17 +437,15 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           <span className="contact-lens-summary-brand">{product?.brand || 'ACUVUE'}</span>
           <h3 className="contact-lens-summary-name">{product?.name}</h3>
           
-          {step > 1 && (
-            <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f1f5f9', borderRadius: '8px' }}>
-              <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
-                1 caja por ojo
-              </p>
-            </div>
-          )}
+          <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f1f5f9', borderRadius: '8px' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
+              {quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'} (OD) / {quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'} (OS)
+            </p>
+          </div>
 
           <div className="contact-lens-summary-price">
             <span>Total Estimado</span>
-            <span>${Math.round(product?.price_incl_tax || 0).toLocaleString('es-MX')}</span>
+            <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
           </div>
         </div>
 

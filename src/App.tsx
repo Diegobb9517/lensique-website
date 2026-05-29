@@ -818,20 +818,26 @@ function App() {
               configText += `- Ambos ojos (OD y OS):\n`;
               configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
             } else {
-              configText += `- Ojo Derecho (OD):\n`;
-              configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
-              configText += `- Ojo Izquierdo (OS):\n`;
-              configText += `  Esfera: ${clConfig.prescriptionOS.sph} | Cilindro: ${clConfig.prescriptionOS.cyl} | Eje: ${clConfig.prescriptionOS.axis}\n`;
+              if (clConfig.quantityOD > 0) {
+                configText += `- Ojo Derecho (OD):\n`;
+                configText += `  Esfera: ${clConfig.prescriptionOD.sph} | Cilindro: ${clConfig.prescriptionOD.cyl} | Eje: ${clConfig.prescriptionOD.axis}\n`;
+              }
+              if (clConfig.quantityOS > 0) {
+                configText += `- Ojo Izquierdo (OS):\n`;
+                configText += `  Esfera: ${clConfig.prescriptionOS.sph} | Cilindro: ${clConfig.prescriptionOS.cyl} | Eje: ${clConfig.prescriptionOS.axis}\n`;
+              }
             }
             configText += `- Curva Base (BC): 8.6\n`;
             configText += `- Diámetro (DIA): 14.5\n`;
-            configText += `- Cantidad: 1 caja por ojo\n`;
+            configText += `- Cantidad: ${clConfig.quantityOD} OD / ${clConfig.quantityOS} OS\n`;
             
             if (clConfig.hasPhoto) {
               configText += `\n*Nota: Adjunté foto de mi receta en el sistema.*\n`;
             }
             
-            configText += `\n*Precio Estimado Total:* $${Math.round(contactConfiguratorProduct.price_incl_tax || 0).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
+            const totalQty = clConfig.quantityOD + clConfig.quantityOS;
+            const totalPrice = (contactConfiguratorProduct.price_incl_tax || 0) * (totalQty > 0 ? totalQty : 1);
+            configText += `\n*Precio Estimado Total:* $${Math.round(totalPrice).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
             const phone = settings.contact_whatsapp || '523316929111';
             const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;

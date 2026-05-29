@@ -271,6 +271,112 @@
   color: #64748b;
 }
 
+/* CUSTOM DROPDOWN (WPSelect) */
+.cl-wp-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+.cl-wp-dropdown-value {
+  width: 100%;
+  padding: 0.25rem 0 0.25rem 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+.cl-wp-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 50;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+.cl-wp-dropdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.cl-wp-dropdown-item {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #334155;
+  transition: background 0.1s;
+}
+.cl-wp-dropdown-item:nth-child(even) {
+  border-right: none;
+}
+.cl-wp-dropdown-item:hover {
+  background: #f8fafc;
+}
+.cl-wp-dropdown-item.selected {
+  background: #eff6ff;
+  color: #1a4cd2;
+  font-weight: 500;
+}
+.zero-item {
+  grid-column: 1 / -1;
+  border-right: none;
+}
+
+/* QUANTITY STEP */
+.cl-qty-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.cl-qty-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+.cl-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.cl-qty-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+  padding: 0;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.cl-qty-btn:hover:not(:disabled) {
+  border-color: #64748b;
+  color: #0f172a;
+}
+.cl-qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.cl-qty-value {
+  font-weight: 500;
+  width: 60px;
+  text-align: center;
+}
+
 .cl-btn-primary {
   width: 100%;
   background-color: #1a4cd2; /* Warby Parker Blue */

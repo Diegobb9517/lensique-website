@@ -499,10 +499,8 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
       case 6: {
         const hasPolyIncluded = String(product?.category || '').toLowerCase().includes('policarbonato');
         const materialsToShow = hasPolyIncluded 
-          ? MATERIAL_OPTIONS.filter(opt => opt.id !== 'POLICARBONATO').map(opt => 
-              opt.id === 'CLASICO' 
-                ? { ...opt, id: 'POLICARBONATO', name: 'Policarbonato', description: 'Grosor ideal y resistente a impactos.' }
-                : opt
+          ? MATERIAL_OPTIONS.filter(opt => opt.id === 'CLASICO').map(opt => 
+              ({ ...opt, id: 'POLICARBONATO', name: 'Policarbonato', description: 'Grosor ideal y resistente a impactos.' })
             )
           : MATERIAL_OPTIONS;
 

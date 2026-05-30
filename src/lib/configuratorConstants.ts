@@ -29,6 +29,5 @@ export const TINTING_OPTIONS = [
 
 export const MATERIAL_OPTIONS = [
   { id: 'CLASICO', name: 'Estándar', description: 'Grosor regular, ideal para graduaciones bajas a medias.', price: 0 },
-  { id: 'POLICARBONATO', name: 'Policarbonato', description: 'Resistente a impactos, ideal para uso rudo o niños.', price: 517.24 },
   { id: 'HI_INDEX', name: 'Hi-Index (Adelgazado)', description: 'Micas hasta un 30% más delgadas y ligeras.', price: 1163.79 },
 ];

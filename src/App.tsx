@@ -952,17 +952,18 @@ function App() {
             const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
             if (tint) total += tint.price * 1.16;
             const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
-            if (mat) {
-              if (mat.id === 'POLICARBONATO') {
-                const isFree = [
-                  'ORX3929V- 2500', 'ORX3928V- 2501', '0VO4320B 5152', 
-                  '0VO4357D 848', 'CA-8901-BK/GD', '0AN6134L (Vista)'
-                ].some(m => configuratorProduct.name.trim().toUpperCase() === m.toUpperCase());
-                if (!isFree) total += mat.price * 1.16;
-              } else {
-                total += mat.price * 1.16;
+              if (mat) {
+                if (mat.id === 'POLICARBONATO') {
+                  const hasPolyIncluded = String(configuratorProduct?.category || '').toLowerCase().includes('policarbonato');
+                  const isFree = hasPolyIncluded || [
+                    'ORX3929V- 2500', 'ORX3928V- 2501', '0VO4320B 5152', 
+                    '0VO4357D 848', 'CA-8901-BK/GD', '0AN6134L (Vista)'
+                  ].some(m => configuratorProduct?.name?.trim().toUpperCase() === m.toUpperCase());
+                  if (!isFree) total += mat.price * 1.16;
+                } else {
+                  total += mat.price * 1.16;
+                }
               }
-            }
 
             configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             

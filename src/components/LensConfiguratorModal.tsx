@@ -133,11 +133,12 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
   });
 
   const getDynamicPrice = (name: string, fallbackPrice: number, optId?: string) => {
-    if (optId === 'POLICARBONATO' && product?.name) {
+    if (optId === 'POLICARBONATO') {
+       if (String(product?.category || '').toLowerCase().includes('policarbonato')) return 0;
        const isFree = [
          'ORX3929V- 2500', 'ORX3928V- 2501', '0VO4320B 5152', 
          '0VO4357D 848', 'CA-8901-BK/GD', '0AN6134L (Vista)'
-       ].some(m => product.name.trim().toUpperCase() === m.toUpperCase());
+       ].some(m => product?.name?.trim().toUpperCase() === m.toUpperCase());
        if (isFree) return 0;
     }
     const item = catalogData.find((p: any) => p.name.toLowerCase() === name.toLowerCase());
@@ -498,7 +499,11 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
       case 6: {
         const hasPolyIncluded = String(product?.category || '').toLowerCase().includes('policarbonato');
         const materialsToShow = hasPolyIncluded 
-          ? MATERIAL_OPTIONS.filter(opt => opt.id !== 'POLICARBONATO') 
+          ? MATERIAL_OPTIONS.filter(opt => opt.id !== 'POLICARBONATO').map(opt => 
+              opt.id === 'CLASICO' 
+                ? { ...opt, id: 'POLICARBONATO', name: 'Policarbonato', description: 'Grosor ideal y resistente a impactos.' }
+                : opt
+            )
           : MATERIAL_OPTIONS;
 
         return (

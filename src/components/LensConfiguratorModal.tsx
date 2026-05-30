@@ -495,13 +495,23 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           </div>
         );
 
-      case 6:
+      case 6: {
+        const hasPolyIncluded = String(product?.category || '').toLowerCase().includes('policarbonato');
+        const materialsToShow = hasPolyIncluded 
+          ? MATERIAL_OPTIONS.filter(opt => opt.id !== 'POLICARBONATO') 
+          : MATERIAL_OPTIONS;
+
         return (
           <div className="config-step-content">
             <h2 className="config-title">Adelgazar Mica</h2>
             <p className="config-subtitle">Recomendado para graduaciones altas (HI-INDEX).</p>
+            {hasPolyIncluded && (
+              <div style={{ padding: '0.75rem', backgroundColor: '#eef2ff', borderRadius: '8px', marginBottom: '1.5rem', color: '#3730a3', fontSize: '0.875rem' }}>
+                Tu armazón ya incluye material de alta resistencia (Policarbonato) sin costo adicional.
+              </div>
+            )}
             <div className="config-grid">
-              {MATERIAL_OPTIONS.map(opt => (
+              {materialsToShow.map(opt => (
                 <button 
                   key={opt.id}
                   className={`config-list-item ${config.material === opt.id ? 'selected' : ''}`}
@@ -520,6 +530,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
             </div>
           </div>
         );
+      }
 
       case 7:
         return (

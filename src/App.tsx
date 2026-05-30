@@ -954,7 +954,7 @@ function App() {
             const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
               if (mat) {
                 if (mat.id === 'POLICARBONATO') {
-                  const hasPolyIncluded = String(configuratorProduct?.category || '').toLowerCase().includes('policarbonato');
+                  const hasPolyIncluded = configuratorProduct?.base_material === 'POLICARBONATO' || String(configuratorProduct?.category || '').toLowerCase().includes('policarbonato');
                   const isFree = hasPolyIncluded || [
                     'ORX3929V- 2500', 'ORX3928V- 2501', '0VO4320B 5152', 
                     '0VO4357D 848', 'CA-8901-BK/GD', '0AN6134L (Vista)'

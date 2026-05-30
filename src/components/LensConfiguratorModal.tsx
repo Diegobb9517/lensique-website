@@ -149,18 +149,33 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
 
   const handleNext = (overridePhotochromic?: string) => {
     const currentPhoto = overridePhotochromic !== undefined ? overridePhotochromic : config.photochromic;
+    const hasPolyIncluded = product?.base_material === 'POLICARBONATO' || String(product?.category || '').toLowerCase().includes('policarbonato');
+    
     if (step === 4 && currentPhoto && currentPhoto !== 'NONE') {
       updateConfig('tinting', 'NONE');
-      setStep(6);
+      setStep(hasPolyIncluded ? 7 : 6);
+    } else if (step === 5 && hasPolyIncluded) {
+      setStep(7);
     } else {
       setStep(s => Math.min(s + 1, 7));
     }
   };
 
   const handlePrev = () => {
+    const hasPolyIncluded = product?.base_material === 'POLICARBONATO' || String(product?.category || '').toLowerCase().includes('policarbonato');
+    
     if (step === 1 && prescriptionMode !== 'SELECTION') {
       setPrescriptionMode('SELECTION');
       return;
+    }
+
+    if (step === 7 && hasPolyIncluded) {
+       if (config.photochromic && config.photochromic !== 'NONE') {
+         setStep(4);
+       } else {
+         setStep(5);
+       }
+       return;
     }
 
     // If going back from Step 6 (Material) and a photochromic option is selected, skip Step 5 (Tinting)

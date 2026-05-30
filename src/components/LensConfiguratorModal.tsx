@@ -393,6 +393,8 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
               <div className="config-form-actions" style={{marginTop: '2rem'}}>
                 <button 
                   className="config-btn-primary config-btn-full"
+                  disabled={!config.prescriptionPhotoFile}
+                  style={{ opacity: !config.prescriptionPhotoFile ? 0.5 : 1, cursor: !config.prescriptionPhotoFile ? 'not-allowed' : 'pointer' }}
                   onClick={() => {
                     updateConfig('prescriptionMethod', 'PHOTO');
                     handleNext();

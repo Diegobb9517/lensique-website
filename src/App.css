@@ -1130,8 +1130,7 @@ body.no-scroll {
   top: 122px; /* 72 + 52 - 2px overlap */
   z-index: 98;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 24px;
-  padding-top: 24px;
+  padding: 24px 40px;
   flex-shrink: 0;
 }
 

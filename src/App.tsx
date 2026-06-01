@@ -236,8 +236,7 @@ function FullCatalog({
             </div>
           </div>
 
-          <div className="catalog-content">
-            <div className="catalog-filters-top">
+          <div className="catalog-filters-top">
               <div className="filter-group">
                 <span className="filter-label">Categoría:</span>
                 <div className="filter-pills">
@@ -283,6 +282,7 @@ function FullCatalog({
               )}
             </div>
 
+          <div className="catalog-content">
             <div className="catalog-products">
               {(catalogData && catalogData.length > 0) ? (
                 <div className="products-grid">

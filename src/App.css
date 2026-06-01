@@ -1044,7 +1044,6 @@ body.no-scroll {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -1115,7 +1114,7 @@ body.no-scroll {
   max-width: 1440px;
   margin: 0 auto;
   width: 100%;
-  padding: 40px;
+  padding: 0 40px 40px 40px;
   gap: 30px;
 }
 
@@ -1131,8 +1130,8 @@ body.no-scroll {
   top: 122px; /* 72 + 52 - 2px overlap */
   z-index: 98;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 14px;
-  padding-top: 14px;
+  padding-bottom: 24px;
+  padding-top: 24px;
   flex-shrink: 0;
 }
 

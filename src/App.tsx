@@ -1618,30 +1618,86 @@ function App() {
 
       <footer className="footer">
         <div className="footer-content">
-          <div className="footer-top">
-            <div className="footer-logo">
-              <img src={logo} alt="Lensique" className="footer-logo-img" />
-            </div>
-            <div className="footer-links-grid">
+          <div className="footer-main-grid">
+            <div className="footer-links-wrapper">
+              <div className="footer-col">
+                <h4>Productos</h4>
+                <a href="#armazones">Lentes oftálmicos</a>
+                <a href="#armazones">Lentes de sol</a>
+                <a href="#micas">Micas monofocales</a>
+                <a href="#micas">Micas progresivas</a>
+                <a href="#contacto">Lentes de contacto</a>
+                <a href="#accesorios">Accesorios</a>
+              </div>
+              
               <div className="footer-col">
                 <h4>Servicios</h4>
-                <a href="#micas">Micas</a>
-                <a href="#armazones">Armazones</a>
-                <a href="#examen">Examen</a>
+                <a href="#examen" onClick={(e) => { e.preventDefault(); handleOpenBooking('Examen de la Vista'); }}>Examen de la vista</a>
+                <a href="#consulta" onClick={(e) => { e.preventDefault(); handleOpenBooking('Consulta Oftalmológica'); }}>Consulta Médica</a>
+                <a href="#micas">Actualización de micas</a>
+                
+                <h4 className="mt-8">Tiendas</h4>
+                <a href="#sucursales">Encuentra una sucursal</a>
               </div>
+
               <div className="footer-col">
-                <h4>Empresa</h4>
-                <a href="#nosotros">Nosotros</a>
-                <a href="#sucursales">Sucursales</a>
+                <h4>Nosotros</h4>
+                <a href="#historia">Nuestra historia</a>
+                <a href="#reseñas">Reseñas de clientes</a>
+                <a href="#bolsa">Bolsa de trabajo</a>
+                <a href="#impacto">Impacto social</a>
               </div>
+
               <div className="footer-col">
-                <h4>Contacto</h4>
-                <a href="mailto:hola@lensique.com.mx">hola@lensique.com.mx</a>
+                <h4>Soporte</h4>
+                <a href="#garantia">Garantías</a>
+                <a href="#envios">Envíos y devoluciones</a>
+                <a href="#faq">Preguntas Frecuentes</a>
+                <a href="#facturacion">Facturación</a>
+              </div>
+            </div>
+
+            <div className="footer-support-block">
+              <h4 className="support-title">¿Necesitas ayuda?</h4>
+              <p className="support-text">
+                Estamos aquí para ayudarte. Revisa nuestras preguntas frecuentes o contáctanos directamente.
+              </p>
+              <div className="support-actions">
+                <a href="#faq" className="support-action-item">
+                  <div className="support-icon-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  </div>
+                  <span>FAQ</span>
+                </a>
+                <a href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item">
+                  <div className="support-icon-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                  </div>
+                  <span>Chat</span>
+                </a>
+              </div>
+              
+              <div className="social-icons">
+                <a href="https://instagram.com/lensique" target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://facebook.com/lensique" target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
               </div>
             </div>
           </div>
+          
           <div className="footer-bottom">
-            <p>&copy; 2026 Óptica Lensique. Todos los derechos reservados.</p>
+            <div className="footer-bottom-left">
+              <span className="footer-region">🇲🇽 México</span>
+              <span>&copy; {new Date().getFullYear()} Óptica Lensique.</span>
+            </div>
+            <div className="footer-bottom-links">
+              <a href="#privacidad">Aviso de Privacidad</a>
+              <a href="#terminos">Términos y Condiciones</a>
+              <a href="#cookies">Política de Cookies</a>
+            </div>
           </div>
         </div>
       </footer>

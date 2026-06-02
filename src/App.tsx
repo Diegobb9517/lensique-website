@@ -54,7 +54,7 @@ import lsPhotochromic from './assets/lifestyle_photochromic.png';
 import lsFlattop from './assets/lifestyle_flattop.png';
 import lsInvisible from './assets/lifestyle_invisible.png';
 import lsCustom from './assets/lifestyle_custom.png';
-import lsAntireflective from './assets/lifestyle_antireflective.png';
+import lsAntireflective from './assets/realistic_antireflective.png';
 import arnette4373 from './assets/arnette_0AN4373.png';
 import styleAviator from './assets/style_aviator.png';
 import styleCateye from './assets/style_cateye.png';
@@ -868,14 +868,18 @@ function App() {
                 <button 
                     className="btn btn-primary full-width product-detail-btn"
                     onClick={() => {
-                      if (String(selectedProductDetail.category || '').toLowerCase().includes('contacto')) {
+                      const category = String(selectedProductDetail.category || '').toLowerCase();
+                      if (category.includes('sol')) {
+                        const message = `Hola, me interesa comprar los lentes de sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}. ¿Me pueden dar más información?`;
+                        window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                      } else if (category.includes('contacto')) {
                         setContactConfiguratorProduct(selectedProductDetail);
                       } else {
                         setConfiguratorProduct(selectedProductDetail); 
                       }
                     }}
                   >
-                    Seleccionar micas y comprar
+                    {String(selectedProductDetail.category || '').toLowerCase().includes('sol') ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar'}
                   </button>
 
                 <div className="product-detail-perks">

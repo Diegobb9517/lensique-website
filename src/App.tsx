@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
-  Maximize, Camera, Trash2, Sliders
+  Maximize, Camera, Trash2, Sliders, ShieldCheck, Glasses, Sparkles
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
@@ -554,19 +554,23 @@ function AppWrapper() {
   );
 }
 
-const warrantyData = {
+const warrantyData: InfoPageData = {
   title: 'Garantías',
+  layout: 'grid',
   sections: [
     {
       heading: 'Garantía de Armazones',
+      icon: ShieldCheck,
       content: <p>Nuestros armazones cuentan con 1 año de garantía contra defectos de fabricación. Esto incluye problemas en bisagras, soldaduras y recubrimientos (siempre que no sea por mal uso, caídas o productos químicos).</p>
     },
     {
       heading: 'Garantía de Adaptación',
+      icon: Glasses,
       content: <p>Entendemos que adaptarse a una nueva graduación puede tomar tiempo. Si después de 15 días sientes molestias o no logras adaptarte a tus nuevas micas, te ofrecemos una revisión gratuita y, de ser necesario, un cambio de graduación sin costo adicional.</p>
     },
     {
       heading: 'Garantía en Tratamientos',
+      icon: Sparkles,
       content: <p>Los tratamientos antirreflejantes y fotocromáticos tienen una garantía de 90 días contra desprendimiento o manchas anormales que no sean causadas por rayones o limpieza inadecuada.</p>
     }
   ]

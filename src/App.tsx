@@ -1643,7 +1643,7 @@ function App() {
               <div className="footer-col">
                 <h4>Nosotros</h4>
                 <a href="#historia">Nuestra historia</a>
-                <a href="#reseñas">Reseñas de clientes</a>
+                <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
                 <a href="#bolsa">Bolsa de trabajo</a>
                 <a href="#impacto">Impacto social</a>
               </div>

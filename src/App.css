@@ -637,7 +637,11 @@ body.no-scroll {
 .info-icon {
   color: var(--accent);
   background: var(--bg-secondary);
-  padding: 14px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   flex-shrink: 0;
 }

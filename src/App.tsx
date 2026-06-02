@@ -1689,7 +1689,7 @@ function App() {
                 <a href="#micas">Actualización de micas</a>
                 
                 <h4 className="mt-8">Tiendas</h4>
-                <a href="#sucursales">Encuentra una sucursal</a>
+                <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Encuentra una sucursal</a>
               </div>
 
               <div className="footer-col">

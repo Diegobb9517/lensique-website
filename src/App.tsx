@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
-  Maximize, Camera, Trash2, Sliders, ShieldCheck, Glasses, Sparkles
+  Maximize, Camera, Trash2, Sliders, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
@@ -576,23 +576,23 @@ const warrantyData: InfoPageData = {
   ]
 };
 
-const faqData = {
+const faqData: InfoPageData = {
   title: 'Preguntas Frecuentes',
+  layout: 'grid',
   sections: [
     {
       heading: '¿Cuánto tiempo tardan en entregar mis lentes?',
-      content: <p>Para micas monofocales de inventario, el tiempo de entrega es de 1 a 2 días hábiles. Para trabajos de laboratorio (progresivos, altos índices, o tratamientos especiales), el tiempo estimado es de 5 a 7 días hábiles.</p>
-    },
-    {
-      heading: '¿Aceptan seguros de gastos médicos?',
-      content: <p>Sí, emitimos facturas deducibles y trabajamos con la mayoría de las aseguradoras mediante el esquema de reembolso. Te proporcionaremos toda la documentación necesaria.</p>
+      icon: Clock,
+      content: <p>Para micas monofocales de inventario, el tiempo de entrega es de 2 a 3 días hábiles. Para trabajos de laboratorio (progresivos, altos índices, o tratamientos especiales), el tiempo estimado es de 5 a 7 días hábiles.</p>
     },
     {
       heading: '¿Tienen meses sin intereses?',
+      icon: CreditCard,
       content: <p>Sí, contamos con 3 y 6 meses sin intereses pagando con tarjetas de crédito participantes en compras mayores a $2,500 MXN.</p>
     },
     {
       heading: '¿Qué incluye el examen de la vista?',
+      icon: Stethoscope,
       content: <p>Nuestro examen visual es completo e incluye: refracción por computadora, agudeza visual, prueba de balance binocular y recomendación personalizada por parte de nuestro Optometrista certificado.</p>
     }
   ]

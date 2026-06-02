@@ -607,7 +607,7 @@ function App() {
     hero_subtitle: 'Diseño minimalista y tecnología óptica de vanguardia.',
     hero_eyebrow: 'Lensique Premium',
     about_title: 'Nuestro Compromiso',
-    about_text: 'En Óptica Lensique combinamos precisión técnica con estilo vanguardista.',
+    about_text: 'Lensique nació en Zapopan con una idea simple: comprar lentes no debería ser aburrido, complicado, ni costoso. Nos dimos cuenta de que la gente tenía que elegir entre diseños increíbles a precios inalcanzables, o armazones genéricos de mala calidad. Por eso decidimos cambiar las reglas. Traemos los armazones con más estilo y usamos tecnología de última generación en nuestro consultorio clínico para darte una graduación perfecta. Todo esto con un trato humano, directo y transparente. Porque ver bien y verte bien es tu derecho, no un lujo.',
     nav_links: JSON.stringify([
       { name: 'Catálogo', href: '#armazones' },
       { name: 'Servicios', href: '#servicios' },

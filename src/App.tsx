@@ -9,6 +9,7 @@ import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import LensConfiguratorModal from './components/LensConfiguratorModal';
 import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
+import ServiceInfoModal, { type ServiceInfoData } from './components/ServiceInfoModal';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -584,6 +585,7 @@ function App() {
 
   
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
@@ -1312,9 +1314,48 @@ function App() {
           </div>
           <div className="wp-services-grid" ref={servicesSliderRef}>
             {[
-              { id: 's1', title: 'Examen de la vista', img: cv7600Img, action: () => handleOpenBooking('Examen de la Vista') },
-              { id: 's2', title: 'Consulta Médica', img: clinicRoomImg, action: () => handleOpenBooking('Consulta Oftalmológica') },
-              { id: 's3', title: 'Actualización de micas', img: micasImg, action: () => window.location.hash = 'micas' },
+              { 
+                id: 's1', 
+                title: 'Examen de la vista', 
+                img: cv7600Img, 
+                action: () => setSelectedServiceInfo({
+                  id: 's1',
+                  title: 'Examen de la vista',
+                  subtitle: 'Diagnóstico visual de alta precisión',
+                  description: '<p>Contamos con equipo automatizado de última generación para evaluar tu capacidad visual con exactitud.</p><ul><li>Revisión refractiva completa</li><li>Toma de agudeza visual</li><li>Diagnóstico personalizado</li></ul>',
+                  image: cv7600Img,
+                  actionText: 'Agendar cita ahora',
+                  onAction: () => { setSelectedServiceInfo(null); handleOpenBooking('Examen de la Vista'); }
+                }) 
+              },
+              { 
+                id: 's2', 
+                title: 'Consulta Médica', 
+                img: clinicRoomImg, 
+                action: () => setSelectedServiceInfo({
+                  id: 's2',
+                  title: 'Consulta Médica',
+                  subtitle: 'Atención Oftalmológica Especializada',
+                  description: '<p>Trabajamos de la mano con la clínica <strong>CIOVA</strong> para ofrecerte consultas oftalmológicas de la más alta calidad.</p><p>Nuestro equipo aliado se encargará de realizar un diagnóstico médico profundo de tu salud visual y ocular.</p>',
+                  image: clinicRoomImg,
+                  actionText: 'Visitar sitio de CIOVA',
+                  onAction: () => window.open('https://ciova.mx/', '_blank')
+                }) 
+              },
+              { 
+                id: 's3', 
+                title: 'Actualización de micas', 
+                img: micasImg, 
+                action: () => setSelectedServiceInfo({
+                  id: 's3',
+                  title: 'Actualización de micas',
+                  subtitle: 'Renueva tus lentes conservando tu armazón',
+                  description: '<p>Si ya tienes un armazón que te encanta, nosotros nos encargamos de cambiarle las micas con tu nueva graduación o el tratamiento que necesites.</p><p>Es un proceso rápido y seguro para darle una nueva vida a tus lentes favoritos.</p>',
+                  image: micasImg,
+                  actionText: 'Ver opciones de micas',
+                  onAction: () => { setSelectedServiceInfo(null); window.location.hash = 'micas'; }
+                }) 
+              },
               { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
               { id: 's5', title: 'Armazones', img: armazonesServiceImg, action: () => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
             ].map((service) => (
@@ -1546,10 +1587,16 @@ function App() {
               ></iframe>
               <div className="map-overlay-badge">
                 Jardines de San Ignacio
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <ServiceInfoModal
+            isOpen={!!selectedServiceInfo}
+            onClose={() => setSelectedServiceInfo(null)}
+            service={selectedServiceInfo}
+          />
 
       </main>
 

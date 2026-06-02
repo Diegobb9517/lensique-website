@@ -1,0 +1,152 @@
+.svc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.svc-modal-content {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.svc-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #1d1d1f;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s ease;
+}
+
+.svc-close-btn:hover {
+  background: #ffffff;
+}
+
+.svc-modal-image-container {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+  background-color: #f5f5f7;
+}
+
+.svc-modal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.svc-modal-body {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.svc-modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.svc-modal-subtitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #86868b;
+  margin: 0;
+}
+
+.svc-modal-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #424245;
+  margin-top: 8px;
+}
+
+.svc-modal-description p {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.svc-modal-description ul {
+  padding-left: 20px;
+  margin-bottom: 16px;
+}
+
+.svc-modal-description li {
+  margin-bottom: 8px;
+}
+
+.svc-modal-description strong {
+  color: #1d1d1f;
+}
+
+.svc-modal-actions {
+  margin-top: 24px;
+}
+
+.svc-primary-btn {
+  width: 100%;
+  background: #1d1d1f;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.svc-primary-btn:hover {
+  background: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .svc-modal-content {
+    border-radius: 20px;
+  }
+  
+  .svc-modal-image-container {
+    height: 200px;
+  }
+  
+  .svc-modal-body {
+    padding: 24px;
+  }
+  
+  .svc-modal-title {
+    font-size: 24px;
+  }
+}

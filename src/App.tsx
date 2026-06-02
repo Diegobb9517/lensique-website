@@ -567,7 +567,7 @@ const warrantyData = {
     },
     {
       heading: 'Garantía en Tratamientos',
-      content: <p>Los tratamientos antirreflejantes y fotocromáticos tienen una garantía de 6 meses contra desprendimiento o manchas anormales que no sean causadas por rayones o limpieza inadecuada.</p>
+      content: <p>Los tratamientos antirreflejantes y fotocromáticos tienen una garantía de 90 días contra desprendimiento o manchas anormales que no sean causadas por rayones o limpieza inadecuada.</p>
     }
   ]
 };

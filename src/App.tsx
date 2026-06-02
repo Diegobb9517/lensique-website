@@ -10,6 +10,7 @@ import TechnologyInfoPage from './components/TechnologyInfoPage';
 import LensConfiguratorModal from './components/LensConfiguratorModal';
 import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
 import ServiceDetailsPage from './components/ServiceDetailsPage';
+import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
@@ -553,6 +554,46 @@ function AppWrapper() {
   );
 }
 
+const warrantyData = {
+  title: 'Garantías',
+  sections: [
+    {
+      heading: 'Garantía de Armazones',
+      content: <p>Nuestros armazones cuentan con 1 año de garantía contra defectos de fabricación. Esto incluye problemas en bisagras, soldaduras y recubrimientos (siempre que no sea por mal uso, caídas o productos químicos).</p>
+    },
+    {
+      heading: 'Garantía de Adaptación',
+      content: <p>Entendemos que adaptarse a una nueva graduación puede tomar tiempo. Si después de 15 días sientes molestias o no logras adaptarte a tus nuevas micas, te ofrecemos una revisión gratuita y, de ser necesario, un cambio de graduación sin costo adicional.</p>
+    },
+    {
+      heading: 'Garantía en Tratamientos',
+      content: <p>Los tratamientos antirreflejantes y fotocromáticos tienen una garantía de 6 meses contra desprendimiento o manchas anormales que no sean causadas por rayones o limpieza inadecuada.</p>
+    }
+  ]
+};
+
+const faqData = {
+  title: 'Preguntas Frecuentes',
+  sections: [
+    {
+      heading: '¿Cuánto tiempo tardan en entregar mis lentes?',
+      content: <p>Para micas monofocales de inventario, el tiempo de entrega es de 1 a 2 días hábiles. Para trabajos de laboratorio (progresivos, altos índices, o tratamientos especiales), el tiempo estimado es de 5 a 7 días hábiles.</p>
+    },
+    {
+      heading: '¿Aceptan seguros de gastos médicos?',
+      content: <p>Sí, emitimos facturas deducibles y trabajamos con la mayoría de las aseguradoras mediante el esquema de reembolso. Te proporcionaremos toda la documentación necesaria.</p>
+    },
+    {
+      heading: '¿Tienen meses sin intereses?',
+      content: <p>Sí, contamos con 3 y 6 meses sin intereses pagando con tarjetas de crédito participantes en compras mayores a $2,500 MXN.</p>
+    },
+    {
+      heading: '¿Qué incluye el examen de la vista?',
+      content: <p>Nuestro examen visual es completo e incluye: refracción por computadora, agudeza visual, prueba de balance binocular y recomendación personalizada por parte de nuestro Optometrista certificado.</p>
+    }
+  ]
+};
+
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -588,6 +629,7 @@ function App() {
 
   
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedInfoPage, setSelectedInfoPage] = useState<InfoPageData | null>(null);
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
@@ -1602,6 +1644,12 @@ function App() {
             service={selectedServiceInfo}
           />
 
+          <InfoPage
+            isOpen={!!selectedInfoPage}
+            onClose={() => setSelectedInfoPage(null)}
+            data={selectedInfoPage}
+          />
+
       </main>
 
       <a 
@@ -1650,10 +1698,9 @@ function App() {
 
               <div className="footer-col">
                 <h4>Soporte</h4>
-                <a href="#garantia">Garantías</a>
-                <a href="#envios">Envíos y devoluciones</a>
-                <a href="#faq">Preguntas Frecuentes</a>
-                <a href="#facturacion">Facturación</a>
+                <a href="#garantia" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(warrantyData); }}>Garantías</a>
+                <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }}>Preguntas Frecuentes</a>
+                <a href="#facturacion" onClick={(e) => { e.preventDefault(); alert('Para solicitar tu factura, envíanos tu Constancia de Situación Fiscal (CSF) por WhatsApp.'); window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=Hola,%20me%20gustar%C3%ADa%20solicitar%20mi%20factura.%20Aqu%C3%AD%20env%C3%ADo%20mi%20Constancia%20de%20Situaci%C3%B3n%20Fiscal.`, '_blank'); }}>Facturación</a>
               </div>
             </div>
 

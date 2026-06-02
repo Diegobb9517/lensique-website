@@ -9,7 +9,8 @@ import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import LensConfiguratorModal from './components/LensConfiguratorModal';
 import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
-import ServiceInfoModal, { type ServiceInfoData } from './components/ServiceInfoModal';
+import ServiceDetailsPage from './components/ServiceDetailsPage';
+import { type ServiceInfoData } from './components/ServiceInfoModal';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -34,7 +35,9 @@ const FormatProductName = ({ name, brand }: { name: string, brand?: string }) =>
 };
 
 import cv7600Img from './assets/cv-7600.jpg';
-import clinicRoomImg from './assets/DSC00118.jpg';
+import clinicRoomImg from './assets/clinic-room.jpg';
+import eyeExamImg1 from './assets/eye_exam_1.jpg';
+import eyeExamImg2 from './assets/eye_exam_2.jpg';
 import editorialImg1 from './assets/DSC09657.jpg';
 import editorialSol from './assets/editorial_sol.jpg';
 import editorialSol2 from './assets/editorial_sol2.jpg';
@@ -1322,8 +1325,9 @@ function App() {
                   id: 's1',
                   title: 'Examen de la vista',
                   subtitle: 'Diagnóstico visual de alta precisión',
-                  description: '<p>Contamos con equipo automatizado de última generación para evaluar tu capacidad visual con exactitud.</p><ul><li>Revisión refractiva completa</li><li>Toma de agudeza visual</li><li>Diagnóstico personalizado</li></ul>',
+                  description: '<p>Contamos con equipo automatizado de última generación para evaluar tu capacidad visual con exactitud. Nuestras instalaciones están diseñadas para ofrecerte la mayor comodidad durante tu evaluación.</p><ul><li>Revisión refractiva completa</li><li>Toma de agudeza visual</li><li>Diagnóstico personalizado</li></ul>',
                   image: cv7600Img,
+                  gallery: [eyeExamImg1, eyeExamImg2],
                   actionText: 'Agendar cita ahora',
                   onAction: () => { setSelectedServiceInfo(null); handleOpenBooking('Examen de la Vista'); }
                 }) 
@@ -1592,7 +1596,7 @@ function App() {
             </div>
           </section>
 
-          <ServiceInfoModal
+          <ServiceDetailsPage
             isOpen={!!selectedServiceInfo}
             onClose={() => setSelectedServiceInfo(null)}
             service={selectedServiceInfo}

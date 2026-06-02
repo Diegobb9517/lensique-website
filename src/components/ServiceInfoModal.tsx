@@ -9,6 +9,7 @@ export interface ServiceInfoData {
   subtitle: string;
   description: string;
   image: string;
+  gallery?: string[];
   actionText: string;
   onAction: () => void;
 }

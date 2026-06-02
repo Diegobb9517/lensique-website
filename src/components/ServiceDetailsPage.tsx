@@ -14,7 +14,14 @@ export default function ServiceDetailsPage({ isOpen, onClose, service }: Service
   useEffect(() => {
     if (isOpen) {
       window.scrollTo({ top: 0, behavior: 'instant' });
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
     }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
   }, [isOpen]);
 
   if (!isOpen || !service) return null;

@@ -3,8 +3,8 @@ export const FRAME_GRADUACION_OPTIONS = [
   { id: 'MONOFOCAL', name: 'Monofocal', description: 'Visión nítida en una sola distancia (lejos o cerca).', price: 0 },
   { id: 'BIFOCAL_FT', name: 'Bifocal Flat top', description: 'Corrige dos campos de visión con un segmento visible.', price: 1034.48 },
   { id: 'BIFOCAL_INV', name: 'Bifocal Invisible', description: 'Corrige dos campos de visión sin líneas visibles.', price: 1293.10 },
-  { id: 'PROGRESIVO_EST', name: 'Progresivo Estandar', description: 'Visión clara a cualquier distancia (lejos, media y cerca).', price: 1810.35 },
-  { id: 'PROGRESIVO_AV', name: 'Progresivo Avanzado', description: 'Mayor campo visual y adaptación más rápida.', price: 2500.00 },
+  { id: 'PROGRESIVO_EST', name: 'Progresivo Estandar', description: 'Visión clara a cualquier distancia (lejos, media y cerca).', price: 1896.55 },
+  { id: 'PROGRESIVO_AV', name: 'Progresivo Avanzado', description: 'Mayor campo visual y adaptación más rápida.', price: 3448.28 },
 ];
 
 export const AR_OPTIONS = [

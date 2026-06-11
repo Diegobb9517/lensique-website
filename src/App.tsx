@@ -126,6 +126,7 @@ export const getContactLensUsage = (name: string) => {
   if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
   if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
   if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';
+  if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL')) return 'Uso Anual';
   return 'Todos';
 };
 
@@ -273,7 +274,7 @@ function FullCatalog({
                 <div className="filter-group">
                   <span className="filter-label">Uso:</span>
                   <div className="filter-pills">
-                    {['Todos', 'Uso Diario', 'Uso Quincenal', 'Uso Mensual'].map(u => (
+                    {['Todos', 'Uso Diario', 'Uso Quincenal', 'Uso Mensual', 'Uso Anual'].map(u => (
                       <button 
                         key={u} 
                         className={`filter-pill ${contactUsageFilter === u ? 'active' : ''}`}

@@ -449,6 +449,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Lentes de uso diario';
     if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Lentes de uso quincenal';
     if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Lentes de uso mensual';
+    if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL')) return 'Lentes de uso anual';
     return 'Lentes de Contacto';
   };
 

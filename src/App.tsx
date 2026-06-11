@@ -1165,15 +1165,7 @@ function App() {
           </div>
 
           <div className="nav-right">
-            <button className="nav-icon-text-btn d-none-mobile">
-              <User size={18} />
-              <span>Ingresar</span>
-            </button>
-            <button className="nav-icon-btn"><Search size={20} /></button>
-            <button className="nav-icon-btn d-none-mobile"><Heart size={20} /></button>
-            <button className="nav-icon-btn" onClick={() => handleOpenBooking()}>
-              <ShoppingBag size={20} />
-            </button>
+
 
             <button className="nav-icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

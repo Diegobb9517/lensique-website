@@ -231,13 +231,7 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
             </AnimatePresence>
           </div>
 
-          {/* Try On Button */}
-          {!hideTryOn && (
-            <button className="lsq-try-on-tag">
-              <Camera size={16} />
-              <span>Prueba virtual</span>
-            </button>
-          )}
+
 
           {/* Navigation Arrows */}
           {images.length > 1 && (

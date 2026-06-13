@@ -478,8 +478,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             />
           </div>
           
-          <span className="contact-lens-summary-brand">{product?.brand || 'ACUVUE'}</span>
-          <h3 className="contact-lens-summary-name">{product?.name}</h3>
+          <span className="contact-lens-summary-brand">
+            {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
+          </span>
+          <h3 className="contact-lens-summary-name">
+            {product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : product?.name)}
+          </h3>
           <p style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', marginTop: '0.25rem' }}>{getUsageType()}</p>
           
           <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>

@@ -586,6 +586,47 @@ const faqData: InfoPageData = {
   ]
 };
 
+const privacyData: InfoPageData = {
+  title: 'Aviso de Privacidad',
+  layout: 'standard',
+  sections: [
+    {
+      heading: 'Tratamiento de Datos Personales',
+      content: <p>En Óptica Lensique, con domicilio en Av. Guadalupe 1296, Zapopan, Jalisco, somos responsables del uso y protección de sus datos personales. Su información personal (nombre, teléfono, prescripción optométrica) será utilizada para proveer los productos y servicios que ha solicitado, informarle sobre cambios en los mismos y evaluar la calidad del servicio que le brindamos.</p>
+    },
+    {
+      heading: 'Derechos ARCO',
+      content: <p>Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos y las condiciones del uso que les damos (Acceso). Asimismo, es su derecho solicitar la corrección de su información personal en caso de que esté desactualizada, sea inexacta o incompleta (Rectificación); que la eliminemos de nuestros registros o bases de datos cuando considere que la misma no está siendo utilizada adecuadamente (Cancelación); así como oponerse al uso de sus datos personales para fines específicos (Oposición). Para ejercer estos derechos, puede contactarnos vía WhatsApp.</p>
+    }
+  ]
+};
+
+const termsData: InfoPageData = {
+  title: 'Términos y Condiciones',
+  layout: 'standard',
+  sections: [
+    {
+      heading: 'Uso del Sitio',
+      content: <p>El contenido de las páginas de este sitio web es para su información y uso general. Está sujeto a cambios sin previo aviso.</p>
+    },
+    {
+      heading: 'Precios y Pagos',
+      content: <p>Los precios mostrados están en pesos mexicanos (MXN) e incluyen IVA. Nos reservamos el derecho de modificar los precios en cualquier momento. Las transacciones se completan de forma presencial o a través de enlaces de pago verificados solicitados vía WhatsApp.</p>
+    }
+  ]
+};
+
+const cookiesData: InfoPageData = {
+  title: 'Política de Cookies',
+  layout: 'standard',
+  sections: [
+    {
+      heading: 'Uso de Cookies',
+      content: <p>Este sitio web utiliza cookies para mejorar la experiencia del usuario y analizar el tráfico del sitio. Al navegar por nuestro sitio, usted acepta nuestro uso de cookies de acuerdo con esta política. Utilizamos cookies de Google Analytics y Meta Pixel para medir la efectividad de nuestra publicidad y entender cómo los visitantes interactúan con nuestro sitio web.</p>
+    }
+  ]
+};
+
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -633,6 +674,7 @@ function App() {
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [bookingName, setBookingName] = useState<string>('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
@@ -715,7 +757,8 @@ function App() {
     if (!selectedDate || !selectedTime) return '';
     const dateStr = selectedDate.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
     const productMention = selectedProduct ? ` por el modelo ${selectedProduct}` : '';
-    return `Hola Lensique! Me gustaría agendar una cita${productMention} para el ${dateStr} a las ${selectedTime}.`;
+    const nameIntro = bookingName.trim() ? `Soy ${bookingName.trim()}, me` : 'Me';
+    return `Hola Lensique! ${nameIntro} gustaría agendar una cita${productMention} para el ${dateStr} a las ${selectedTime}.`;
   };
 
   const handleOpenBooking = (productName?: string) => {
@@ -867,7 +910,7 @@ function App() {
                       }
                     }}
                   >
-                    {String(selectedProductDetail.category || '').toLowerCase().includes('sol') ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar'}
+                    {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? 'Comprar Lentes de Contacto' : (String(selectedProductDetail.category || '').toLowerCase().includes('sol') ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar')}
                   </button>
 
                 <div className="product-detail-perks">
@@ -1092,23 +1135,62 @@ function App() {
                     <span>Horarios disponibles</span>
                   </div>
                   <div className="time-grid">
-                    {timeSlots.map(time => (
-                      <button 
-                        key={`time-${time}`}
-                        className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
-                        onClick={() => setSelectedTime(time)}
-                      >
-                        {time}
-                      </button>
-                    ))}
+                    {timeSlots.map(time => {
+                      let isPastTime = false;
+                      if (selectedDate && selectedDate.toDateString() === new Date().toDateString()) {
+                        const now = new Date();
+                        const [timeStr, modifier] = time.split(' ');
+                        let [hours, minutes] = timeStr.split(':').map(Number);
+                        if (hours === 12) {
+                          hours = modifier === 'AM' ? 0 : 12;
+                        } else if (modifier === 'PM') {
+                          hours += 12;
+                        }
+                        const slotTime = new Date(selectedDate);
+                        slotTime.setHours(hours, minutes, 0, 0);
+                        isPastTime = slotTime < now;
+                      }
+                      return (
+                        <button 
+                          key={`time-${time}`}
+                          className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
+                          onClick={() => setSelectedTime(time)}
+                          disabled={isPastTime}
+                          style={{ opacity: isPastTime ? 0.4 : 1, cursor: isPastTime ? 'not-allowed' : 'pointer' }}
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}
 
-              <div className="modal-footer">
+              {selectedDate && selectedTime && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="time-selection"
+                  style={{ marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}
+                >
+                  <div className="time-header" style={{ marginBottom: '0.5rem' }}>
+                    <User size={16} />
+                    <span>Tus datos</span>
+                  </div>
+                  <input 
+                    type="text" 
+                    placeholder="Tu nombre completo" 
+                    value={bookingName}
+                    onChange={(e) => setBookingName(e.target.value)}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0', outline: 'none' }}
+                  />
+                </motion.div>
+              )}
+
+              <div className="modal-footer" style={{ marginTop: '1.5rem' }}>
                 <button 
-                  className={`btn btn-primary full-width ${(!selectedDate || !selectedTime) ? 'disabled' : ''}`}
-                  disabled={!selectedDate || !selectedTime}
+                  className={`btn btn-primary full-width ${(!selectedDate || !selectedTime || !bookingName.trim()) ? 'disabled' : ''}`}
+                  disabled={!selectedDate || !selectedTime || !bookingName.trim()}
                   onClick={handleBookingConfirm}
                 >
                   Confirmar y enviar WhatsApp
@@ -1264,7 +1346,9 @@ function App() {
                   <img 
                     src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || heroImg} 
                     alt={product.name} 
-                    className="wp-card-img" 
+                    className="wp-card-img"
+                    loading="lazy"
+                    decoding="async" 
                     onError={(e: any) => {
                       e.target.onerror = null;
                       e.target.src = heroImg;
@@ -1461,6 +1545,8 @@ function App() {
                 src={storeInteriorImg}
                 alt="Óptica Lensique - Atención personalizada"
                 className="lifestyle-banner-img"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </motion.div>
@@ -1514,7 +1600,7 @@ function App() {
                 viewport={{ once: true }}
               >
                 <div className="face-guide-img-box">
-                  <img src={guide.image} alt={guide.glassesShape} className="face-guide-img" />
+                  <img src={guide.image} alt={guide.glassesShape} className="face-guide-img" loading="lazy" decoding="async" />
                 </div>
                 <div className="face-guide-content">
                   <span className="face-guide-tag">Ideal para: {guide.faceShape}</span>
@@ -1564,6 +1650,8 @@ function App() {
                       src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || contactLensesImg} 
                       alt={product.name} 
                       className="wp-card-img" 
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         const target = e.currentTarget;
                         if (!target.src.includes(contactLensesImg)) target.src = contactLensesImg;
@@ -1658,19 +1746,19 @@ function App() {
             <div className="footer-links-wrapper">
               <div className="footer-col">
                 <h4>Productos</h4>
-                <a href="#armazones">Lentes oftálmicos</a>
-                <a href="#armazones">Lentes de sol</a>
-                <a href="#micas">Micas monofocales</a>
-                <a href="#micas">Micas progresivas</a>
-                <a href="#contacto">Lentes de contacto</a>
-                <a href="#accesorios">Accesorios</a>
+                <a href="#armazones" onClick={(e) => { e.preventDefault(); document.getElementById('armazones')?.scrollIntoView({ behavior: 'smooth' }); }}>Lentes oftálmicos</a>
+                <a href="#armazones" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes de sol</a>
+                <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas monofocales</a>
+                <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas progresivas</a>
+                <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>Lentes de contacto</a>
+                <a href="#accesorios" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Accesorios'); setIsCatalogOpen(true); }}>Accesorios</a>
               </div>
               
               <div className="footer-col">
                 <h4>Servicios</h4>
                 <a href="#examen" onClick={(e) => { e.preventDefault(); handleOpenBooking('Examen de la Vista'); }}>Examen de la vista</a>
                 <a href="#consulta" onClick={(e) => { e.preventDefault(); handleOpenBooking('Consulta Oftalmológica'); }}>Consulta Médica</a>
-                <a href="#micas">Actualización de micas</a>
+                <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Actualización de micas</a>
                 
                 <h4 className="mt-8">Tiendas</h4>
                 <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Encuentra una sucursal</a>
@@ -1680,6 +1768,10 @@ function App() {
                 <h4>Nosotros</h4>
                 <a href="#nosotros" onClick={(e) => { e.preventDefault(); document.getElementById('nosotros')?.scrollIntoView({ behavior: 'smooth' }); }}>Nuestra historia</a>
                 <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
+                <h4 className="mt-8">Legal</h4>
+                <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
+                <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
+                <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
               </div>
 
               <div className="footer-col">
@@ -1727,15 +1819,6 @@ function App() {
               <span>&copy; {new Date().getFullYear()} Óptica Lensique.</span>
             </div>
             <div className="footer-bottom-links">
-              <a href="#privacidad">Aviso de Privacidad</a>
-              <a href="#terminos">Términos y Condiciones</a>
-              <a href="#cookies">Política de Cookies</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-export default AppWrapper;
+              <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
+              <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
+              <a href="#cookies" 

@@ -590,3 +590,54 @@
   border-color: #0056b3;
   background-color: #f0f7ff;
 }
+
+/* Mobile optimizations for summary panel */
+@media (max-width: 767px) {
+  .config-summary-panel {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  .config-summary-image-wrapper {
+    min-height: auto;
+    width: 90px;
+    height: 90px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .config-summary-image {
+    max-height: 90px;
+  }
+  .config-summary-details {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .config-summary-selections {
+    display: none;
+  }
+  .config-summary-total {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+  .config-summary-brand {
+    font-size: 0.65rem;
+  }
+  .config-summary-name {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+  }
+  .config-summary-total span {
+    font-size: 0.75rem;
+  }
+  .config-summary-total strong {
+    font-size: 1.15rem;
+  }
+}

@@ -19,13 +19,13 @@
 .help summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--blue);padding:11px 0;list-style:none}.help summary::-webkit-details-marker{display:none}.help summary:before{content:"\25B8  ";color:var(--blue)}
 .hc{font-size:12.5px;color:#444;line-height:1.55;padding-bottom:12px}
 .htab{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}.htab th,.htab td{border:1px solid #e3e8f2;padding:6px;text-align:center}.htab th{background:var(--lblue);color:var(--navy)}
-.reg{margin-top:14px;text-align:left}.reg label{font-size:12px;color:var(--grey);font-weight:600;display:block;margin:8px 0 4px}.reg input{width:100%;padding:11px;border:1.5px solid #cfd6e4;border-radius:10px;font-size:15px}.reg input[type=file]{padding:9px;font-size:13px}
+.reg{margin-top:14px;text-align:left}.reg label{font-size:12px;color:var(--grey);font-weight:600;display:block;margin:8px 0 4px}.reg input{width:100%;padding:11px;border:1.5px solid #cfd6e4;border-radius:10px;font-size:15px} .ack{display:flex;align-items:flex-start;gap:9px;margin-top:14px;font-size:12.5px;color:#444;line-height:1.4}.ack input{width:auto;margin-top:2px;flex:none}.ack label{cursor:pointer}.ack b{color:var(--navy)}
 .wabtn{margin-top:10px;width:100%;padding:14px;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}.b-mail{background:var(--navy)}.b-wa{background:var(--wa)}
+#msgok{margin-top:12px;background:#eaf5ec;border:1px solid #bfe0c6;color:#1e7d34;border-radius:12px;padding:16px;font-size:14px;font-weight:600;text-align:center}
 .nav{display:flex;gap:10px;margin-top:14px}button.b-prim,button.b-sec{flex:1;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}.b-prim{background:var(--navy);color:#fff}.b-sec{background:#eef1f7;color:var(--navy)}
 .sum{background:#fff;border:2px solid #e3e8f2;border-radius:16px;padding:20px;text-align:center}.sum .big{font-size:40px;font-weight:800;color:var(--navy);margin:6px 0}.sum .lbl{font-size:13px;color:var(--grey)}
 .sum .det{text-align:left;background:var(--lblue);border-radius:12px;padding:14px;margin:14px 0;font-size:14px}.sum .det div{display:flex;justify-content:space-between;padding:4px 0;gap:8px}.sum .det b{color:var(--navy);text-align:right}
 .disc{font-size:11.5px;color:var(--grey);line-height:1.5;margin-top:10px}.brand{font-size:11px;color:var(--grey);text-align:center;margin:8px 0 30px;line-height:1.6}
-.gracias{max-width:520px;margin:40px auto;padding:30px 20px;text-align:center}.gracias .ck{font-size:54px;color:var(--ok)}.gracias h2{color:var(--navy);font-size:24px;margin:10px 0}
 </style></head><body>
 <div class="top"><h1>Arma tus lentes</h1><p>Lentes ZEISS · Óptica Lensique</p></div>
 <div class="prog" id="prog"><div class="on"></div><div></div><div></div><div></div></div>
@@ -33,7 +33,7 @@
 <div class="brand">El precio y el tiempo final los confirma tu óptico según tu receta y armazón.<br>Av. Guadalupe 1296, San Ignacio, 45040 Zapopan, Jal. · Lun a Vie 10–20h, Sáb 10–18h · WhatsApp 33 1692 9111</div>
 <script>
 var WA="523316929111";
-var MAIL="servicio@lensique.com.mx";
+var KEY="ab25eb03-8d78-44a6-a6f1-ca73f1e34c73";
 var ICON={
 sen:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
 pro:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
@@ -124,28 +124,21 @@ if(ST.step===1){
  var resumen="Tipo: "+TN[ST.tipo]+" | Opción: "+o.nm+(ST.tipo==="pro"&&ST.azul?" + filtro de luz azul":"")+" | Graduación: "+gtxt+" | Total: "+money(total)+" | Entrega: "+tt;
  var optico=sp.prod+" · índice "+sp.idx+" · "+sp.tipo;
  h='<div class="step"><h2>Tu cotización</h2><div class="sum"><div class="lbl">Lentes ZEISS · '+TN[ST.tipo]+'</div><div class="big">'+money(total)+'</div><div class="lbl">el par, ya con antirreflejante y UV</div>'
- +'<div class="det"><div><span>Tipo</span><b>'+TN[ST.tipo]+'</b></div><div><span>Graduación</span><b>'+gtxt+'</b></div><div><span>Opción</span><b>'+o.nm+'</b></div><div><span>Entrega estimada</span><b>'+tt+'</b></div>'
+ +'<div class="det"><div><span>Tipo</span><b>'+TN[ST.tipo]+'</b></div><div><span>Graduación</span><b>'+gtxt+'</b></div><div><span>Opción</span><b>'+o.nm+'</b></div><div><span>Entrega en óptica</span><b>'+tt+'</b></div>'
  +(ST.tipo==="pro"&&ST.azul?'<div><span>Filtro de luz azul</span><b>+'+money(300)+'</b></div>':"")
  +'<div style="border-top:1px solid #c9d4ea;margin-top:6px;padding-top:8px"><span><b>Total '+(ex?"":"estimado")+'</b></span><b>'+money(total)+'</b></div></div>'
  +'<details class="help" style="text-align:left"><summary>Para el óptico · qué pedir a ZEISS</summary><div class="hc"><b>'+sp.prod+'</b><br>Índice '+sp.idx+' · '+sp.tipo+'</div></details>'
- +'<p class="disc">'+(ex?"Precio calculado con tu graduación.":"Precio estimado.")+' El óptico confirma el precio final, el armazón y la fecha exacta.<br><b>Armazón propio:</b> si traes tu propio armazón lo montamos con el mayor cuidado, pero la óptica no se hace totalmente responsable por daños (sobre todo en armazones usados o frágiles). Si llegara a romperse, te ofrecemos precio preferencial en un armazón de la óptica. Visítanos en Av. Guadalupe 1296, San Ignacio, Zapopan (Lun–Vie 10–20h, Sáb 10–18h).</p></div>'
- +'<form action="https://formsubmit.co/'+MAIL+'" method="POST" enctype="multipart/form-data" class="reg" id="mf">'
- +'<h2 style="font-size:16px;margin:14px 0 2px">Envía tu cotización</h2>'
- +'<input type="hidden" name="_subject" value="Nueva cotización - Óptica Lensique"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_template" value="table">'
- +'<input type="hidden" name="_next" id="mnext"><input type="hidden" name="Cotizacion" id="mcot"><input type="hidden" name="Para_el_optico" id="mopt">'
- +'<label>Nombre completo</label><input name="Nombre" placeholder="Tu nombre" required>'
- +'<label>WhatsApp (10 dígitos)</label><input name="WhatsApp" type="tel" placeholder="33 1234 5678" required>'
- +'<label>Sube tu receta (foto o PDF) — opcional</label><input type="file" name="receta" accept="image/*,application/pdf">'
- +'<button type="submit" class="wabtn b-mail">Enviar mi cotización a la óptica</button></form>'
- +'<button class="wabtn b-wa" id="wabtn">O enviar por WhatsApp</button>'
+ +'<p class="disc">'+(ex?"Precio calculado con tu graduación.":"Precio estimado.")+' El óptico confirma el precio final, el armazón y la fecha exacta.<br><b>Aviso sobre armazón propio:</b> El montaje en armazones proporcionados por el cliente se realiza con el máximo cuidado profesional. No obstante, Óptica Lensique no asume responsabilidad por daños o roturas que puedan ocurrir durante el proceso, en particular en armazones usados, desgastados o de material frágil. En caso de daño, se ofrecerá un precio preferencial en un armazón de nuestra óptica. La entrega de tus lentes se realiza en nuestra óptica: Av. Guadalupe 1296, San Ignacio, Zapopan (Lun–Vie 10–20h, Sáb 10–18h).</p></div>'
+ +'<div class="reg"><h2 style="font-size:16px;margin:14px 0 2px">Envía tu cotización</h2><label>Nombre completo</label><input id="wname" placeholder="Tu nombre"><label>WhatsApp (10 dígitos)</label><input id="wphone" type="tel" placeholder="33 1234 5678"></div>'+'<div class="ack"><input type="checkbox" id="ackchk"><label for="ackchk">He leído y estoy enterado del <b>aviso sobre armazón propio</b> indicado arriba.</label></div>'
+ 
+ +'<button class="wabtn b-wa" id="wabtn">Enviar mi cotización por WhatsApp</button>'
+ 
  +'<div class="nav"><button class="b-sec" id="back">Atrás</button><button class="b-prim" id="reset">Empezar de nuevo</button></div></div>';
  app.innerHTML=h;
- $("mnext").value=location.origin+location.pathname+"?enviado=1";
- $("mcot").value=resumen;$("mopt").value=optico;
  $("back").onclick=function(){ST.step=3;render();};
  $("reset").onclick=function(){ST={step:1,tipo:null,mode:null,esf:-2,cil:-1,add:2,fz:null,opc:null,azul:false};render();};
- $("wabtn").onclick=function(){var nm=$("mf").Nombre.value.trim(),ph=$("mf").WhatsApp.value.trim();if(!nm||!ph){alert("Escribe tu nombre y WhatsApp.");return;}var msg="Hola, soy "+nm+" (WhatsApp: "+ph+"). Quiero confirmar mi cotización de Óptica Lensique:\n\n"+resumen.split(" | ").join("\n")+"\n\n[Para el óptico] "+optico+"\n\nTe adjunto la foto de mi receta.";window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(msg),"_blank");};
+ $("wabtn").onclick=function(){var nm=$("wname").value.trim(),ph=$("wphone").value.trim();if(!nm||!ph){alert("Escribe tu nombre y WhatsApp.");return;}if(!document.getElementById("ackchk").checked){alert("Por favor marca que leíste el aviso sobre armazón propio.");return;}var msg="Hola, soy "+nm+" (WhatsApp: "+ph+"). Quiero confirmar mi cotización de Óptica Lensique:\n\n"+resumen.split(" | ").join("\n")+"\n\n[Para el óptico] "+optico+"\n\nTe adjunto la foto de mi receta.";window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(msg),"_blank");};
 }
 }
-if(location.search.indexOf("enviado=1")>=0){document.getElementById("prog").style.display="none";app.innerHTML='<div class="gracias"><div class="ck">✓</div><h2>¡Gracias!</h2><p>Tu cotización llegó a Óptica Lensique. Te contactaremos pronto por WhatsApp.</p><p style="font-size:12px;color:#6b7280">Av. Guadalupe 1296, San Ignacio, Zapopan · Lun–Vie 10–20h, Sáb 10–18h</p><button class="b-prim" style="margin-top:14px;padding:13px 22px" onclick="location.href=location.pathname">Hacer otra cotización</button></div>';}else{render();}
+render();
 </script></body></html>

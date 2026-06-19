@@ -564,6 +564,27 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
             <h2 className="config-title" style={{ fontSize: '2rem' }}>¡Todo listo!</h2>
             <p className="config-subtitle">Tu armazón está listo con las micas perfectas para ti.</p>
 
+            <div style={{ marginTop: '2rem', textAlign: 'left' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>
+                Tu nombre (opcional)
+              </label>
+              <input
+                type="text"
+                placeholder="Ej. Juan Pérez"
+                value={config.customerName || ''}
+                onChange={(e) => updateConfig('customerName', e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.875rem 1rem',
+                  borderRadius: '12px',
+                  border: '1px solid #cbd5e1',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  backgroundColor: '#f8fafc'
+                }}
+              />
+            </div>
+
             <button 
               className="config-btn-primary config-btn-full"
               onClick={handleComplete}

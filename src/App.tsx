@@ -999,7 +999,8 @@ function App() {
             setConfiguratorProduct(null);
             
             // Format WhatsApp Message with Configuration
-            let configText = `¡Hola! Me interesa comprar el armazón ${configuratorProduct.name} ${configuratorProduct.brand}.\n\nEsta es mi configuración de micas:\n`;
+            const greetingName = config.customerName ? ` Soy ${config.customerName.trim()} y me` : ' Me';
+            let configText = `¡Hola!${greetingName} interesa comprar el armazón ${configuratorProduct.name} ${configuratorProduct.brand}.\n\nEsta es mi configuración de micas:\n`;
             
             if (config.graduacion) {
               const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);

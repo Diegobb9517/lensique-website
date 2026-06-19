@@ -1331,7 +1331,9 @@ function App() {
           </div>
           
           <div className="wp-slider" ref={sliderRef}>
-            {safeJsonParse(settings.featured_products)
+            {(safeJsonParse(settings.featured_products).length > 0 
+              ? safeJsonParse(settings.featured_products) 
+              : safeJsonParse(settings.full_catalog_data).slice(0, 8))
               .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
               .map((product: any, idx: number) => (
               <motion.div 
@@ -1649,7 +1651,10 @@ function App() {
             </div>
             
             <div className="wp-slider" ref={contactSliderRef}>
-              {safeJsonParse(settings.featured_contact_lenses).map((product: any, idx: number) => (
+              {(safeJsonParse(settings.featured_contact_lenses).length > 0
+                ? safeJsonParse(settings.featured_contact_lenses)
+                : safeJsonParse(settings.full_catalog_data).filter((p: any) => String(p.category || '').toLowerCase().includes('contacto')).slice(0, 8)
+              ).map((product: any, idx: number) => (
                 <motion.div 
                   key={`lc-fix-${idx}-${product.id}`}
                   className="wp-product-card"

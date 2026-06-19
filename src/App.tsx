@@ -1766,11 +1766,9 @@ function App() {
               <div className="footer-col">
                 <h4>Productos</h4>
                 <a href="#armazones" onClick={(e) => { e.preventDefault(); document.getElementById('armazones')?.scrollIntoView({ behavior: 'smooth' }); }}>Lentes oftálmicos</a>
-                <a href="#armazones" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes de sol</a>
                 <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas monofocales</a>
                 <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas progresivas</a>
                 <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>Lentes de contacto</a>
-                <a href="#accesorios" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Accesorios'); setIsCatalogOpen(true); }}>Accesorios</a>
               </div>
               
               <div className="footer-col">

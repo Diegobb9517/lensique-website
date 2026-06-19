@@ -15,23 +15,10 @@ import { type ServiceInfoData } from './components/ServiceInfoModal';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
+import { getInventedName } from './lib/format';
 
-const FormatProductName = ({ name, brand }: { name: string, brand?: string }) => {
-  let cleanName = name || '';
-  if (brand && cleanName.toUpperCase().startsWith(brand.toUpperCase())) {
-    cleanName = cleanName.substring(brand.length).trim();
-  }
-  if (cleanName.startsWith('- ')) cleanName = cleanName.substring(2).trim();
-  
-  const parts = cleanName.split(' - ');
-  if (parts.length > 1) {
-    return (
-      <span className="fpn-wrapper">
-        <span className="fpn-main">{parts[0]}</span>
-        <span className="fpn-sub">{parts.slice(1).join(' - ')}</span>
-      </span>
-    );
-  }
+const FormatProductName = ({ name, brand, category }: { name: string, brand?: string, category?: string }) => {
+  const cleanName = getInventedName(name, category);
   return <span className="fpn-main">{cleanName}</span>;
 };
 
@@ -327,10 +314,10 @@ function FullCatalog({
 
                       <div className="product-info-editorial">
                         <div className="product-name-row">
-                          <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} /></h3>
+                          <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                           <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                         </div>
-                        <p className="product-brand-sub">{product.brand || 'Colección Lensique'}</p>
+                        <p className="product-brand-sub">{String(product.category || '').toLowerCase().includes('contacto') ? '' : `${product.name} • `}{product.brand || 'Colección Lensique'}</p>
                         
                         <button 
                           className="product-main-view-btn"
@@ -1366,8 +1353,8 @@ function App() {
                 </div>
 
                 <div className="wp-card-info">
-                  <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} /></h3>
-                  <span className="wp-product-model">{product.model || product.category || 'Premium'}</span>
+                  <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
+                  <span className="wp-product-model">{String(product.category || '').toLowerCase().includes('contacto') ? (product.brand || 'Premium') : product.name}</span>
                 </div>
               </motion.div>
             ))}
@@ -1686,8 +1673,8 @@ function App() {
                   </div>
 
                   <div className="wp-card-info">
-                    <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} /></h3>
-                    <span className="wp-product-model">{product.brand || 'Contacto'}</span>
+                    <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
+                    <span className="wp-product-model">{String(product.category || '').toLowerCase().includes('contacto') ? (product.brand || 'Contacto') : product.name}</span>
                   </div>
                 </motion.div>
               ))}

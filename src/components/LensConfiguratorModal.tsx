@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, Upload, Edit3, User, CheckCircle } from 'lucide-react';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from '../lib/configuratorConstants';
+import { getInventedName } from '../lib/format';
 import './LensConfiguratorModal.css';
 import heroImg from '../assets/hero_glasses.png';
 import contactLensesImg from '../assets/contact_lenses.png';
@@ -646,8 +647,8 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
                 />
               </div>
               <div className="config-summary-details">
-                <span className="config-summary-brand">{product?.brand || 'Lensique'}</span>
-                <h3 className="config-summary-name">{product?.name}</h3>
+                <span className="config-summary-brand">{product?.name} &bull; {product?.brand || 'Lensique'}</span>
+                <h3 className="config-summary-name">{getInventedName(product?.name, product?.category) || 'Armazón'}</h3>
                 
                 <div className="config-summary-selections">
                   <div className="config-selection-item">

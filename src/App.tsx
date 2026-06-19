@@ -1331,10 +1331,9 @@ function App() {
           </div>
           
           <div className="wp-slider" ref={sliderRef}>
-            {(safeJsonParse(settings.featured_products).length > 0 
-              ? safeJsonParse(settings.featured_products) 
-              : safeJsonParse(settings.full_catalog_data).slice(0, 8))
-              .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
+            {(safeJsonParse(settings.featured_products).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto')).length > 0 
+              ? safeJsonParse(settings.featured_products).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
+              : safeJsonParse(settings.full_catalog_data).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto')).slice(0, 8))
               .map((product: any, idx: number) => (
               <motion.div 
                 key={`popular-${idx}-${product.id}`}

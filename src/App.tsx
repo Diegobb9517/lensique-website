@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
-  Maximize, Camera, Trash2, Sliders, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope
+  Maximize, Camera, Trash2, Sliders, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope, AlertTriangle
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
@@ -556,6 +556,11 @@ const warrantyData: InfoPageData = {
       heading: 'Garantía en Tratamientos',
       icon: Sparkles,
       content: <p>Los tratamientos antirreflejantes y fotocromáticos tienen una garantía de 90 días contra desprendimiento o manchas anormales que no sean causadas por rayones o limpieza inadecuada.</p>
+    },
+    {
+      heading: 'Montaje en Armazones Propios',
+      icon: AlertTriangle,
+      content: <p>El montaje en armazones proporcionados por el cliente se realiza con el máximo cuidado profesional. No obstante, Óptica Lensique <strong>no asume responsabilidad por daños o roturas</strong> que puedan ocurrir durante el proceso, en particular en armazones usados, desgastados o de material frágil. En caso de daño, se ofrecerá un precio preferencial en un armazón nuevo de nuestro catálogo.</p>
     }
   ]
 };

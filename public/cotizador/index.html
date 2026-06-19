@@ -130,14 +130,13 @@ if(ST.step===1){
  +'<details class="help" style="text-align:left"><summary>Para el óptico · qué pedir a ZEISS</summary><div class="hc"><b>'+sp.prod+'</b><br>Índice '+sp.idx+' · '+sp.tipo+'</div></details>'
  +'<p class="disc">'+(ex?"Precio calculado con tu graduación.":"Precio estimado.")+' El óptico confirma el precio final, el armazón y la fecha exacta.<br><b>Aviso sobre armazón propio:</b> El montaje en armazones proporcionados por el cliente se realiza con el máximo cuidado profesional. No obstante, Óptica Lensique no asume responsabilidad por daños o roturas que puedan ocurrir durante el proceso, en particular en armazones usados, desgastados o de material frágil. En caso de daño, se ofrecerá un precio preferencial en un armazón de nuestra óptica. La entrega de tus lentes se realiza en nuestra óptica: Av. Guadalupe 1296, San Ignacio, Zapopan (Lun–Vie 10–20h, Sáb 10–18h).</p></div>'
  +'<div class="reg"><h2 style="font-size:16px;margin:14px 0 2px">Envía tu cotización</h2><label>Nombre completo</label><input id="wname" placeholder="Tu nombre"><label>WhatsApp (10 dígitos)</label><input id="wphone" type="tel" placeholder="33 1234 5678"></div>'+'<div class="ack"><input type="checkbox" id="ackchk"><label for="ackchk">He leído y estoy enterado del <b>aviso sobre armazón propio</b> indicado arriba.</label></div>'
- 
+ +'<p style="font-size:14px;color:#d97706;margin:12px 0 8px;font-weight:600;text-align:center;background:#fef3c7;padding:8px;border-radius:6px;border:1px solid #fde68a;">Nota: Para continuar con tu compra, es necesario comunicarse con un asesor enviando esta cotización.</p>'
  +'<button class="wabtn b-wa" id="wabtn">Enviar mi cotización por WhatsApp</button>'
- 
  +'<div class="nav"><button class="b-sec" id="back">Atrás</button><button class="b-prim" id="reset">Empezar de nuevo</button></div></div>';
  app.innerHTML=h;
  $("back").onclick=function(){ST.step=3;render();};
  $("reset").onclick=function(){ST={step:1,tipo:null,mode:null,esf:-2,cil:-1,add:2,fz:null,opc:null,azul:false};render();};
- $("wabtn").onclick=function(){var nm=$("wname").value.trim(),ph=$("wphone").value.trim();if(!nm||!ph){alert("Escribe tu nombre y WhatsApp.");return;}if(!document.getElementById("ackchk").checked){alert("Por favor marca que leíste el aviso sobre armazón propio.");return;}var msg="Hola, soy "+nm+" (WhatsApp: "+ph+"). Quiero confirmar mi cotización de Óptica Lensique:\n\n"+resumen.split(" | ").join("\n")+"\n\n[Para el óptico] "+optico+"\n\nTe adjunto la foto de mi receta.";window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(msg),"_blank");};
+ $("wabtn").onclick=function(){var nm=$("wname").value.trim(),ph=$("wphone").value.trim();if(!nm||!ph){alert("Escribe tu nombre y WhatsApp.");return;}if(!document.getElementById("ackchk").checked){alert("Por favor marca que leíste el aviso sobre armazón propio.");return;}var msg="Hola, soy "+nm+" (WhatsApp: "+ph+"). Quiero confirmar mi cotización de Óptica Lensique:\n\n"+resumen.split(" | ").join("\n")+"\n\n[Para el óptico] "+optico+"\n\nTe adjunto la foto de mi receta.";window.location.href="https://api.whatsapp.com/send?phone="+WA+"&text="+encodeURIComponent(msg);};
 }
 }
 render();

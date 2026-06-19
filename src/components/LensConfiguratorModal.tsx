@@ -585,6 +585,20 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
               />
             </div>
 
+            <p style={{
+              fontSize: '0.875rem',
+              color: '#d97706',
+              margin: '1.5rem 0 0.5rem',
+              fontWeight: 600,
+              textAlign: 'center',
+              background: '#fef3c7',
+              padding: '0.75rem',
+              borderRadius: '8px',
+              border: '1px solid #fde68a'
+            }}>
+              Nota: Para continuar con tu compra, es necesario comunicarse con un asesor enviando esta cotización.
+            </p>
+
             <button 
               className="config-btn-primary config-btn-full"
               onClick={handleComplete}

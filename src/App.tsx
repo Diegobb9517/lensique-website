@@ -299,6 +299,14 @@ function FullCatalog({
                       animate={{ opacity: 1, y: 0 }}
                       key={product.id}
                       className="product-card-editorial hover-scale"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        if (String(product.category || '').toLowerCase().includes('contacto')) {
+                          onViewProduct(product);
+                        } else {
+                          onConfigureProduct(product);
+                        }
+                      }}
                     >
                       <div className="product-img-area" style={{ position: 'relative' }}>
                         {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
@@ -326,7 +334,8 @@ function FullCatalog({
                         
                         <button 
                           className="product-main-view-btn"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             if (String(product.category || '').toLowerCase().includes('contacto')) {
                               onViewProduct(product);
                             } else {

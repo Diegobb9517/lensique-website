@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Arma tus lentes · Lensique</title>
+<style>
+:root{--navy:#1F3864;--blue:#2E5496;--lblue:#E8EEF9;--bg:#fbfcfe;--ok:#1e7d34;--grey:#6b7280;--wa:#25D366}
+*{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;background:var(--bg);color:#1a1a1a}
+.top{background:var(--navy);color:#fff;padding:16px;text-align:center}.top h1{margin:0;font-size:18px;font-weight:700}.top p{margin:4px 0 0;font-size:12px;opacity:.8}
+.prog{display:flex;gap:6px;justify-content:center;margin:16px auto 0;max-width:520px;padding:0 16px}.prog div{flex:1;height:5px;border-radius:5px;background:#dde3ef}.prog div.on{background:var(--blue)}
+.wrap{max-width:520px;margin:18px auto;padding:0 16px}
+.step h2{font-size:21px;color:var(--navy);margin:0 0 4px;font-weight:800}.step .q{font-size:13px;color:var(--grey);margin:0 0 16px}
+.opt{display:flex;align-items:center;gap:14px;border:2px solid #e3e8f2;border-radius:14px;padding:15px;margin-bottom:11px;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--blue)}.opt.sel{border-color:var(--navy);background:var(--lblue)}
+.opt .ic{width:42px;height:42px;border-radius:11px;background:var(--lblue);display:flex;align-items:center;justify-content:center;flex:none}.opt.sel .ic{background:#fff}
+.opt .nm{font-size:16px;font-weight:700;color:var(--navy)}.opt .ds{font-size:12.5px;color:var(--grey);margin-top:3px;line-height:1.35}
+.opt .pr{margin-left:auto;font-size:17px;font-weight:800;color:var(--navy);white-space:nowrap;text-align:right}
+.opt .rec{display:inline-block;font-size:10px;font-weight:700;color:#fff;background:var(--ok);padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.tog{display:flex;align-items:center;gap:12px;border:2px dashed #cfd8ea;border-radius:14px;padding:14px;margin:6px 0 4px;cursor:pointer}.tog.on{border-style:solid;border-color:var(--blue);background:var(--lblue)}
+.tog .ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--blue);flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}.tog.on .ck{background:var(--blue)}
+.grad{display:flex;gap:10px;margin:4px 0}.grad>div{flex:1}.grad label{font-size:12px;color:var(--grey);font-weight:600}.grad input{width:100%;padding:11px;border:1.5px solid #cfd6e4;border-radius:10px;font-size:16px;text-align:center}
+.help{margin-top:12px;border:1px solid #e3e8f2;border-radius:10px;background:#fff;padding:0 12px}
+.help summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--blue);padding:11px 0;list-style:none}.help summary::-webkit-details-marker{display:none}.help summary:before{content:"\25B8  ";color:var(--blue)}
+.hc{font-size:12.5px;color:#444;line-height:1.55;padding-bottom:12px}
+.htab{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}.htab th,.htab td{border:1px solid #e3e8f2;padding:6px;text-align:center}.htab th{background:var(--lblue);color:var(--navy)}
+.reg{margin-top:14px;text-align:left}.reg label{font-size:12px;color:var(--grey);font-weight:600;display:block;margin:8px 0 4px}.reg input{width:100%;padding:11px;border:1.5px solid #cfd6e4;border-radius:10px;font-size:15px}.reg input[type=file]{padding:9px;font-size:13px}
+.wabtn{margin-top:10px;width:100%;padding:14px;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}.b-mail{background:var(--navy)}.b-wa{background:var(--wa)}
+.nav{display:flex;gap:10px;margin-top:14px}button.b-prim,button.b-sec{flex:1;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}.b-prim{background:var(--navy);color:#fff}.b-sec{background:#eef1f7;color:var(--navy)}
+.sum{background:#fff;border:2px solid #e3e8f2;border-radius:16px;padding:20px;text-align:center}.sum .big{font-size:40px;font-weight:800;color:var(--navy);margin:6px 0}.sum .lbl{font-size:13px;color:var(--grey)}
+.sum .det{text-align:left;background:var(--lblue);border-radius:12px;padding:14px;margin:14px 0;font-size:14px}.sum .det div{display:flex;justify-content:space-between;padding:4px 0;gap:8px}.sum .det b{color:var(--navy);text-align:right}
+.disc{font-size:11.5px;color:var(--grey);line-height:1.5;margin-top:10px}.brand{font-size:11px;color:var(--grey);text-align:center;margin:8px 0 30px;line-height:1.6}
+.gracias{max-width:520px;margin:40px auto;padding:30px 20px;text-align:center}.gracias .ck{font-size:54px;color:var(--ok)}.gracias h2{color:var(--navy);font-size:24px;margin:10px 0}
+</style></head><body>
+<div class="top"><h1>Arma tus lentes</h1><p>Lentes ZEISS · Óptica Lensique</p></div>
+<div class="prog" id="prog"><div class="on"></div><div></div><div></div><div></div></div>
+<div class="wrap" id="app"></div>
+<div class="brand">El precio y el tiempo final los confirma tu óptico según tu receta y armazón.<br>Av. Guadalupe 1296, San Ignacio, 45040 Zapopan, Jal. · Lun a Vie 10–20h, Sáb 10–18h · WhatsApp 33 1692 9111</div>
+<script>
+var WA="523316929111";
+var MAIL="servicio@lensique.com.mx";
+var ICON={
+sen:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+pro:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+bif:'<circle cx="12" cy="12" r="9"/><path d="M3 14h18"/>',
+exacto:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+estimado:'<path d="M13 2L5 13h5l-1 9 8-12h-5l1-8z"/>',
+g0:'<rect x="3" y="14" width="4" height="6" rx="1"/>',
+g1:'<rect x="3" y="14" width="4" height="6" rx="1"/><rect x="10" y="9" width="4" height="11" rx="1"/>',
+g2:'<rect x="3" y="14" width="4" height="6" rx="1"/><rect x="10" y="9" width="4" height="11" rx="1"/><rect x="17" y="4" width="4" height="16" rx="1"/>',
+azul:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
+foto:'<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4 4l1.5 1.5M18.5 18.5L20 20M1 12h2M21 12h2M4 20l1.5-1.5M18.5 5.5L20 4"/>',
+pol:'<circle cx="7" cy="14" r="4"/><circle cx="17" cy="14" r="4"/><path d="M11 13h2M2 9l3 2M22 9l-3 2"/>',
+shield:'<path d="M12 2l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V5z"/>',
+star:'<path d="M12 4l2.3 5 5.7.5-4.3 3.7 1.3 5.3L12 15.8 7 18.5l1.3-5.3L4 9.5 9.7 9z"/>',
+gem:'<path d="M6 3h12l3 5-9 13L3 8z"/><path d="M3 8h18M9 3l3 18M15 3l-3 18"/>'};
+function svg(k){return '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2E5496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICON[k]+'</svg>';}
+var EO=["1.5","1.6","1.67","1.74"];var ER={"1.5":[-7,6,4],"1.6":[-10,6,6],"1.67":[-12,8,6],"1.74":[-20,16,6]};
+function rec(e,c){var pot=Math.max(Math.abs(e),Math.abs(e+c));var a=pot<=2?1:pot<=4?2:pot<=6?3:4;var f={};EO.forEach(function(k){var r=ER[k];f[k]=(e>=r[0]&&e<=r[1]&&Math.abs(c)<=r[2]);});var m=5;for(var i=0;i<4;i++){if(f[EO[i]]){m=i+1;break;}}var rk=Math.max(a,m);return rk>=5?"1.67":EO[rk-1];}
+function near(idx,ks){return ks.reduce(function(b,k){return Math.abs(parseFloat(k)-parseFloat(idx))<Math.abs(parseFloat(b)-parseFloat(idx))?k:b;});}
+function isT(e,c,i){return Math.abs(c)<=2&&e>=-6&&e<=4&&(i=="1.5"||i=="1.6");}
+function rnd(c){return Math.round(c*1.16*2.2/50)*50;}
+var SEN={verde:{lad:["1.5","1.6","1.67"],idx:{"1.5":{t:747,p:1288},"1.6":{t:829,p:1617},"1.67":{t:922,p:2019}}},foto:{lad:["1.6","1.67"],idx:{"1.6":{t:1179,p:2755},"1.67":{p:2457}}},pol:{lad:["1.5","1.6","1.67"],idx:{"1.5":{p:1514},"1.6":{p:1756},"1.67":{p:2251}},sun:1}};
+var PRO={precision:{"1.5":1968,"1.59":2493,"1.67":3435},pure:{"1.5":3662,"1.6":4532,"1.67":5124},individual:{"1.5":6442,"1.6":7158,"1.67":7735}};
+function cs(src,e,c){var ri=rec(e,c);if(SEN[src]){var o=SEN[src];var idx=near(ri,o.lad);var d=o.idx[idx];var cost=o.sun?d.p:((isT(e,c,idx)&&d.t)?d.t:(d.p||d.t));return rnd(cost);}var ks=Object.keys(PRO[src]);return rnd(PRO[src][near(ri,ks)]);}
+var TIPOS=[{k:"sen",ic:"sen",nm:"Visión sencilla",ds:"Para ver de lejos o de cerca."},{k:"pro",ic:"pro",nm:"Progresivo",ds:"Lejos y cerca en un solo lente, sin línea."},{k:"bif",ic:"bif",nm:"Bifocal",ds:"Lejos y cerca, con una línea visible."}];
+var MODES=[{k:"exacto",ic:"exacto",nm:"Tengo mi receta",ds:"Precio exacto con tu graduación."},{k:"estimado",ic:"estimado",nm:"No la tengo / estimar",ds:"Precio estimado rápido, sin números."}];
+var FZ=[{k:0,ic:"g0",nm:"Ligera",ds:"Veo casi bien; uso lentes solo a veces."},{k:1,ic:"g1",nm:"Media",ds:"Uso lentes a diario para ver bien."},{k:2,ic:"g2",nm:"Fuerte",ds:"Sin lentes veo muy borroso."}];
+var OPC={
+sen:[{k:"ar",ic:"sen",nm:"Antirreflejante",ds:"Menos reflejos, ves más nítido y luces mejor.",pr:[1900,2100,5150],src:"verde",rec:1,z:"ZEISS ClearView · DuraVision Platinum"},
+{k:"azul",ic:"azul",nm:"Filtro de luz azul",ds:"Protege del celular y la compu; menos cansancio.",pr:[2200,2400,5450],src:"verde",add:300,z:"ZEISS BlueGuard · DuraVision Platinum"},
+{k:"foto",ic:"foto",nm:"Se oscurecen al sol",ds:"Un solo lente para interior y exterior.",pr:[3000,3000,6250],src:"foto",z:"ZEISS PhotoFusion X · DuraVision Platinum"},
+{k:"pol",ic:"pol",nm:"Para el sol (polarizado)",ds:"Sol sin reflejos. Ideal para manejar o la playa.",pr:[3850,4500,5750],src:"pol",z:"ZEISS SmartLife V.Sencilla · Polarizado Sun"}],
+pro:[{k:"ese",ic:"star",nm:"Esencial",ds:"Lejos y cerca sin línea. Buena adaptación.",pr:[5000,6350,8750],src:"precision",z:"ZEISS Precision Classic (poli)"},
+{k:"prem",ic:"star",nm:"Premium",ds:"Campos de visión más amplios y cómodos.",pr:[9350,11550,13100],src:"pure",rec:1,z:"ZEISS SmartLife Pure"},
+{k:"eli",ic:"gem",nm:"Élite",ds:"Lo mejor de ZEISS, personalizado a ti.",pr:[16450,18250,19750],src:"individual",z:"ZEISS SmartLife Individual 3"}],
+bif:[{k:"std",ic:"bif",nm:"Bifocal estándar",ds:"Lejos y cerca con línea visible.",pr:[2000,2000,2000],z:"Synchrony FT28 1.5 (N7081) + AR ZEISS (HM)",bidx:"1.5"},
+{k:"poli",ic:"shield",nm:"Resistente (policarbonato)",ds:"Más resistente a golpes. Ideal uso rudo o niños.",pr:[2100,2100,2100],z:"Synchrony FT28 1.59 poli (N7086) + AR ZEISS",bidx:"1.59"},
+{k:"bfoto",ic:"foto",nm:"Que se oscurece al sol",ds:"Se aclara y oscurece según la luz.",pr:[4350,4350,4350],z:"Synchrony FT28 1.5 Photo Grey (N7082) + AR ZEISS",bidx:"1.5"}]};
+var TN={sen:"Visión sencilla",pro:"Progresivo",bif:"Bifocal"};var FN={0:"Ligera",1:"Media",2:"Fuerte"};
+var ST={step:1,tipo:null,mode:null,esf:-2,cil:-1,add:2,fz:null,opc:null,azul:false};
+var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
+function $(i){return document.getElementById(i);}
+var app=$("app");
+function basePrice(o){if(!o.src)return o.pr[1];if(ST.mode==="exacto")return cs(o.src,ST.esf,ST.cil)+(o.add||0);return o.pr[ST.fz];}
+function priceOf(o){return basePrice(o)+(ST.tipo==="pro"&&ST.azul?300:0);}
+function orderSpec(o){if(ST.tipo==="bif")return{prod:o.z,idx:o.bidx,tipo:"A proceso (consultar)"};var ex=ST.mode==="exacto";var e=ex?ST.esf:[-1.5,-3,-6][ST.fz],c=ex?ST.cil:[-0.5,-1,-1.5][ST.fz];var ri=rec(e,c);var lad=SEN[o.src]?SEN[o.src].lad:Object.keys(PRO[o.src]);var idx=near(ri,lad);var tipo;if(ST.tipo==="pro")tipo="Procesado (a proceso)";else if(SEN[o.src]&&SEN[o.src].sun)tipo="Procesado";else tipo=isT(e,c,idx)?"Terminado (stock)":"Procesado (lab)";return{prod:o.z+(ST.tipo==="pro"&&ST.azul?" + BlueGuard (luz azul)":""),idx:idx,tipo:tipo};}
+function tiempo(o,sp){if(sp.tipo.indexOf("Terminado")>=0)return "3 a 5 días hábiles";if(o.k==="pol"||o.k==="eli")return "alrededor de 3 semanas";return "alrededor de 2 semanas";}
+function setProg(){var d=$("prog").children;for(var i=0;i<4;i++)d[i].className=i<ST.step?"on":"";}
+function card(o,sel,pr){return '<div class="opt'+(sel?" sel":"")+'" data-k="'+o.k+'"><div class="ic">'+svg(o.ic)+'</div><div><div class="nm">'+o.nm+(o.rec?'<span class="rec">Más elegido</span>':"")+'</div><div class="ds">'+o.ds+'</div></div>'+(pr!=null?'<div class="pr">'+money(pr)+'</div>':"")+'</div>';}
+function recetaHelp(){return '<details class="help"><summary>¿Cómo leer mi receta?</summary><div class="hc">Tu receta tiene dos ojos: <b>OD</b> (derecho) y <b>OI</b> (izquierdo). Cada uno trae:<table class="htab"><tr><th></th><th>Esfera</th><th>Cilindro</th><th>Eje</th><th>Adición</th></tr><tr><td><b>OD</b></td><td>−0.25</td><td>−1.00</td><td>155°</td><td>—</td></tr><tr><td><b>OI</b></td><td>+0.50</td><td>−2.00</td><td>30°</td><td>—</td></tr></table>• <b>Esfera</b>: tu graduación (miopía − / hipermetropía +).<br>• <b>Cilindro y Eje</b>: el astigmatismo (si no tienes, va 0).<br>• <b>Adición</b>: solo en progresivo/bifocal, para leer de cerca.<br>Para cotizar, usa el <b>ojo de mayor graduación</b>. Tu óptico toma los dos.</div></details>';}
+function render(){
+setProg();var h="";
+if(ST.step===1){
+ h='<div class="step"><h2>¿Qué necesitas ver?</h2><p class="q">Elige el tipo de lente.</p>';
+ TIPOS.forEach(function(t){h+=card(t,ST.tipo===t.k,null);});
+ h+='<div class="nav"><button class="b-prim" id="next" '+(ST.tipo?"":"disabled style=opacity:.5")+'>Continuar</button></div></div>';
+ app.innerHTML=h;app.querySelectorAll(".opt").forEach(function(el){el.onclick=function(){ST.tipo=el.dataset.k;ST.opc=null;render();};});
+ if(ST.tipo)$("next").onclick=function(){ST.step=2;render();};
+}else if(ST.step===2){
+ h='<div class="step"><h2>Tu graduación</h2><p class="q">Si tienes tu receta, el precio es exacto. Si no, te damos un estimado.</p>';
+ MODES.forEach(function(m){h+=card(m,ST.mode===m.k,null);});
+ if(ST.mode==="exacto"){
+   h+='<div class="grad"><div><label>Esfera</label><input type="number" step="0.25" id="iesf" value="'+ST.esf+'"></div><div><label>Cilindro</label><input type="number" step="0.25" id="icil" value="'+ST.cil+'"></div>'+((ST.tipo==="pro"||ST.tipo==="bif")?'<div><label>Adición</label><input type="number" step="0.25" id="iadd" value="'+ST.add+'"></div>':"")+'</div>';
+   h+=recetaHelp();
+ }
+ if(ST.mode==="estimado"){h+='<p class="q" style="margin:12px 0 6px;font-weight:600;color:var(--navy)">¿Qué tan fuerte es tu graduación?</p>';FZ.forEach(function(f){h+=card(f,ST.fz===f.k,null);});}
+ var ok=(ST.mode==="exacto")||(ST.mode==="estimado"&&ST.fz!==null);
+ h+='<div class="nav"><button class="b-sec" id="back">Atrás</button><button class="b-prim" id="next" '+(ok?"":"disabled style=opacity:.5")+'>Continuar</button></div></div>';
+ app.innerHTML=h;
+ app.querySelectorAll(".opt").forEach(function(el){el.onclick=function(){var k=el.dataset.k;if(k==="exacto"||k==="estimado"){ST.mode=k;render();}else{ST.fz=parseInt(k);render();}};});
+ if($("iesf"))$("iesf").oninput=function(){ST.esf=parseFloat(this.value)||0;};
+ if($("icil"))$("icil").oninput=function(){ST.cil=parseFloat(this.value)||0;};
+ if($("iadd"))$("iadd").oninput=function(){ST.add=parseFloat(this.value)||0;};
+ $("back").onclick=function(){ST.step=1;render();};
+ if(ok)$("next").onclick=function(){ST.step=3;render();};
+}else if(ST.step===3){
+ h='<div class="step"><h2>Elige tu protección</h2><p class="q">Todas incluyen antirreflejante y protección UV.</p>';
+ OPC[ST.tipo].forEach(function(o){h+=card(o,ST.opc===o.k,priceOf(o));});
+ if(ST.tipo==="pro")h+='<div class="tog'+(ST.azul?" on":"")+'" id="togAzul"><div class="ck">'+(ST.azul?"✓":"")+'</div><div><div class="nm" style="font-size:14px">Agregar filtro de luz azul</div><div class="ds">Para quien usa mucho pantallas · +'+money(300)+'</div></div></div>';
+ h+='<div class="nav"><button class="b-sec" id="back">Atrás</button><button class="b-prim" id="next" '+(ST.opc?"":"disabled style=opacity:.5")+'>Ver precio</button></div></div>';
+ app.innerHTML=h;app.querySelectorAll(".opt").forEach(function(el){el.onclick=function(){ST.opc=el.dataset.k;render();};});
+ var tg=$("togAzul");if(tg)tg.onclick=function(){ST.azul=!ST.azul;render();};
+ $("back").onclick=function(){ST.step=2;render();};
+ if(ST.opc)$("next").onclick=function(){ST.step=4;render();};
+}else{
+ var o=OPC[ST.tipo].find(function(x){return x.k===ST.opc;});var total=priceOf(o);var ex=ST.mode==="exacto";var sp=orderSpec(o);var tt=tiempo(o,sp);
+ var gtxt=ex?("ESF "+ST.esf+" / CIL "+ST.cil+((ST.tipo==="pro"||ST.tipo==="bif")?" / ADD "+ST.add:"")):("Estimada · "+FN[ST.fz]);
+ var resumen="Tipo: "+TN[ST.tipo]+" | Opción: "+o.nm+(ST.tipo==="pro"&&ST.azul?" + filtro de luz azul":"")+" | Graduación: "+gtxt+" | Total: "+money(total)+" | Entrega: "+tt;
+ var optico=sp.prod+" · índice "+sp.idx+" · "+sp.tipo;
+ h='<div class="step"><h2>Tu cotización</h2><div class="sum"><div class="lbl">Lentes ZEISS · '+TN[ST.tipo]+'</div><div class="big">'+money(total)+'</div><div class="lbl">el par, ya con antirreflejante y UV</div>'
+ +'<div class="det"><div><span>Tipo</span><b>'+TN[ST.tipo]+'</b></div><div><span>Graduación</span><b>'+gtxt+'</b></div><div><span>Opción</span><b>'+o.nm+'</b></div><div><span>Entrega estimada</span><b>'+tt+'</b></div>'
+ +(ST.tipo==="pro"&&ST.azul?'<div><span>Filtro de luz azul</span><b>+'+money(300)+'</b></div>':"")
+ +'<div style="border-top:1px solid #c9d4ea;margin-top:6px;padding-top:8px"><span><b>Total '+(ex?"":"estimado")+'</b></span><b>'+money(total)+'</b></div></div>'
+ +'<details class="help" style="text-align:left"><summary>Para el óptico · qué pedir a ZEISS</summary><div class="hc"><b>'+sp.prod+'</b><br>Índice '+sp.idx+' · '+sp.tipo+'</div></details>'
+ +'<p class="disc">'+(ex?"Precio calculado con tu graduación.":"Precio estimado.")+' El óptico confirma el precio final, el armazón y la fecha exacta.<br><b>Armazón propio:</b> si traes tu propio armazón lo montamos con el mayor cuidado, pero la óptica no se hace totalmente responsable por daños (sobre todo en armazones usados o frágiles). Si llegara a romperse, te ofrecemos precio preferencial en un armazón de la óptica. Visítanos en Av. Guadalupe 1296, San Ignacio, Zapopan (Lun–Vie 10–20h, Sáb 10–18h).</p></div>'
+ +'<form action="https://formsubmit.co/'+MAIL+'" method="POST" enctype="multipart/form-data" class="reg" id="mf">'
+ +'<h2 style="font-size:16px;margin:14px 0 2px">Envía tu cotización</h2>'
+ +'<input type="hidden" name="_subject" value="Nueva cotización - Óptica Lensique"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_template" value="table">'
+ +'<input type="hidden" name="_next" id="mnext"><input type="hidden" name="Cotizacion" id="mcot"><input type="hidden" name="Para_el_optico" id="mopt">'
+ +'<label>Nombre completo</label><input name="Nombre" placeholder="Tu nombre" required>'
+ +'<label>WhatsApp (10 dígitos)</label><input name="WhatsApp" type="tel" placeholder="33 1234 5678" required>'
+ +'<label>Sube tu receta (foto o PDF) — opcional</label><input type="file" name="receta" accept="image/*,application/pdf">'
+ +'<button type="submit" class="wabtn b-mail">Enviar mi cotización a la óptica</button></form>'
+ +'<button class="wabtn b-wa" id="wabtn">O enviar por WhatsApp</button>'
+ +'<div class="nav"><button class="b-sec" id="back">Atrás</button><button class="b-prim" id="reset">Empezar de nuevo</button></div></div>';
+ app.innerHTML=h;
+ $("mnext").value=location.origin+location.pathname+"?enviado=1";
+ $("mcot").value=resumen;$("mopt").value=optico;
+ $("back").onclick=function(){ST.step=3;render();};
+ $("reset").onclick=function(){ST={step:1,tipo:null,mode:null,esf:-2,cil:-1,add:2,fz:null,opc:null,azul:false};render();};
+ $("wabtn").onclick=function(){var nm=$("mf").Nombre.value.trim(),ph=$("mf").WhatsApp.value.trim();if(!nm||!ph){alert("Escribe tu nombre y WhatsApp.");return;}var msg="Hola, soy "+nm+" (WhatsApp: "+ph+"). Quiero confirmar mi cotización de Óptica Lensique:\n\n"+resumen.split(" | ").join("\n")+"\n\n[Para el óptico] "+optico+"\n\nTe adjunto la foto de mi receta.";window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(msg),"_blank");};
+}
+}
+if(location.search.indexOf("enviado=1")>=0){document.getElementById("prog").style.display="none";app.innerHTML='<div class="gracias"><div class="ck">✓</div><h2>¡Gracias!</h2><p>Tu cotización llegó a Óptica Lensique. Te contactaremos pronto por WhatsApp.</p><p style="font-size:12px;color:#6b7280">Av. Guadalupe 1296, San Ignacio, Zapopan · Lun–Vie 10–20h, Sáb 10–18h</p><button class="b-prim" style="margin-top:14px;padding:13px 22px" onclick="location.href=location.pathname">Hacer otra cotización</button></div>';}else{render();}
+</script></body></html>

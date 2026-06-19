@@ -1554,7 +1554,24 @@ function App() {
 
         <section id="micas" className="wp-micas-lifestyle-section">
           <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
-            <h2 className="wp-section-title">Tecnologías de visión.</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión.</h2>
+              <a 
+                href="/cotizador/" 
+                style={{ 
+                  backgroundColor: '#1F3864', 
+                  color: '#ffffff', 
+                  padding: '10px 20px', 
+                  borderRadius: '12px', 
+                  textDecoration: 'none', 
+                  fontWeight: 600,
+                  fontSize: '15px',
+                  boxShadow: '0 4px 14px rgba(31, 56, 100, 0.2)'
+                }}
+              >
+                Cotiza tus micas en línea
+              </a>
+            </div>
             <div className="wp-slider-nav" style={{ display: 'flex', gap: '10px' }}>
               <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollMicas('left')}><ChevronLeft size={24} /></button>
               <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollMicas('right')}><ChevronRight size={24} /></button>

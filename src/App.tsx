@@ -27,8 +27,8 @@ import clinicRoomImg from './assets/clinic-room.jpg';
 import eyeExamImg1 from './assets/eye_exam_1.jpg';
 import eyeExamImg2 from './assets/eye_exam_2.jpg';
 import editorialImg1 from './assets/DSC09657.jpg';
-import editorialSol from './assets/editorial_sol.jpg';
-import editorialSol2 from './assets/editorial_sol2.jpg';
+import editorialCk from './assets/editorial-ck.jpg';
+import editorialCarrera from './assets/editorial-carrera.jpg';
 import editorialArmazon from './assets/editorial_armazon.jpg';
 import storeInteriorImg from './assets/DSC09639.jpg';
 import armazonesServiceImg from './assets/DSC09746.jpg';
@@ -1366,10 +1366,10 @@ function App() {
         {/* Editorial Cards Section - Warby Parker Style */}
         <section className="editorial-cards-section">
           <div className="editorial-cards-grid">
-            {/* Card izquierda - gafas de sol Positano */}
+            {/* Card izquierda - Calvin Klein */}
             <motion.div
               className="editorial-card editorial-card--tall"
-              style={{ backgroundImage: `url(${editorialSol})` }}
+              style={{ backgroundImage: `url(${editorialCk})` }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0 }}
@@ -1378,15 +1378,15 @@ function App() {
             >
               <div className="editorial-card-overlay" />
               <div className="editorial-card-content">
-                <p className="editorial-card-headline">Ve a donde el verano te lleve.</p>
-                <button className="editorial-card-btn">Ver lentes de sol</button>
+                <p className="editorial-card-headline">Encuentra el armazón perfecto para ti.</p>
+                <button className="editorial-card-btn">Ver armazones</button>
               </div>
             </motion.div>
 
-            {/* Card central - gafas bordeaux, offset hacia abajo */}
+            {/* Card central - Carrera, offset hacia abajo */}
             <motion.div
               className="editorial-card editorial-card--offset"
-              style={{ backgroundImage: `url(${editorialSol2})` }}
+              style={{ backgroundImage: `url(${editorialCarrera})` }}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}

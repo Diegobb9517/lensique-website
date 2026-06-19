@@ -1335,7 +1335,7 @@ function App() {
               ? safeJsonParse(settings.featured_products).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
               : safeJsonParse(settings.full_catalog_data).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto')).slice(0, 8))
               .map((product: any, idx: number) => (
-              <motion.div 
+              <div 
                 key={`popular-${idx}-${product.id}`}
                 className="wp-product-card"
                 onClick={() => setSelectedProductDetail(product)}
@@ -1359,7 +1359,7 @@ function App() {
                   <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                   <span className="wp-product-model">{String(product.category || '').toLowerCase().includes('contacto') ? (product.brand || 'Premium') : product.name}</span>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
@@ -1654,7 +1654,7 @@ function App() {
                 ? safeJsonParse(settings.featured_contact_lenses)
                 : safeJsonParse(settings.full_catalog_data).filter((p: any) => String(p.category || '').toLowerCase().includes('contacto')).slice(0, 8)
               ).map((product: any, idx: number) => (
-                <motion.div 
+                <div 
                   key={`lc-fix-${idx}-${product.id}`}
                   className="wp-product-card"
                   onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
@@ -1678,7 +1678,7 @@ function App() {
                     <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                     <span className="wp-product-model">{String(product.category || '').toLowerCase().includes('contacto') ? (product.brand || 'Contacto') : product.name}</span>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </section>

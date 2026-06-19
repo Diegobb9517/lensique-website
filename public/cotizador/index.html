@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Arma tus lentes · Lensique</title>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Arma tus lentes · Lensique</title><link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#1F3864;--blue:#2E5496;--lblue:#Eef2fb;--bg:#ffffff;--ok:#1e7d34;--grey:#6b7280;--wa:#25D366;--line:#e6e9f0}
 *{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;background:var(--bg);color:#1a1a1a;padding-bottom:30px}
 .serif{font-family:Georgia,'Times New Roman',serif}
-.top{padding:18px 16px 6px;text-align:center}.top h1{margin:0;font-size:24px;font-weight:600;color:var(--navy)}.top p{margin:4px 0 0;font-size:12px;color:var(--grey)}
+.top{padding:14px 16px 6px;text-align:center}.backlink{display:block;text-align:left;font-size:13px;color:var(--blue);text-decoration:none;font-weight:600;max-width:560px;margin:0 auto 8px}.backlink:hover{text-decoration:underline}.logo{font-family:'Quicksand','Segoe UI',sans-serif;font-size:34px;font-weight:700;color:#7e8fa3;margin:4px 0 16px;line-height:1}.logo sup{font-size:13px;font-weight:600;top:-1em}.top h1{margin:0;font-size:23px;font-weight:600;color:var(--navy)}.top p{margin:4px 0 0;font-size:12px;color:var(--grey)}
 .prog{display:flex;gap:6px;justify-content:center;margin:14px auto 0;max-width:560px;padding:0 16px}.prog div{flex:1;height:4px;border-radius:4px;background:#e8ebf2}.prog div.on{background:var(--navy)}
 .wrap{max-width:560px;margin:20px auto;padding:0 18px}
 .step h2{font-size:26px;color:#111;margin:0 0 18px;font-weight:600}.step .q{font-size:13.5px;color:var(--grey);margin:-12px 0 18px}
@@ -37,7 +37,7 @@
 .sum .det{text-align:left;background:#f7f9fc;border-radius:12px;padding:14px;margin:16px 0;font-size:14px}.sum .det div{display:flex;justify-content:space-between;padding:5px 0;gap:8px}.sum .det b{color:#111;text-align:right}
 .disc{font-size:11.5px;color:var(--grey);line-height:1.5;margin-top:10px}.brand{font-size:11px;color:var(--grey);text-align:center;margin:14px 0 30px;line-height:1.6}
 </style></head><body>
-<div class="top"><h1 class="serif">Arma tus lentes</h1><p>Lentes ZEISS · Óptica Lensique</p></div>
+<div class="top"><a href="/" class="backlink">← Volver a Lensique</a><div class="logo">Lensique<sup>®</sup></div><h1 class="serif">Arma tus lentes</h1><p>Tu cotizador de micas en línea</p></div>
 <div class="prog" id="prog"><div class="on"></div><div></div><div></div><div></div></div>
 <div class="wrap" id="app"></div>
 <div class="brand">El precio y el tiempo final los confirma tu óptico según tu receta y armazón.<br>Av. Guadalupe 1296, San Ignacio, 45040 Zapopan, Jal. · Lun a Vie 10–20h, Sáb 10–18h · WhatsApp 33 1692 9111</div>
@@ -122,7 +122,7 @@ if(ST.step===1){
  var gtxt=ex?("ESF "+ST.esf+" / CIL "+ST.cil+((ST.tipo==="pro"||ST.tipo==="bif")?" / ADD "+ST.add:"")):("Estimada · "+FN[ST.fz]);
  var resumen="Tipo: "+TN[ST.tipo]+" | Opción: "+o.nm+(ST.tipo==="pro"&&ST.azul?" + filtro de luz azul":"")+(fc?" | Color: "+ST.color:"")+" | Graduación: "+gtxt+" | Total: "+money(total)+" | Entrega: "+tt;
  var optico=sp.prod+(fc?" · color "+ST.color:"")+" · índice "+sp.idx+" · "+sp.tipo;
- h='<div class="step"><h2 class="serif">Tu cotización</h2><div class="sum"><div class="lbl">Lentes ZEISS · '+TN[ST.tipo]+'</div><div class="big serif">'+money(total)+'</div><div class="lbl">el par, ya con antirreflejante y UV</div>'
+ h='<div class="step"><h2 class="serif">Tu cotización</h2><div class="sum"><div class="lbl">Óptica Lensique · '+TN[ST.tipo]+'</div><div class="big serif">'+money(total)+'</div><div class="lbl">el par, ya con antirreflejante y UV</div>'
  +'<div class="det"><div><span>Tipo</span><b>'+TN[ST.tipo]+'</b></div><div><span>Graduación</span><b>'+gtxt+'</b></div><div><span>Opción</span><b>'+o.nm+'</b></div>'+(fc?'<div><span>Color</span><b>'+ST.color+'</b></div>':"")+'<div><span>Entrega en óptica</span><b>'+tt+'</b></div>'
  +(ST.tipo==="pro"&&ST.azul?'<div><span>Filtro de luz azul</span><b>+'+money(300)+'</b></div>':"")
  +'<div style="border-top:1px solid #d7deea;margin-top:6px;padding-top:8px"><span><b>Total '+(ex?"":"estimado")+'</b></span><b>'+money(total)+'</b></div></div>'

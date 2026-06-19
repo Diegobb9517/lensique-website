@@ -1337,10 +1337,6 @@ function App() {
               <motion.div 
                 key={`popular-${idx}-${product.id}`}
                 className="wp-product-card"
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                viewport={{ once: true }}
                 onClick={() => setSelectedProductDetail(product)}
               >
                 <div className="wp-card-img-area" style={{ position: 'relative' }}>
@@ -1657,10 +1653,6 @@ function App() {
                 <motion.div 
                   key={`lc-fix-${idx}-${product.id}`}
                   className="wp-product-card"
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  viewport={{ once: true }}
                   onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
                 >
                   <div className="wp-card-img-area" style={{ position: 'relative' }}>

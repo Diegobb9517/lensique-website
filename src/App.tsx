@@ -1313,11 +1313,11 @@ function App() {
         <section className="perks-bar">
           <div className="perk-item">Examen de vista<br/>gratis y profesional</div>
           <div className="perk-separator"></div>
-          <div className="perk-item">Ajustes de armazón<br/>gratuitos de por vida</div>
+          <div className="perk-item">Servicios de ajuste<br/>y mantenimiento</div>
           <div className="perk-separator"></div>
           <div className="perk-item">Asesoría de imagen<br/>personalizada</div>
           <div className="perk-separator"></div>
-          <div className="perk-item">Garantía total<br/>de 30 días</div>
+          <div className="perk-item">Garantía en adaptación<br/>y defectos</div>
         </section>
 
         <section id="populares" className="wp-carousel-section">

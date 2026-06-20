@@ -136,7 +136,11 @@ const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedI
               src={info.altImage || resolvedImage} 
               alt={tech.title} 
               className="tech-hero-img" 
-              style={{ objectFit: info.altImage ? 'contain' : 'cover', padding: info.altImage ? '40px' : '0' }} 
+              style={{ 
+                objectFit: info.altImage ? 'contain' : 'cover', 
+                padding: info.altImage ? '40px' : '0',
+                mixBlendMode: 'multiply'
+              }} 
             />
             {!info.altImage && <div className="tech-hero-overlay"></div>}
           </div>

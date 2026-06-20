@@ -1361,6 +1361,7 @@ function App() {
                   <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                   <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                 </div>
+                <button className="wp-card-btn">Ver detalles</button>
               </div>
             ))}
           </div>
@@ -1680,6 +1681,7 @@ function App() {
                     <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                     <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                   </div>
+                  <button className="wp-card-btn">Ver detalles</button>
                 </div>
               ))}
             </div>

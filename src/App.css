@@ -2761,6 +2761,10 @@ body.no-scroll {
   .wp-card-img-area {
     height: 180px;
   }
+  .wp-service-card {
+    min-width: 260px;
+    width: 260px;
+  }
 }
 
 /* WP Services Section */

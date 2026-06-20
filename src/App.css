@@ -3220,14 +3220,15 @@ body.no-scroll {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .editorial-cards-section {
     padding: 0 0 40px;
   }
   .editorial-cards-grid {
     gap: 0;
   }
-  .editorial-card {
+  .editorial-card,
+  .editorial-card-overlay {
     border-radius: 0;
   }
   .editorial-card--tall,

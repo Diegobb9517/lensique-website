@@ -2741,6 +2741,13 @@ body.no-scroll {
     gap: 16px;
     padding: 0 5%;
   }
+  .wp-section-title {
+    font-size: 24px;
+    white-space: nowrap;
+  }
+  .wp-section-header .btn-wp-outline {
+    display: none;
+  }
   .wp-slider {
     padding: 0 5% 30px;
   }

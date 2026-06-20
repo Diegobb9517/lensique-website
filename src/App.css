@@ -3420,7 +3420,11 @@ body.no-scroll {
 
 @media (max-width: 768px) {
   .statement-block {
-    padding: 60px 24px 40px;
+    padding: 60px 16px 40px;
+  }
+  .statement-headline {
+    font-size: 24px;
+    line-height: 1.45;
   }
   .lifestyle-banner {
     grid-template-columns: 1fr;

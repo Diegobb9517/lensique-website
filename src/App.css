@@ -2608,8 +2608,8 @@ body.no-scroll {
 }
 
 .wp-product-card {
-  min-width: 260px;
-  width: 260px;
+  min-width: 320px;
+  width: 320px;
   background-color: #f6f6f6;
   border-radius: 8px;
   padding: 16px;
@@ -2670,8 +2670,8 @@ body.no-scroll {
 }
 
 .wp-card-img-area {
-  height: 180px;
-  background: #fff;
+  height: 220px;
+  background: transparent;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -2701,7 +2701,7 @@ body.no-scroll {
 
 .wp-product-name {
   font-family: Georgia, 'Times New Roman', Times, serif;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 400;
   color: #1d1d1f;
   margin: 0;
@@ -2709,7 +2709,7 @@ body.no-scroll {
 }
 
 .wp-product-price {
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
   font-weight: 500;
   line-height: 1.1;
@@ -2745,6 +2745,13 @@ body.no-scroll {
   }
   .wp-services-grid {
     padding: 0 5% 30px;
+  }
+  .wp-product-card {
+    min-width: 280px;
+    width: 280px;
+  }
+  .wp-card-img-area {
+    height: 180px;
   }
 }
 

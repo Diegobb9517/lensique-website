@@ -255,7 +255,7 @@ body.no-scroll {
   }
   .perk-item { font-size: 13px; }
   .perk-separator { display: none; }
-  .slider-arrow-btn { display: none; }
+  .slider-arrow-btn { display: none !important; }
   .hero-content { margin: 0 auto; text-align: center; max-width: 100%; }
   .hero-actions-left { flex-direction: column; }
   .nav-left { gap: 10px; }
@@ -2686,6 +2686,7 @@ body.no-scroll {
   height: 100%;
   object-fit: contain;
   transition: transform 0.4s;
+  mix-blend-mode: multiply;
 }
 .wp-product-card:hover .wp-card-img {
   transform: scale(1.05);

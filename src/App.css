@@ -247,8 +247,14 @@ body.no-scroll {
 @media (max-width: 768px) {
   .d-none-mobile { display: none !important; }
   .mobile-menu-btn { display: block; }
-  .perks-bar { flex-direction: column; gap: 16px; padding: 24px; }
-  .perk-separator { width: 100%; height: 1px; }
+  .perks-bar { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px 10px; 
+    padding: 24px 16px; 
+  }
+  .perk-item { font-size: 13px; }
+  .perk-separator { display: none; }
   .hero-content { margin: 0 auto; text-align: center; max-width: 100%; }
   .hero-actions-left { flex-direction: column; }
   .nav-left { gap: 10px; }

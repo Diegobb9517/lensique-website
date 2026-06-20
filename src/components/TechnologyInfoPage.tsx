@@ -131,7 +131,7 @@ const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedI
 
       <div className="tech-content-wrapper">
         <div className="tech-hero-section">
-          <div className="tech-hero-img-container" style={{ backgroundColor: info.altImage ? '#ffffff' : '#f0f0f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="tech-hero-img-container d-none-mobile" style={{ backgroundColor: info.altImage ? '#ffffff' : '#f0f0f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img 
               src={info.altImage || resolvedImage} 
               alt={tech.title} 

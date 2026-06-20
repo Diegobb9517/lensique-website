@@ -3215,14 +3215,23 @@ body.no-scroll {
 
 @media (max-width: 600px) {
   .editorial-cards-section {
-    padding: 40px 16px;
+    padding: 0 0 40px;
+  }
+  .editorial-cards-grid {
+    gap: 0;
+  }
+  .editorial-card {
+    border-radius: 0;
   }
   .editorial-card--tall,
   .editorial-card--offset {
-    height: 280px;
+    height: 480px;
   }
   .editorial-card-headline {
-    font-size: 18px;
+    font-size: 28px;
+  }
+  .editorial-card-content {
+    padding: 40px 24px;
   }
 }
 

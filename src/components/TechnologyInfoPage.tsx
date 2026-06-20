@@ -131,7 +131,7 @@ const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedI
 
       <div className="tech-content-wrapper">
         <div className="tech-hero-section">
-          <div className="tech-hero-img-container" style={{ backgroundColor: '#f0f0f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="tech-hero-img-container" style={{ backgroundColor: info.altImage ? '#ffffff' : '#f0f0f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img 
               src={info.altImage || resolvedImage} 
               alt={tech.title} 
@@ -139,7 +139,8 @@ const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedI
               style={{ 
                 objectFit: info.altImage ? 'contain' : 'cover', 
                 padding: info.altImage ? '40px' : '0',
-                mixBlendMode: 'multiply'
+                mixBlendMode: info.altImage ? 'multiply' : 'normal',
+                filter: info.altImage ? 'contrast(1.1) brightness(1.05)' : 'none'
               }} 
             />
             {!info.altImage && <div className="tech-hero-overlay"></div>}

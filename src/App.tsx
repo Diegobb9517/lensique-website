@@ -317,7 +317,9 @@ function FullCatalog({
                           <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                           <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                         </div>
-                        <p className="product-brand-sub">{String(product.category || '').toLowerCase().includes('contacto') ? '' : `${product.name} • `}{product.brand || 'Colección Lensique'}</p>
+                        <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
+                          {product.brand || 'Colección Lensique'}
+                        </p>
                         
                         <button 
                           className="product-main-view-btn"
@@ -1357,7 +1359,7 @@ function App() {
 
                 <div className="wp-card-info">
                   <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-                  <span className="wp-product-model">{String(product.category || '').toLowerCase().includes('contacto') ? (product.brand || 'Premium') : product.name}</span>
+                  <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                 </div>
               </div>
             ))}
@@ -1676,7 +1678,7 @@ function App() {
 
                   <div className="wp-card-info">
                     <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-                    <span className="wp-product-model">{String(product.category || '').toLowerCase().includes('contacto') ? (product.brand || 'Contacto') : product.name}</span>
+                    <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                   </div>
                 </div>
               ))}

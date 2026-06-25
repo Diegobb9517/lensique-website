@@ -161,6 +161,11 @@ function FullCatalog({
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [contactUsageFilter, setContactUsageFilter] = useState('Todos');
+  const [visibleCount, setVisibleCount] = useState(24);
+
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [filter, searchQuery, selectedBrand, contactUsageFilter]);
 
   const availableBrands = Array.from(new Set(
     (catalogData || [])
@@ -301,7 +306,7 @@ function FullCatalog({
             <div className="catalog-products">
               {(catalogData && catalogData.length > 0) ? (
                 <div className="products-grid">
-                  {filteredProducts.map(product => (
+                  {filteredProducts.slice(0, visibleCount).map(product => (
                     <motion.div 
                       layout
                       initial={{ opacity: 0, y: 20 }}
@@ -320,7 +325,7 @@ function FullCatalog({
                       <div className="product-img-area" style={{ position: 'relative' }}>
                         {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
                         <ImageWithSkeleton 
-                          src={resolveImageUrl(product.image_url, product.image, 400) || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
+                          src={resolveImageUrl(product.image_url, product.image, 800) || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
                           alt={product.name} 
                           className="product-main-img smooth-img"
                           loading="lazy"
@@ -362,6 +367,16 @@ function FullCatalog({
                     </motion.div>
                   ))}
                 </div>
+                {visibleCount < filteredProducts.length && (
+                  <div style={{ textAlign: 'center', marginTop: '40px', paddingBottom: '40px' }}>
+                    <button 
+                      className="btn btn-wp-secondary" 
+                      onClick={() => setVisibleCount(prev => prev + 24)}
+                    >
+                      Cargar más modelos
+                    </button>
+                  </div>
+                )}
               ) : (
                 <div className="products-grid">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (

@@ -12,6 +12,8 @@ import ContactLensConfiguratorModal from './components/ContactLensConfiguratorMo
 import ServiceDetailsPage from './components/ServiceDetailsPage';
 import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
+import { ImageWithSkeleton } from './components/ImageWithSkeleton';
+import { StyleQuiz } from './components/StyleQuiz';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -20,6 +22,18 @@ import { getInventedName } from './lib/format';
 const FormatProductName = ({ name, brand, category }: { name: string, brand?: string, category?: string }) => {
   const cleanName = getInventedName(name, category);
   return <span className="fpn-main">{cleanName}</span>;
+};
+
+const formatWhatsappNumber = (waStr: string) => {
+  if (!waStr) return '+52 33 1692 9111';
+  const clean = waStr.replace(/\D/g, '');
+  if (clean.length === 12 && clean.startsWith('52')) {
+    return `+${clean.substring(0,2)} ${clean.substring(2,4)} ${clean.substring(4,8)} ${clean.substring(8,12)}`;
+  }
+  if (clean.length === 10) {
+    return `+52 ${clean.substring(0,2)} ${clean.substring(2,6)} ${clean.substring(6,10)}`;
+  }
+  return waStr;
 };
 
 import cv7600Img from './assets/cv-7600.jpg';
@@ -82,17 +96,25 @@ const faceShapeGuide = [
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 
-const resolveImageUrl = (url: string, fallback: string | undefined) => {
+const resolveImageUrl = (url: string, fallback: string | undefined, width?: number) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
   
   if (isInvalid(url)) {
     return isInvalid(fallback) ? '' : fallback as string;
   }
   
-  const targetUrl = url.trim();
-  if (targetUrl.startsWith('http')) return targetUrl;
-  const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
-  return `${API_BASE}${cleanUrl}`;
+  let targetUrl = url.trim();
+  if (!targetUrl.startsWith('http')) {
+    const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
+    targetUrl = `${API_BASE}${cleanUrl}`;
+  }
+
+  if (targetUrl.includes('lensique-pos.onrender.com')) {
+    const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(targetUrl)}&output=webp`;
+    return width ? `${wsrvUrl}&w=${width}` : wsrvUrl;
+  }
+
+  return targetUrl;
 };
 
 const safeJsonParse = (str: any, fallback: any = []) => {
@@ -297,11 +319,13 @@ function FullCatalog({
                     >
                       <div className="product-img-area" style={{ position: 'relative' }}>
                         {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
-                        <img 
-                          src={product.image || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
+                        <ImageWithSkeleton 
+                          src={resolveImageUrl(product.image_url, product.image, 400) || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
                           alt={product.name} 
                           className="product-main-img smooth-img"
-                          onError={(e) => {
+                          loading="lazy"
+                          decoding="async"
+                          onError={(e: any) => {
                             const target = e.currentTarget;
                             const fallback = String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
                             if (!target.src.includes(fallback)) {
@@ -318,7 +342,7 @@ function FullCatalog({
                           <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                         </div>
                         <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
-                          {product.brand || 'Colección Lensique'}
+                          {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
                         </p>
                         
                         <button 
@@ -668,6 +692,7 @@ function App() {
   const [selectedInfoPage, setSelectedInfoPage] = useState<InfoPageData | null>(null);
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
@@ -870,11 +895,11 @@ function App() {
                     hideTryOn={String(selectedProductDetail.category || '').toLowerCase().includes('contacto')}
                   />
                   ) : (
-                    <img
-                      src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image) || (String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg)}
+                    <ImageWithSkeleton
+                      src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || (String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg)}
                       alt={selectedProductDetail.name}
                       className="product-detail-img smooth-img"
-                      onError={(e) => { 
+                      onError={(e: any) => { 
                         const target = e.currentTarget;
                         const fallback = String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
                         if (!target.src.includes(fallback)) target.src = fallback; 
@@ -928,6 +953,18 @@ function App() {
       </AnimatePresence>
 
       {/* Full Catalog View */}
+      {isStyleQuizOpen && (
+        <StyleQuiz 
+          catalogData={safeJsonParse(settings.full_catalog_data)}
+          onClose={() => setIsStyleQuizOpen(false)}
+          onViewProduct={(prod) => {
+            setIsStyleQuizOpen(false);
+            setSelectedProductDetail(prod);
+          }}
+          onBookAppointment={handleOpenBooking}
+        />
+      )}
+
       <FullCatalog 
         isOpen={isCatalogOpen} 
         onClose={() => setIsCatalogOpen(false)} 
@@ -1281,9 +1318,10 @@ function App() {
       <main>
         <section className="hero">
           <img 
-            src={resolveImageUrl(settings.hero_image_url, heroImg)} 
+            src={resolveImageUrl(settings.hero_image_url, heroImg, 1200)} 
             alt="Lensique Eyewear" 
             className="hero-background-img"
+            fetchpriority="high"
             onError={(e: any) => {
               e.target.onerror = null;
               e.target.src = heroImg;
@@ -1296,9 +1334,10 @@ function App() {
             <div className="hero-actions-left">
               <button 
                 className="btn btn-wp-primary" 
-                onClick={() => handleOpenBooking()}
+                onClick={() => setIsStyleQuizOpen(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                Agendar Cita
+                <Sparkles size={18} /> Encuentra tu estilo ideal
               </button>
               <button className="btn btn-wp-secondary" onClick={() => setIsCatalogOpen(true)}>
                 Ver Catálogo
@@ -1344,8 +1383,8 @@ function App() {
               >
                 <div className="wp-card-img-area" style={{ position: 'relative' }}>
                   {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
-                  <img 
-                    src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || heroImg} 
+                  <ImageWithSkeleton 
+                    src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image, 400) || heroImg} 
                     alt={product.name} 
                     className="wp-card-img"
                     loading="lazy"
@@ -1361,6 +1400,9 @@ function App() {
                   <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                   <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                 </div>
+                <p className="wp-product-category-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px', marginBottom: '12px' }}>
+                  {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
+                </p>
                 <button className="wp-card-btn">Ver detalles</button>
               </div>
             ))}
@@ -1629,6 +1671,15 @@ function App() {
               </motion.div>
             ))}
           </div>
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <button 
+              className="btn btn-wp-primary" 
+              onClick={() => setIsStyleQuizOpen(true)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '16px 32px', fontSize: '16px' }}
+            >
+              <Sparkles size={20} /> Hacer el Quiz de Estilo
+            </button>
+          </div>
         </section>
 
         <section id="nosotros" className="about-section">
@@ -1664,13 +1715,13 @@ function App() {
                 >
                   <div className="wp-card-img-area" style={{ position: 'relative' }}>
                     {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
-                    <img 
-                      src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image) || contactLensesImg} 
+                    <ImageWithSkeleton 
+                      src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image, 400) || contactLensesImg} 
                       alt={product.name} 
                       className="wp-card-img" 
                       loading="lazy"
                       decoding="async"
-                      onError={(e) => {
+                      onError={(e: any) => {
                         const target = e.currentTarget;
                         if (!target.src.includes(contactLensesImg)) target.src = contactLensesImg;
                       }}
@@ -1681,6 +1732,9 @@ function App() {
                     <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
                     <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
                   </div>
+                  <p className="wp-product-category-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px', marginBottom: '12px' }}>
+                    {product.category || 'Lentes de contacto'} {product.brand && `· ${product.brand}`}
+                  </p>
                   <button className="wp-card-btn">Ver detalles</button>
                 </div>
               ))}
@@ -1704,7 +1758,7 @@ function App() {
                 <div className="info-icon"><MessageCircle /></div>
                 <div>
                   <h4>WhatsApp</h4>
-                  <p>{settings.contact_whatsapp || '+52 33 1692 9111'}</p>
+                  <p>{formatWhatsappNumber(settings.contact_whatsapp)}</p>
                 </div>
               </div>
               <button 

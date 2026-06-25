@@ -59,9 +59,11 @@ body.no-scroll {
 }
 
 .logo-img {
-  height: 72px;
+  height: 96px;
   width: auto;
   object-fit: contain;
+  transform: scale(1.2);
+  transform-origin: center;
 }
 
 .nav-links {
@@ -2719,19 +2721,20 @@ body.no-scroll {
 .wp-card-btn {
   width: 100%;
   padding: 10px 0;
-  border: 1px solid #111;
+  border: 1.5px solid #1F3864;
   background: transparent;
-  color: #111;
+  color: #1F3864;
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
   margin-top: auto;
 }
 .wp-card-btn:hover {
-  background: #111;
+  background: #1F3864;
   color: #fff;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {

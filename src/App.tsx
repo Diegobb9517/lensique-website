@@ -110,8 +110,10 @@ const resolveImageUrl = (url: string, fallback: string | undefined, width?: numb
   }
 
   if (targetUrl.includes('lensique-pos.onrender.com')) {
-    const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(targetUrl)}&output=webp`;
-    return width ? `${wsrvUrl}&w=${width}` : wsrvUrl;
+    // Restauramos la calidad original pasando q=100 y omitiendo el redimensionamiento,
+    // o simplemente devolvemos la URL original si prefieren 100% fidelidad.
+    // Para asegurar 100% de calidad sin pérdida, regresaremos la URL directa del backend por ahora.
+    return targetUrl;
   }
 
   return targetUrl;

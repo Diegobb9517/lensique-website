@@ -163,12 +163,6 @@ function FullCatalog({
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [contactUsageFilter, setContactUsageFilter] = useState('Todos');
-  const [visibleCount, setVisibleCount] = useState(24);
-
-  useEffect(() => {
-    setVisibleCount(24);
-  }, [filter, searchQuery, selectedBrand, contactUsageFilter]);
-
   const availableBrands = Array.from(new Set(
     (catalogData || [])
       .filter(p => filter === 'Todas' || (
@@ -180,6 +174,11 @@ function FullCatalog({
   )).sort();
   
   const [selectedBrand, setSelectedBrand] = useState('Todas');
+  const [visibleCount, setVisibleCount] = useState(24);
+
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [filter, searchQuery, selectedBrand, contactUsageFilter]);
 
   useEffect(() => {
     if (isOpen) {

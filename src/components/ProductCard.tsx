@@ -2,6 +2,7 @@ import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
 import { getInventedName } from '../lib/format';
 import { resolveImageUrl } from '../App';
+import { motion } from 'framer-motion';
 
 interface ProductCardProps {
   product: any;
@@ -32,7 +33,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   
   if (isEditorial) {
     return (
-      <div 
+      <motion.div 
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         className={`product-card-editorial hover-scale ${className}`}
         style={{ cursor: 'pointer', ...style }}
         onClick={() => onClick(product)}
@@ -75,7 +79,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
     );
   }
 

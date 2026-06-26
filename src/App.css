@@ -2612,6 +2612,23 @@ body.no-scroll {
   background-color: #F9F8F6;
 }
 
+.wp-slider {
+  display: flex;
+  gap: 24px;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.wp-slider::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* -----------------------------
    WP STYLE PRODUCT CARDS
 ----------------------------- */

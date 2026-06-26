@@ -96,7 +96,7 @@ const faceShapeGuide = [
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 
-const resolveImageUrl = (url: string, fallback: string | undefined, width?: number) => {
+export const resolveImageUrl = (url: string, fallback: string | undefined, width?: number) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
   
   if (isInvalid(url)) {

@@ -29,7 +29,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onSelectAction
 }) => {
   const isOutOfStock = product.stock != null && product.stock !== '' && Number(product.stock) <= 0;
-  const imageUrl = resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
+  
+  const isContactLens = String(product.category || '').toLowerCase().includes('contacto');
+  const imageUrl = isContactLens && fallbackImage 
+    ? fallbackImage 
+    : resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
   
   if (isEditorial) {
     return (

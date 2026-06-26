@@ -194,9 +194,6 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
       `}</style>
 
       <div className="lsq-carousel-root">
-        {/* Version Indicator */}
-        <span className="lsq-v-indicator">CAROUSEL V2.1 - BLINDADO</span>
-        
         {/* Thumbnails Column (Left) */}
         {images.length > 1 && (
           <div className="lsq-thumbs-col">

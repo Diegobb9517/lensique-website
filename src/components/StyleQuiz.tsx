@@ -149,10 +149,10 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
         </span>
       </div>
 
-      <div className="style-quiz-content" style={{ padding: '40px 20px', maxWidth: '600px', margin: '0 auto' }}>
-        <AnimatePresence mode="wait">
+      <div className="quiz-content" style={{ padding: '30px 24px', maxWidth: '800px', margin: '0 auto', minHeight: '400px' }}>
+        <AnimatePresence>
           {results.length > 0 ? (
-            <motion.div key="results" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="quiz-results">
+            <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="quiz-results">
               <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                 <Sparkles size={40} color="#1F3864" style={{ margin: '0 auto 16px' }} />
                 <h2 style={{ fontSize: '28px', color: '#1F3864', marginBottom: '12px', fontFamily: 'Georgia, serif' }}>Tus matches perfectos</h2>
@@ -202,7 +202,13 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
               <p style={{ color: '#64748b', marginTop: '8px' }}>Buscando los armazones perfectos en nuestro catálogo.</p>
             </motion.div>
           ) : (
-            <motion.div key={currentStepIndex} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+            <motion.div 
+              key={currentStepIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="quiz-step"
+            >
               <h2 style={{ fontSize: '28px', color: '#1F3864', marginBottom: '32px', fontFamily: 'Georgia, serif', textAlign: 'center' }}>
                 {QUIZ_STEPS[currentStepIndex].question}
               </h2>

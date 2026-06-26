@@ -888,8 +888,9 @@ function App() {
               {/* Right: Info */}
               <div className="product-detail-info-col">
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
-                <h2 className="product-detail-name">{selectedProductDetail.model || selectedProductDetail.name}</h2>
-                <p className="product-detail-code">{selectedProductDetail.name}</p>
+                <h2 className="product-detail-name">
+                  {getInventedName(selectedProductDetail.name, selectedProductDetail.category)}
+                </h2>
                 <p className="product-detail-desc">
                   {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') 
                     ? `Lentes de Contacto${getContactLensUsage(selectedProductDetail.name) !== 'Todos' ? ` - ${getContactLensUsage(selectedProductDetail.name)}` : ''}` 
@@ -1669,6 +1670,28 @@ function App() {
           </section>
         )}
 
+        <section className="reviews-section" style={{ padding: '80px 24px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <span className="hero-eyebrow">Lo que dicen nuestros clientes</span>
+            <h2 className="section-title" style={{ marginBottom: '40px' }}>Tu visión es nuestra prioridad.</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+              {[
+                { name: 'María Fernanda G.', review: 'Excelente servicio y atención. El quiz me ayudó a encontrar el armazón perfecto para mi rostro. ¡Mis lentes llegaron impecables!' },
+                { name: 'Carlos R.', review: 'Agenda mi cita por WhatsApp y el proceso fue súper rápido. La calidad de las micas es increíble. 100% recomendados.' },
+                { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' }
+              ].map((r, i) => (
+                <div key={i} style={{ backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#fbbf24' }}>
+                    {[...Array(5)].map((_, j) => <svg key={j} width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+                  </div>
+                  <p style={{ color: '#475569', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px', fontStyle: 'italic' }}>"{r.review}"</p>
+                  <p style={{ fontWeight: '600', color: '#1e293b' }}>{r.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="contacto" className="location-section">
           <div className="location-grid">
             <div className="location-info">
@@ -1686,6 +1709,13 @@ function App() {
                 <div>
                   <h4>WhatsApp</h4>
                   <p>{formatWhatsappNumber(settings.contact_whatsapp)}</p>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                <div>
+                  <h4>Horarios</h4>
+                  <p>Lunes a Viernes: 10:00 AM - 7:00 PM<br/>Sábados: 10:00 AM - 2:00 PM</p>
                 </div>
               </div>
               <button 
@@ -1729,7 +1759,7 @@ function App() {
       </main>
 
       <a 
-        href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} 
+        href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me interesa agendar una cita.')}`} 
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"

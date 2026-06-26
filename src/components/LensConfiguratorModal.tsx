@@ -250,7 +250,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
 
   const renderStepContent = () => {
     switch (step) {
-      case 1:
+      case 5:
         if (prescriptionMode === 'SELECTION') {
           return (
             <div className="config-step-content">
@@ -424,7 +424,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
         }
         return null;
       
-      case 2:
+      case 1:
         return (
           <div className="config-step-content">
             <h2 className="config-title">Tipo de Graduación</h2>
@@ -447,7 +447,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           </div>
         );
 
-      case 3:
+      case 2:
         return (
           <div className="config-step-content">
             <h2 className="config-title">Antirreflejante (AR)</h2>
@@ -470,7 +470,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           </div>
         );
 
-      case 4:
+      case 3:
         return (
           <div className="config-step-content">
             <h2 className="config-title">Fotocromático</h2>
@@ -493,7 +493,7 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           </div>
         );
 
-      case 5:
+      case 4:
         return (
           <div className="config-step-content">
             <h2 className="config-title">Entintado</h2>
@@ -516,44 +516,94 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           </div>
         );
 
-      case 6: {
-        const hasPolyIncluded = product?.base_material === 'POLICARBONATO' || String(product?.category || '').toLowerCase().includes('policarbonato');
-        const materialsToShow = hasPolyIncluded 
-          ? MATERIAL_OPTIONS.filter(opt => opt.id === 'CLASICO').map(opt => 
-              ({ ...opt, id: 'POLICARBONATO', name: 'Policarbonato', description: 'Grosor ideal y resistente a impactos.' })
-            )
-          : MATERIAL_OPTIONS;
-
+      case 6:
         return (
-          <div className="config-step-content">
-            <h2 className="config-title">Adelgazar Mica</h2>
-            <p className="config-subtitle">Recomendado para graduaciones altas (HI-INDEX).</p>
-            {hasPolyIncluded && (
-              <div style={{ padding: '0.75rem', backgroundColor: '#eef2ff', borderRadius: '8px', marginBottom: '1.5rem', color: '#3730a3', fontSize: '0.875rem' }}>
-                Tu armazón ya incluye material de alta resistencia (Policarbonato) sin costo adicional.
+          <div className="config-step-content config-summary">
+            <CheckCircle size={48} color="#10b981" style={{ margin: '0 auto 16px', display: 'block' }} />
+            <h2 className="config-title" style={{ textAlign: 'center' }}>Resumen de tu Cita</h2>
+            <p className="config-subtitle" style={{ textAlign: 'center' }}>
+              Estos son los detalles de tu configuracin. Confirmaremos las micas y costos exactos en tu visita.
+            </p>
+
+            <div className="summary-card">
+              <div className="summary-item">
+                <span className="summary-label">Armazn</span>
+                <span className="summary-value">{product.name}</span>
+                <span className="summary-price">${product.price_incl_tax?.toLocaleString('es-MX')}</span>
               </div>
-            )}
-            <div className="config-grid">
-              {materialsToShow.map(opt => (
-                <button 
-                  key={opt.id}
-                  className={`config-list-item ${config.material === opt.id ? 'selected' : ''}`}
-                  onClick={() => { 
-                    updateConfig('material', opt.id); 
-                    setStep(7); 
-                  }}
-                >
-                  <div className="config-list-item-top">
-                    <h3>{opt.name}</h3>
-                    <span className="config-price">{getDynamicPrice(opt.name, opt.price, opt.id) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price, opt.id)).toLocaleString('es-MX')}`}</span>
-                  </div>
-                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
-                </button>
-              ))}
+              <div className="summary-item">
+                <span className="summary-label">Tipo de Graduacin</span>
+                <span className="summary-value">{FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion)?.name}</span>
+                <span className="summary-price">${getDynamicPrice(FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion)?.name || '', FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion)?.price || 0).toLocaleString('es-MX')}</span>
+              </div>
+              {config.ar && config.ar !== 'ar-none' && (
+                <div className="summary-item">
+                  <span className="summary-label">Tratamiento AR</span>
+                  <span className="summary-value">{AR_OPTIONS.find(o => o.id === config.ar)?.name}</span>
+                  <span className="summary-price">${(AR_OPTIONS.find(o => o.id === config.ar)?.price || 0).toLocaleString('es-MX')}</span>
+                </div>
+              )}
+              {config.photochromic && config.photochromic !== 'photo-none' && (
+                <div className="summary-item">
+                  <span className="summary-label">Fotocromtico</span>
+                  <span className="summary-value">{PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic)?.name}</span>
+                  <span className="summary-price">${(PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic)?.price || 0).toLocaleString('es-MX')}</span>
+                </div>
+              )}
+              {config.tinting && config.tinting !== 'tint-none' && (
+                <div className="summary-item">
+                  <span className="summary-label">Tinte</span>
+                  <span className="summary-value">{TINTING_OPTIONS.find(o => o.id === config.tinting)?.name}</span>
+                  <span className="summary-price">${(TINTING_OPTIONS.find(o => o.id === config.tinting)?.price || 0).toLocaleString('es-MX')}</span>
+                </div>
+              )}
+              <div className="summary-total-divider"></div>
+              <div className="summary-total">
+                <span>Total Estimado</span>
+                <span>${calculateTotal().toLocaleString('es-MX')}</span>
+              </div>
+              <p style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center', marginTop: '10px' }}>
+                *El total es un estimado. El precio final puede variar tras la valoracin en sucursal.
+              </p>
+            </div>
+
+            <div className="config-form-actions" style={{ marginTop: '2rem' }}>
+              <button 
+                className="config-btn-primary config-btn-full"
+                onClick={() => {
+                  let configText = `Hola! Me interesa agendar una cita para comprar el armazn ${product.name} ${product.brand || ''}.\n\nMi configuracin de micas de inters es:\n`;
+                  
+                  if (config.graduacion) {
+                    const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);
+                    if (grad) configText += `- Graduacin: ${grad.name}\n`;
+                  }
+                  if (config.ar && config.ar !== 'ar-none') {
+                    const ar = AR_OPTIONS.find(o => o.id === config.ar);
+                    if (ar) configText += `- AR: ${ar.name}\n`;
+                  }
+                  if (config.photochromic && config.photochromic !== 'photo-none') {
+                    const photo = PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic);
+                    if (photo) configText += `- Fotocromtico: ${photo.name}\n`;
+                  }
+                  if (config.tinting && config.tinting !== 'tint-none') {
+                    const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
+                    if (tint) configText += `- Tinte: ${tint.name}\n`;
+                  }
+                  
+                  configText += `\nTotal Estimado: $${calculateTotal().toLocaleString('es-MX')}`;
+                  
+                  const phone = '523316929111';
+                  const cleanPhone = phone.replace(/\D/g, '');
+                  const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(configText)}`;
+                  window.open(url, '_blank');
+                  onClose();
+                }}
+              >
+                Agendar cita por WhatsApp
+              </button>
             </div>
           </div>
         );
-      }
 
       case 7:
         return (
@@ -755,12 +805,11 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
 
               {/* Content Area */}
               <div className="config-modal-body">
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                   <motion.div
                     key={step}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
                   >
                     {renderStepContent()}

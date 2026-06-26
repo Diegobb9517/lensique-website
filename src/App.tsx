@@ -18,11 +18,7 @@ import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPT
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import { getInventedName } from './lib/format';
-
-const FormatProductName = ({ name, brand, category }: { name: string, brand?: string, category?: string }) => {
-  const cleanName = getInventedName(name, category);
-  return <span className="fpn-main">{cleanName}</span>;
-};
+import { ProductCard } from './components/ProductCard';
 
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
@@ -308,64 +304,26 @@ function FullCatalog({
               {(catalogData && catalogData.length > 0) ? (
                 <div className="products-grid">
                   {filteredProducts.slice(0, visibleCount).map(product => (
-                    <motion.div 
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                    <ProductCard 
                       key={product.id}
-                      className="product-card-editorial hover-scale"
-                      style={{ cursor: 'pointer' }}
+                      product={product}
+                      isEditorial={true}
+                      fallbackImage={String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg}
                       onClick={() => {
                         if (String(product.category || '').toLowerCase().includes('contacto')) {
                           onViewProduct(product);
                         } else {
-                          onConfigureProduct(product);
+                          onViewProduct(product);
                         }
                       }}
-                    >
-                      <div className="product-img-area" style={{ position: 'relative' }}>
-                        {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
-                        <ImageWithSkeleton 
-                          src={resolveImageUrl(product.image_url, product.image, 800) || (String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg)} 
-                          alt={product.name} 
-                          className="product-main-img smooth-img"
-                          loading="lazy"
-                          decoding="async"
-                          onError={(e: any) => {
-                            const target = e.currentTarget;
-                            const fallback = String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
-                            if (!target.src.includes(fallback)) {
-                              target.src = fallback;
-                            }
-                          }}
-                        />
-                        
-                      </div>
-
-                      <div className="product-info-editorial">
-                        <div className="product-name-row">
-                          <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-                          <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
-                        </div>
-                        <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
-                          {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
-                        </p>
-                        
-                        <button 
-                          className="product-main-view-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (String(product.category || '').toLowerCase().includes('contacto')) {
-                              onViewProduct(product);
-                            } else {
-                              onConfigureProduct(product);
-                            }
-                          }}
-                        >
-                          Seleccionar
-                        </button>
-                      </div>
-                    </motion.div>
+                      onSelectAction={(prod) => {
+                        if (String(prod.category || '').toLowerCase().includes('contacto')) {
+                          onViewProduct(prod);
+                        } else {
+                          onConfigureProduct(prod);
+                        }
+                      }}
+                    />
                   ))}
                 </div>
                 {visibleCount < filteredProducts.length && (
@@ -1388,39 +1346,13 @@ function App() {
           </div>
           
           <div className="wp-slider" ref={sliderRef}>
-            {(safeJsonParse(settings.featured_products).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto')).length > 0 
-              ? safeJsonParse(settings.featured_products).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
-              : safeJsonParse(settings.full_catalog_data).filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto')).slice(0, 8))
-              .map((product: any, idx: number) => (
-              <div 
-                key={`popular-${idx}-${product.id}`}
-                className="wp-product-card"
+            {safeJsonParse(settings.featured_products).slice(0, 8).map((product: any) => (
+              <ProductCard 
+                key={product.id}
+                product={product}
+                fallbackImage={heroImg}
                 onClick={() => setSelectedProductDetail(product)}
-              >
-                <div className="wp-card-img-area" style={{ position: 'relative' }}>
-                  {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
-                  <ImageWithSkeleton 
-                    src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image, 400) || heroImg} 
-                    alt={product.name} 
-                    className="wp-card-img"
-                    loading="lazy"
-                    decoding="async" 
-                    onError={(e: any) => {
-                      e.target.onerror = null;
-                      e.target.src = heroImg;
-                    }}
-                  />
-                </div>
-
-                <div className="wp-card-info">
-                  <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-                  <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
-                </div>
-                <p className="wp-product-category-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px', marginBottom: '12px' }}>
-                  {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
-                </p>
-                <button className="wp-card-btn">Ver detalles</button>
-              </div>
+              />
             ))}
           </div>
         </section>
@@ -1720,39 +1652,16 @@ function App() {
             </div>
             
             <div className="wp-slider" ref={contactSliderRef}>
-              {(safeJsonParse(settings.featured_contact_lenses).length > 0
-                ? safeJsonParse(settings.featured_contact_lenses)
-                : safeJsonParse(settings.full_catalog_data).filter((p: any) => String(p.category || '').toLowerCase().includes('contacto')).slice(0, 8)
-              ).map((product: any, idx: number) => (
-                <div 
-                  key={`lc-fix-${idx}-${product.id}`}
-                  className="wp-product-card"
-                  onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
-                >
-                  <div className="wp-card-img-area" style={{ position: 'relative' }}>
-                    {(product.stock != null && product.stock !== '' && Number(product.stock) <= 0) && <div className="out-of-stock-badge">Sobre pedido</div>}
-                    <ImageWithSkeleton 
-                      src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image, 400) || contactLensesImg} 
-                      alt={product.name} 
-                      className="wp-card-img" 
-                      loading="lazy"
-                      decoding="async"
-                      onError={(e: any) => {
-                        const target = e.currentTarget;
-                        if (!target.src.includes(contactLensesImg)) target.src = contactLensesImg;
-                      }}
-                    />
-                  </div>
-
-                  <div className="wp-card-info">
-                    <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-                    <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
-                  </div>
-                  <p className="wp-product-category-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px', marginBottom: '12px' }}>
-                    {product.category || 'Lentes de contacto'} {product.brand && `· ${product.brand}`}
-                  </p>
-                  <button className="wp-card-btn">Ver detalles</button>
-                </div>
+              {safeJsonParse(settings.full_catalog_data)
+                .filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))
+                .slice(0, 6)
+                .map((product: any) => (
+                  <ProductCard 
+                    key={product.id}
+                    product={product}
+                    fallbackImage={contactLensesImg}
+                    onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
+                  />
               ))}
             </div>
           </section>

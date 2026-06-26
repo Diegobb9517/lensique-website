@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, X, Sparkles, Check } from 'lucide-react';
-import { ImageWithSkeleton } from './ImageWithSkeleton';
+import { ProductCard } from './ProductCard';
 import { getInventedName } from '../lib/format';
-import { resolveImageUrl } from '../App';
 
 interface StyleQuizProps {
   catalogData: any[];
@@ -162,23 +161,12 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '40px' }}>
                 {results.map((product) => (
-                  <div key={product.id} className="wp-product-card" onClick={() => onViewProduct(product)} style={{ width: '100%', minWidth: 'unset', border: '1px solid #e2e8f0', padding: '12px' }}>
-                    <div className="wp-card-img-area" style={{ position: 'relative', height: '140px' }}>
-                      <ImageWithSkeleton 
-                        src={resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image, 400)} 
-                        alt={product.name} 
-                        className="wp-card-img" 
-                        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
-                      />
-                    </div>
-                    <div className="wp-card-info" style={{ marginTop: '12px' }}>
-                      <h3 style={{ fontSize: '16px', fontWeight: 600, fontFamily: 'Georgia, serif' }}>
-                        {getInventedName(product.name, product.category)}
-                      </h3>
-                      <span style={{ fontSize: '14px', fontWeight: 600 }}>${product.price_incl_tax?.toLocaleString('es-MX')}</span>
-                    </div>
-                    <p style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>{product.category || 'Armazón'}</p>
-                  </div>
+                  <ProductCard 
+                    key={product.id}
+                    product={product}
+                    onClick={() => onViewProduct(product)}
+                    style={{ width: '100%', minWidth: 'unset', border: '1px solid #e2e8f0', padding: '12px' }}
+                  />
                 ))}
               </div>
 

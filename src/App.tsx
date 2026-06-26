@@ -253,51 +253,53 @@ function FullCatalog({
             </div>
           </div>
 
-          <div className="catalog-filters-top">
-              <div className="filter-group">
-                <span className="filter-label">Categoría:</span>
-                <div className="filter-pills">
-                  {['Todas', 'Armazones', 'Lentes de Contacto'].map(f => (
-                    <button 
-                      key={f} 
-                      className={`filter-pill ${filter === f ? 'active' : ''}`}
-                      onClick={() => setFilter(f)}
-                    >
-                      {f}
-                    </button>
-                  ))}
-                </div>
+          <div className="catalog-filters-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid #eaeaea', paddingBottom: '16px', marginBottom: '32px' }}>
+            <div style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
+              <div className="filter-pills">
+                {['Todas', 'Armazones', 'Lentes de Contacto'].map(f => (
+                  <button 
+                    key={f} 
+                    className={`filter-pill ${filter === f ? 'active' : ''}`}
+                    onClick={() => setFilter(f)}
+                  >
+                    {f}
+                  </button>
+                ))}
               </div>
-              <div className="filter-group">
-                <span className="filter-label">Marca:</span>
+              
+              <div className="filter-group" style={{ margin: 0 }}>
                 <select 
                   className="brand-select"
                   value={selectedBrand}
                   onChange={(e) => setSelectedBrand(e.target.value)}
                 >
-                  <option value="Todas">Todas las marcas</option>
+                  <option value="Todas">Marcas</option>
                   {availableBrands.map(b => (
                     <option key={b} value={b}>{b}</option>
                   ))}
                 </select>
               </div>
+
               {filter === 'Lentes de Contacto' && (
-                <div className="filter-group">
-                  <span className="filter-label">Uso:</span>
-                  <div className="filter-pills">
-                    {['Todos', 'Uso Diario', 'Uso Quincenal', 'Uso Mensual', 'Uso Anual'].map(u => (
-                      <button 
-                        key={u} 
-                        className={`filter-pill ${contactUsageFilter === u ? 'active' : ''}`}
-                        onClick={() => setContactUsageFilter(u)}
-                      >
-                        {u}
-                      </button>
+                <div className="filter-group" style={{ margin: 0 }}>
+                  <select 
+                    className="brand-select"
+                    value={contactUsageFilter}
+                    onChange={(e) => setContactUsageFilter(e.target.value)}
+                  >
+                    <option value="Todos">Uso</option>
+                    {['Uso Diario', 'Uso Quincenal', 'Uso Mensual', 'Uso Anual'].map(u => (
+                      <option key={u} value={u}>{u}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
               )}
             </div>
+            
+            <div className="catalog-count" style={{ fontSize: '13px', color: '#888', fontWeight: 400, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              {filteredProducts.length} modelo{filteredProducts.length !== 1 ? 's' : ''}
+            </div>
+          </div>
 
           <div className="catalog-content">
             <div className="catalog-products">

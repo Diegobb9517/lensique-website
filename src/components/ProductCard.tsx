@@ -91,8 +91,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => onClick(product)}
       style={style}
     >
-      <div className="wp-card-img-area" style={{ position: 'relative' }}>
-        {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
+      <div className="wp-card-img-area">
+        {isOutOfStock && <div className="out-of-stock-badge"></div>}
         <ImageWithSkeleton 
           src={imageUrl || fallbackImage} 
           alt={product.name} 
@@ -109,22 +109,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div className="wp-card-info">
+        <p className="wp-card-category">{product.brand || 'Lensique'}</p>
         <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
         <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+        
+        {onSelectAction && (
+          <span className="wp-card-cta-hover">
+            Personalizar ›
+          </span>
+        )}
       </div>
-      <p className="wp-card-category">{product.category || 'Armazón'} {product.brand && `· ${product.brand}`}</p>
-      
-      {onSelectAction && (
-        <button 
-          className="wp-card-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelectAction(product);
-          }}
-        >
-          Ver detalles
-        </button>
-      )}
     </div>
   );
 };

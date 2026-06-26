@@ -1293,29 +1293,40 @@ body.no-scroll {
 
 .filter-pills {
   display: flex;
-  gap: 8px;
+  gap: 24px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .filter-pill {
-  padding: 8px 16px;
-  border-radius: 980px;
-  background: #f5f5f7;
+  padding: 4px 0;
+  background: transparent;
   border: none;
+  border-bottom: 2px solid transparent;
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: #6b7280;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .filter-pill:hover {
-  background: #e5e5e7;
+  color: #111;
 }
 
 .filter-pill.active {
-  background: var(--accent);
-  color: white;
+  color: #111;
+  border-bottom: 2px solid #111;
+}
+
+.catalog-count {
+  font-size: 13px;
+  color: #888;
+  font-weight: 400;
+  margin-left: auto;
 }
 
 .brand-select {
@@ -2592,39 +2603,36 @@ body.no-scroll {
   color: white;
 }
 
-.wp-slider {
-  display: flex;
-  gap: 24px;
-  overflow-x: scroll;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 4px;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+.wp-section {
+  padding: 100px 40px;
+  background-color: #F9F8F6;
 }
-.wp-slider::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
+
+/* -----------------------------
+   WP STYLE PRODUCT CARDS
+----------------------------- */
+.wp-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px 24px;
+  margin: 0 auto;
+  max-width: var(--max-width);
 }
 
 .wp-product-card {
-  min-width: 320px;
-  width: 320px;
-  background-color: #f6f6f6;
-  border-radius: 8px;
-  padding: 16px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  border: none;
-  transition: box-shadow 0.3s, transform 0.3s;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid rgba(0,0,0,0.03);
+  transition: all 0.4s var(--smooth);
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 .wp-product-card:hover {
-  box-shadow: 0 12px 40px rgba(0,0,0,0.07);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.05);
   transform: translateY(-4px);
 }
 
@@ -2632,7 +2640,9 @@ body.no-scroll {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  z-index: 2;
+  position: relative;
 }
 
 .wp-icon-ghost {
@@ -2649,46 +2659,46 @@ body.no-scroll {
   transition: all 0.2s;
 }
 .wp-icon-ghost:hover {
-  color: #d11a2a;
-  border-color: #fcc;
+  background: #f9f9f9;
+  transform: scale(1.05);
 }
 
-.wp-try-on {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 12px;
+.out-of-stock-badge {
+  font-size: 10px;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7280;
+  background: transparent;
+  padding: 0;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
 }
-.wp-try-on:hover {
-  background: #f5f5f5;
-  border-color: #ccc;
+.out-of-stock-badge::before {
+  content: '•';
+  color: #9ca3af;
+  margin-right: 4px;
 }
 
 .wp-card-img-area {
-  height: 220px;
-  background: transparent;
-  border-radius: 10px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   overflow: hidden;
-  padding: 12px;
 }
 
 .wp-card-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 0.4s;
-  mix-blend-mode: multiply;
+  transition: transform 0.6s var(--smooth), opacity 0.4s var(--smooth);
+  mix-blend-mode: multiply; /* Drops the white background of the product photo */
+  transform-origin: center;
 }
 .wp-product-card:hover .wp-card-img {
   transform: scale(1.05);
@@ -2696,26 +2706,47 @@ body.no-scroll {
 
 .wp-card-info {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   margin-top: auto;
-  padding-bottom: 16px;
+}
+
+.wp-card-category {
+  font-size: 11px;
+  color: #888;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .wp-product-name {
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  font-size: 24px;
+  font-family: var(--font-heading);
+  font-size: 20px;
   font-weight: 400;
-  color: #1d1d1f;
-  margin: 0;
-  line-height: 1.1;
+  color: #111;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
 }
 
 .wp-product-price {
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
+  font-size: 14px;
+  color: #666;
+  font-weight: 300;
   line-height: 1.1;
+}
+
+.wp-card-cta-hover {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #111;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s var(--swift);
+}
+.wp-product-card:hover .wp-card-cta-hover {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .wp-card-btn {

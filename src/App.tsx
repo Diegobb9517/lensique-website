@@ -302,6 +302,7 @@ function FullCatalog({
           <div className="catalog-content">
             <div className="catalog-products">
               {(catalogData && catalogData.length > 0) ? (
+                <>
                 <div className="products-grid">
                   {filteredProducts.slice(0, visibleCount).map(product => (
                     <ProductCard 
@@ -336,6 +337,7 @@ function FullCatalog({
                     </button>
                   </div>
                 )}
+                </>
               ) : (
                 <div className="products-grid">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (

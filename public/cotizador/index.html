@@ -112,9 +112,11 @@ if(ST.step===1){
  if(ok)$("next").onclick=function(){ST.step=3;render();};
 }else if(ST.step===3){
  h='<div class="step"><h2 class="serif">Elige tu lente</h2><p class="q">Todas las opciones ya incluyen antirreflejante y protección UV; elige la que más te convenga.</p>'+(ST.tipo==="pro"?progFields()+progReco():"");
- OPC[ST.tipo].forEach(function(o){h+=card(o,ST.opc===o.k,priceOf(o));});
+ OPC[ST.tipo].forEach(function(o){
+  h+=card(o,ST.opc===o.k,priceOf(o));
+  if(ST.opc===o.k && (o.k==="foto"||o.k==="bfoto")) h+=colorSel();
+ });
  if(ST.tipo==="pro")h+='<div class="tog'+(ST.azul?" on":"")+'" id="togAzul"><div class="ck">'+(ST.azul?"✓":"")+'</div><div><div class="nm">Agregar filtro de luz azul</div><div class="ds">Para quien usa mucho pantallas · +'+money(300)+'</div></div></div>';
- if(isFoto())h+=colorSel();
  if(ST.opc){var so=OPC[ST.tipo].find(function(x){return x.k===ST.opc;});h+='<div class="subt"><span>Subtotal</span><span>'+money(priceOf(so))+(priceOf(so)>=4000?'<br><small style="font-weight:600;color:#6b7280;font-size:11px">o '+mensual(priceOf(so))+'</small>':"")+'</span></div>';}
  h+='<div class="nav"><button class="b-sec" id="back">Atrás</button><button class="b-prim" id="next" '+(ST.opc?"":"disabled style=opacity:.5")+'>Ver cotización</button></div></div>';
  app.innerHTML=h;app.querySelectorAll(".opt").forEach(function(el){el.onclick=function(){ST.opc=el.dataset.k;render();};});app.querySelectorAll(".rqchip").forEach(function(el){el.onclick=function(){ST["q"+el.dataset.q]=parseInt(el.dataset.v);render();};});app.querySelectorAll(".rqreset").forEach(function(el){el.onclick=function(){ST.q1=null;ST.q2=null;ST.q3=null;render();};});app.querySelectorAll(".mapToggle").forEach(function(el){el.onclick=function(){ST.showMap=!ST.showMap;render();};});app.querySelectorAll(".recToggle").forEach(function(el){el.onclick=function(){ST.showReco=!ST.showReco;render();};});

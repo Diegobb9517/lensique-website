@@ -310,7 +310,6 @@ function FullCatalog({
                     <ProductCard 
                       key={product.id}
                       product={product}
-                      isEditorial={true}
                       fallbackImage={String(product.category).toLowerCase().includes('contacto') ? contactLensesImg : heroImg}
                       onClick={() => {
                         if (String(product.category || '').toLowerCase().includes('contacto')) {

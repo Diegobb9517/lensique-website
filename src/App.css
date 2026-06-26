@@ -1330,25 +1330,29 @@ body.no-scroll {
 }
 
 .brand-select {
-  padding: 8px 36px 8px 16px;
-  border-radius: 980px;
-  background: #f5f5f7;
-  border: 1px solid transparent;
+  padding: 4px 24px 4px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: #111;
   cursor: pointer;
   appearance: none;
   outline: none;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='16'%20height='16'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%2386868b'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m6%209%206%206%206-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='14'%20height='14'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23111'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m6%209%206%206%206-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  transition: all 0.2s ease;
-  min-width: 180px;
+  background-position: right center;
+  transition: all 0.3s ease;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  min-width: 140px;
 }
 
 .brand-select:hover {
-  background-color: #e5e5e7;
+  border-bottom-color: #111;
 }
 
 .catalog-sidebar {

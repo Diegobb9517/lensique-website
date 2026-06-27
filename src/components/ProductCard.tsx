@@ -92,7 +92,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       style={style}
     >
       <div className="wp-card-img-area">
-        {isOutOfStock && <div className="out-of-stock-badge"></div>}
+        {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
         <ImageWithSkeleton 
           src={imageUrl || fallbackImage} 
           alt={product.name} 

@@ -3498,23 +3498,6 @@ body.no-scroll {
   }
 }
 
-/* OUT OF STOCK BADGE */
-.out-of-stock-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #333333;
-  color: #ffffff;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
 /* --- Technology Info Page Styles --- */
 .tech-info-page {
   position: fixed;

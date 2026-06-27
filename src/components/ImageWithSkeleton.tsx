@@ -61,7 +61,6 @@ export const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
           transition: 'opacity 0.3s ease-in-out',
           width: '100%',
           height: '100%',
-          objectFit: 'inherit',
           ...props.style
         }}
         {...props}

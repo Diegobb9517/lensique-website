@@ -470,28 +470,76 @@ export default function LensConfiguratorModal({ product, catalogData = [], onClo
           </div>
         );
 
-      case 3:
+      case 3: {
+        const isPhotochromicSelected = config.photochromic && config.photochromic !== 'NONE';
+        const basePhotoPrice = PHOTOCHROMIC_OPTIONS.find(o => o.id === 'FOTO_GRIS')?.price || 1637.93;
+        
         return (
           <div className="config-step-content">
             <h2 className="config-title">Fotocromático</h2>
             <p className="config-subtitle">Micas que se oscurecen con el sol.</p>
             <div className="config-grid">
-              {PHOTOCHROMIC_OPTIONS.map(opt => (
-                <button 
-                  key={opt.id}
-                  className={`config-list-item ${config.photochromic === opt.id ? 'selected' : ''}`}
-                  onClick={() => { updateConfig('photochromic', opt.id); handleNext(opt.id); }}
-                >
-                  <div className="config-list-item-top">
-                    <h3>{opt.name}</h3>
-                    <span className="config-price">{getDynamicPrice(opt.name, opt.price) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice(opt.name, opt.price)).toLocaleString('es-MX')}`}</span>
+              <button 
+                className={`config-list-item ${config.photochromic === 'NONE' ? 'selected' : ''}`}
+                onClick={() => { updateConfig('photochromic', 'NONE'); handleNext('NONE'); }}
+              >
+                <div className="config-list-item-top">
+                  <h3>Ninguno</h3>
+                  <span className="config-price">Incluido</span>
+                </div>
+                <p className="config-list-item-desc">Micas transparentes en todo momento.</p>
+              </button>
+
+              <button 
+                className={`config-list-item ${isPhotochromicSelected ? 'selected' : ''}`}
+                onClick={() => { 
+                  if (!isPhotochromicSelected) updateConfig('photochromic', 'FOTO_GRIS'); 
+                }}
+              >
+                <div className="config-list-item-top">
+                  <h3>Sí, que se oscurezcan al sol</h3>
+                  <span className="config-price">{getDynamicPrice('Fotocromático', basePhotoPrice) === 0 ? 'Incluido' : `+$${Math.round(getDynamicPrice('Fotocromático', basePhotoPrice)).toLocaleString('es-MX')}`}</span>
+                </div>
+                <p className="config-list-item-desc">Se oscurecen en exteriores protegiendo tus ojos.</p>
+                
+                {isPhotochromicSelected && (
+                  <div className="photochromic-color-options" onClick={(e) => e.stopPropagation()} style={{ width: '100%', textAlign: 'left' }}>
+                    <p style={{marginTop: '16px', marginBottom: '12px', fontWeight: 600, fontSize: '13px', color: '#111', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Elige el color del lente:</p>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      {PHOTOCHROMIC_OPTIONS.filter(opt => opt.id !== 'NONE').map(opt => (
+                        <button
+                          key={opt.id}
+                          style={{
+                            padding: '8px 16px',
+                            borderRadius: '20px',
+                            border: `1.5px solid ${config.photochromic === opt.id ? '#1F3864' : '#e5e7eb'}`,
+                            background: config.photochromic === opt.id ? '#1F3864' : '#ffffff',
+                            color: config.photochromic === opt.id ? '#ffffff' : '#111',
+                            fontWeight: 600,
+                            fontSize: '13px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onClick={(e) => { e.stopPropagation(); updateConfig('photochromic', opt.id); }}
+                        >
+                          {opt.name.replace('Fotocromático ', '')}
+                        </button>
+                      ))}
+                    </div>
+                    <button 
+                      className="btn-wp-primary"
+                      style={{ marginTop: '24px', width: '100%', padding: '12px', borderRadius: '8px' }}
+                      onClick={(e) => { e.stopPropagation(); handleNext(config.photochromic); }}
+                    >
+                      Confirmar y continuar
+                    </button>
                   </div>
-                  {opt.description && <p className="config-list-item-desc">{opt.description}</p>}
-                </button>
-              ))}
+                )}
+              </button>
             </div>
           </div>
         );
+      }
 
       case 4:
         return (

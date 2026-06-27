@@ -2631,7 +2631,7 @@ body.no-scroll {
 .wp-slider .wp-product-card {
   min-width: 280px;
   width: 280px;
-  flex: 0 0 280px;
+  flex: 0 0 280px !important; max-width: 280px !important;
 }
 
 /* -----------------------------

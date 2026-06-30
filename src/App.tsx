@@ -888,10 +888,7 @@ function App() {
 
               {/* Right: Info */}
               <div className="product-detail-info-col">
-                <span className="product-detail-category">
-                  {selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}
-                  {selectedProductDetail.sku && <span style={{ opacity: 0.4, fontSize: '11px', marginLeft: '8px', fontWeight: 'normal' }}>#{selectedProductDetail.sku}</span>}
-                </span>
+                <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
                 <h2 className="product-detail-name">
                   {getInventedName(selectedProductDetail.name, selectedProductDetail.category)}
                 </h2>
@@ -900,6 +897,11 @@ function App() {
                     ? `Lentes de Contacto${getContactLensUsage(selectedProductDetail.name) !== 'Todos' ? ` - ${getContactLensUsage(selectedProductDetail.name)}` : ''}` 
                     : (selectedProductDetail.category || 'Armazón Premium')}
                 </p>
+                {selectedProductDetail.sku && (
+                  <p className="product-detail-sku" style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>
+                    SKU: {selectedProductDetail.sku}
+                  </p>
+                )}
 
                 <div className="product-detail-divider" />
 

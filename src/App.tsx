@@ -1020,55 +1020,44 @@ function App() {
           onComplete={(config) => {
             setConfiguratorProduct(null);
             
-            // Format WhatsApp Message with Configuration
-            const greetingName = config.customerName ? ` Soy ${config.customerName.trim()} y me` : ' Me';
-            let configText = `¡Hola!${greetingName} interesa comprar el armazón ${configuratorProduct.name} ${configuratorProduct.brand}.\n\nEsta es mi configuración de micas:\n`;
+            const product = config.originalProduct || configuratorProduct;
+            let configText = `¡Hola! Me interesa comprar el armazón ${product.name} ${product.brand}.\n\nEsta es mi configuración de micas ZEISS:\n`;
             
-            if (config.graduacion) {
-              const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);
-              if (grad) configText += `- Graduación: ${grad.name}\n`;
-            }
-            if (config.ar) {
-              const ar = AR_OPTIONS.find(o => o.id === config.ar);
-              if (ar) configText += `- Tratamiento: ${ar.name}\n`;
-            }
-            if (config.photochromic && config.photochromic !== 'NONE') {
-              const photo = PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic);
-              if (photo) configText += `- Fotocromático: ${photo.name}\n`;
-            }
-            if (config.tinting && config.tinting !== 'NONE') {
-              const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
-              if (tint) configText += `- Entintado: ${tint.name}\n`;
-            }
-            if (config.material === 'HI_INDEX') {
-              configText += `- Adelgazamiento: Sí (Hi-Index)\n`;
-            } else if (config.material === 'POLICARBONATO') {
-              configText += `- Material: Policarbonato\n`;
+            if (config.etiqueta) {
+              configText += `• ${config.etiqueta} · índice ${config.indice}\n`;
             }
             
-            // Calculate Total
-            let total = configuratorProduct.price_incl_tax || 0;
-            const grad = FRAME_GRADUACION_OPTIONS.find(o => o.id === config.graduacion);
-            if (grad) total += grad.price * 1.16;
-            const ar = AR_OPTIONS.find(o => o.id === config.ar);
-            if (ar) total += ar.price * 1.16;
-            const photo = PHOTOCHROMIC_OPTIONS.find(o => o.id === config.photochromic);
-            if (photo) total += photo.price * 1.16;
-            const tint = TINTING_OPTIONS.find(o => o.id === config.tinting);
-            if (tint) total += tint.price * 1.16;
-            const mat = MATERIAL_OPTIONS.find(o => o.id === config.material);
-              if (mat) {
-                if (mat.id === 'POLICARBONATO') {
-                  const hasPolyIncluded = configuratorProduct?.base_material === 'POLICARBONATO' || String(configuratorProduct?.category || '').toLowerCase().includes('policarbonato');
-                  const isFree = hasPolyIncluded || [
-                    'ORX3929V- 2500', 'ORX3928V- 2501', '0VO4320B 5152', 
-                    '0VO4357D 848', 'CA-8901-BK/GD', '0AN6134L (Vista)'
-                  ].some(m => configuratorProduct?.name?.trim().toUpperCase() === m.toUpperCase());
-                  if (!isFree) total += mat.price * 1.16;
-                } else {
-                  total += mat.price * 1.16;
-                }
+            const pvp = config.pvp || 0;
+            const productPrice = product.price_incl_tax || 0;
+            const total = pvp + productPrice;
+
+            configText += `• Precio micas (el par): $${Math.round(pvp).toLocaleString('es-MX')}\n`;
+            configText += `• Precio armazón: $${Math.round(productPrice).toLocaleString('es-MX')}\n`;
+
+            const formatRx = (eye: any) => {
+              if (!eye) return '';
+              let txt = `Esf ${eye.esf >= 0 ? '+' : ''}${(eye.esf || 0).toFixed(2)}`;
+              if (eye.cil) txt += ` Cil ${(eye.cil).toFixed(2)}`;
+              if (eye.eje) txt += ` Eje ${eye.eje}°`;
+              if (eye.add) txt += ` Add +${Number(eye.add).toFixed(2)}`;
+              return txt;
+            };
+
+            if (config.od || config.oi) {
+              const odStr = formatRx(config.od);
+              const oiStr = formatRx(config.oi);
+              if (odStr !== 'Esf +0.00' || oiStr !== 'Esf +0.00' || config.od?.cil || config.oi?.cil) {
+                 configText += `\nMi graduación:\n  OD: ${odStr}\n  OI: ${oiStr}\n`;
               }
+            }
+            
+            if (config.pd) {
+               if (typeof config.pd === 'object') {
+                  configText += `  DI/PD: OD ${config.pd.od || '?'} mm / OI ${config.pd.oi || '?'} mm\n`;
+               } else {
+                  configText += `  DI/PD: ${config.pd} mm\n`;
+               }
+            }
 
             configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             

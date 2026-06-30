@@ -888,7 +888,10 @@ function App() {
 
               {/* Right: Info */}
               <div className="product-detail-info-col">
-                <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
+                <span className="product-detail-category">
+                  {selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}
+                  {selectedProductDetail.sku && <span style={{ opacity: 0.4, fontSize: '11px', marginLeft: '8px', fontWeight: 'normal' }}>#{selectedProductDetail.sku}</span>}
+                </span>
                 <h2 className="product-detail-name">
                   {getInventedName(selectedProductDetail.name, selectedProductDetail.category)}
                 </h2>

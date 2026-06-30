@@ -388,7 +388,7 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
 var $=function(id){return document.getElementById(id);};
 var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
 var TOTAL_STEPS=4;
-function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.60",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false};}
+function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.60",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
 var ST=fresh();var _pfPrev=null;var _thF=null;
 var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 var IC={
@@ -701,7 +701,7 @@ function waText(){
  var q=zeissQuote();if(!q||!q.disponible)return '';
  var L=[];
  L.push('Hola, vengo del asesor de Lensique. Me interesa esta cotización:');
- L.push('• '+TYPES[ST.type].nm+' · '+q.etiqueta+' · índice '+q.indice);
+ L.push('• '+q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' ('+TYPES[ST.type].nm+')');
  var pl='• Precio aprox: '+money(q.pvp);
  if(q.pvp>=MSI_MIN)pl+=' ('+MSI+' meses sin intereses de '+money(Math.round(q.pvp/MSI))+')';
  L.push(pl);
@@ -714,6 +714,46 @@ function waText(){
  return L.join('\n');
 }
 function sendWA(){var t=waText();if(!t){alert('Configura tu lente primero.');return;}window.open('https://wa.me/523316929111?text='+encodeURIComponent(t),'_blank');}
+
+function rxLine(o){var s='Esf '+((Number(o.E)||0)>=0?'+':'')+(Number(o.E)||0).toFixed(2)+' / Cil '+(Number(o.C)||0).toFixed(2);if(o.C&&o.Ax)s+=' x '+o.Ax+'°';if(ST.type!=="mono"&&o.Ad)s+=' / Add +'+Number(o.Ad).toFixed(2);return s;}
+function isOptica(){var f=false;try{f=(window.self!==window.top);}catch(e){f=true;}var u=false;try{u=/optica/i.test((location.search||"")+(location.hash||""));}catch(e){}return f||u;}
+function labPanel(){
+ if(!isOptica())return '';
+ var q=zeissQuote();if(!q||!q.disponible)return '';
+ var lines=[q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' · '+q.tipoFab];
+ lines.push('OD: '+rxLine({E:ST.odE,C:ST.odC,Ax:ST.odAx,Ad:ST.odAdd}));
+ lines.push('OI: '+rxLine({E:ST.oiE,C:ST.oiC,Ax:ST.oiAx,Ad:ST.oiAdd}));
+ var foot='DI/PD: '+(ST.pd||'—')+' mm';
+ if(ST.type!=="mono")foot+=' · Altura: '+(ST.altura||'—')+' mm';
+ lines.push(foot);
+ var orden=lines.join('\n');
+ var altBlock='';
+ if(ST.type!=="mono"){var altLbl=ST.type==="bif"?"Altura del segmento (mm)":"Altura de pupila (mm)";altBlock='<label style="font-size:11px;color:var(--grey);font-weight:600;display:block;margin:8px 0 3px">'+altLbl+'</label><input type="number" id="altura" step="0.5" value="'+(ST.altura||"")+'" placeholder="mídela sobre el armazón montado" style="width:220px;max-width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px">';}
+ var h='<section class="sec" style="border-top:2px solid var(--navy);margin-top:6px">';
+ h+='<div class="secK" style="color:var(--navy)">◆ Orden para laboratorio · uso interno</div>';
+ h+=altBlock;
+ h+='<div id="ordenLab" style="white-space:pre-line;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#1b2436;background:#f1f3f8;border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-top:9px;line-height:1.55">'+orden+'</div>';
+ h+='<button onclick="copyLab(this)" style="margin-top:9px;padding:10px 20px;border:none;border-radius:9px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;cursor:pointer">Copiar orden</button>';
+ h+='<div class="muted" style="margin-top:7px;font-size:11px">Costo lab: '+money(q.costoLista)+' /par + IVA · '+q.tipoFab+' · entrega '+q.entrega+'</div>';
+ h+='</section>';
+ return h;
+}
+function copyLab(btn){var el=document.getElementById("ordenLab");var txt=el?el.textContent:"";function done(){btn.textContent="✓ Copiado";setTimeout(function(){btn.textContent="Copiar orden";},1500);}function fb(){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(ta);done();}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fb);}else fb();}
+
+var LAB_WA="523316929111"; /* número al que llega la orden interna (cámbialo por el de Adrián si quieres) */
+function waLabText(){
+ var q=zeissQuote();if(!q||!q.disponible)return '';
+ var lines=['ORDEN LENSIQUE → laboratorio'];
+ lines.push(q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' · '+q.tipoFab);
+ lines.push('OD: '+rxLine({E:ST.odE,C:ST.odC,Ax:ST.odAx,Ad:ST.odAdd}));
+ lines.push('OI: '+rxLine({E:ST.oiE,C:ST.oiC,Ax:ST.oiAx,Ad:ST.oiAdd}));
+ var foot='DI/PD: '+(ST.pd||'—')+' mm';
+ if(ST.type!=="mono")foot+=' · Altura: '+(ST.altura||'—')+' mm';
+ lines.push(foot);
+ lines.push('Costo lab: '+money(q.costoLista)+' /par + IVA · PVP '+money(q.pvp)+' · entrega '+q.entrega);
+ return lines.join('\n');
+}
+function sendWALab(){var t=waLabText();if(!t){alert('Configura el lente primero.');return;}window.open('https://wa.me/'+LAB_WA+'?text='+encodeURIComponent(t),'_blank');}
 
 function render(){
  $("prog").style.display="none";
@@ -734,12 +774,12 @@ function render(){
  o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
  R+='<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>';
  // 05 Inversión (al final, a la derecha)
- R+=priceSection();
+ R+=priceSection();R+=labPanel();
  var _sb=document.getElementById("stageBody");
  if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
  else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
  updateSideTh();
- var _pos=true;try{_pos=(window.self!==window.top);}catch(e){_pos=true;}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+(_pos?'<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:230px;padding:12px 26px">Agregar al carrito</button>':'<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:250px;padding:12px 26px">Enviar mi cotización por WhatsApp</button>')+'</div>';
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:230px;padding:12px 26px">Agregar al carrito</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:250px;padding:12px 26px">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
  $("restart").style.display="block";
  ["od","oi"].forEach(function(t){
   if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
@@ -750,6 +790,7 @@ function render(){
  if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
  if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
  if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
 }
 
 function benefitsList(){

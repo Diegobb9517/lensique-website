@@ -86,7 +86,7 @@ export default function LensConfiguratorModal({
           </button>
           
           <iframe 
-            src="/asesor_zeiss.html" 
+            src="/asesor_zeiss.html?v=1.0.2"
             title="Asesor Visual ZEISS"
             style={{ width: '100%', height: '100%', border: 'none', borderRadius: '24px' }}
           />

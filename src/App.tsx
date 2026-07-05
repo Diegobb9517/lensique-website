@@ -1220,9 +1220,9 @@ function App() {
         </div>
         <div className="nav-content">
           <div className="nav-left">
-            <div className="logo">
+            <a href="/" className="logo">
               <img src={logo} alt="Lensique" className="logo-img" />
-            </div>
+            </a>
 
             <div className="nav-links d-none-mobile">
               {safeJsonParse(settings.nav_links).map((link: any, i: number) => (

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, CheckCircle, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toTitleCase } from '../lib/format';
 import './ContactLensConfiguratorModal.css';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
@@ -482,7 +483,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
           </span>
           <h3 className="contact-lens-summary-name">
-            {product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : product?.name)}
+            {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
           </h3>
           <p style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', marginTop: '0.25rem' }}>{getUsageType()}</p>
           

@@ -13,10 +13,14 @@ const WP_NAMES = [
   "Sage", "Elm", "Brooks", "Plum", "Beck", "Fern", "Penn", "Ash"
 ];
 
+export const toTitleCase = (str: string) => {
+  return str.toLowerCase().replace(/\b(\w)/g, s => s.toUpperCase());
+};
+
 export const getInventedName = (productName: string, category: string = '') => {
   if (!productName) return '';
   const isContact = String(category).toLowerCase().includes('contacto');
-  if (isContact) return productName;
+  if (isContact) return toTitleCase(productName);
   
   let hash = 0;
   for (let i = 0; i < productName.length; i++) {

@@ -668,8 +668,11 @@ function dispIdx(k){return k==="1.5"?"1.50":k==="1.6"?"1.60":k;}
 function materialSimple(){
  var pot=potVal();
  if(pot<4){
-  if(!ST.poli)ST.idx="1.50";
-  return '<div style="margin:6px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación es ligera, así que va en <b style="color:var(--navy)">material estándar</b> — ya es delgado y ligero. No necesitas pagar de más por adelgazar.</div>';
+  if(!ST.poli){
+   if(ST.type==="mono"&&ST.treat==="foto")ST.idx="1.60";
+   else ST.idx="1.50";
+  }
+  return '<div style="margin:6px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación es ligera, así que va en <b style="color:var(--navy)">material estándar'+(ST.idx==="1.60"?" (1.60)":"")+'</b> — ya es delgado y ligero. No necesitas pagar de más por adelgazar.</div>';
  }
  var _r=ZeissEngine.recomendarIndice(ST.esf||0,ST.cil||0).recIndex||"1.74",_o=["1.5","1.6","1.67","1.74"];if(!ST.poli&&_o.indexOf(engIdx(ST.idx))<_o.indexOf(_r))ST.idx=dispIdx(_r);
  return thinOptions();

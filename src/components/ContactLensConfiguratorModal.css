@@ -431,9 +431,11 @@
 @media (max-width: 768px) {
   .contact-lens-modal {
     flex-direction: column;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100%;
+    max-height: 100dvh;
     border-radius: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .contact-lens-summary-panel {
@@ -442,10 +444,12 @@
     padding-top: 4rem;
     border-right: none;
     border-bottom: 1px solid #e2e8f0;
+    overflow-y: visible;
   }
   
   .contact-lens-content-panel {
     padding: 1.5rem;
+    overflow-y: visible;
   }
   
   .cl-prescription-columns {

@@ -110,7 +110,16 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 @keyframes sunPulse{0%{opacity:.14}12%{opacity:.14}46%{opacity:1}74%{opacity:1}100%{opacity:.14}}
 </style></head><body>
 <div class="app firstload">
-<header><div class="brandrow"><a href="/" target="_top" class="logo" style="text-decoration:none;">Lensique<sup>®</sup></a><div class="hcred">Asesoría óptica profesional</div></div><div class="s">Encontremos el lente perfecto para ti</div></header>
+<header>
+  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <div class="brandrow"><a href="/" target="_top" class="logo" style="text-decoration:none;">Lensique<sup>&reg;</sup></a><div class="hcred">Asesor&iacute;a &oacute;ptica profesional</div></div>
+      <div class="s">Encontremos el lente perfecto para ti</div>
+    </div>
+    <a href="/" target="_top" id="closeBtnStandalone" style="display:none; width:36px; height:36px; border-radius:50%; background:#f1f3f6; color:var(--navy); align-items:center; justify-content:center; text-decoration:none; font-size:16px; margin-top:2px; flex-shrink:0; border:1px solid #e2e6eb;" onmouseover="this.style.background='#e3e7ec'" onmouseout="this.style.background='#f1f3f6'">&#10005;</a>
+  </div>
+  <script>try{if(window.self===window.top)document.getElementById("closeBtnStandalone").style.display="flex";}catch(e){}</script>
+</header>
 <div class="prog" id="prog"></div>
 <div class="step" id="step"></div>
 <div class="nav" id="nav"></div>

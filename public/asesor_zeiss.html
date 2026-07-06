@@ -728,7 +728,7 @@ function waText(){
 function sendWA(){var t=waText();if(!t){alert('Configura tu lente primero.');return;}window.open('https://wa.me/523316929111?text='+encodeURIComponent(t),'_blank');}
 
 function rxLine(o){var s='Esf '+((Number(o.E)||0)>=0?'+':'')+(Number(o.E)||0).toFixed(2)+' / Cil '+(Number(o.C)||0).toFixed(2);if(o.C&&o.Ax)s+=' x '+o.Ax+'°';if(ST.type!=="mono"&&o.Ad)s+=' / Add +'+Number(o.Ad).toFixed(2);return s;}
-function isOptica(){var f=false;try{f=(window.self!==window.top);}catch(e){f=true;}var u=false;try{u=/optica/i.test((location.search||"")+(location.hash||""));}catch(e){}return f||u;}
+function isOptica(){return /optica/i.test((location.search||"")+(location.hash||""));}
 function labPanel(){
  if(!isOptica())return '';
  var q=zeissQuote();if(!q||!q.disponible)return '';

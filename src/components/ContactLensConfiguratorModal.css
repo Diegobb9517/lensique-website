@@ -30,7 +30,7 @@
 .contact-lens-modal-close {
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  right: 1rem;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 50%;
@@ -440,16 +440,12 @@
   }
   
   .contact-lens-summary-panel {
-    flex: 0 0 auto;
-    padding: 1.5rem;
-    padding-top: 4rem;
-    border-right: none;
-    border-bottom: 1px solid #e2e8f0;
-    overflow-y: visible;
+    display: none;
   }
   
   .contact-lens-content-panel {
     padding: 1.5rem;
+    padding-top: 4rem;
     overflow-y: visible;
   }
   

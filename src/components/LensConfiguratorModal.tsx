@@ -61,7 +61,6 @@ export default function LensConfiguratorModal({
         >
           <button 
             onClick={onClose} 
-            className="config-close-btn-desktop"
             style={{ 
               position: 'absolute', 
               top: '16px', 
@@ -73,6 +72,7 @@ export default function LensConfiguratorModal({
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
               border: 'none',
               cursor: 'pointer',
+              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}

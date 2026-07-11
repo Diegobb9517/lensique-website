@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, CheckCircle, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toTitleCase } from '../lib/format';
+import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
@@ -90,6 +91,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const [quantityOS, setQuantityOS] = useState(1);
   
   const [samePrescription, setSamePrescription] = useState<boolean | null>(null);
+  const [showRxGuide, setShowRxGuide] = useState(false);
   
   const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
   const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '', add: '' });
@@ -372,6 +374,32 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             </div>
             
             <h2 className="contact-lens-title">Ingresa tu receta</h2>
+            
+            <div style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+              <button 
+                onClick={() => setShowRxGuide(!showRxGuide)}
+                style={{ 
+                  background: 'none', border: 'none', padding: 0, 
+                  color: '#b48c36', fontSize: '12.5px', fontWeight: 600, 
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' 
+                }}
+              >
+                {showRxGuide ? '▼' : '▶'} ¿Cómo leer mi receta?
+              </button>
+            </div>
+            
+            <AnimatePresence>
+              {showRxGuide && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <RxGuide />
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             <div className="cl-prescription-container" style={{ marginTop: '2rem' }}>
               <div className="cl-prescription-columns">

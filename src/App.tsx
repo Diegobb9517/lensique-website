@@ -926,7 +926,6 @@ function App() {
 
                 <div className="product-detail-perks">
                   <span>✓ Asesoría personalizada</span>
-                  <span>✓ Ajustes de por vida</span>
                   <span>✓ Examen de vista incluido</span>
                 </div>
               </div>

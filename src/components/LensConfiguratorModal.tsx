@@ -42,7 +42,7 @@ export default function LensConfiguratorModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        style={{ padding: '20px', zIndex: 9999 }}
+        style={{ zIndex: 9999 }}
       >
         <motion.div 
           className="config-modal-container"
@@ -51,15 +51,11 @@ export default function LensConfiguratorModal({
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           onClick={(e) => e.stopPropagation()}
           style={{ 
-            maxWidth: '1200px', 
-            width: '100%', 
-            height: '95vh', 
             display: 'flex', 
             flexDirection: 'column',
             overflow: 'hidden',
             position: 'relative',
             background: 'var(--bg, #f1ede5)',
-            borderRadius: '24px',
             padding: 0
           }}
         >
@@ -77,7 +73,6 @@ export default function LensConfiguratorModal({
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
               border: 'none',
               cursor: 'pointer',
-              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
@@ -88,7 +83,7 @@ export default function LensConfiguratorModal({
           <iframe 
             src="/asesor_zeiss.html?v=1.0.2"
             title="Asesor Visual ZEISS"
-            style={{ width: '100%', height: '100%', border: 'none', borderRadius: '24px' }}
+            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit' }}
           />
         </motion.div>
       </motion.div>

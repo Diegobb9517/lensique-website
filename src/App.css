@@ -3022,7 +3022,7 @@ body.no-scroll {
   border: none;
   cursor: pointer;
   color: #666;
-  z-index: 10;
+  z-index: 9999;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -3164,6 +3164,14 @@ body.no-scroll {
     max-height: 95vh;
     border-radius: 16px;
     overflow-y: auto;
+  }
+  .product-detail-close {
+    width: 44px;
+    height: 44px;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(4px);
   }
   .product-detail-img-col {
     border-radius: 16px 16px 0 0;

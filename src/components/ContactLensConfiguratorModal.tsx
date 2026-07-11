@@ -397,7 +397,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   exit={{ opacity: 0, height: 0 }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <RxGuide />
+                  <RxGuide isToric={isToric} isMultifocal={isMultifocal} />
                 </motion.div>
               )}
             </AnimatePresence>

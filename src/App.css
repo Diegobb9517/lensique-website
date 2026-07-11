@@ -3155,18 +3155,23 @@ body.no-scroll {
 }
 
 @media (max-width: 768px) {
+  .product-detail-overlay {
+    padding: 12px;
+  }
   .product-detail-modal {
     grid-template-columns: 1fr;
     max-width: 100%;
+    max-height: 95vh;
     border-radius: 16px;
+    overflow-y: auto;
   }
   .product-detail-img-col {
     border-radius: 16px 16px 0 0;
-    min-height: 260px;
-    padding: 24px;
+    min-height: 180px;
+    padding: 24px 24px 0 24px;
   }
   .product-detail-info-col {
-    padding: 28px 24px;
+    padding: 24px 20px 30px;
   }
   .product-detail-name {
     font-size: 28px;

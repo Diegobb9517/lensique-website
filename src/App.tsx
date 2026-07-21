@@ -1775,8 +1775,12 @@ function App() {
             >
               {[
                 { name: 'María Fernanda G.', review: 'Excelente servicio y atención. El quiz me ayudó a encontrar el armazón perfecto para mi rostro. ¡Mis lentes llegaron impecables!' },
-                { name: 'Carlos R.', review: 'Agenda mi cita por WhatsApp y el proceso fue súper rápido. La calidad de las micas es increíble. 100% recomendados.' },
-                { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' }
+                { name: 'Carlos R.', review: 'Agendé mi cita por WhatsApp y el proceso fue súper rápido. La calidad de las micas es increíble. 100% recomendados.' },
+                { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' },
+                { name: 'Alejandro M.', review: 'Fui por mi examen de la vista y la verdad súper profesionales. Los lentes me los entregaron rápido y se ven muy premium.' },
+                { name: 'Valeria C.', review: 'Excelente opción si buscas calidad sin gastar de más. Las micas Zeiss que me recomendaron son una maravilla para la computadora.' },
+                { name: 'Roberto D.', review: 'Me encantó el servicio de asesoría. Te explican todo súper bien y te ayudan a elegir lo que mejor te queda. Súper recomendado.' },
+                { name: 'Andrea T.', review: 'Compré mis lentes de contacto y el proceso fue muy sencillo. Todo súper fácil y rápido.' }
               ].map((r, i) => (
                 <div className="resena-card" key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 auto', width: '320px', backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#fbbf24' }}>

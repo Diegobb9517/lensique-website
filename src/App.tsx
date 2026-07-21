@@ -19,6 +19,7 @@ import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import { getInventedName } from './lib/format';
 import { ProductCard } from './components/ProductCard';
+import { CheckoutModal, type CheckoutData } from './components/CheckoutModal';
 
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
@@ -670,6 +671,7 @@ function App() {
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
+  const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
@@ -806,10 +808,24 @@ function App() {
   };
 
   const servicesSliderRef = useRef<HTMLDivElement>(null);
+  const reviewsSliderRef = useRef<HTMLDivElement>(null);
+  
+  // Drag states for reviews slider
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
   const scrollServicios = (direction: 'left' | 'right') => {
     if (servicesSliderRef.current) {
       const scrollAmount = direction === 'left' ? -300 : 300;
       servicesSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const scrollReviews = (direction: 'left' | 'right') => {
+    if (reviewsSliderRef.current) {
+      const scrollAmount = direction === 'left' ? -340 : 340;
+      reviewsSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -913,7 +929,15 @@ function App() {
                       const category = String(selectedProductDetail.category || '').toLowerCase();
                       if (category.includes('sol')) {
                         const message = `Hola, me interesa comprar los lentes de sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}. ¿Me pueden dar más información?`;
-                        window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                        setCheckoutData({
+                          title: `Lentes de Sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`,
+                          total: selectedProductDetail.price_incl_tax || 0,
+                          waText: message,
+                          items: [
+                            { title: `Lentes de Sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.name}`, quantity: 1, unit_price: selectedProductDetail.price_incl_tax || 0 }
+                          ]
+                        });
+                        setSelectedProductDetail(null);
                       } else if (category.includes('contacto')) {
                         setContactConfiguratorProduct(selectedProductDetail);
                       } else {
@@ -1012,7 +1036,15 @@ function App() {
             
             const phone = settings.contact_whatsapp || '523316929111';
             const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;
-            window.open(url, '_blank');
+            
+            setCheckoutData({
+              title: `Lentes de contacto ${contactConfiguratorProduct.name}`,
+              total: totalPrice,
+              waText: configText,
+              items: [
+                { title: `Lentes de contacto ${contactConfiguratorProduct.name}`, quantity: totalQty > 0 ? totalQty : 1, unit_price: contactConfiguratorProduct.price_incl_tax || 0 }
+              ]
+            });
           }}
         />
       )}
@@ -1068,11 +1100,33 @@ function App() {
             const phone = settings.contact_whatsapp || '523316929111';
             const cleanPhone = phone.replace(/\D/g, '');
             const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(configText)}`;
-            window.open(url, '_blank');
+            
+            setCheckoutData({
+              title: `Lentes ${product.brand} ${product.name} + Micas ZEISS`,
+              total: total,
+              waText: configText,
+              items: [
+                { title: `Armazón ${product.brand} ${product.name}`, quantity: 1, unit_price: productPrice },
+                { title: `Micas ZEISS ${config.etiqueta || 'Personalizadas'}`, quantity: 1, unit_price: pvp }
+              ]
+            });
           }}
         />
       )}
 
+      {checkoutData && (
+        <CheckoutModal 
+          data={checkoutData}
+          onClose={() => setCheckoutData(null)}
+          onWhatsApp={() => {
+            const phone = settings.contact_whatsapp || '523316929111';
+            const cleanPhone = phone.replace(/\D/g, '');
+            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(checkoutData.waText)}`;
+            window.open(url, '_blank');
+            setCheckoutData(null);
+          }}
+        />
+      )}
 
       {/* Booking Modal */}
       <AnimatePresence>
@@ -1665,21 +1719,71 @@ function App() {
         )}
 
         <section className="reviews-section" style={{ padding: '80px 24px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
             <span className="hero-eyebrow">Lo que dicen nuestros clientes</span>
-            <h2 className="section-title" style={{ marginBottom: '40px' }}>Tu visión es nuestra prioridad.</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+            
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginBottom: '40px', flexWrap: 'wrap' }}>
+              <h2 className="section-title" style={{ margin: 0 }}>Tu visión es nuestra prioridad.</h2>
+              <div style={{ display: 'flex', gap: '10px' }} className="reviews-arrows">
+                <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollReviews('left')}><ChevronLeft size={24} /></button>
+                <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollReviews('right')}><ChevronRight size={24} /></button>
+              </div>
+            </div>
+
+            <style>{`
+              .resenas-track::-webkit-scrollbar { display: none; }
+              @media (max-width: 768px) {
+                .reviews-arrows { display: none !important; }
+                .resena-card { width: 85vw !important; }
+              }
+            `}</style>
+            
+            <div 
+              ref={reviewsSliderRef} 
+              className="resenas-track" 
+              style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingBottom: '20px', paddingLeft: '16px', paddingRight: '16px', cursor: 'grab' }}
+              onMouseDown={(e) => {
+                isDragging.current = true;
+                if (reviewsSliderRef.current) {
+                  reviewsSliderRef.current.style.cursor = 'grabbing';
+                  reviewsSliderRef.current.style.scrollSnapType = 'none'; // Disable snap while dragging
+                  startX.current = e.pageX - reviewsSliderRef.current.offsetLeft;
+                  scrollLeft.current = reviewsSliderRef.current.scrollLeft;
+                }
+              }}
+              onMouseLeave={() => {
+                isDragging.current = false;
+                if (reviewsSliderRef.current) {
+                  reviewsSliderRef.current.style.cursor = 'grab';
+                  reviewsSliderRef.current.style.scrollSnapType = 'x mandatory';
+                }
+              }}
+              onMouseUp={() => {
+                isDragging.current = false;
+                if (reviewsSliderRef.current) {
+                  reviewsSliderRef.current.style.cursor = 'grab';
+                  reviewsSliderRef.current.style.scrollSnapType = 'x mandatory';
+                }
+              }}
+              onMouseMove={(e) => {
+                if (!isDragging.current || !reviewsSliderRef.current) return;
+                e.preventDefault();
+                const x = e.pageX - reviewsSliderRef.current.offsetLeft;
+                const walk = (x - startX.current) * 2;
+                reviewsSliderRef.current.scrollLeft = scrollLeft.current - walk;
+              }}
+            >
               {[
                 { name: 'María Fernanda G.', review: 'Excelente servicio y atención. El quiz me ayudó a encontrar el armazón perfecto para mi rostro. ¡Mis lentes llegaron impecables!' },
                 { name: 'Carlos R.', review: 'Agenda mi cita por WhatsApp y el proceso fue súper rápido. La calidad de las micas es increíble. 100% recomendados.' },
                 { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' }
               ].map((r, i) => (
-                <div key={i} style={{ backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', textAlign: 'left' }}>
+                <div className="resena-card" key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 auto', width: '320px', backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#fbbf24' }}>
                     {[...Array(5)].map((_, j) => <svg key={j} width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                   </div>
-                  <p style={{ color: '#475569', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px', fontStyle: 'italic' }}>"{r.review}"</p>
-                  <p style={{ fontWeight: '600', color: '#1e293b' }}>{r.name}</p>
+                  <p style={{ color: '#475569', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px', fontStyle: 'italic', flexGrow: 1 }}>"{r.review}"</p>
+                  <p style={{ fontWeight: '600', color: '#1e293b', marginTop: 'auto' }}>{r.name}</p>
                 </div>
               ))}
             </div>

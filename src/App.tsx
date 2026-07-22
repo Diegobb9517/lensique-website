@@ -1720,7 +1720,7 @@ function App() {
 
         <section className="reviews-section" style={{ padding: '80px 24px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
-            <span className="hero-eyebrow">Lo que dicen nuestros clientes</span>
+            <span className="hero-eyebrow">Lo que dicen nuestros pacientes</span>
             
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginBottom: '40px', flexWrap: 'wrap' }}>
               <h2 className="section-title" style={{ margin: 0 }}>Tu visión es nuestra prioridad.</h2>
@@ -1776,18 +1776,19 @@ function App() {
               {[
                 { name: 'María Fernanda G.', review: 'Excelente servicio y atención. El quiz me ayudó a encontrar el armazón perfecto para mi rostro. ¡Mis lentes llegaron impecables!' },
                 { name: 'Carlos R.', review: 'Agendé mi cita por WhatsApp y el proceso fue súper rápido. La calidad de las micas es increíble. 100% recomendados.' },
-                { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' },
-                { name: 'Alejandro M.', review: 'Fui por mi examen de la vista y la verdad súper profesionales. Los lentes me los entregaron rápido y se ven muy premium.' },
-                { name: 'Valeria C.', review: 'Excelente opción si buscas calidad sin gastar de más. Las micas Zeiss que me recomendaron son una maravilla para la computadora.' },
-                { name: 'Roberto D.', review: 'Me encantó el servicio de asesoría. Te explican todo súper bien y te ayudan a elegir lo que mejor te queda. Súper recomendado.' },
-                { name: 'Andrea T.', review: 'Compré mis lentes de contacto y el proceso fue muy sencillo. Todo súper fácil y rápido.' }
+                { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' }
               ].map((r, i) => (
                 <div className="resena-card" key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 auto', width: '320px', backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#fbbf24' }}>
                     {[...Array(5)].map((_, j) => <svg key={j} width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                   </div>
                   <p style={{ color: '#475569', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px', fontStyle: 'italic', flexGrow: 1 }}>"{r.review}"</p>
-                  <p style={{ fontWeight: '600', color: '#1e293b', marginTop: 'auto' }}>{r.name}</p>
+                  <p style={{ fontWeight: '600', color: '#1e293b', marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {r.name}
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '400', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      &middot; reseña en Google
+                    </span>
+                  </p>
                 </div>
               ))}
             </div>

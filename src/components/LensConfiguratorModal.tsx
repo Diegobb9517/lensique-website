@@ -18,7 +18,7 @@ export default function LensConfiguratorModal({
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       // Allow messages from the same origin iframe
-      if (event.data?.type === 'add-to-cart' || event.data?.type === 'lensique-mica') {
+      if (event.data?.type === 'lensique-mica') {
         const payload = event.data.payload;
         if (payload) {
           // Pass both the ZEISS payload and the original product being purchased

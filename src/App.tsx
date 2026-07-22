@@ -19,8 +19,8 @@ import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
 import { getInventedName } from './lib/format';
 import { ProductCard } from './components/ProductCard';
-import { CheckoutModal, type CheckoutData } from './components/CheckoutModal';
-
+import { useCart } from './context/CartContext';
+import { CartDrawer } from './components/CartDrawer';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
   const clean = waStr.replace(/\D/g, '');
@@ -671,7 +671,7 @@ function App() {
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
-  const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
+  const { addItem, items, setIsCartOpen } = useCart();
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
@@ -928,14 +928,13 @@ function App() {
                     onClick={() => {
                       const category = String(selectedProductDetail.category || '').toLowerCase();
                       if (category.includes('sol')) {
-                        const message = `Hola, me interesa comprar los lentes de sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}. ¿Me pueden dar más información?`;
-                        setCheckoutData({
+                        addItem({
+                          type: 'product',
                           title: `Lentes de Sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`,
-                          total: selectedProductDetail.price_incl_tax || 0,
-                          waText: message,
-                          items: [
-                            { title: `Lentes de Sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.name}`, quantity: 1, unit_price: selectedProductDetail.price_incl_tax || 0 }
-                          ]
+                          quantity: 1,
+                          unit_price: selectedProductDetail.price_incl_tax || 0,
+                          product: selectedProductDetail,
+                          image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url)
                         });
                         setSelectedProductDetail(null);
                       } else if (category.includes('contacto')) {
@@ -1034,17 +1033,15 @@ function App() {
             const totalPrice = (contactConfiguratorProduct.price_incl_tax || 0) * (totalQty > 0 ? totalQty : 1);
             configText += `\n*Precio Estimado Total:* $${Math.round(totalPrice).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
-            const phone = settings.contact_whatsapp || '523316929111';
-            const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;
-            
-            setCheckoutData({
+            addItem({
+              type: 'product',
               title: `Lentes de contacto ${contactConfiguratorProduct.name}`,
-              total: totalPrice,
-              waText: configText,
-              items: [
-                { title: `Lentes de contacto ${contactConfiguratorProduct.name}`, quantity: totalQty > 0 ? totalQty : 1, unit_price: contactConfiguratorProduct.price_incl_tax || 0 }
-              ]
+              quantity: totalQty > 0 ? totalQty : 1,
+              unit_price: contactConfiguratorProduct.price_incl_tax || 0,
+              product: contactConfiguratorProduct,
+              image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url)
             });
+            setContactConfiguratorProduct(null);
           }}
         />
       )}
@@ -1101,32 +1098,21 @@ function App() {
             const cleanPhone = phone.replace(/\D/g, '');
             const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(configText)}`;
             
-            setCheckoutData({
-              title: `Lentes ${product.brand} ${product.name} + Micas ZEISS`,
-              total: total,
-              waText: configText,
-              items: [
-                { title: `Armazón ${product.brand} ${product.name}`, quantity: 1, unit_price: productPrice },
-                { title: `Micas ZEISS ${config.etiqueta || 'Personalizadas'}`, quantity: 1, unit_price: pvp }
-              ]
+            addItem({
+              type: 'frame_with_lenses',
+              title: `Lentes ${product.brand} ${product.name}`,
+              quantity: 1,
+              unit_price: productPrice + pvp,
+              product: product,
+              lensConfig: config,
+              image: product.image || (product.images && product.images[0]?.image_url)
             });
+            setConfiguratorProduct(null);
           }}
         />
       )}
 
-      {checkoutData && (
-        <CheckoutModal 
-          data={checkoutData}
-          onClose={() => setCheckoutData(null)}
-          onWhatsApp={() => {
-            const phone = settings.contact_whatsapp || '523316929111';
-            const cleanPhone = phone.replace(/\D/g, '');
-            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(checkoutData.waText)}`;
-            window.open(url, '_blank');
-            setCheckoutData(null);
-          }}
-        />
-      )}
+      <CartDrawer />
 
       {/* Booking Modal */}
       <AnimatePresence>
@@ -1300,7 +1286,14 @@ function App() {
           </div>
 
           <div className="nav-right">
-
+            <button className="nav-icon-btn" onClick={() => setIsCartOpen(true)} style={{ position: 'relative' }}>
+              <ShoppingBag size={24} />
+              {items.length > 0 && (
+                <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {items.length}
+                </span>
+              )}
+            </button>
 
             <button className="nav-icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

@@ -744,11 +744,13 @@ function payOnline() {
 
   var payload = {
     amount: q.pvp,
-    items: [
+    cart: [
       {
+        type: 'product',
         title: "Micas ZEISS " + q.etiqueta,
         quantity: 1,
-        unit_price: q.pvp
+        unit_price: q.pvp,
+        lensConfig: q // Send the whole quote as config for backend to price
       }
     ]
   };

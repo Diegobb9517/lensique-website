@@ -729,6 +729,57 @@ function waText(){
 }
 function sendWA(){var t=waText();if(!t){alert('Configura tu lente primero.');return;}window.open('https://wa.me/523316929111?text='+encodeURIComponent(t),'_blank');}
 
+function payOnline() {
+  var q = zeissQuote();
+  if (!q || !q.disponible) {
+    alert('Configura un lente disponible primero.');
+    return;
+  }
+  
+  var btn = document.getElementById("payBtn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Cargando pago...";
+  }
+
+  var payload = {
+    amount: q.pvp,
+    items: [
+      {
+        title: "Micas ZEISS " + q.etiqueta,
+        quantity: 1,
+        unit_price: q.pvp
+      }
+    ]
+  };
+
+  fetch("https://lensique-pos.onrender.com/api/checkout/preference", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.init_point) {
+      window.location.href = data.init_point;
+    } else {
+      alert("Error al crear el pago. Intenta de nuevo.");
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Pagar en línea";
+      }
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error de conexión al iniciar el pago.");
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Pagar en línea";
+    }
+  });
+}
+
 function rxLine(o){var s='Esf '+((Number(o.E)||0)>=0?'+':'')+(Number(o.E)||0).toFixed(2)+' / Cil '+(Number(o.C)||0).toFixed(2);if(o.C&&o.Ax)s+=' x '+o.Ax+'°';if(ST.type!=="mono"&&o.Ad)s+=' / Add +'+Number(o.Ad).toFixed(2);return s;}
 function isOptica(){return /optica/i.test((location.search||"")+(location.hash||""));}
 function labPanel(){

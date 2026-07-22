@@ -1774,9 +1774,15 @@ function App() {
               }}
             >
               {[
-                { name: 'María Fernanda G.', review: 'Excelente servicio y atención. El quiz me ayudó a encontrar el armazón perfecto para mi rostro. ¡Mis lentes llegaron impecables!' },
-                { name: 'Carlos R.', review: 'Agendé mi cita por WhatsApp y el proceso fue súper rápido. La calidad de las micas es increíble. 100% recomendados.' },
-                { name: 'Sofía L.', review: 'Me encantó la variedad de estilos tipo Warby Parker. El equipo de Lensique fue muy profesional durante mi valoración.' }
+                { name: 'Yeshua Muñoz', review: 'Muy buen servicio y excelente atención. Me ayudaron a elegir los lentes ideales para mí, explicándome las opciones con detalle.' },
+                { name: 'Giovanna Campollo Orendain', review: 'Excelente servicio, gran variedad, y apoyo en todo momento. Aparte de súper rápido todo el servicio. Mil gracias' },
+                { name: 'Verenice Rico lopez', review: 'Excelente servicio, las instalaciones son muy buenas. Además de la súper atención que brindas, son personas muy capacitadas para poder brindarnos una atención de calidad.' },
+                { name: 'Martínez Reyna Edson Santiago', review: 'Super recomendado. Excelente atención al cliente' },
+                { name: 'pamela wence', review: 'Excelente clínica, muy buena atención y médicos capacitados, me explicaron todo de forma clara. Tienen ahí mismo muy buenas opciones de armazones y lentes de contacto.' },
+                { name: 'Miriam Alondra Madrigal Corona', review: 'Excelente servicio y muy buena calidad de lentes, y una excelente calidad de examen de la vista🙌🏼' },
+                { name: 'Citlalli Gomez', review: 'Muy buen servicio! Super buena la atención, y me entregaron los lentes en tiempo y forma.' },
+                { name: 'Gabriela Ocampo', review: 'Muy buena atención, súper amables y buena calidad!' },
+                { name: 'Elizabeth López Gómez', review: 'Excelente atención de los médicos, gran variedad de diseños en lentes y servicio rápido en la entrega de lentes graduados, buenos precios y muy amables todos, gracias x su atención' }
               ].map((r, i) => (
                 <div className="resena-card" key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 auto', width: '320px', backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#fbbf24' }}>

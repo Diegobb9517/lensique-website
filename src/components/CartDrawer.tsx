@@ -98,7 +98,13 @@ export function CartDrawer() {
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0', lineHeight: 1.3 }}>{item.title}</h4>
                         {item.lensConfig && item.lensConfig.etiqueta && (
-                          <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 8px 0' }}>+ Micas {item.lensConfig.etiqueta}</p>
+                          <div style={{ fontSize: '12px', color: '#64748b', margin: '0 0 8px 0', lineHeight: 1.4, background: '#f8fafc', padding: '6px 8px', borderRadius: '6px' }}>
+                            <div style={{color: '#0f172a', fontWeight: 500}}>Micas {item.lensConfig.etiqueta}</div>
+                            <div style={{ fontSize: '11px', marginTop: '2px' }}>
+                              Índice {item.lensConfig.indice} · {item.lensConfig.tipoFab}
+                              {(item.lensConfig.esfera || item.lensConfig.cilindro) ? ' · Rx incl.' : ''}
+                            </div>
+                          </div>
                         )}
                         <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px' }}>

@@ -869,10 +869,10 @@ function App() {
   const isEyeExam = !selectedProduct || selectedProduct.toLowerCase().includes('examen');
   const timeSlots = isEyeExam ? [
     '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
-    '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM'
+    '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM'
   ] : [
     '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', 
-    '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM'
+    '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
   ];
 
   if (isPaymentSuccess) {
@@ -1859,7 +1859,7 @@ function App() {
                 <div className="info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
                 <div>
                   <h4>Horarios</h4>
-                  <p>Lunes a Viernes: 10:00 AM - 7:00 PM<br/>Sábados: 10:00 AM - 2:00 PM</p>
+                  <p>Lunes a Viernes: 10:00 AM - 8:00 PM<br/>Sábados: 10:00 AM - 5:00 PM</p>
                 </div>
               </div>
               <button 

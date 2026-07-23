@@ -729,7 +729,7 @@ function waText(){
 }
 function sendWA(){var t=waText();if(!t){alert('Configura tu lente primero.');return;}window.open('https://wa.me/523316929111?text='+encodeURIComponent(t),'_blank');}
 
-function payOnline() {
+window.payOnline = function payOnline() {
   var q = zeissQuote();
   if (!q || !q.disponible) {
     alert('Configura un lente disponible primero.');

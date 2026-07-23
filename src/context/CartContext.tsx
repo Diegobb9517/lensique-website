@@ -26,6 +26,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
+    // Auto-clear cart on payment success page
+    if (window.location.pathname.includes('/pago/exito')) {
+      localStorage.removeItem('lensique_cart');
+      return [];
+    }
     try {
       const saved = localStorage.getItem('lensique_cart');
       return saved ? JSON.parse(saved) : [];
@@ -79,6 +84,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
+    localStorage.removeItem('lensique_cart');
   };
 
   const total = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);

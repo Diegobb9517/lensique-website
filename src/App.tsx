@@ -973,7 +973,7 @@ function App() {
                       if (category.includes('sol')) {
                         addItem({
                           type: 'product',
-                          title: `Lentes de Sol ${selectedProductDetail.brand || ''} ${selectedProductDetail.model || selectedProductDetail.name}`,
+                          title: `Lentes de Sol ${(selectedProductDetail.brand && selectedProductDetail.brand !== 'null') ? selectedProductDetail.brand + ' ' : ''}${selectedProductDetail.model || selectedProductDetail.name}`,
                           quantity: 1,
                           unit_price: selectedProductDetail.price_incl_tax || 0,
                           product: selectedProductDetail,
@@ -1097,7 +1097,8 @@ function App() {
             setConfiguratorProduct(null);
             
             const product = config.originalProduct || configuratorProduct;
-            let configText = `¡Hola! Me interesa comprar el armazón ${product.name} ${product.brand}.\n\nEsta es mi configuración de micas ZEISS:\n`;
+            const safeBrand = (product.brand && product.brand !== 'null') ? product.brand : '';
+            let configText = `¡Hola! Me interesa comprar el armazón ${product.name}${safeBrand ? ' ' + safeBrand : ''}.\n\nEsta es mi configuración de micas ZEISS:\n`;
             
             if (config.etiqueta) {
               configText += `• ${config.etiqueta} · índice ${config.indice}\n`;
@@ -1143,7 +1144,7 @@ function App() {
             
             addItem({
               type: 'frame_with_lenses',
-              title: `Lentes ${product.brand} ${product.name}`,
+              title: `Lentes ${(product.brand && product.brand !== 'null') ? product.brand + ' ' : ''}${product.name}`,
               quantity: 1,
               unit_price: productPrice + pvp,
               product: product,

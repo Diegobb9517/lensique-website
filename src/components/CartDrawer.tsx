@@ -64,7 +64,9 @@ export function CartDrawer() {
               zIndex: 1000000,
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '-4px 0 24px rgba(0,0,0,0.1)'
+              boxShadow: '-4px 0 24px rgba(0,0,0,0.1)',
+              boxSizing: 'border-box' as const,
+              overflow: 'hidden'
             }}
           >
             <div style={{ padding: '20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -127,7 +129,7 @@ export function CartDrawer() {
             </div>
 
             {items.length > 0 && (
-              <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+              <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const }}>
                 <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
                   <MapPin size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
                   <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>Todas las compras se recogen en tienda (Zapopan), sin envío.</p>

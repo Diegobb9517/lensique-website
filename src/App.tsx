@@ -632,7 +632,44 @@ const cookiesData: InfoPageData = {
   ]
 };
 
+function PaymentSuccessView() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">¡Pago Exitoso!</h2>
+        <p className="text-gray-600 mb-6">Tu orden ha sido confirmada y procesada correctamente.</p>
+        
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-8 text-left">
+          <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            Instrucciones de Recolección
+          </h3>
+          <p className="text-sm text-blue-800 leading-relaxed">
+            Tu compra se recoge directamente en nuestra sucursal:<br/><br/>
+            <strong>Av. Guadalupe 1296</strong><br/>
+            Jardines de San Ignacio, Zapopan, Jal.<br/><br/>
+            <em>Te avisaremos por WhatsApp o correo en cuanto tu pedido esté listo para ser entregado.</em>
+          </p>
+        </div>
+
+        <a 
+          href="/"
+          className="inline-flex items-center justify-center w-full py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors"
+        >
+          Volver a la tienda
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(() => window.location.pathname.includes('/pago/exito'));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedTech, setSelectedTech] = useState<any>(null);
@@ -837,6 +874,10 @@ function App() {
     '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', 
     '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM'
   ];
+
+  if (isPaymentSuccess) {
+    return <PaymentSuccessView />;
+  }
 
   return (
     <div className="app-container">

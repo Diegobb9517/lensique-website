@@ -634,22 +634,24 @@ const cookiesData: InfoPageData = {
 
 function PaymentSuccessView() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8f6f2 0%, #e8e4dc 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: "'Inter', 'Helvetica Neue', sans-serif" }}>
+      <div style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)', padding: '48px 36px', maxWidth: '460px', width: '100%', textAlign: 'center' as const }}>
+        
+        <div style={{ width: '80px', height: '80px', background: '#e6f7ee', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px' }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">¡Pago Exitoso!</h2>
-        <p className="text-gray-600 mb-6">Tu orden ha sido confirmada y procesada correctamente.</p>
+
+        <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1b2436', margin: '0 0 8px' }}>¡Pago Exitoso!</h2>
+        <p style={{ fontSize: '15px', color: '#666', margin: '0 0 32px', lineHeight: 1.5 }}>Tu orden ha sido confirmada y procesada correctamente.</p>
         
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-8 text-left">
-          <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <div style={{ background: '#f0f7ff', border: '1px solid #d0e3f7', borderRadius: '14px', padding: '24px', marginBottom: '32px', textAlign: 'left' as const }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#1a3a5c', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             Instrucciones de Recolección
           </h3>
-          <p className="text-sm text-blue-800 leading-relaxed">
+          <p style={{ fontSize: '14px', color: '#2a5a8a', lineHeight: 1.7, margin: 0 }}>
             Tu compra se recoge directamente en nuestra sucursal:<br/><br/>
             <strong>Av. Guadalupe 1296</strong><br/>
             Jardines de San Ignacio, Zapopan, Jal.<br/><br/>
@@ -659,7 +661,7 @@ function PaymentSuccessView() {
 
         <a 
           href="/"
-          className="inline-flex items-center justify-center w-full py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors"
+          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '14px 24px', border: 'none', borderRadius: '50px', fontSize: '15px', fontWeight: 600, color: '#fff', background: '#1b2436', textDecoration: 'none', cursor: 'pointer', transition: 'background 0.2s' }}
         >
           Volver a la tienda
         </a>

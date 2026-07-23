@@ -15,12 +15,17 @@ export default function LensConfiguratorModal({
   onClose,
   onComplete
 }: LensConfiguratorModalProps) {
+  const hasProcessed = React.useRef(false);
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       // Allow messages from the same origin iframe
       if (event.data?.type === 'lensique-mica') {
+        if (hasProcessed.current) return;
+        
         const payload = event.data.payload;
         if (payload) {
+          hasProcessed.current = true;
           // Pass both the ZEISS payload and the original product being purchased
           onComplete({
             ...payload,

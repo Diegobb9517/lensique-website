@@ -41,7 +41,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [items]);
 
   const addItem = (item: Omit<CartItem, 'id'>) => {
-    setItems(prev => [...prev, { ...item, id: Date.now().toString() + Math.random().toString(36).substr(2, 5) }]);
+    setItems(prev => {
+      const key = (it: Omit<CartItem, 'id'>) => `${it.product?.id || ''}|${it.lensConfig?.etiqueta || ''}|${it.lensConfig?.indice || ''}|${it.lensConfig?.tipoFab || ''}`;
+      const itemKey = key(item);
+      
+      const existingIndex = prev.findIndex(it => {
+        // Only deduplicate if it has a product ID
+        if (!it.product?.id || !item.product?.id) return false;
+        return key(it) === itemKey;
+      });
+
+      if (existingIndex >= 0) {
+        const newItems = [...prev];
+        newItems[existingIndex] = {
+          ...newItems[existingIndex],
+          quantity: newItems[existingIndex].quantity + (item.quantity || 1)
+        };
+        return newItems;
+      }
+      
+      return [...prev, { ...item, id: Date.now().toString() + Math.random().toString(36).substring(2, 7) }];
+    });
     setIsCartOpen(true);
   };
 

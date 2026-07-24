@@ -165,7 +165,9 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     if (samePrescription) {
       return checkEye(prescriptionOD);
     } else {
-      return checkEye(prescriptionOD) && checkEye(prescriptionOS);
+      const odOk = quantityOD === 0 || checkEye(prescriptionOD);
+      const osOk = quantityOS === 0 || checkEye(prescriptionOS);
+      return odOk && osOk;
     }
   };
 

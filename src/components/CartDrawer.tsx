@@ -110,13 +110,14 @@ export function CartDrawer() {
               flexDirection: 'column',
               boxShadow: '-4px 0 24px rgba(0,0,0,0.1)',
               boxSizing: 'border-box' as const,
-              overflow: 'hidden'
+              overflow: 'hidden',
+              fontFamily: 'var(--font-body, system-ui, sans-serif)'
             }}
           >
             <div style={{ padding: '20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <ShoppingBag size={20} color="#0f172a" />
-                <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', margin: 0 }}>Tu Carrito</h2>
+                <div style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', margin: 0, fontFamily: 'var(--font-body, system-ui, sans-serif)' }}>Tu Carrito</div>
               </div>
               <button onClick={() => setIsCartOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
                 <X size={24} color="#64748b" />
@@ -126,7 +127,7 @@ export function CartDrawer() {
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
               {showCheckoutForm ? (
                 <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-                  <h3 style={{ margin: '0 0 8px', fontSize: '16px', color: '#0f172a' }}>Tus datos para la orden</h3>
+                  <div style={{ margin: '0 0 8px', fontSize: '16px', color: '#0f172a', fontWeight: 600, fontFamily: 'var(--font-body, system-ui, sans-serif)' }}>Tus datos para la orden</div>
                   
                   {formError && (
                     <div style={{ padding: '10px', background: '#fef2f2', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 500 }}>
@@ -193,7 +194,7 @@ export function CartDrawer() {
                         </div>
                       )}
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0', lineHeight: 1.3 }}>{item.title}</h4>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0', lineHeight: 1.3 }}>{item.title}</div>
                         {item.lensConfig && item.lensConfig.etiqueta && (
                           <div style={{ fontSize: '12px', color: '#64748b', margin: '0 0 8px 0', lineHeight: 1.4, background: '#f8fafc', padding: '6px 8px', borderRadius: '6px' }}>
                             <div style={{color: '#0f172a', fontWeight: 500}}>Micas {item.lensConfig.etiqueta}</div>

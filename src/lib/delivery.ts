@@ -1,6 +1,27 @@
 export function calculateDeliveryTime(product: any, lensConfig?: any) {
+  const isContactLens = String(product?.category || '').toLowerCase().includes('contacto');
+
+  if (isContactLens) {
+    const isToricOrMultifocal = 
+      String(product?.name || '').toLowerCase().match(/tóric|toric|astigmatism|multifocal|presbicia|presbyopia/);
+      
+    if (isToricOrMultifocal) {
+      return {
+        label: '1 a 2 semanas',
+        subtitle: 'Lentes de contacto tóricos / multifocales (sobre pedido).',
+        maxDays: 14
+      };
+    } else {
+      return {
+        label: '3 a 5 días hábiles',
+        subtitle: 'Lentes de contacto esféricos (tiempo de procesamiento).',
+        maxDays: 5
+      };
+    }
+  }
+
   // 1. Días del armazón
-  const isOutOfStock = product.stock != null && product.stock !== '' && Number(product.stock) <= 0;
+  const isOutOfStock = product?.stock != null && product.stock !== '' && Number(product.stock) <= 0;
   // Si está en stock, consideramos máximo 3 días. Si está agotado (sobre pedido), máximo 14 días.
   const frameDays = isOutOfStock ? 14 : 3;
 

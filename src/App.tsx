@@ -15,6 +15,8 @@ import { type ServiceInfoData } from './components/ServiceInfoModal';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import { StyleQuiz } from './components/StyleQuiz';
 import LensExplainer from './components/LensExplainer';
+import FaceMatcher from './components/FaceMatcher';
+import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -1682,44 +1684,9 @@ function App() {
 
         <LensExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
 
-        <section id="armazones" className="comparison-section" style={{ backgroundColor: '#fff', padding: '100px 0' }}>
-          <div className="section-header" style={{ padding: '0 40px' }}>
-            <span className="hero-eyebrow">Diseños que inspiran</span>
-            <h2 className="section-title">Encuentra tu estilo ideal.</h2>
-            <p className="section-subtitle">Exclusividad y precisión en cada detalle.</p>
-          </div>
+        <ProgressiveExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
 
-          <div className="face-guide-grid">
-            {faceShapeGuide.map((guide, idx) => (
-              <motion.div 
-                key={`face-guide-${idx}-${guide.id}`}
-                className="face-guide-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="face-guide-img-box">
-                  <img src={guide.image} alt={guide.glassesShape} className="face-guide-img" loading="lazy" decoding="async" />
-                </div>
-                <div className="face-guide-content">
-                  <span className="face-guide-tag">Ideal para: {guide.faceShape}</span>
-                  <h3 className="face-guide-title">{guide.glassesShape}</h3>
-                  <p className="face-guide-desc">{guide.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <button 
-              className="btn btn-wp-primary" 
-              onClick={() => setIsStyleQuizOpen(true)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '16px 32px', fontSize: '16px' }}
-            >
-              <Sparkles size={20} /> Hacer el Quiz de Estilo
-            </button>
-          </div>
-        </section>
+        <FaceMatcher onOpenCatalog={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })} />
 
         <section id="nosotros" className="about-section">
           <div className="about-content">

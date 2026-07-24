@@ -20,7 +20,7 @@ import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
-import { getInventedName } from './lib/format';
+import { getInventedName, formatProductTitle } from './lib/format';
 import { ProductCard } from './components/ProductCard';
 import { useCart } from './context/CartContext';
 import { calculateDeliveryTime } from './lib/delivery';
@@ -991,7 +991,7 @@ function App() {
                         const delTime = calculateDeliveryTime(selectedProductDetail);
                         addItem({
                           type: 'product',
-                          title: `Lentes de Sol ${(selectedProductDetail.brand && selectedProductDetail.brand !== 'null') ? selectedProductDetail.brand + ' ' : ''}${selectedProductDetail.model || selectedProductDetail.name}`,
+                          title: formatProductTitle(selectedProductDetail, 'Lentes de Sol'),
                           quantity: 1,
                           unit_price: selectedProductDetail.price_incl_tax || 0,
                           product: selectedProductDetail,
@@ -1163,7 +1163,7 @@ function App() {
             const delTime = calculateDeliveryTime(product, config);
             addItem({
               type: 'frame_with_lenses',
-              title: `Lentes ${(product.brand && product.brand !== 'null') ? product.brand + ' ' : ''}${product.name}`,
+              title: formatProductTitle(product, 'Lentes'),
               quantity: 1,
               unit_price: productPrice + pvp,
               product: product,

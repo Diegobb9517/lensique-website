@@ -29,3 +29,17 @@ export const getInventedName = (productName: string, category: string = '') => {
   hash = Math.abs(hash);
   return WP_NAMES[hash % WP_NAMES.length];
 };
+
+export const formatProductTitle = (product: any, prefix: string = 'Lentes') => {
+  if (!product) return prefix;
+  
+  const brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
+  const name = (product.model || product.name || '').trim();
+  
+  if (brand && name.toUpperCase().startsWith(brand.toUpperCase())) {
+     // Si el nombre ya incluye la marca al principio, no la duplicamos
+     return `${prefix} ${name}`.trim();
+  }
+  
+  return `${prefix} ${brand ? brand + ' ' : ''}${name}`.trim();
+};

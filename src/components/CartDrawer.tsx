@@ -7,6 +7,12 @@ import { resolveImageUrl } from '../App';
 export function CartDrawer() {
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, total, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  
+  const [buyerName, setBuyerName] = useState('');
+  const [buyerPhone, setBuyerPhone] = useState('');
+  const [buyerEmail, setBuyerEmail] = useState('');
+  const [formError, setFormError] = useState('');
 
   const maxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
   let maxDelStr = '';
@@ -17,6 +23,28 @@ export function CartDrawer() {
 
   const payOnline = async () => {
     if (items.length === 0) return;
+    
+    if (!showCheckoutForm) {
+      setShowCheckoutForm(true);
+      return;
+    }
+    
+    // Validate form
+    if (!buyerName.trim() || !buyerPhone.trim() || !buyerEmail.trim()) {
+      setFormError('Todos los campos son obligatorios.');
+      return;
+    }
+    const phoneClean = buyerPhone.replace(/\D/g, '');
+    if (phoneClean.length !== 10) {
+      setFormError('El teléfono debe tener 10 dígitos.');
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(buyerEmail)) {
+      setFormError('Ingresa un correo electrónico válido.');
+      return;
+    }
+    
+    setFormError('');
     try {
       setIsProcessing(true);
       // Guardar en localstorage para la página de exito
@@ -29,7 +57,12 @@ export function CartDrawer() {
           amount: total, 
           // Enviar el carrito enriquecido para que el backend recalcule los precios
           cart: items,
-          estimatedDelivery: maxDelStr // Campo extra limpio para el backend
+          estimatedDelivery: maxDelStr, // Campo extra limpio para el backend
+          buyerInfo: {
+            name: buyerName.trim(),
+            phone: phoneClean,
+            email: buyerEmail.trim()
+          }
         })
       });
       const responseData = await res.json();
@@ -91,7 +124,58 @@ export function CartDrawer() {
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
-              {items.length === 0 ? (
+              {showCheckoutForm ? (
+                <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
+                  <h3 style={{ margin: '0 0 8px', fontSize: '16px', color: '#0f172a' }}>Tus datos para la orden</h3>
+                  
+                  {formError && (
+                    <div style={{ padding: '10px', background: '#fef2f2', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 500 }}>
+                      {formError}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Nombre completo</label>
+                    <input 
+                      type="text" 
+                      value={buyerName} 
+                      onChange={e => setBuyerName(e.target.value)} 
+                      placeholder="Ej. Juan Pérez"
+                      style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Teléfono / WhatsApp</label>
+                    <input 
+                      type="tel" 
+                      value={buyerPhone} 
+                      onChange={e => setBuyerPhone(e.target.value)} 
+                      placeholder="10 dígitos"
+                      maxLength={10}
+                      style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Correo electrónico</label>
+                    <input 
+                      type="email" 
+                      value={buyerEmail} 
+                      onChange={e => setBuyerEmail(e.target.value)} 
+                      placeholder="ejemplo@correo.com"
+                      style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
+                    />
+                  </div>
+                  
+                  <button 
+                    onClick={() => setShowCheckoutForm(false)} 
+                    style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '14px', cursor: 'pointer', marginTop: '8px', textDecoration: 'underline' }}
+                  >
+                    Volver al carrito
+                  </button>
+                </div>
+              ) : items.length === 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', gap: '12px' }}>
                   <ShoppingBag size={48} opacity={0.3} />
                   <p>Tu carrito está vacío</p>
@@ -161,12 +245,27 @@ export function CartDrawer() {
                 </div>
                 
                 <button 
-                  onClick={payOnline}
+                  onClick={showCheckoutForm ? payOnline : () => setShowCheckoutForm(true)}
                   disabled={isProcessing}
-                  style={{ width: '100%', padding: '16px', background: '#009ee3', color: '#fff', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 600, cursor: isProcessing ? 'not-allowed' : 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
+                  style={{ 
+                    width: '100%', 
+                    padding: '14px', 
+                    background: isProcessing ? '#94a3b8' : '#16a34a', 
+                    color: '#fff', 
+                    border: 'none', 
+                    borderRadius: '50px', 
+                    fontWeight: 600, 
+                    fontSize: '16px', 
+                    cursor: isProcessing ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'background 0.2s'
+                  }}
                 >
                   <CreditCard size={20} />
-                  {isProcessing ? 'Procesando...' : 'Pagar en línea'}
+                  {isProcessing ? 'Procesando...' : (showCheckoutForm ? 'Pagar con Mercado Pago' : 'Proceder al pago')}
                 </button>
                 <button 
                   onClick={() => setIsCartOpen(false)}

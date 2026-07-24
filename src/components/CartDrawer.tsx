@@ -238,6 +238,14 @@ export function CartDrawer() {
                     <strong>Entrega estimada del pedido: {maxDelStr}</strong>
                   </p>
                 </div>
+
+                {showCheckoutForm && items.some(i => i.lensConfig || String(i.product?.category || '').toLowerCase().includes('contacto')) && (
+                  <div style={{ display: 'flex', gap: '10px', background: '#fef3c7', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
+                    <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
+                      🔍 Tu pedido será validado por nuestro optometrista antes de elaborarse. Si por alguna razón no podemos procesarlo, te contactamos y te reembolsamos el 100%.
+                    </p>
+                  </div>
+                )}
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
                   <span>Subtotal</span>

@@ -23,6 +23,7 @@ import heroImg from './assets/hero_glasses.png';
 import { getInventedName } from './lib/format';
 import { ProductCard } from './components/ProductCard';
 import { useCart } from './context/CartContext';
+import { calculateDeliveryTime } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
@@ -636,6 +637,8 @@ const cookiesData: InfoPageData = {
 };
 
 function PaymentSuccessView() {
+  const estimatedDelivery = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_delivery') : null;
+
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8f6f2 0%, #e8e4dc 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: "'Inter', 'Helvetica Neue', sans-serif" }}>
       <div style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)', padding: '48px 36px', maxWidth: '460px', width: '100%', textAlign: 'center' as const }}>
@@ -660,6 +663,12 @@ function PaymentSuccessView() {
             Jardines de San Ignacio, Zapopan, Jal.<br/><br/>
             <em>Te avisaremos por WhatsApp o correo en cuanto tu pedido esté listo para ser entregado.</em>
           </p>
+          {estimatedDelivery && (
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #d0e3f7', display: 'flex', alignItems: 'center', gap: '8px', color: '#16a34a', fontWeight: 600, fontSize: '14px' }}>
+              <Clock size={16} />
+              <span>Entrega estimada: {estimatedDelivery}</span>
+            </div>
+          )}
         </div>
 
         <a 
@@ -964,6 +973,11 @@ function App() {
                     SKU: {selectedProductDetail.sku}
                   </p>
                 )}
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', color: '#16a34a', fontSize: '14px', fontWeight: 500, background: '#f0fdf4', padding: '10px 14px', borderRadius: '10px' }}>
+                  <Clock size={16} />
+                  <span>Entrega estimada: {calculateDeliveryTime(selectedProductDetail).label}</span>
+                </div>
 
                 <div className="product-detail-divider" />
 
@@ -974,13 +988,17 @@ function App() {
                     onClick={() => {
                       const category = String(selectedProductDetail.category || '').toLowerCase();
                       if (category.includes('sol')) {
+                        const delTime = calculateDeliveryTime(selectedProductDetail);
                         addItem({
                           type: 'product',
                           title: `Lentes de Sol ${(selectedProductDetail.brand && selectedProductDetail.brand !== 'null') ? selectedProductDetail.brand + ' ' : ''}${selectedProductDetail.model || selectedProductDetail.name}`,
                           quantity: 1,
                           unit_price: selectedProductDetail.price_incl_tax || 0,
                           product: selectedProductDetail,
-                          image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url)
+                          image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url),
+                          estimatedDeliveryStr: delTime.label,
+                          estimatedDeliverySubtitle: delTime.subtitle,
+                          maxDeliveryDays: delTime.maxDays
                         });
                         setSelectedProductDetail(null);
                       } else if (category.includes('contacto')) {
@@ -1142,9 +1160,7 @@ function App() {
             configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
             const phone = settings.contact_whatsapp || '523316929111';
-            const cleanPhone = phone.replace(/\D/g, '');
-            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(configText)}`;
-            
+            const delTime = calculateDeliveryTime(product, config);
             addItem({
               type: 'frame_with_lenses',
               title: `Lentes ${(product.brand && product.brand !== 'null') ? product.brand + ' ' : ''}${product.name}`,
@@ -1152,7 +1168,10 @@ function App() {
               unit_price: productPrice + pvp,
               product: product,
               lensConfig: config,
-              image: product.image || (product.images && product.images[0]?.image_url)
+              image: product.image || (product.images && product.images[0]?.image_url),
+              estimatedDeliveryStr: delTime.label,
+              estimatedDeliverySubtitle: delTime.subtitle,
+              maxDeliveryDays: delTime.maxDays
             });
             setConfiguratorProduct(null);
           }}

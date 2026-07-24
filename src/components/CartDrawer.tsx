@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, CreditCard, ShoppingBag, MapPin } from 'lucide-react';
+import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { resolveImageUrl } from '../App';
 
@@ -8,17 +8,28 @@ export function CartDrawer() {
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, total, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const maxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
+  let maxDelStr = '';
+  if (maxDeliveryDays <= 5) maxDelStr = '3 a 5 días hábiles';
+  else if (maxDeliveryDays <= 12) maxDelStr = '1 a 2 semanas';
+  else if (maxDeliveryDays <= 21) maxDelStr = '2 a 3 semanas';
+  else maxDelStr = '3 a 4 semanas';
+
   const payOnline = async () => {
     if (items.length === 0) return;
     try {
       setIsProcessing(true);
+      // Guardar en localstorage para la página de exito
+      localStorage.setItem('lensique_last_order_delivery', maxDelStr);
+
       const res = await fetch('https://lensique-pos.onrender.com/api/checkout/preference', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           amount: total, 
           // Enviar el carrito enriquecido para que el backend recalcule los precios
-          cart: items 
+          cart: items,
+          estimatedDelivery: maxDelStr // Campo extra limpio para el backend
         })
       });
       const responseData = await res.json();
@@ -108,6 +119,12 @@ export function CartDrawer() {
                             </div>
                           </div>
                         )}
+                        {item.estimatedDeliveryStr && (
+                          <div style={{ fontSize: '12px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px' }}>
+                            <Clock size={12} />
+                            <span>Entrega: {item.estimatedDeliveryStr}</span>
+                          </div>
+                        )}
                         <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
                             <button onClick={() => updateQuantity(item.id, item.quantity - 1)} style={{ padding: '4px 10px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a' }}>-</button>
@@ -132,7 +149,10 @@ export function CartDrawer() {
               <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const }}>
                 <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
                   <MapPin size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>Todas las compras se recogen en tienda (Zapopan), sin envío.</p>
+                  <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
+                    Todas las compras se recogen en tienda (Zapopan).<br/>
+                    <strong>Entrega estimada del pedido: {maxDelStr}</strong>
+                  </p>
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>

@@ -9,6 +9,9 @@ export interface CartItem {
   product?: any; // The base product (frame or contact lens)
   lensConfig?: any; // If applicable
   image?: string;
+  estimatedDeliveryStr?: string;
+  estimatedDeliverySubtitle?: string;
+  maxDeliveryDays?: number;
 }
 
 interface CartContextType {

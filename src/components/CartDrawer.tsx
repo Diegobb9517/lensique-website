@@ -146,7 +146,7 @@ export function CartDrawer() {
             </div>
 
             {items.length > 0 && (
-              <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const }}>
+              <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const, flexShrink: 0, paddingBottom: 'calc(20px + env(safe-area-inset-bottom))' }}>
                 <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
                   <MapPin size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
                   <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>

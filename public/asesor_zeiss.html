@@ -201,6 +201,17 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
 
   /* ============ LÓGICA ============ */
 
+  /**
+   * Si cambias esto, cambia también el archivo espejo en lensique-web / lensique-pos.
+   * Fórmula: precioWeb = (precioTienda + 4.64) / (1 - 0.040484)
+   */
+  function getOnlinePrice(storePrice) {
+    if (!storePrice || storePrice <= 0) return 0;
+    var rawPrice = (storePrice + 4.64) / (1 - 0.040484);
+    if (rawPrice < 2000) return Math.ceil(rawPrice / 10) * 10;
+    return Math.ceil(rawPrice / 50) * 50;
+  }
+
   function num(x){ var n = parseFloat(x); return isNaN(n) ? 0 : n; }
 
   // Recomienda índice por potencia (max de los dos meridianos)
@@ -370,7 +381,8 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
     if (!p || !p.avail) return { disponible: false, motivo: (p && p.why) || 'No disponible para esta graduación' };
 
     var costoIva = p.cost * iva;
-    var pvp = Math.round(costoIva * mult / 50) * 50;
+    var pvpOriginal = Math.round(costoIva * mult / 50) * 50;
+    var pvp = getOnlinePrice(pvpOriginal);
     var rx = buildRx(tipo, e, c, inp.eje, inp.add, inp.pd, inp.altura);
     var orden = (z || label) + (color ? ' · color ' + color : '') + ' · índice ' + p.idx + ' · ' + p.tipo + ' · ' + rx;
 

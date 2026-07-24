@@ -13,26 +13,26 @@ interface StyleQuizProps {
 
 /* ─── Step Icons ─── */
 const FACE_ICONS: Record<string, JSX.Element> = {
-  oval: <svg width="38" height="48" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="1.6"><ellipse cx="21" cy="26" rx="14" ry="20"/></svg>,
-  round: <svg width="38" height="48" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="21" cy="26" r="18"/></svg>,
-  square: <svg width="38" height="48" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="5" y="9" width="32" height="34" rx="7"/></svg>,
-  heart: <svg width="38" height="48" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"><path d="M5 12 Q21 6 37 12 Q33 34 21 46 Q9 34 5 12 Z"/></svg>,
-  diamond: <svg width="38" height="48" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"><path d="M21 5 L37 26 L21 47 L5 26 Z"/></svg>,
-  unknown: <svg width="38" height="48" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="1.6" strokeDasharray="3 3"><ellipse cx="21" cy="26" rx="15" ry="20"/></svg>,
+  oval: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><ellipse cx="21" cy="26" rx="14" ry="20"/></svg>,
+  round: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="21" cy="26" r="18"/></svg>,
+  square: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="5" y="9" width="32" height="34" rx="7"/></svg>,
+  heart: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round"><path d="M5 12 Q21 6 37 12 Q33 34 21 46 Q9 34 5 12 Z"/></svg>,
+  diamond: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round"><path d="M21 5 L37 26 L21 47 L5 26 Z"/></svg>,
+  unknown: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeDasharray="3 3"><ellipse cx="21" cy="26" rx="15" ry="20"/></svg>,
 };
 
 const USAGE_ICONS: Record<string, JSX.Element> = {
-  daily: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
-  screens: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
-  reading: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
-  sun: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  daily: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
+  screens: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
+  reading: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+  sun: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
 };
 
 const STYLE_ICONS: Record<string, JSX.Element> = {
-  classic: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>,
-  modern: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>,
-  bold: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-  minimal: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  classic: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>,
+  modern: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>,
+  bold: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+  minimal: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>,
 };
 
 const TONE_COLORS: Record<string, string> = {
@@ -122,7 +122,7 @@ const quizCSS = `
   .sq-step-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9a958c}
   .sq-progress-bar{width:100%;height:3px;background:rgba(0,0,0,.06);border-radius:3px;overflow:hidden}
   .sq-progress-fill{height:100%;background:#1e2a5a;border-radius:3px;transition:width .4s ease}
-  .sq-content{padding:48px 24px 60px;max-width:680px;margin:0 auto;min-height:calc(100vh - 80px);display:flex;flex-direction:column;justify-content:center}
+  .sq-content{padding:48px 24px 60px;max-width:680px;margin:0 auto;min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:center}
   .sq-question{font-size:26px;color:#1b2436;margin:0 0 36px;font-family:'Playfair Display',Georgia,serif;text-align:center;font-weight:500;line-height:1.3}
   .sq-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:560px){.sq-options{grid-template-columns:1fr}}

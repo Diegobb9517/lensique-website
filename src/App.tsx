@@ -14,6 +14,7 @@ import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import { StyleQuiz } from './components/StyleQuiz';
+import LensExplainer from './components/LensExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.png';
@@ -1678,6 +1679,8 @@ function App() {
             ))}
           </div>
         </section>
+
+        <LensExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
 
         <section id="armazones" className="comparison-section" style={{ backgroundColor: '#fff', padding: '100px 0' }}>
           <div className="section-header" style={{ padding: '0 40px' }}>

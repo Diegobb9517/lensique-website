@@ -6,62 +6,64 @@ import { motion, AnimatePresence } from 'framer-motion';
    ═══════════════════════════════════════════ */
 
 const css = `
-.le-wrap{background:#f7f5f0;padding:80px 24px;font-family:'Inter','Helvetica Neue',sans-serif}
+.le-wrap{background:#FFFFFF;padding:100px 24px;font-family:'Outfit','Inter',sans-serif}
 .le-inner{max-width:900px;margin:0 auto}
-.le-title{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:500;color:#1b2436;text-align:center;margin:0 0 6px}
-.le-sub{text-align:center;color:#8a857b;font-size:15px;margin:0 0 48px;line-height:1.5}
+.le-title{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:500;color:#111827;text-align:center;margin:0 0 12px;letter-spacing:-0.5px}
+.le-sub{text-align:center;color:#6B7280;font-size:16px;margin:0 auto 60px;line-height:1.6;max-width:600px}
 
 /* Module card */
-.le-mod{background:#fff;border:0.5px solid rgba(0,0,0,.1);border-radius:18px;padding:32px 28px;margin-bottom:28px}
-.le-mod-title{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:500;color:#1b2436;margin:0 0 20px;text-align:center}
+.le-mod{background:#FFFFFF;border:1px solid rgba(0,0,0,0.04);border-radius:24px;padding:40px;margin-bottom:32px;box-shadow:0 12px 40px rgba(0,0,0,0.03);transition:transform 0.3s ease,box-shadow 0.3s ease}
+@media(max-width:600px){.le-mod{padding:30px 20px}}
+.le-mod:hover{box-shadow:0 16px 50px rgba(0,0,0,0.05);transform:translateY(-2px)}
+.le-mod-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:500;color:#111827;margin:0 0 28px;text-align:center}
 
 /* Tabs */
-.le-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
-.le-tab{padding:10px 22px;border:1px solid rgba(0,0,0,.12);border-radius:50px;background:#fff;color:#5f5e5a;font-size:14px;font-weight:500;cursor:pointer;transition:all .18s ease;font-family:inherit}
-.le-tab:hover{border-color:rgba(0,0,0,.3);transform:translateY(-1px)}
-.le-tab.active{border:2px solid #1e2a5a;background:#f5f6fb;color:#1e2a5a;font-weight:600}
+.le-tabs{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+.le-tab{padding:12px 28px;border:1px solid rgba(0,0,0,0.08);border-radius:50px;background:#FFFFFF;color:#6B7280;font-size:15px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit}
+.le-tab:hover{border-color:rgba(0,0,0,0.2);color:#111827}
+.le-tab.active{border:1px solid #111827;background:#111827;color:#FFFFFF;font-weight:500;box-shadow:0 8px 20px rgba(17,24,39,0.15)}
 
 /* Tab content */
-.le-tab-body{display:flex;align-items:center;gap:32px;min-height:160px}
-@media(max-width:600px){.le-tab-body{flex-direction:column;gap:20px;text-align:center}}
-.le-diagram{flex:0 0 auto;display:flex;justify-content:center}
-.le-info h4{font-size:16px;font-weight:600;color:#1b2436;margin:0 0 8px}
-.le-info p{font-size:14px;color:#5f5e5a;line-height:1.6;margin:0}
+.le-tab-body{display:flex;align-items:center;gap:48px;min-height:180px}
+@media(max-width:600px){.le-tab-body{flex-direction:column;gap:24px;text-align:center}}
+.le-diagram{flex:0 0 auto;display:flex;justify-content:center;width:180px}
+.le-info h4{font-size:18px;font-weight:500;color:#111827;margin:0 0 10px;font-family:'Playfair Display',serif}
+.le-info p{font-size:15px;color:#4B5563;line-height:1.7;margin:0;font-weight:300}
 
 /* Slider module */
-.le-slider-row{display:flex;align-items:center;gap:36px}
-@media(max-width:600px){.le-slider-row{flex-direction:column;gap:24px}}
-.le-slider-left{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:12px}
-.le-idx-big{font-size:42px;font-weight:700;color:#1e2a5a;line-height:1;font-family:'Playfair Display',Georgia,serif}
-.le-slider-track{width:100%}
-.le-slider-track input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:linear-gradient(90deg,#c5d4e8,#1e2a5a);outline:none;cursor:pointer}
-.le-slider-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#1e2a5a;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
-.le-slider-track input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#1e2a5a;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
-.le-slider-right{flex:1;min-width:0}
-.le-slider-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#9a958c}
-.le-spec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:16px}
+.le-slider-row{display:flex;align-items:center;gap:48px}
+@media(max-width:600px){.le-slider-row{flex-direction:column;gap:32px}}
+.le-slider-left{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;width:180px}
+.le-idx-big{font-size:48px;font-weight:400;color:#111827;line-height:1;font-family:'Playfair Display',Georgia,serif}
+.le-slider-track{width:100%;position:relative;padding:10px 0}
+.le-slider-track input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:rgba(0,0,0,0.1);outline:none;cursor:pointer;border-radius:2px}
+.le-slider-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:#FFFFFF;border:2px solid #111827;box-shadow:0 4px 12px rgba(0,0,0,0.1);cursor:pointer;transition:transform 0.2s}
+.le-slider-track input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.1)}
+.le-slider-track input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#FFFFFF;border:2px solid #111827;box-shadow:0 4px 12px rgba(0,0,0,0.1);cursor:pointer}
+.le-slider-labels{display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:#9CA3AF;letter-spacing:0.5px;text-transform:uppercase}
+.le-spec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:32px}
 @media(max-width:500px){.le-spec-grid{grid-template-columns:1fr}}
-.le-spec{background:#f7f5f0;border-radius:10px;padding:14px;text-align:center}
-.le-spec-val{font-size:14px;font-weight:600;color:#1b2436;margin-bottom:2px}
-.le-spec-lbl{font-size:11px;color:#8a857b;text-transform:uppercase;letter-spacing:.5px}
-.le-slider-hint{font-size:13px;color:#8a857b;text-align:center;margin-top:16px;font-style:italic}
+.le-spec{background:#F9FAFB;border-radius:16px;padding:20px 16px;text-align:center;border:1px solid rgba(0,0,0,0.02)}
+.le-spec-val{font-size:15px;font-weight:500;color:#111827;margin-bottom:4px}
+.le-spec-lbl{font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:1px;font-weight:400}
+.le-slider-hint{font-size:14px;color:#6B7280;text-align:center;margin-top:24px;font-style:italic;font-weight:300}
 
 /* Treatments */
-.le-treat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.le-treat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 @media(max-width:600px){.le-treat-grid{grid-template-columns:1fr}}
-.le-treat{border:1px solid rgba(0,0,0,.1);border-radius:14px;padding:20px 16px;text-align:center;cursor:pointer;transition:all .2s ease;background:#fff}
-.le-treat:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.le-treat.on{border:2px solid #1e2a5a;background:#f5f6fb;padding:19px 15px}
-.le-treat-lens{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;transition:all .4s ease;position:relative;overflow:hidden}
-.le-treat-name{font-size:14px;font-weight:600;color:#1b2436;margin-bottom:4px}
-.le-treat-desc{font-size:12.5px;color:#8a857b;line-height:1.4}
-.le-treat-badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#e6f7ee;color:#16a34a}
-.le-treat-badge.off{background:#fef2f2;color:#dc2626}
+.le-treat{border:1px solid rgba(0,0,0,0.06);border-radius:20px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);background:#FFFFFF}
+.le-treat:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
+.le-treat.on{border:1px solid #111827;background:#FAFAFA;box-shadow:0 8px 24px rgba(17,24,39,0.05)}
+.le-treat-lens{width:80px;height:80px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden}
+.le-treat-name{font-size:16px;font-weight:500;color:#111827;margin-bottom:8px;font-family:'Playfair Display',serif}
+.le-treat-desc{font-size:13px;color:#6B7280;line-height:1.5;font-weight:300}
+.le-treat-badge{display:inline-block;margin-top:16px;font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;background:#111827;color:#FFFFFF;letter-spacing:0.5px;transition:all 0.3s}
+.le-treat-badge.off{background:#F3F4F6;color:#6B7280}
 
 /* CTA */
-.le-cta-wrap{text-align:center;margin-top:40px}
-.le-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 40px;background:#1b2436;color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;font-family:inherit;text-decoration:none}
-.le-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,36,54,.25)}
+.le-cta-wrap{text-align:center;margin-top:56px}
+.le-cta{display:inline-flex;align-items:center;gap:10px;padding:18px 48px;background:#111827;color:#fff;border:1px solid #111827;border-radius:50px;font-size:16px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit;text-decoration:none;letter-spacing:0.5px}
+.le-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(17,24,39,0.2);background:#FFFFFF;color:#111827}
 `;
 
 /* ─── Data ─── */
@@ -92,20 +94,21 @@ const INDEX_DATA = [
 function MonofocalSVG() {
   return (
     <svg width="150" height="120" viewBox="0 0 150 120">
-      <ellipse cx="75" cy="60" rx="60" ry="48" fill="#B5D4F4" stroke="#0C447C" strokeWidth="2"/>
-      <text x="75" y="58" textAnchor="middle" fontSize="13" fill="#0C447C" fontWeight="600">Una</text>
-      <text x="75" y="73" textAnchor="middle" fontSize="13" fill="#0C447C" fontWeight="600">distancia</text>
+      <ellipse cx="75" cy="60" rx="55" ry="45" fill="none" stroke="#111827" strokeWidth="1.5"/>
+      <ellipse cx="75" cy="60" rx="45" ry="35" fill="none" stroke="#E5E7EB" strokeWidth="1"/>
+      <text x="75" y="58" textAnchor="middle" fontSize="13" fill="#111827" fontWeight="400">Una</text>
+      <text x="75" y="74" textAnchor="middle" fontSize="13" fill="#111827" fontWeight="400">distancia</text>
     </svg>
   );
 }
 function BifocalSVG() {
   return (
     <svg width="150" height="120" viewBox="0 0 150 120">
-      <ellipse cx="75" cy="60" rx="60" ry="48" fill="#B5D4F4" stroke="#0C447C" strokeWidth="2"/>
-      <path d="M45 82 a20 14 0 0 1 60 0 Z" fill="#85B7EB" stroke="#0C447C" strokeWidth="1"/>
-      <text x="75" y="48" textAnchor="middle" fontSize="12" fill="#0C447C" fontWeight="500">Lejos</text>
-      <text x="75" y="96" textAnchor="middle" fontSize="11" fill="#0C447C" fontWeight="500">Cerca</text>
-      <line x1="35" y1="82" x2="115" y2="82" stroke="#0C447C" strokeWidth="1" strokeDasharray="3 2" opacity="0.5"/>
+      <ellipse cx="75" cy="60" rx="55" ry="45" fill="none" stroke="#111827" strokeWidth="1.5"/>
+      <path d="M35 80 Q75 80 115 80" fill="none" stroke="#111827" strokeWidth="1" strokeDasharray="3 3"/>
+      <path d="M45 80 a20 14 0 0 1 60 0 Z" fill="#F3F4F6" stroke="#111827" strokeWidth="1" opacity="0.8"/>
+      <text x="75" y="48" textAnchor="middle" fontSize="13" fill="#111827" fontWeight="400">Lejos</text>
+      <text x="75" y="96" textAnchor="middle" fontSize="12" fill="#6B7280" fontWeight="400">Cerca</text>
     </svg>
   );
 }
@@ -114,16 +117,14 @@ function ProgresiveSVG() {
     <svg width="150" height="120" viewBox="0 0 150 120">
       <defs>
         <linearGradient id="progGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#B5D4F4"/>
-          <stop offset="45%" stopColor="#9AC4EE"/>
-          <stop offset="100%" stopColor="#6AA8E0"/>
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0"/>
+          <stop offset="100%" stopColor="#F3F4F6" stopOpacity="1"/>
         </linearGradient>
       </defs>
-      <ellipse cx="75" cy="60" rx="60" ry="48" fill="url(#progGrad)" stroke="#0C447C" strokeWidth="2"/>
-      <text x="75" y="30" textAnchor="middle" fontSize="11" fill="#0C447C" fontWeight="500">Lejos</text>
-      <text x="75" y="63" textAnchor="middle" fontSize="11" fill="#0C447C" fontWeight="500">Intermedio</text>
-      <text x="75" y="96" textAnchor="middle" fontSize="11" fill="#0C447C" fontWeight="500">Cerca</text>
-      <text x="135" y="60" textAnchor="start" fontSize="9" fill="#8a857b">sin línea</text>
+      <ellipse cx="75" cy="60" rx="55" ry="45" fill="url(#progGrad)" stroke="#111827" strokeWidth="1.5"/>
+      <text x="75" y="35" textAnchor="middle" fontSize="12" fill="#111827" fontWeight="400">Lejos</text>
+      <text x="75" y="64" textAnchor="middle" fontSize="12" fill="#6B7280" fontWeight="400">Intermedio</text>
+      <text x="75" y="93" textAnchor="middle" fontSize="12" fill="#111827" fontWeight="400">Cerca</text>
     </svg>
   );
 }
@@ -133,15 +134,12 @@ function LensCrossSectionSVG({ borderThickness }: { borderThickness: number }) {
   const innerW = 46 - borderThickness * 0.4;
   return (
     <svg width="150" height="120" viewBox="0 0 150 120">
-      {/* Outer lens shape */}
-      <ellipse cx={cx} cy={cy} rx={innerW + borderThickness} ry="50" fill="#B5D4F4" stroke="#0C447C" strokeWidth="1.5" opacity="0.3"/>
-      {/* Inner lens */}
-      <ellipse cx={cx} cy={cy} rx={innerW} ry="48" fill="#B5D4F4" stroke="#0C447C" strokeWidth="2"/>
-      {/* Edge thickness indicator */}
-      <line x1={cx + innerW + borderThickness + 4} y1={cy - 20} x2={cx + innerW + borderThickness + 4} y2={cy + 20} stroke="#1e2a5a" strokeWidth="2" strokeLinecap="round"/>
-      <line x1={cx + innerW + borderThickness} y1={cy - 20} x2={cx + innerW + borderThickness + 8} y2={cy - 20} stroke="#1e2a5a" strokeWidth="1.5"/>
-      <line x1={cx + innerW + borderThickness} y1={cy + 20} x2={cx + innerW + borderThickness + 8} y2={cy + 20} stroke="#1e2a5a" strokeWidth="1.5"/>
-      <text x={cx} y={cy + 5} textAnchor="middle" fontSize="12" fill="#0C447C" fontWeight="600">⟵  ⟶</text>
+      <ellipse cx={cx} cy={cy} rx={innerW + borderThickness} ry="50" fill="none" stroke="#E5E7EB" strokeWidth="1"/>
+      <ellipse cx={cx} cy={cy} rx={innerW} ry="48" fill="#F9FAFB" stroke="#111827" strokeWidth="1.5"/>
+      <line x1={cx + innerW + borderThickness + 4} y1={cy - 20} x2={cx + innerW + borderThickness + 4} y2={cy + 20} stroke="#111827" strokeWidth="1"/>
+      <line x1={cx + innerW + borderThickness} y1={cy - 20} x2={cx + innerW + borderThickness + 8} y2={cy - 20} stroke="#111827" strokeWidth="1"/>
+      <line x1={cx + innerW + borderThickness} y1={cy + 20} x2={cx + innerW + borderThickness + 8} y2={cy + 20} stroke="#111827" strokeWidth="1"/>
+      <text x={cx} y={cy + 5} textAnchor="middle" fontSize="11" fill="#6B7280" fontWeight="400" letterSpacing="1">⟵ ⟶</text>
     </svg>
   );
 }
@@ -151,16 +149,16 @@ function TreatmentLens({ type, active }: { type: string; active: boolean }) {
   if (type === 'ar') {
     return (
       <div className="le-treat-lens" style={{
-        background: active ? '#e8f0f8' : '#e8f0f8',
-        border: `2px solid ${active ? '#0C447C' : '#c5d0db'}`,
+        background: active ? '#F9FAFB' : '#FFFFFF',
+        border: `1px solid ${active ? '#111827' : '#E5E7EB'}`,
       }}>
         {!active && (
           <>
-            <div style={{ position: 'absolute', width: '50px', height: '3px', background: 'rgba(255,255,255,0.8)', transform: 'rotate(-30deg)', top: '22px', left: '8px', borderRadius: '2px' }}/>
-            <div style={{ position: 'absolute', width: '30px', height: '2px', background: 'rgba(255,255,255,0.6)', transform: 'rotate(-30deg)', top: '34px', left: '20px', borderRadius: '2px' }}/>
+            <div style={{ position: 'absolute', width: '50px', height: '2px', background: '#E5E7EB', transform: 'rotate(-30deg)', top: '22px', left: '8px' }}/>
+            <div style={{ position: 'absolute', width: '30px', height: '1px', background: '#E5E7EB', transform: 'rotate(-30deg)', top: '34px', left: '20px' }}/>
           </>
         )}
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={active ? '#0C447C' : '#8a857b'} strokeWidth="2" strokeLinecap="round">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active ? '#111827' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round">
           <circle cx="12" cy="12" r="10"/>
           {active && <path d="M8 12l3 3 5-6"/>}
         </svg>
@@ -170,18 +168,18 @@ function TreatmentLens({ type, active }: { type: string; active: boolean }) {
   if (type === 'blue') {
     return (
       <div className="le-treat-lens" style={{
-        background: active ? 'rgba(59,130,246,0.12)' : '#e8f0f8',
-        border: `2px solid ${active ? '#3b82f6' : '#c5d0db'}`,
+        background: active ? '#EFF6FF' : '#FFFFFF',
+        border: `1px solid ${active ? '#3B82F6' : '#E5E7EB'}`,
       }}>
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={active ? '#3b82f6' : '#8a857b'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active ? '#3B82F6' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="3" width="20" height="14" rx="2"/>
           <line x1="8" y1="21" x2="16" y2="21"/>
           <line x1="12" y1="17" x2="12" y2="21"/>
           {active && <>
-            <line x1="7" y1="8" x2="7" y2="13" opacity="0.5"/>
-            <line x1="10" y1="6" x2="10" y2="13" opacity="0.5"/>
-            <line x1="13" y1="9" x2="13" y2="13" opacity="0.5"/>
-            <line x1="16" y1="7" x2="16" y2="13" opacity="0.5"/>
+            <line x1="7" y1="8" x2="7" y2="13" opacity="0.3"/>
+            <line x1="10" y1="6" x2="10" y2="13" opacity="0.3"/>
+            <line x1="13" y1="9" x2="13" y2="13" opacity="0.3"/>
+            <line x1="16" y1="7" x2="16" y2="13" opacity="0.3"/>
           </>}
         </svg>
       </div>
@@ -190,11 +188,10 @@ function TreatmentLens({ type, active }: { type: string; active: boolean }) {
   // Photochromic
   return (
     <div className="le-treat-lens" style={{
-      background: active ? 'rgba(30,42,90,0.6)' : '#e8f0f8',
-      border: `2px solid ${active ? '#1e2a5a' : '#c5d0db'}`,
-      transition: 'all 0.6s ease',
+      background: active ? '#111827' : '#FFFFFF',
+      border: `1px solid ${active ? '#111827' : '#E5E7EB'}`,
     }}>
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={active ? '#fff' : '#8a857b'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active ? '#FFFFFF' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="5"/>
         <line x1="12" y1="1" x2="12" y2="3"/>
         <line x1="12" y1="21" x2="12" y2="23"/>

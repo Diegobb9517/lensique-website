@@ -6,8 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
    ═══════════════════════════════════════════ */
 
 const css = `
-.le-wrap{background:#FFFFFF;padding:100px 24px;font-family:'Outfit','Inter',sans-serif}
-.le-inner{max-width:900px;margin:0 auto}
+.le-wrap{background:#FFFFFF;padding:100px 0;font-family:'Outfit','Inter',sans-serif;overflow-x:hidden}
+.le-inner{max-width:900px;margin:0 auto;padding:0 24px}
 .le-title{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:500;color:#111827;text-align:center;margin:0 0 12px;letter-spacing:-0.5px}
 .le-sub{text-align:center;color:#6B7280;font-size:16px;margin:0 auto 60px;line-height:1.6;max-width:600px}
 
@@ -48,27 +48,27 @@ const css = `
 .le-spec-lbl{font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:1px;font-weight:400}
 .le-slider-hint{font-size:14px;color:#6B7280;text-align:center;margin-top:24px;font-style:italic;font-weight:300}
 
-/* Simulator */
-.le-sim-wrap{width:100%;height:380px;border-radius:20px;overflow:hidden;position:relative;margin-bottom:32px;box-shadow:0 12px 40px rgba(0,0,0,0.06);background:#000}
-@media(max-width:600px){.le-sim-wrap{height:260px}}
-.le-sim-bg{width:100%;height:100%;background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;position:absolute;top:0;left:0}
+/* Simulator FULL WIDTH PARALLAX */
+.le-sim-wrap{width:100vw;height:600px;position:relative;margin:0 0 60px calc(50% - 50vw);background:#000;overflow:hidden}
+@media(max-width:600px){.le-sim-wrap{height:400px}}
 
-/* The blurry outside */
-.le-sim-blur-overlay{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:blur(6px) brightness(1.1);-webkit-mask-image:radial-gradient(ellipse 160px 110px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 160px 110px at center,transparent 98%,black 100%);pointer-events:none;z-index:1}
-@media(max-width:600px){.le-sim-blur-overlay{-webkit-mask-image:radial-gradient(ellipse 110px 80px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 110px 80px at center,transparent 98%,black 100%)}}
+.le-sim-bg{position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed;filter:blur(8px) brightness(1.1);z-index:1}
 
-/* Center Container */
 .le-sim-center{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
 
-.le-sim-lens{width:320px;height:220px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 10px 40px rgba(0,0,0,0.4),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1)}
-@media(max-width:600px){.le-sim-lens{width:220px;height:160px}}
+.le-sim-lens{width:500px;height:360px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed}
+@media(max-width:600px){.le-sim-lens{width:320px;height:240px}}
+
+/* Washout for AR OFF */
+.le-sim-washout{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:saturate(0.5) contrast(0.85);background:rgba(255,255,255,0.05);transition:opacity 0.6s ease;pointer-events:none}
+.le-sim-washout.off{opacity:0}
 
 /* Base glare when AR is OFF */
 .le-sim-glare{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,0.4) 100%);transition:opacity 0.6s ease;pointer-events:none}
 .le-sim-glare.off{opacity:0}
 
 /* Blue Light Filter ON */
-.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,220,180,0.15);backdrop-filter:sepia(40%) hue-rotate(-10deg) saturate(1.2);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
+.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,220,180,0.15);backdrop-filter:sepia(30%) saturate(0.6) contrast(0.9);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
 .le-sim-blue.on{opacity:1}
 
 /* Photochromic ON */
@@ -339,17 +339,20 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             </div>
           </div>
         </div> {/* End of Module 2 */}
+        </div> {/* End le-inner */}
 
-        {/* ── Module 3: Treatments ── */}
-        <div className="le-mod">
-          <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
+        {/* ── Module 3: Treatments (FULL WIDTH PARALLAX) ── */}
+        <div>
+          <div className="le-inner" style={{ marginBottom: '24px' }}>
+            <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
+          </div>
           
           {/* ── Simulator Window ── */}
           <div className="le-sim-wrap">
             <div className="le-sim-bg" />
-            <div className="le-sim-blur-overlay" />
             <div className="le-sim-center">
               <div className="le-sim-lens">
+                <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
                 <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
                 <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
                 <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
@@ -357,7 +360,8 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             </div>
           </div>
 
-          <div className="le-treat-grid">
+          <div className="le-inner">
+            <div className="le-treat-grid">
             {/* Antirreflejante */}
             <div className={`le-treat${treatments.ar ? ' on' : ''}`} onClick={() => toggleTreat('ar')}>
               <TreatmentLens type="ar" active={treatments.ar} />

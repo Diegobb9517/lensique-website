@@ -6,10 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
    ═══════════════════════════════════════════ */
 
 const css = `
-.le-wrap{background:#FFFFFF;padding:100px 0;font-family:'Outfit','Inter',sans-serif}
-.le-inner{max-width:900px;margin:0 auto;padding:0 24px}
-.le-title{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:500;color:#111827;text-align:center;margin:0 0 12px;letter-spacing:-0.5px;padding:0 24px}
-.le-sub{text-align:center;color:#6B7280;font-size:16px;margin:0 auto 60px;line-height:1.6;max-width:600px;padding:0 24px}
+.le-wrap{background:#FFFFFF;padding:100px 24px;font-family:'Outfit','Inter',sans-serif}
+.le-inner{max-width:900px;margin:0 auto}
+.le-title{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:500;color:#111827;text-align:center;margin:0 0 12px;letter-spacing:-0.5px}
+.le-sub{text-align:center;color:#6B7280;font-size:16px;margin:0 auto 60px;line-height:1.6;max-width:600px}
 
 /* Module card */
 .le-mod{background:#FFFFFF;border:1px solid rgba(0,0,0,0.04);border-radius:24px;padding:40px;margin-bottom:32px;box-shadow:0 12px 40px rgba(0,0,0,0.03);transition:transform 0.3s ease,box-shadow 0.3s ease}
@@ -49,19 +49,19 @@ const css = `
 .le-slider-hint{font-size:14px;color:#6B7280;text-align:center;margin-top:24px;font-style:italic;font-weight:300}
 
 /* Simulator */
-.le-sim-wrap{width:100%;height:600px;overflow:hidden;position:relative;margin-bottom:48px;background:#000}
-@media(max-width:600px){.le-sim-wrap{height:400px}}
-.le-sim-bg{width:100%;height:100%;background:url('/images/cafe-pov.jpg') no-repeat center center;background-size:cover;position:absolute;top:0;left:0}
+.le-sim-wrap{width:100%;height:380px;border-radius:20px;overflow:hidden;position:relative;margin-bottom:32px;box-shadow:0 12px 40px rgba(0,0,0,0.06);background:#000}
+@media(max-width:600px){.le-sim-wrap{height:260px}}
+.le-sim-bg{width:100%;height:100%;background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;position:absolute;top:0;left:0}
 
 /* The blurry outside */
-.le-sim-blur-overlay{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:blur(6px) brightness(1.1);-webkit-mask-image:radial-gradient(ellipse 240px 170px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 240px 170px at center,transparent 98%,black 100%);pointer-events:none;z-index:1}
-@media(max-width:600px){.le-sim-blur-overlay{-webkit-mask-image:radial-gradient(ellipse 150px 110px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 150px 110px at center,transparent 98%,black 100%)}}
+.le-sim-blur-overlay{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:blur(6px) brightness(1.1);-webkit-mask-image:radial-gradient(ellipse 160px 110px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 160px 110px at center,transparent 98%,black 100%);pointer-events:none;z-index:1}
+@media(max-width:600px){.le-sim-blur-overlay{-webkit-mask-image:radial-gradient(ellipse 110px 80px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 110px 80px at center,transparent 98%,black 100%)}}
 
 /* Center Container */
 .le-sim-center{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
 
-.le-sim-lens{width:480px;height:340px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 10px 40px rgba(0,0,0,0.4),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1)}
-@media(max-width:600px){.le-sim-lens{width:300px;height:220px}}
+.le-sim-lens{width:320px;height:220px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 10px 40px rgba(0,0,0,0.4),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1)}
+@media(max-width:600px){.le-sim-lens{width:220px;height:160px}}
 
 /* Base glare when AR is OFF */
 .le-sim-glare{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,0.4) 100%);transition:opacity 0.6s ease;pointer-events:none}
@@ -339,13 +339,10 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             </div>
           </div>
         </div> {/* End of Module 2 */}
-        </div> {/* End le-inner */}
 
-        {/* ── Module 3: Treatments (FULL WIDTH) ── */}
-        <div style={{ paddingBottom: '40px' }}>
-          <div className="le-inner" style={{ marginBottom: '24px' }}>
-            <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
-          </div>
+        {/* ── Module 3: Treatments ── */}
+        <div className="le-mod">
+          <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
           
           {/* ── Simulator Window ── */}
           <div className="le-sim-wrap">
@@ -360,8 +357,7 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             </div>
           </div>
 
-          <div className="le-inner">
-            <div className="le-treat-grid">
+          <div className="le-treat-grid">
             {/* Antirreflejante */}
             <div className={`le-treat${treatments.ar ? ' on' : ''}`} onClick={() => toggleTreat('ar')}>
               <TreatmentLens type="ar" active={treatments.ar} />
@@ -393,18 +389,16 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             </div>
           </div>
         </div>
-        </div>
 
-        <div className="le-inner">
-          <div className="le-cta-wrap">
-            <button className="le-cta" onClick={onOpenCotizador}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-              </svg>
-              Cotiza tus micas en línea
-            </button>
-          </div>
+        <div className="le-cta-wrap">
+          <button className="le-cta" onClick={onOpenCotizador}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Cotiza tus micas en línea
+          </button>
         </div>
-      </section>
+      </div>
+    </section>
     );
   }

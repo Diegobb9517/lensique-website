@@ -48,6 +48,33 @@ const css = `
 .le-spec-lbl{font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:1px;font-weight:400}
 .le-slider-hint{font-size:14px;color:#6B7280;text-align:center;margin-top:24px;font-style:italic;font-weight:300}
 
+/* Simulator */
+.le-sim-wrap{width:100%;height:450px;border-radius:24px;overflow:hidden;position:relative;margin-bottom:32px;box-shadow:0 12px 40px rgba(0,0,0,0.06);background:#000}
+@media(max-width:600px){.le-sim-wrap{height:300px}}
+.le-sim-bg{width:100%;height:100%;background:url('/images/cafe-pov.jpg') no-repeat center center;background-size:cover;position:absolute;top:0;left:0}
+
+/* The blurry outside */
+.le-sim-blur-overlay{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:blur(6px) brightness(1.1);-webkit-mask-image:radial-gradient(ellipse 180px 130px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 180px 130px at center,transparent 98%,black 100%);pointer-events:none;z-index:1}
+@media(max-width:500px){.le-sim-blur-overlay{-webkit-mask-image:radial-gradient(ellipse 130px 100px at center,transparent 98%,black 100%);mask-image:radial-gradient(ellipse 130px 100px at center,transparent 98%,black 100%)}}
+
+/* Center Container */
+.le-sim-center{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+
+.le-sim-lens{width:360px;height:260px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 10px 40px rgba(0,0,0,0.4),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1)}
+@media(max-width:500px){.le-sim-lens{width:260px;height:200px}}
+
+/* Base glare when AR is OFF */
+.le-sim-glare{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,0.4) 100%);transition:opacity 0.6s ease;pointer-events:none}
+.le-sim-glare.off{opacity:0}
+
+/* Blue Light Filter ON */
+.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,220,180,0.15);backdrop-filter:sepia(40%) hue-rotate(-10deg) saturate(1.2);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
+.le-sim-blue.on{opacity:1}
+
+/* Photochromic ON */
+.le-sim-photo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(17,24,39,0.7);opacity:0;transition:opacity 1.5s ease;pointer-events:none}
+.le-sim-photo.on{opacity:1}
+
 /* Treatments */
 .le-treat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 @media(max-width:600px){.le-treat-grid{grid-template-columns:1fr}}
@@ -315,7 +342,21 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
 
         {/* ── Module 3: Treatments ── */}
         <div className="le-mod">
-          <h3 className="le-mod-title">Tratamientos</h3>
+          <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
+          
+          {/* ── Simulator Window ── */}
+          <div className="le-sim-wrap">
+            <div className="le-sim-bg" />
+            <div className="le-sim-blur-overlay" />
+            <div className="le-sim-center">
+              <div className="le-sim-lens">
+                <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+              </div>
+            </div>
+          </div>
+
           <div className="le-treat-grid">
             {/* Antirreflejante */}
             <div className={`le-treat${treatments.ar ? ' on' : ''}`} onClick={() => toggleTreat('ar')}>

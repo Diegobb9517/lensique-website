@@ -149,18 +149,24 @@ function TreatmentLens({ type, active }: { type: string; active: boolean }) {
   if (type === 'ar') {
     return (
       <div className="le-treat-lens" style={{
-        background: active ? '#F9FAFB' : '#FFFFFF',
-        border: `1px solid ${active ? '#111827' : '#E5E7EB'}`,
+        background: active ? '#F9FAFB' : '#F3F4F6',
+        border: `2px solid ${active ? '#111827' : '#D1D5DB'}`,
+        boxShadow: active ? 'inset 0 0 20px rgba(255,255,255,1)' : 'inset 0 0 10px rgba(0,0,0,0.05)',
       }}>
         {!active && (
           <>
-            <div style={{ position: 'absolute', width: '50px', height: '2px', background: '#E5E7EB', transform: 'rotate(-30deg)', top: '22px', left: '8px' }}/>
-            <div style={{ position: 'absolute', width: '30px', height: '1px', background: '#E5E7EB', transform: 'rotate(-30deg)', top: '34px', left: '20px' }}/>
+            <div style={{ position: 'absolute', width: '70px', height: '12px', background: '#FFFFFF', transform: 'rotate(-40deg)', top: '20px', left: '-5px', filter: 'blur(2px)', opacity: 0.9 }}/>
+            <div style={{ position: 'absolute', width: '70px', height: '4px', background: '#FFFFFF', transform: 'rotate(-40deg)', top: '40px', left: '15px', filter: 'blur(1px)', opacity: 0.9 }}/>
           </>
         )}
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active ? '#111827' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round">
+        {active && (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2" strokeLinecap="round" style={{ position: 'absolute', top: '8px', right: '8px', opacity: 0.2 }}>
+            <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+          </svg>
+        )}
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={active ? '#111827' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" style={{ position: 'relative', zIndex: 2 }}>
           <circle cx="12" cy="12" r="10"/>
-          {active && <path d="M8 12l3 3 5-6"/>}
+          {active && <path d="M8 12l3 3 5-6" strokeWidth="2.5"/>}
         </svg>
       </div>
     );
@@ -169,18 +175,18 @@ function TreatmentLens({ type, active }: { type: string; active: boolean }) {
     return (
       <div className="le-treat-lens" style={{
         background: active ? '#EFF6FF' : '#FFFFFF',
-        border: `1px solid ${active ? '#3B82F6' : '#E5E7EB'}`,
+        border: `2px solid ${active ? '#3B82F6' : '#E5E7EB'}`,
       }}>
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active ? '#3B82F6' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        {active && (
+          <div style={{ position: 'absolute', left: '-20px', top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: '2px', alignItems: 'center' }}>
+            <div style={{ width: '40px', height: '6px', background: '#3B82F6', borderRadius: '4px', boxShadow: '0 0 12px #3B82F6', opacity: 0.8 }}/>
+            <div style={{ width: '4px', height: '40px', background: '#3B82F6', borderRadius: '4px', boxShadow: '0 0 12px #3B82F6' }}/>
+          </div>
+        )}
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={active ? '#3B82F6' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'relative', zIndex: 2 }}>
           <rect x="2" y="3" width="20" height="14" rx="2"/>
           <line x1="8" y1="21" x2="16" y2="21"/>
           <line x1="12" y1="17" x2="12" y2="21"/>
-          {active && <>
-            <line x1="7" y1="8" x2="7" y2="13" opacity="0.3"/>
-            <line x1="10" y1="6" x2="10" y2="13" opacity="0.3"/>
-            <line x1="13" y1="9" x2="13" y2="13" opacity="0.3"/>
-            <line x1="16" y1="7" x2="16" y2="13" opacity="0.3"/>
-          </>}
         </svg>
       </div>
     );
@@ -189,18 +195,19 @@ function TreatmentLens({ type, active }: { type: string; active: boolean }) {
   return (
     <div className="le-treat-lens" style={{
       background: active ? '#111827' : '#FFFFFF',
-      border: `1px solid ${active ? '#111827' : '#E5E7EB'}`,
+      border: `2px solid ${active ? '#111827' : '#E5E7EB'}`,
     }}>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={active ? '#FFFFFF' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={active ? '#FBBF24' : '#9CA3AF'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        {active ? (
+          <>
+            <path d="M2 14s1.5-2 4-2 4 2 4 2 1.5-2 4-2 4 2 4 2" stroke="#FFFFFF" strokeWidth="2"/>
+            <circle cx="6" cy="14" r="3" fill="#FFFFFF" stroke="none"/>
+            <circle cx="18" cy="14" r="3" fill="#FFFFFF" stroke="none"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" stroke="#FBBF24"/>
+          </>
+        ) : (
+          <circle cx="12" cy="12" r="10" stroke="#9CA3AF"/>
+        )}
       </svg>
     </div>
   );

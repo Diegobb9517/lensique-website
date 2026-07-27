@@ -49,15 +49,15 @@ const css = `
 .le-slider-hint{font-size:14px;color:#6B7280;text-align:center;margin-top:24px;font-style:italic;font-weight:300}
 
 /* Simulator FULL WIDTH PARALLAX */
-.le-sim-wrap{width:100vw;height:600px;position:relative;margin:0 0 60px calc(50% - 50vw);background:#000;overflow:hidden}
-@media(max-width:600px){.le-sim-wrap{height:400px}}
+.le-sim-wrap{width:100vw;height:420px;position:relative;margin:0 0 32px calc(50% - 50vw);background:#000;overflow:hidden}
+@media(max-width:600px){.le-sim-wrap{height:300px}}
 
 .le-sim-bg{position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed;filter:blur(8px) brightness(1.1);z-index:1}
 
 .le-sim-center{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
 
-.le-sim-lens{width:500px;height:360px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed}
-@media(max-width:600px){.le-sim-lens{width:320px;height:240px}}
+.le-sim-lens{width:380px;height:260px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed}
+@media(max-width:600px){.le-sim-lens{width:260px;height:180px}}
 
 /* Washout for AR OFF */
 .le-sim-washout{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:saturate(0.5) contrast(0.85);background:rgba(255,255,255,0.05);transition:opacity 0.6s ease;pointer-events:none}
@@ -343,7 +343,7 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
 
         {/* ── Module 3: Treatments (FULL WIDTH PARALLAX) ── */}
         <div>
-          <div className="le-inner" style={{ marginBottom: '24px' }}>
+          <div className="le-inner" style={{ marginBottom: '16px' }}>
             <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
           </div>
           

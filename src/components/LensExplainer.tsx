@@ -95,7 +95,46 @@ const css = `
 .le-cta-wrap{text-align:center;margin-top:56px}
 .le-cta{display:inline-flex;align-items:center;gap:10px;padding:18px 48px;background:#111827;color:#fff;border:1px solid #111827;border-radius:50px;font-size:16px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit;text-decoration:none;letter-spacing:0.5px}
 .le-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(17,24,39,0.2);background:#FFFFFF;color:#111827}
-`;
+
+/* Wizard Steps */
+.le-wizard-header{display:flex;justify-content:space-between;margin-bottom:40px;position:relative}
+.le-wizard-header::before{content:'';position:absolute;top:20px;left:40px;right:40px;height:2px;background:#E5E7EB;z-index:0}
+@media(max-width:600px){.le-wizard-header::before{left:20px;right:20px}}
+.le-step-indicator{position:relative;z-index:1;background:#FFFFFF;padding:0 10px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#9CA3AF;font-weight:500;font-size:13px;flex:1}
+.le-step-indicator.active{color:#111827}
+.le-step-circle{width:40px;height:40px;border-radius:50%;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.3s;border:2px solid transparent;margin:0 auto}
+.le-step-indicator.active .le-step-circle{background:#111827;color:#fff}
+.le-step-indicator.completed .le-step-circle{background:#fff;border-color:#111827;color:#111827}
+.le-step-label{text-align:center;line-height:1.2}
+@media(max-width:600px){.le-step-label{font-size:11px}}
+
+/* Step Content */
+.le-step-content{animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.le-nav-btns{display:flex;justify-content:flex-end;gap:16px;margin-top:40px;border-top:1px solid #F3F4F6;padding-top:24px}
+.le-btn-back{padding:12px 24px;border:1px solid #E5E7EB;border-radius:50px;background:#fff;color:#4B5563;cursor:pointer;font-weight:500;transition:all 0.2s}
+.le-btn-back:hover{background:#F9FAFB}
+.le-btn-next{padding:12px 32px;border:none;border-radius:50px;background:#111827;color:#fff;cursor:pointer;font-weight:500;transition:all 0.2s}
+.le-btn-next:hover{background:#1F2937;transform:translateY(-1px)}
+
+/* Lifestyle */
+.le-life-grid{display:flex;flex-direction:column;gap:16px;margin-bottom:40px}
+.le-life-opt{display:flex;align-items:center;gap:16px;padding:20px;border:1px solid #E5E7EB;border-radius:16px;cursor:pointer;transition:all 0.2s}
+.le-life-opt:hover{border-color:#111827;background:#F9FAFB}
+.le-life-opt.active{border-color:#111827;background:#111827;color:#fff}
+.le-life-opt.active .le-life-desc{color:#E5E7EB}
+.le-life-title{font-size:16px;font-weight:500;margin-bottom:4px}
+.le-life-desc{font-size:14px;color:#6B7280;transition:all 0.2s}
+
+/* Summary */
+.le-summary-card{background:#F9FAFB;border-radius:24px;padding:40px;border:1px solid rgba(0,0,0,0.04);margin-bottom:32px}
+.le-summary-item{display:flex;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(0,0,0,0.05);align-items:center}
+.le-summary-item:last-child{border:none}
+.le-sum-lbl{font-weight:500;color:#4B5563;font-size:15px}
+.le-sum-val{font-weight:500;color:#111827;font-size:16px;text-align:right}
+.le-summary-total{font-size:28px;font-family:'Playfair Display',serif;font-weight:bold;color:#111827;text-align:center;margin-top:24px;padding-top:24px;border-top:2px dashed rgba(0,0,0,0.1)}
+\n`;
 
 /* ─── Data ─── */
 const LENS_TYPES = [
@@ -250,177 +289,251 @@ interface LensExplainerProps {
   onOpenCotizador?: () => void;
 }
 
+
 export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
+  const [step, setStep] = useState(1);
   const [lensType, setLensType] = useState('mono');
   const [indexStep, setIndexStep] = useState(0);
-  const [treatments, setTreatments] = useState<Record<string, boolean>>({ ar: false, blue: false, photo: false });
+  const [treatments, setTreatments] = useState<Record<string, boolean>>({ ar: true, blue: false, photo: false });
 
   const currentLens = LENS_TYPES.find(l => l.id === lensType)!;
   const currentIndex = INDEX_DATA[indexStep];
 
   const toggleTreat = (key: string) => setTreatments(prev => ({ ...prev, [key]: !prev[key] }));
 
+  // Cost calculation
+  let totalCost = 0;
+  if (lensType === 'mono') totalCost += 990;
+  if (lensType === 'bif') totalCost += 1490;
+  if (lensType === 'prog') totalCost += 2490;
+  
+  if (indexStep === 1) totalCost += 400;
+  if (indexStep === 2) totalCost += 800;
+  if (indexStep === 3) totalCost += 1200;
+  if (indexStep === 4) totalCost += 1800;
+  
+  if (treatments.ar) totalCost += 300;
+  if (treatments.blue) totalCost += 400;
+  if (treatments.photo) totalCost += 700;
+
+  const nextStep = () => { window.scrollTo({ top: document.getElementById('micas-explicador')?.offsetTop! - 80, behavior: 'smooth' }); setStep(s => Math.min(4, s + 1)); };
+  const prevStep = () => { window.scrollTo({ top: document.getElementById('micas-explicador')?.offsetTop! - 80, behavior: 'smooth' }); setStep(s => Math.max(1, s - 1)); };
+
   return (
     <section className="le-wrap" id="micas-explicador">
       <style>{css}</style>
       <div className="le-inner">
-        <h2 className="le-title">Entiende tus micas</h2>
-        <p className="le-sub">Descubre qué tipo de lente, material y tratamiento es ideal para ti.</p>
+        <h2 className="le-title">Descubre tu lente ideal</h2>
+        <p className="le-sub">Responde 3 simples preguntas y te recomendaremos la configuración perfecta para tus ojos, junto con un costo estimado.</p>
 
-        {/* ── Module 1: Lens Type ── */}
+        <div className="le-wizard-header">
+          {[1, 2, 3, 4].map(num => (
+            <div key={num} className={`le-step-indicator ${step === num ? 'active' : ''} ${step > num ? 'completed' : ''}`}>
+              <div className="le-step-circle">
+                {step > num ? '✓' : num}
+              </div>
+              <div className="le-step-label">
+                {num === 1 && 'Visión'}
+                {num === 2 && 'Graduación'}
+                {num === 3 && 'Estilo de vida'}
+                {num === 4 && 'Resultado'}
+              </div>
+            </div>
+          ))}
+        </div>
+
         <div className="le-mod">
-          <h3 className="le-mod-title">Tipo de lente</h3>
-          <div className="le-tabs">
-            {LENS_TYPES.map(lt => (
-              <button
-                key={lt.id}
-                className={`le-tab${lensType === lt.id ? ' active' : ''}`}
-                onClick={() => setLensType(lt.id)}
-              >
-                {lt.label}
-              </button>
-            ))}
-          </div>
           <AnimatePresence mode="wait">
-            <motion.div
-              key={lensType}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="le-tab-body"
-            >
-              <div className="le-diagram">
-                {lensType === 'mono' && <MonofocalSVG />}
-                {lensType === 'bif' && <BifocalSVG />}
-                {lensType === 'prog' && <ProgresiveSVG />}
-              </div>
-              <div className="le-info">
-                <h4>{currentLens.subtitle}</h4>
-                <p>{currentLens.desc}</p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            {step === 1 && (
+              <motion.div key="s1" className="le-step-content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <h3 className="le-mod-title">¿A qué distancia necesitas ayuda para ver bien?</h3>
+                <div className="le-tabs">
+                  {LENS_TYPES.map(lt => (
+                    <button
+                      key={lt.id}
+                      className={`le-tab${lensType === lt.id ? ' active' : ''}`}
+                      onClick={() => setLensType(lt.id)}
+                    >
+                      {lt.subtitle}
+                    </button>
+                  ))}
+                </div>
+                <div className="le-tab-body" style={{ background: '#F9FAFB', padding: '30px', borderRadius: '16px' }}>
+                  <div className="le-diagram">
+                    {lensType === 'mono' && <MonofocalSVG />}
+                    {lensType === 'bif' && <BifocalSVG />}
+                    {lensType === 'prog' && <ProgresiveSVG />}
+                  </div>
+                  <div className="le-info">
+                    <h4>Mica recomendada: {currentLens.label}</h4>
+                    <p>{currentLens.desc}</p>
+                  </div>
+                </div>
+                <div className="le-nav-btns">
+                  <button className="le-btn-next" onClick={nextStep}>Siguiente: Graduación →</button>
+                </div>
+              </motion.div>
+            )}
 
-        {/* ── Module 2: Material / Index ── */}
-        <div className="le-mod">
-          <h3 className="le-mod-title">Material y grosor</h3>
-          <div className="le-slider-row">
-            <div className="le-slider-left">
-              <LensCrossSectionSVG borderThickness={currentIndex.border} />
-              <div className="le-idx-big">{currentIndex.idx}</div>
-            </div>
-            <div className="le-slider-right">
-              <div className="le-slider-track">
-                <input
-                  type="range"
-                  min={0}
-                  max={INDEX_DATA.length - 1}
-                  value={indexStep}
-                  onChange={e => setIndexStep(Number(e.target.value))}
-                />
-                <div className="le-slider-labels">
-                  <span>Estándar</span>
-                  <span>Ultra delgado</span>
-                </div>
-              </div>
-              <div className="le-spec-grid">
-                <div className="le-spec">
-                  <div className="le-spec-val">{currentIndex.thickness}</div>
-                  <div className="le-spec-lbl">Grosor</div>
-                </div>
-                <div className="le-spec">
-                  <div className="le-spec-val">{currentIndex.weight}</div>
-                  <div className="le-spec-lbl">Peso</div>
-                </div>
-                <div className="le-spec">
-                  <div className="le-spec-val">{currentIndex.use}</div>
-                  <div className="le-spec-lbl">Ideal para</div>
-                </div>
-              </div>
-              <p className="le-slider-hint">A mayor índice, el lente es más delgado y ligero — ideal si tu graduación es alta.</p>
-            </div>
-          </div>
-        </div> {/* End of Module 2 */}
-        </div> {/* End le-inner */}
-
-        {/* ── Module 3: Treatments (FULL WIDTH PARALLAX) ── */}
-        <div>
-          <div className="le-inner" style={{ marginBottom: '16px' }}>
-            <h3 className="le-mod-title">Tratamientos (Simulador Visual)</h3>
-          </div>
-          
-          {/* ── Simulator Window ── */}
-            <div className="le-sim-wrap">
-              <div className="le-sim-bg" />
-              <div className="le-sim-center">
+            {step === 2 && (
+              <motion.div key="s2" className="le-step-content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <h3 className="le-mod-title">¿Cómo es tu graduación actual?</h3>
+                <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: '32px' }}>Ajusta el nivel según tu receta (si no la sabes, déjalo en Estándar).</p>
                 
-                {/* Left Lens */}
-                <div className="le-sim-lens">
-                  <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
-                  <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
-                  <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
-                  <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                <div className="le-slider-row">
+                  <div className="le-slider-left">
+                    <LensCrossSectionSVG borderThickness={currentIndex.border} />
+                    <div className="le-idx-big">{currentIndex.idx}</div>
+                  </div>
+                  <div className="le-slider-right">
+                    <div className="le-slider-track">
+                      <input
+                        type="range"
+                        min={0}
+                        max={INDEX_DATA.length - 1}
+                        value={indexStep}
+                        onChange={e => setIndexStep(Number(e.target.value))}
+                      />
+                      <div className="le-slider-labels">
+                        <span>Baja (0 a ±2.00)</span>
+                        <span>Alta (Más de ±4.00)</span>
+                      </div>
+                    </div>
+                    <div className="le-spec-grid" style={{ marginTop: '24px' }}>
+                      <div className="le-spec">
+                        <div className="le-spec-val">{currentIndex.thickness}</div>
+                        <div className="le-spec-lbl">Material</div>
+                      </div>
+                      <div className="le-spec">
+                        <div className="le-spec-val">{currentIndex.weight}</div>
+                        <div className="le-spec-lbl">Peso</div>
+                      </div>
+                    </div>
+                    <p className="le-slider-hint">Recomendado para: {currentIndex.use}. {indexStep > 0 ? 'Hacer tu lente más delgado reduce el peso y mejora la estética.' : ''}</p>
+                  </div>
+                </div>
+                
+                <div className="le-nav-btns">
+                  <button className="le-btn-back" onClick={prevStep}>← Atrás</button>
+                  <button className="le-btn-next" onClick={nextStep}>Siguiente: Estilo de vida →</button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 3 && (
+              <motion.div key="s3" className="le-step-content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <h3 className="le-mod-title">Selecciona lo que describa mejor tu día a día</h3>
+                
+                <div className="le-life-grid">
+                  <div className={`le-life-opt ${treatments.ar ? 'active' : ''}`} onClick={() => toggleTreat('ar')}>
+                    <div style={{ flex: 1 }}>
+                      <div className="le-life-title">Manejo de noche o me deslumbran las luces</div>
+                      <div className="le-life-desc">Sugerimos: Antirreflejante (Mejora nitidez y elimina reflejos)</div>
+                    </div>
+                    <div style={{ fontSize: '24px' }}>{treatments.ar ? '✓' : '○'}</div>
+                  </div>
+                  
+                  <div className={`le-life-opt ${treatments.blue ? 'active' : ''}`} onClick={() => toggleTreat('blue')}>
+                    <div style={{ flex: 1 }}>
+                      <div className="le-life-title">Paso más de 4 horas al día frente a pantallas</div>
+                      <div className="le-life-desc">Sugerimos: Filtro Luz Azul (Reduce cansancio visual)</div>
+                    </div>
+                    <div style={{ fontSize: '24px' }}>{treatments.blue ? '✓' : '○'}</div>
+                  </div>
+
+                  <div className={`le-life-opt ${treatments.photo ? 'active' : ''}`} onClick={() => toggleTreat('photo')}>
+                    <div style={{ flex: 1 }}>
+                      <div className="le-life-title">Paso mucho tiempo al aire libre y me molesta el sol</div>
+                      <div className="le-life-desc">Sugerimos: Fotocromático (Se oscurece con el sol)</div>
+                    </div>
+                    <div style={{ fontSize: '24px' }}>{treatments.photo ? '✓' : '○'}</div>
+                  </div>
                 </div>
 
-                {/* Bridge */}
-                <div className="le-sim-bridge" />
-
-                {/* Right Lens */}
-                <div className="le-sim-lens">
-                  <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
-                  <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
-                  <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
-                  <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                <div style={{ marginTop: '40px', marginBottom: '24px', textAlign: 'center' }}>
+                  <h4 style={{ fontFamily: 'Playfair Display', fontSize: '20px', marginBottom: '8px' }}>Simulador en tiempo real</h4>
+                  <p style={{ color: '#6B7280', fontSize: '14px' }}>Así se verá el mundo a través de tus micas.</p>
+                </div>
+                
+                {/* ── Simulator Window ── */}
+                <div className="le-sim-wrap" style={{ borderRadius: '16px', margin: '0 auto', maxWidth: '100%', height: '320px' }}>
+                  <div className="le-sim-bg" />
+                  <div className="le-sim-center" style={{ gap: '20px' }}>
+                    <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
+                      <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
+                      <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                      <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                      <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                    </div>
+                    <div className="le-sim-bridge" style={{ width: '20px' }} />
+                    <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
+                      <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
+                      <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                      <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                      <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                    </div>
+                  </div>
                 </div>
 
-              </div>
-            </div>
+                <div className="le-nav-btns">
+                  <button className="le-btn-back" onClick={prevStep}>← Atrás</button>
+                  <button className="le-btn-next" onClick={nextStep}>Ver mi resultado y costo →</button>
+                </div>
+              </motion.div>
+            )}
 
-          <div className="le-inner">
-            <div className="le-treat-grid">
-            {/* Antirreflejante */}
-            <div className={`le-treat${treatments.ar ? ' on' : ''}`} onClick={() => toggleTreat('ar')}>
-              <TreatmentLens type="ar" active={treatments.ar} />
-              <div className="le-treat-name">Antirreflejante</div>
-              <div className="le-treat-desc">Elimina los reflejos molestos; ves más claro y tus lentes se ven más limpios.</div>
-              <div className={`le-treat-badge${treatments.ar ? '' : ' off'}`}>
-                {treatments.ar ? '✓ Activado' : 'Toca para ver'}
-              </div>
-            </div>
+            {step === 4 && (
+              <motion.div key="s4" className="le-step-content" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}>
+                <div className="le-summary-card">
+                  <h3 className="le-mod-title">Tu configuración ideal</h3>
+                  
+                  <div className="le-summary-item">
+                    <span className="le-sum-lbl">Visión recomendada</span>
+                    <span className="le-sum-val">{currentLens.label}</span>
+                  </div>
+                  
+                  <div className="le-summary-item">
+                    <span className="le-sum-lbl">Material sugerido</span>
+                    <span className="le-sum-val">{currentIndex.thickness} (Índice {currentIndex.idx})</span>
+                  </div>
 
-            {/* Luz Azul */}
-            <div className={`le-treat${treatments.blue ? ' on' : ''}`} onClick={() => toggleTreat('blue')}>
-              <TreatmentLens type="blue" active={treatments.blue} />
-              <div className="le-treat-name">Filtro Luz Azul</div>
-              <div className="le-treat-desc">Filtra la luz azul de pantallas; reduce el cansancio visual.</div>
-              <div className={`le-treat-badge${treatments.blue ? '' : ' off'}`}>
-                {treatments.blue ? '✓ Activado' : 'Toca para ver'}
-              </div>
-            </div>
+                  <div className="le-summary-item" style={{ alignItems: 'flex-start' }}>
+                    <span className="le-sum-lbl">Tratamientos</span>
+                    <span className="le-sum-val" style={{ textAlign: 'right' }}>
+                      {treatments.ar && <div>✓ Antirreflejante</div>}
+                      {treatments.blue && <div>✓ Filtro Luz Azul</div>}
+                      {treatments.photo && <div>✓ Fotocromático</div>}
+                      {!treatments.ar && !treatments.blue && !treatments.photo && 'Ninguno'}
+                    </span>
+                  </div>
 
-            {/* Fotocromático */}
-            <div className={`le-treat${treatments.photo ? ' on' : ''}`} onClick={() => toggleTreat('photo')}>
-              <TreatmentLens type="photo" active={treatments.photo} />
-              <div className="le-treat-name">Fotocromático</div>
-              <div className="le-treat-desc">Se oscurece automáticamente con el sol y se aclara en interiores.</div>
-              <div className={`le-treat-badge${treatments.photo ? '' : ' off'}`}>
-                {treatments.photo ? '☀️ Con sol' : '🏠 Interior'}
-              </div>
-            </div>
-          </div>
-        </div>
+                  <div className="le-summary-total">
+                    Costo estimado: ${totalCost.toLocaleString()} MXN
+                    <div style={{ fontSize: '12px', color: '#6B7280', fontWeight: 'normal', fontFamily: 'Inter, sans-serif', marginTop: '12px', lineHeight: '1.5' }}>
+                      *Precio base de micas sugerido. El precio final puede variar según promociones vigentes, el armazón elegido y la graduación exacta.
+                    </div>
+                  </div>
+                </div>
 
-        <div className="le-cta-wrap">
-          <button className="le-cta" onClick={onOpenCotizador}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-            </svg>
-            Cotiza tus micas en línea
-          </button>
+                <div className="le-cta-wrap" style={{ marginTop: '0' }}>
+                  <button className="le-cta" onClick={() => {
+                    const text = `Hola, usé el asistente web y me sugirió:\n\n- Visión: ${currentLens.label}\n- Material: ${currentIndex.thickness}\n- Tratamientos: ${treatments.ar?'Antirreflejante':''} ${treatments.blue?', Luz Azul':''} ${treatments.photo?', Fotocromático':''}\n\nMe gustaría confirmar la cotización con mi graduación exacta.`;
+                    window.open(`https://wa.me/5213329244036?text=${encodeURIComponent(text)}`, '_blank');
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    Enviar por WhatsApp
+                  </button>
+                  <div style={{ marginTop: '24px' }}>
+                    <button className="le-btn-back" onClick={() => setStep(1)} style={{ border: 'none', background: 'transparent', textDecoration: 'underline', padding: 0 }}>Volver a empezar</button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>
-    );
-  }
+  );
+}

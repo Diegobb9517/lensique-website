@@ -54,10 +54,14 @@ const css = `
 
 .le-sim-bg{position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed;filter:blur(8px) brightness(1.1);z-index:1}
 
-.le-sim-center{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+.le-sim-center{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:40px;z-index:2;pointer-events:none}
+@media(max-width:768px){.le-sim-center{gap:16px}}
 
-.le-sim-lens{width:380px;height:260px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed}
-@media(max-width:600px){.le-sim-lens{width:260px;height:180px}}
+.le-sim-bridge{width:36px;height:8px;background:rgba(255,255,255,0.15);border-top:1px solid rgba(255,255,255,0.4);border-bottom:1px solid rgba(0,0,0,0.3);border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.4);margin:0 -20px;position:relative;z-index:3}
+@media(max-width:768px){.le-sim-bridge{width:20px;height:4px;margin:0 -10px}}
+
+.le-sim-lens{width:320px;height:240px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed;z-index:4}
+@media(max-width:768px){.le-sim-lens{width:160px;height:120px;border-width:2px}}
 
 /* Washout for AR OFF */
 .le-sim-washout{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:saturate(0.5) contrast(0.85);background:rgba(255,255,255,0.05);transition:opacity 0.6s ease;pointer-events:none}
@@ -348,17 +352,31 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
           </div>
           
           {/* ── Simulator Window ── */}
-          <div className="le-sim-wrap">
-            <div className="le-sim-bg" />
-            <div className="le-sim-center">
-              <div className="le-sim-lens">
-                <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
-                <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
-                <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
-                <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+            <div className="le-sim-wrap">
+              <div className="le-sim-bg" />
+              <div className="le-sim-center">
+                
+                {/* Left Lens */}
+                <div className="le-sim-lens">
+                  <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
+                  <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                  <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                  <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                </div>
+
+                {/* Bridge */}
+                <div className="le-sim-bridge" />
+
+                {/* Right Lens */}
+                <div className="le-sim-lens">
+                  <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
+                  <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                  <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                  <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                </div>
+
               </div>
             </div>
-          </div>
 
           <div className="le-inner">
             <div className="le-treat-grid">

@@ -434,24 +434,24 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                 <div className="le-life-grid">
                   <div className={`le-life-opt ${treatments.ar ? 'active' : ''}`} onClick={() => toggleTreat('ar')}>
                     <div style={{ flex: 1 }}>
-                      <div className="le-life-title">Manejo de noche o me deslumbran las luces</div>
-                      <div className="le-life-desc">Sugerimos: Antirreflejante (Mejora nitidez y elimina reflejos)</div>
+                      <div className="le-life-title">Manejo de noche o me molestan los destellos artificiales</div>
+                      <div className="le-life-desc">Sugerimos: Antirreflejante Verde (Elimina destellos y hace los colores más vivos)</div>
                     </div>
                     <div style={{ fontSize: '24px' }}>{treatments.ar ? '✓' : '○'}</div>
                   </div>
                   
                   <div className={`le-life-opt ${treatments.blue ? 'active' : ''}`} onClick={() => toggleTreat('blue')}>
                     <div style={{ flex: 1 }}>
-                      <div className="le-life-title">Paso más de 4 horas al día frente a pantallas</div>
-                      <div className="le-life-desc">Sugerimos: Filtro Luz Azul (Reduce cansancio visual)</div>
+                      <div className="le-life-title">Trabajo en interiores frente a la computadora</div>
+                      <div className="le-life-desc">Sugerimos: Filtro Luz Azul (Suaviza los colores para relajar la vista)</div>
                     </div>
                     <div style={{ fontSize: '24px' }}>{treatments.blue ? '✓' : '○'}</div>
                   </div>
 
                   <div className={`le-life-opt ${treatments.photo ? 'active' : ''}`} onClick={() => toggleTreat('photo')}>
                     <div style={{ flex: 1 }}>
-                      <div className="le-life-title">Paso mucho tiempo al aire libre y me molesta el sol</div>
-                      <div className="le-life-desc">Sugerimos: Fotocromático (Se oscurece con el sol)</div>
+                      <div className="le-life-title">Soy muy sensible a la luz del sol en exteriores</div>
+                      <div className="le-life-desc">Sugerimos: Fotocromático (Se oscurece automáticamente con el sol)</div>
                     </div>
                     <div style={{ fontSize: '24px' }}>{treatments.photo ? '✓' : '○'}</div>
                   </div>

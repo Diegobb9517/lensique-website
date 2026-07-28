@@ -198,21 +198,6 @@ function ProgresiveSVG() {
   );
 }
 
-function LensCrossSectionSVG({ borderThickness }: { borderThickness: number }) {
-  const cx = 75, cy = 60;
-  const innerW = 46 - borderThickness * 0.4;
-  return (
-    <svg width="150" height="120" viewBox="0 0 150 120">
-      <ellipse cx={cx} cy={cy} rx={innerW + borderThickness} ry="50" fill="none" stroke="#E5E7EB" strokeWidth="1"/>
-      <ellipse cx={cx} cy={cy} rx={innerW} ry="48" fill="#F9FAFB" stroke="#111827" strokeWidth="1.5"/>
-      <line x1={cx + innerW + borderThickness + 4} y1={cy - 20} x2={cx + innerW + borderThickness + 4} y2={cy + 20} stroke="#111827" strokeWidth="1"/>
-      <line x1={cx + innerW + borderThickness} y1={cy - 20} x2={cx + innerW + borderThickness + 8} y2={cy - 20} stroke="#111827" strokeWidth="1"/>
-      <line x1={cx + innerW + borderThickness} y1={cy + 20} x2={cx + innerW + borderThickness + 8} y2={cy + 20} stroke="#111827" strokeWidth="1"/>
-      <text x={cx} y={cy + 5} textAnchor="middle" fontSize="11" fill="#6B7280" fontWeight="400" letterSpacing="1">⟵ ⟶</text>
-    </svg>
-  );
-}
-
 /* ─── Treatment lens preview ─── */
 function TreatmentLens({ type, active }: { type: string; active: boolean }) {
   if (type === 'ar') {
@@ -419,11 +404,26 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                     </div>
                   </div>
                   
-                  <div className="le-slider-left" style={{ background: '#F9FAFB', padding: '32px 16px', borderRadius: '24px', flex: '0 0 200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontWeight: '500' }}>Perfil de Mica</div>
-                    <LensCrossSectionSVG borderThickness={currentIndex.border} />
-                    <div className="le-idx-big" style={{ marginTop: '16px' }}>{currentIndex.idx}</div>
-                    <div style={{ fontSize: '13px', color: '#4B5563', marginTop: '8px', textAlign: 'center', fontWeight: '500' }}>{currentIndex.thickness}</div>
+                  <div className="le-slider-left" style={{ background: '#F9FAFB', padding: '32px', borderRadius: '24px', flex: '0 0 260px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className="le-idx-big" style={{ marginTop: '0', marginBottom: '8px', fontSize: '42px' }}>{currentIndex.idx}</div>
+                    <div style={{ fontSize: '14px', color: '#4B5563', textAlign: 'center', fontWeight: '500', marginBottom: '24px' }}>Índice de refracción</div>
+                    
+                    <div style={{ background: '#fff', borderRadius: '16px', padding: '20px', width: '100%', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ background: '#F3F4F6', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>⚖️</div>
+                        <div style={{ textAlign: 'left' }}>
+                          <div style={{ fontSize: '12px', color: '#6B7280', fontWeight: '500' }}>PESO</div>
+                          <div style={{ fontSize: '14px', color: '#111827', fontWeight: '600' }}>{currentIndex.weight}</div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ background: '#F3F4F6', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>📏</div>
+                        <div style={{ textAlign: 'left' }}>
+                          <div style={{ fontSize: '12px', color: '#6B7280', fontWeight: '500' }}>ESTÉTICA</div>
+                          <div style={{ fontSize: '14px', color: '#111827', fontWeight: '600' }}>{currentIndex.thickness}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 

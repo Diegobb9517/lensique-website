@@ -378,38 +378,40 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             {step === 2 && (
               <motion.div key="s2" className="le-step-content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h3 className="le-mod-title">¿Cómo es tu graduación actual?</h3>
-                <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: '32px' }}>Ajusta el nivel según tu receta (si no la sabes, déjalo en Estándar).</p>
+                <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: '32px' }}>Selecciona el rango de tu receta (si no la sabes, elige Baja).</p>
                 
-                <div className="le-slider-row">
-                  <div className="le-slider-left">
-                    <LensCrossSectionSVG borderThickness={currentIndex.border} />
-                    <div className="le-idx-big">{currentIndex.idx}</div>
+                <div className="le-slider-row" style={{ alignItems: 'center' }}>
+                  <div className="le-slider-right" style={{ flex: 1, width: '100%' }}>
+                    <div className="le-life-grid" style={{ marginBottom: 0 }}>
+                      <div className={`le-life-opt ${indexStep === 0 ? 'active' : ''}`} onClick={() => setIndexStep(0)}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Baja (0 a ±2.00)</div>
+                          <div className="le-life-desc">Material recomendado: Estándar</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{indexStep === 0 ? '✓' : '○'}</div>
+                      </div>
+                      <div className={`le-life-opt ${indexStep === 2 ? 'active' : ''}`} onClick={() => setIndexStep(2)}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Media (±2.25 a ±4.00)</div>
+                          <div className="le-life-desc">Material recomendado: Delgado y Ligero</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{indexStep === 2 ? '✓' : '○'}</div>
+                      </div>
+                      <div className={`le-life-opt ${indexStep === 4 ? 'active' : ''}`} onClick={() => setIndexStep(4)}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Alta (Más de ±4.00)</div>
+                          <div className="le-life-desc">Material recomendado: Ultra Delgado (Máxima estética)</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{indexStep === 4 ? '✓' : '○'}</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="le-slider-right">
-                    <div className="le-slider-track">
-                      <input
-                        type="range"
-                        min={0}
-                        max={INDEX_DATA.length - 1}
-                        value={indexStep}
-                        onChange={e => setIndexStep(Number(e.target.value))}
-                      />
-                      <div className="le-slider-labels">
-                        <span>Baja (0 a ±2.00)</span>
-                        <span>Alta (Más de ±4.00)</span>
-                      </div>
-                    </div>
-                    <div className="le-spec-grid" style={{ marginTop: '24px' }}>
-                      <div className="le-spec">
-                        <div className="le-spec-val">{currentIndex.thickness}</div>
-                        <div className="le-spec-lbl">Material</div>
-                      </div>
-                      <div className="le-spec">
-                        <div className="le-spec-val">{currentIndex.weight}</div>
-                        <div className="le-spec-lbl">Peso</div>
-                      </div>
-                    </div>
-                    <p className="le-slider-hint">Recomendado para: {currentIndex.use}. {indexStep > 0 ? 'Hacer tu lente más delgado reduce el peso y mejora la estética.' : ''}</p>
+                  
+                  <div className="le-slider-left" style={{ background: '#F9FAFB', padding: '32px 16px', borderRadius: '24px', flex: '0 0 200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px', fontWeight: '500' }}>Perfil de Mica</div>
+                    <LensCrossSectionSVG borderThickness={currentIndex.border} />
+                    <div className="le-idx-big" style={{ marginTop: '16px' }}>{currentIndex.idx}</div>
+                    <div style={{ fontSize: '13px', color: '#4B5563', marginTop: '8px', textAlign: 'center', fontWeight: '500' }}>{currentIndex.thickness}</div>
                   </div>
                 </div>
                 

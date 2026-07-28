@@ -436,55 +436,61 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
 
             {step === 3 && (
               <motion.div key="s3" className="le-step-content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <h3 className="le-mod-title">Selecciona lo que describa mejor tu día a día</h3>
+                <h3 className="le-mod-title" style={{ textAlign: 'left', marginBottom: '24px' }}>Selecciona lo que describa mejor tu día a día</h3>
                 
-                <div className="le-life-grid">
-                  <div className={`le-life-opt ${treatments.ar ? 'active' : ''}`} onClick={() => toggleTreat('ar')}>
-                    <div style={{ flex: 1 }}>
-                      <div className="le-life-title">Manejo de noche o me molestan los destellos artificiales</div>
-                      <div className="le-life-desc">Sugerimos: Antirreflejante Verde (Elimina destellos y hace los colores más vivos)</div>
+                <div className="le-slider-row" style={{ alignItems: 'flex-start' }}>
+                  <div style={{ flex: '1 1 50%' }}>
+                    <div className="le-life-grid">
+                      <div className={`le-life-opt ${treatments.ar ? 'active' : ''}`} onClick={() => toggleTreat('ar')}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Manejo de noche o me molestan los destellos artificiales</div>
+                          <div className="le-life-desc">Sugerimos: Antirreflejante Verde (Elimina destellos y hace los colores más vivos)</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{treatments.ar ? '✓' : '○'}</div>
+                      </div>
+                      
+                      <div className={`le-life-opt ${treatments.blue ? 'active' : ''}`} onClick={() => toggleTreat('blue')}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Trabajo en interiores frente a la computadora</div>
+                          <div className="le-life-desc">Sugerimos: Filtro Luz Azul (Suaviza los colores para relajar la vista)</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{treatments.blue ? '✓' : '○'}</div>
+                      </div>
+
+                      <div className={`le-life-opt ${treatments.photo ? 'active' : ''}`} onClick={() => toggleTreat('photo')}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Soy muy sensible a la luz del sol en exteriores</div>
+                          <div className="le-life-desc">Sugerimos: Fotocromático (Se oscurece automáticamente con el sol)</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{treatments.photo ? '✓' : '○'}</div>
+                      </div>
                     </div>
-                    <div style={{ fontSize: '24px' }}>{treatments.ar ? '✓' : '○'}</div>
-                  </div>
-                  
-                  <div className={`le-life-opt ${treatments.blue ? 'active' : ''}`} onClick={() => toggleTreat('blue')}>
-                    <div style={{ flex: 1 }}>
-                      <div className="le-life-title">Trabajo en interiores frente a la computadora</div>
-                      <div className="le-life-desc">Sugerimos: Filtro Luz Azul (Suaviza los colores para relajar la vista)</div>
-                    </div>
-                    <div style={{ fontSize: '24px' }}>{treatments.blue ? '✓' : '○'}</div>
                   </div>
 
-                  <div className={`le-life-opt ${treatments.photo ? 'active' : ''}`} onClick={() => toggleTreat('photo')}>
-                    <div style={{ flex: 1 }}>
-                      <div className="le-life-title">Soy muy sensible a la luz del sol en exteriores</div>
-                      <div className="le-life-desc">Sugerimos: Fotocromático (Se oscurece automáticamente con el sol)</div>
+                  <div style={{ flex: '1 1 50%' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                      <h4 style={{ fontFamily: 'Playfair Display', fontSize: '20px', marginBottom: '4px' }}>Simulador en tiempo real</h4>
+                      <p style={{ color: '#6B7280', fontSize: '14px' }}>Así se verá el mundo a través de tus micas.</p>
                     </div>
-                    <div style={{ fontSize: '24px' }}>{treatments.photo ? '✓' : '○'}</div>
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '40px', marginBottom: '24px', textAlign: 'center' }}>
-                  <h4 style={{ fontFamily: 'Playfair Display', fontSize: '20px', marginBottom: '8px' }}>Simulador en tiempo real</h4>
-                  <p style={{ color: '#6B7280', fontSize: '14px' }}>Así se verá el mundo a través de tus micas.</p>
-                </div>
-                
-                {/* ── Simulator Window ── */}
-                <div className="le-sim-wrap" style={{ borderRadius: '16px', margin: '0 auto', maxWidth: '100%', height: '320px' }}>
-                  <div className="le-sim-bg" />
-                  <div className="le-sim-center" style={{ gap: '20px' }}>
-                    <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
-                      <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
-                      <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
-                      <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
-                      <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
-                    </div>
-                    <div className="le-sim-bridge" style={{ width: '20px' }} />
-                    <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
-                      <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
-                      <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
-                      <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
-                      <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                    
+                    {/* ── Simulator Window ── */}
+                    <div className="le-sim-wrap" style={{ borderRadius: '16px', margin: '0 auto', maxWidth: '100%', height: '320px' }}>
+                      <div className="le-sim-bg" />
+                      <div className="le-sim-center" style={{ gap: '20px' }}>
+                        <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
+                          <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
+                          <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                          <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                          <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                        </div>
+                        <div className="le-sim-bridge" style={{ width: '20px' }} />
+                        <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
+                          <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
+                          <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
+                          <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
+                          <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

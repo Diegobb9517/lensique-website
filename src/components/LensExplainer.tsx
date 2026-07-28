@@ -154,10 +154,9 @@ const LENS_TYPES = [
 
 const INDEX_DATA = [
   { idx: '1.50', thickness: 'Estándar', weight: 'Peso normal', use: 'Graduación baja', border: 26 },
-  { idx: '1.56', thickness: 'Delgado', weight: 'Ligero', use: 'Baja-media', border: 20 },
-  { idx: '1.61', thickness: 'Más delgado', weight: 'Más ligero', use: 'Media', border: 15 },
-  { idx: '1.67', thickness: 'Ultra delgado', weight: 'Muy ligero', use: 'Media-alta', border: 10 },
-  { idx: '1.74', thickness: 'El más delgado', weight: 'El más ligero', use: 'Graduación alta', border: 6 },
+  { idx: '1.60', thickness: 'Delgado', weight: 'Ligero', use: 'Graduación media', border: 18 },
+  { idx: '1.67', thickness: 'Ultra delgado', weight: 'Muy ligero', use: 'Graduación alta', border: 10 },
+  { idx: '1.74', thickness: 'Súper delgado', weight: 'El más ligero', use: 'Graduación muy alta', border: 6 },
 ];
 
 /* ─── SVG Diagrams ─── */
@@ -307,10 +306,9 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
   if (lensType === 'bif') totalCost += 1490;
   if (lensType === 'prog') totalCost += 2490;
   
-  if (indexStep === 1) totalCost += 400;
-  if (indexStep === 2) totalCost += 800;
-  if (indexStep === 3) totalCost += 1200;
-  if (indexStep === 4) totalCost += 1800;
+  if (indexStep === 1) totalCost += 500;
+  if (indexStep === 2) totalCost += 1000;
+  if (indexStep === 3) totalCost += 1800;
   
   if (treatments.ar) totalCost += 300;
   if (treatments.blue) totalCost += 400;
@@ -386,23 +384,30 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                       <div className={`le-life-opt ${indexStep === 0 ? 'active' : ''}`} onClick={() => setIndexStep(0)}>
                         <div style={{ flex: 1 }}>
                           <div className="le-life-title">Baja (0 a ±2.00)</div>
-                          <div className="le-life-desc">Material recomendado: Estándar</div>
+                          <div className="le-life-desc">Material recomendado: 1.50 Estándar</div>
                         </div>
                         <div style={{ fontSize: '24px' }}>{indexStep === 0 ? '✓' : '○'}</div>
                       </div>
-                      <div className={`le-life-opt ${indexStep === 2 ? 'active' : ''}`} onClick={() => setIndexStep(2)}>
+                      <div className={`le-life-opt ${indexStep === 1 ? 'active' : ''}`} onClick={() => setIndexStep(1)}>
                         <div style={{ flex: 1 }}>
                           <div className="le-life-title">Media (±2.25 a ±4.00)</div>
-                          <div className="le-life-desc">Material recomendado: Delgado y Ligero</div>
+                          <div className="le-life-desc">Material recomendado: 1.60 Delgado</div>
+                        </div>
+                        <div style={{ fontSize: '24px' }}>{indexStep === 1 ? '✓' : '○'}</div>
+                      </div>
+                      <div className={`le-life-opt ${indexStep === 2 ? 'active' : ''}`} onClick={() => setIndexStep(2)}>
+                        <div style={{ flex: 1 }}>
+                          <div className="le-life-title">Alta (±4.25 a ±6.00)</div>
+                          <div className="le-life-desc">Material recomendado: 1.67 Ultra Delgado</div>
                         </div>
                         <div style={{ fontSize: '24px' }}>{indexStep === 2 ? '✓' : '○'}</div>
                       </div>
-                      <div className={`le-life-opt ${indexStep === 4 ? 'active' : ''}`} onClick={() => setIndexStep(4)}>
+                      <div className={`le-life-opt ${indexStep === 3 ? 'active' : ''}`} onClick={() => setIndexStep(3)}>
                         <div style={{ flex: 1 }}>
-                          <div className="le-life-title">Alta (Más de ±4.00)</div>
-                          <div className="le-life-desc">Material recomendado: Ultra Delgado (Máxima estética)</div>
+                          <div className="le-life-title">Muy Alta (Más de ±6.00)</div>
+                          <div className="le-life-desc">Material recomendado: 1.74 Súper Delgado</div>
                         </div>
-                        <div style={{ fontSize: '24px' }}>{indexStep === 4 ? '✓' : '○'}</div>
+                        <div style={{ fontSize: '24px' }}>{indexStep === 3 ? '✓' : '○'}</div>
                       </div>
                     </div>
                   </div>

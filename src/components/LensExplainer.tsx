@@ -298,7 +298,14 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
   const currentLens = LENS_TYPES.find(l => l.id === lensType)!;
   const currentIndex = INDEX_DATA[indexStep];
 
-  const toggleTreat = (key: string) => setTreatments(prev => ({ ...prev, [key]: !prev[key] }));
+  const toggleTreat = (key: string) => {
+    setTreatments(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (key === 'ar' && next.ar) next.blue = false;
+      if (key === 'blue' && next.blue) next.ar = false;
+      return next;
+    });
+  };
 
   // Cost calculation
   let totalCost = 0;

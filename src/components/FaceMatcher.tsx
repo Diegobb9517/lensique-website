@@ -178,22 +178,13 @@ export default function FaceMatcher({ onOpenCatalog }: FaceMatcherProps) {
                     <div key={fk} className="fm-card">
                       <div className="fm-card-icon">{f.icon}</div>
                       <h4 className="fm-card-name">{f.name}</h4>
-                      <p className="fm-card-why">{f.why}</p>
-                      <a href="#catalogo" className="fm-card-link" onClick={(e) => { e.preventDefault(); onOpenCatalog?.(f.searchKeyword); }}>
-                        Ver armazones <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                      </a>
+                      <p className="fm-card-why" style={{ marginBottom: 0 }}>{f.why}</p>
                     </div>
                   );
                 })}
               </motion.div>
             </AnimatePresence>
           </div>
-        </div>
-
-        <div className="fm-cta-wrap">
-          <button className="fm-cta" onClick={onOpenCatalog}>
-            Explorar catálogo completo
-          </button>
         </div>
       </div>
     </section>

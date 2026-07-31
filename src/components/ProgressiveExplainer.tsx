@@ -1,116 +1,89 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-/* ═══════════════════════════════════════════════
-   Así funcionan los progresivos — Visual interactivo
-   ═══════════════════════════════════════════════ */
-
 const css = `
-.pe-wrap{background:#fff;padding:80px 24px;font-family:'Inter','Helvetica Neue',sans-serif}
-.pe-inner{max-width:800px;margin:0 auto}
-.pe-title{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:500;color:#1b2436;text-align:center;margin:0 0 6px}
-.pe-sub{text-align:center;color:#8a857b;font-size:15px;margin:0 0 8px;line-height:1.5}
-.pe-tagline{text-align:center;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#1e2a5a;margin:0 0 40px}
+.pe-wrap { padding: 80px 20px; background: #faf9f6; overflow: hidden; }
+.pe-inner { max-width: 1000px; margin: 0 auto; }
+.pe-title { text-align: center; font-family: 'Playfair Display', Georgia, serif; font-size: 36px; color: #111827; margin: 0 0 16px; }
+.pe-sub { text-align: center; font-size: 16px; color: #6B7280; max-width: 600px; margin: 0 auto 32px; }
+.pe-tagline { text-align: center; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #1e2a5a; margin-bottom: 40px; }
 
-.pe-body{display:flex;align-items:center;gap:48px;justify-content:center}
-@media(max-width:680px){.pe-body{flex-direction:column;gap:28px}}
-.pe-lens-col{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:16px}
-.pe-info-col{flex:1;min-width:0;max-width:380px}
+/* The Simulator Container */
+.pe-sim-box { position: relative; width: 100%; height: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); margin-bottom: 40px; background: #000; }
+.pe-sim-bg { position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; background: url('/images/cafe-view2.jpg') no-repeat center center; background-size: cover; z-index: 1; }
 
-/* Buttons */
-.pe-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
-.pe-btn{padding:10px 20px;border:1px solid rgba(0,0,0,.12);border-radius:50px;background:#fff;color:#5f5e5a;font-size:14px;font-weight:500;cursor:pointer;transition:all .18s ease;font-family:inherit}
-.pe-btn:hover{border-color:rgba(0,0,0,.3);transform:translateY(-1px)}
-.pe-btn.active{border:2px solid #1e2a5a;background:#f5f6fb;color:#1e2a5a;font-weight:600;padding:9px 19px}
+/* Frosted glass outside the lens */
+.pe-lens-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; height: 360px; border-radius: 40% 40% 50% 50% / 30% 30% 55% 55%; border: 3px solid rgba(255,255,255,0.4); box-shadow: 0 0 0 2000px rgba(255,255,255,0.7), inset 0 0 20px rgba(255,255,255,0.5); z-index: 2; }
+@media(max-width: 768px) { .pe-lens-overlay { width: 220px; height: 280px; } .pe-sim-box { height: 400px; } }
 
-/* Info card */
-.pe-info-card{background:#f7f5f0;border:0.5px solid rgba(0,0,0,.08);border-radius:16px;padding:28px 24px}
-.pe-info-icon{margin-bottom:12px;color:#1e2a5a}
-.pe-info-label{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:500;color:#1b2436;margin:0 0 10px}
-.pe-info-text{font-size:14px;color:#5f5e5a;line-height:1.6;margin:0}
+/* The blurred mask that covers the lens except the active zone */
+.pe-lens-blur { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(12px) brightness(0.9); z-index: 3; pointer-events: none; border-radius: inherit; transition: -webkit-mask-image 0.6s ease, mask-image 0.6s ease; }
+
+/* Linear gradient masks to create the clear corridor */
+.pe-lens-blur.far { -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 35%, black 55%, black 100%); mask-image: linear-gradient(to bottom, transparent 0%, transparent 35%, black 55%, black 100%); }
+.pe-lens-blur.mid { -webkit-mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 45%, transparent 55%, black 75%, black 100%); mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 45%, transparent 55%, black 75%, black 100%); }
+.pe-lens-blur.near { -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 65%, transparent 100%); mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 65%, transparent 100%); }
+
+/* Labels on lens */
+.pe-lens-label { position: absolute; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.6); transition: all 0.4s ease; text-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 4; pointer-events: none; }
+.pe-lens-label.far { top: 15%; }
+.pe-lens-label.mid { top: 50%; transform: translate(-50%, -50%); }
+.pe-lens-label.near { bottom: 15%; }
+.pe-lens-label.active { color: #fff; font-size: 13px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+.pe-lens-label.active::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+
+/* Controls layout */
+.pe-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
+@media(max-width: 768px) { .pe-controls { grid-template-columns: 1fr; } }
+
+/* Button list */
+.pe-btn-list { display: flex; flex-direction: column; gap: 12px; }
+.pe-zone-btn { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: #fff; border: 1px solid #E5E7EB; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+.pe-zone-btn:hover { border-color: #D1D5DB; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.pe-zone-btn.active { border-color: #111827; background: #111827; color: #fff; box-shadow: 0 10px 20px rgba(17,24,39,0.15); transform: translateX(8px); }
+@media(max-width: 768px) { .pe-zone-btn.active { transform: translateX(0) scale(1.02); } }
+.pe-zone-title { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.pe-zone-desc { font-size: 13px; color: #6B7280; transition: color 0.3s; line-height: 1.5; }
+.pe-zone-btn.active .pe-zone-desc { color: rgba(255,255,255,0.7); }
+.pe-zone-icon { opacity: 0; transform: translateX(-10px); transition: all 0.3s; color: #fff; }
+.pe-zone-btn.active .pe-zone-icon { opacity: 1; transform: translateX(0); }
+
+/* Info panel */
+.pe-info-panel { background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: center; border: 1px solid #E5E7EB; position: relative; overflow: hidden; }
+.pe-info-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #111827; }
+.pe-info-icon-wrap { width: 48px; height: 48px; border-radius: 12px; background: #F3F4F6; display: flex; align-items: center; justify-content: center; color: #111827; margin-bottom: 20px; }
+.pe-info-label { font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 600; color: #111827; margin: 0 0 12px; }
+.pe-info-text { font-size: 15px; color: #4B5563; line-height: 1.7; margin: 0; }
 
 /* CTA */
-.pe-cta-wrap{text-align:center;margin-top:40px}
-.pe-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:#1b2436;color:#fff;border:none;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;font-family:inherit;text-decoration:none}
-.pe-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,36,54,.25)}
-`;
+.pe-cta-wrap { text-align: center; margin-top: 48px; }
+.pe-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 36px; background: #111827; color: #fff; border: none; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform .15s,box-shadow .15s; font-family: inherit; }
+.pe-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(17,24,39,.25); }
+\`;
 
 const ZONES = [
   {
     id: 'far',
-    label: 'Mirar de lejos',
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
     title: 'Visión de lejos',
-    text: 'Miras al frente y ves nítido a la distancia — como al manejar o ver la tele.',
+    desc: 'Manejar, ver la tele o admirar paisajes.',
+    text: 'Miras al frente a través de la parte superior del lente y ves nítido a la distancia. El campo visual es súper amplio para que disfrutes de tu entorno sin restricciones.',
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
   },
   {
     id: 'mid',
-    label: 'Intermedio',
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
     title: 'Visión intermedia',
-    text: 'Bajas un poco la mirada y enfocas la compu o el celular, sin cansarte.',
+    desc: 'Trabajar en la computadora o cocinar.',
+    text: 'Bajas un poco la mirada y entras al corredor intermedio. Enfocas perfectamente la pantalla de la compu o el tablero del auto sin forzar el cuello ni cansarte.',
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
   },
   {
     id: 'near',
-    label: 'De cerca',
-    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
     title: 'Visión de cerca',
-    text: 'Miras hacia abajo y lees de cerca con claridad. Todo en el mismo lente, sin línea que se note.',
+    desc: 'Leer, usar el celular o manualidades.',
+    text: 'Miras hacia abajo y utilizas la zona inferior del lente. Lees tu celular o un libro con absoluta claridad. Todo en el mismo lente, sin la molesta línea de los bifocales.',
+    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
   },
 ];
-
-function ProgressiveLensSVG({ activeZone }: { activeZone: string }) {
-  const farColor = activeZone === 'far' ? '#85B7EB' : '#E6F1FB';
-  const midColor = activeZone === 'mid' ? '#85B7EB' : '#E6F1FB';
-  const nearColor = activeZone === 'near' ? '#85B7EB' : '#E6F1FB';
-
-  const farLabelWeight = activeZone === 'far' ? '700' : '400';
-  const midLabelWeight = activeZone === 'mid' ? '700' : '400';
-  const nearLabelWeight = activeZone === 'near' ? '700' : '400';
-
-  const farLabelColor = activeZone === 'far' ? '#0C447C' : '#8a9bb5';
-  const midLabelColor = activeZone === 'mid' ? '#0C447C' : '#8a9bb5';
-  const nearLabelColor = activeZone === 'near' ? '#0C447C' : '#8a9bb5';
-
-  return (
-    <svg width="180" height="220" viewBox="0 0 180 220">
-      <defs>
-        <clipPath id="lensClip">
-          <ellipse cx="90" cy="110" rx="72" ry="90"/>
-        </clipPath>
-      </defs>
-      {/* Lens outline */}
-      <ellipse cx="90" cy="110" rx="72" ry="90" fill="none" stroke="#0C447C" strokeWidth="2.5"/>
-      
-      {/* Zones clipped to lens */}
-      <g clipPath="url(#lensClip)">
-        {/* Far zone (top) */}
-        <rect x="0" y="20" width="180" height="73" fill={farColor} style={{ transition: 'fill 0.4s ease' }}/>
-        {/* Mid zone (center) */}
-        <rect x="0" y="93" width="180" height="55" fill={midColor} style={{ transition: 'fill 0.4s ease' }}/>
-        {/* Near zone (bottom) */}
-        <rect x="0" y="148" width="180" height="72" fill={nearColor} style={{ transition: 'fill 0.4s ease' }}/>
-        
-        {/* Zone dividers - subtle gradient lines */}
-        <line x1="20" y1="93" x2="160" y2="93" stroke="#0C447C" strokeWidth="0.5" opacity="0.25"/>
-        <line x1="20" y1="148" x2="160" y2="148" stroke="#0C447C" strokeWidth="0.5" opacity="0.25"/>
-      </g>
-
-      {/* Labels */}
-      <text x="90" y="65" textAnchor="middle" fontSize="14" fill={farLabelColor} fontWeight={farLabelWeight} style={{ transition: 'all 0.3s ease' }}>Lejos</text>
-      <text x="90" y="124" textAnchor="middle" fontSize="14" fill={midLabelColor} fontWeight={midLabelWeight} style={{ transition: 'all 0.3s ease' }}>Intermedio</text>
-      <text x="90" y="178" textAnchor="middle" fontSize="14" fill={nearLabelColor} fontWeight={nearLabelWeight} style={{ transition: 'all 0.3s ease' }}>Cerca</text>
-
-      {/* Arrow indicator on active zone */}
-      {activeZone === 'far' && <polygon points="170,55 180,65 170,75" fill="#0C447C" opacity="0.6" style={{ transition: 'all 0.3s ease' }}/>}
-      {activeZone === 'mid' && <polygon points="170,110 180,120 170,130" fill="#0C447C" opacity="0.6" style={{ transition: 'all 0.3s ease' }}/>}
-      {activeZone === 'near' && <polygon points="170,165 180,175 170,185" fill="#0C447C" opacity="0.6" style={{ transition: 'all 0.3s ease' }}/>}
-
-      {/* "Sin línea" label */}
-      <text x="90" y="215" textAnchor="middle" fontSize="10" fill="#8a857b" fontStyle="italic">Sin línea visible</text>
-    </svg>
-  );
-}
 
 interface ProgressiveExplainerProps {
   onOpenCotizador?: () => void;
@@ -128,41 +101,53 @@ export default function ProgressiveExplainer({ onOpenCotizador }: ProgressiveExp
         <p className="pe-sub">La tecnología más cómoda y estética para ver a todas las distancias.</p>
         <p className="pe-tagline">Un solo lente, tres distancias, sin línea.</p>
 
-        {/* Buttons */}
-        <div className="pe-btns">
-          {ZONES.map(z => (
-            <button
-              key={z.id}
-              className={`pe-btn${activeZone === z.id ? ' active' : ''}`}
-              onClick={() => setActiveZone(z.id)}
-            >
-              {z.label}
-            </button>
-          ))}
+        {/* Dynamic Simulator */}
+        <div className="pe-sim-box">
+          <div className="pe-sim-bg" />
+          
+          <div className="pe-lens-overlay">
+            <div className={\`pe-lens-blur \${activeZone}\`} />
+            
+            <div className={\`pe-lens-label far \${activeZone === 'far' ? 'active' : ''}\`}>Lejos</div>
+            <div className={\`pe-lens-label mid \${activeZone === 'mid' ? 'active' : ''}\`}>Intermedio</div>
+            <div className={\`pe-lens-label near \${activeZone === 'near' ? 'active' : ''}\`}>Cerca</div>
+          </div>
         </div>
 
-        {/* Body: Lens + Info */}
-        <div className="pe-body">
-          <div className="pe-lens-col">
-            <ProgressiveLensSVG activeZone={activeZone} />
+        {/* Controls and Info */}
+        <div className="pe-controls">
+          <div className="pe-btn-list">
+            {ZONES.map(z => (
+              <div 
+                key={z.id} 
+                className={\`pe-zone-btn \${activeZone === z.id ? 'active' : ''}\`}
+                onClick={() => setActiveZone(z.id)}
+              >
+                <div>
+                  <div className="pe-zone-title">{z.title}</div>
+                  <div className="pe-zone-desc">{z.desc}</div>
+                </div>
+                <div className="pe-zone-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="pe-info-col">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeZone}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -12 }}
-                transition={{ duration: 0.25 }}
-                className="pe-info-card"
-              >
-                <div className="pe-info-icon">{currentZone.icon}</div>
-                <h3 className="pe-info-label">{currentZone.title}</h3>
-                <p className="pe-info-text">{currentZone.text}</p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeZone}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+              className="pe-info-panel"
+            >
+              <div className="pe-info-icon-wrap">{currentZone.icon}</div>
+              <h3 className="pe-info-label">{currentZone.title}</h3>
+              <p className="pe-info-text">{currentZone.text}</p>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         <div className="pe-cta-wrap">

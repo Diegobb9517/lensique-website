@@ -48,9 +48,9 @@ const css = `
 .le-spec-lbl{font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:1px;font-weight:400}
 .le-slider-hint{font-size:14px;color:#6B7280;text-align:center;margin-top:24px;font-style:italic;font-weight:300}
 
-/* Simulator FULL WIDTH PARALLAX */
-.le-sim-wrap{width:100vw;height:420px;position:relative;margin:0 0 32px calc(50% - 50vw);background:#000;overflow:hidden}
-@media(max-width:600px){.le-sim-wrap{height:300px}}
+  /* Simulator Container */
+  .le-sim-wrap{width:100%;height:320px;position:relative;margin:0;background:#000;overflow:hidden;border-radius:24px}
+  @media(max-width:600px){.le-sim-wrap{height:280px}}
 
 .le-sim-bg{position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed;filter:blur(8px) brightness(1.1);z-index:1}
 
@@ -439,7 +439,7 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                 <h3 className="le-mod-title" style={{ textAlign: 'left', marginBottom: '24px' }}>Selecciona lo que describa mejor tu día a día</h3>
                 
                 <div className="le-slider-row" style={{ alignItems: 'flex-start' }}>
-                  <div style={{ flex: '1 1 50%' }}>
+                  <div style={{ flex: '1 1 50%', minWidth: '320px' }}>
                     <div className="le-life-grid">
                       <div className={`le-life-opt ${treatments.ar ? 'active' : ''}`} onClick={() => toggleTreat('ar')}>
                         <div style={{ flex: 1 }}>
@@ -474,17 +474,17 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                     </div>
                     
                     {/* ── Simulator Window ── */}
-                    <div className="le-sim-wrap" style={{ borderRadius: '16px', margin: '0 auto', maxWidth: '100%', height: '320px' }}>
+                    <div className="le-sim-wrap">
                       <div className="le-sim-bg" />
-                      <div className="le-sim-center" style={{ gap: '20px' }}>
-                        <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
+                      <div className="le-sim-center" style={{ gap: '16px' }}>
+                        <div className="le-sim-lens" style={{ width: '180px', height: '130px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
                           <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
                           <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
                           <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />
                           <div className={`le-sim-photo ${treatments.photo ? 'on' : ''}`} />
                         </div>
-                        <div className="le-sim-bridge" style={{ width: '20px' }} />
-                        <div className="le-sim-lens" style={{ width: '220px', height: '160px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
+                        <div className="le-sim-bridge" style={{ width: '16px' }} />
+                        <div className="le-sim-lens" style={{ width: '180px', height: '130px', borderRadius: '40% 40% 50% 50% / 30% 30% 55% 55%', borderWidth: '3px' }}>
                           <div className={`le-sim-washout ${treatments.ar ? 'off' : ''}`} />
                           <div className={`le-sim-glare ${treatments.ar ? 'off' : ''}`} />
                           <div className={`le-sim-blue ${treatments.blue ? 'on' : ''}`} />

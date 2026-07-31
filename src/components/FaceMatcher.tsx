@@ -2,112 +2,118 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /* ═══════════════════════════════════════════
-   Face Matcher — ¿Qué le queda a tu rostro?
+   Face Matcher — ¿Qué le queda a tu rostro? (Minimalist)
    ═══════════════════════════════════════════ */
 
 const css = `
-.fm-wrap{background:#f7f5f0;padding:80px 24px;font-family:'Inter','Helvetica Neue',sans-serif}
-.fm-inner{max-width:960px;margin:0 auto}
-.fm-title{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:500;color:#1b2436;text-align:center;margin:0 0 6px}
-.fm-sub{text-align:center;color:#8a857b;font-size:15px;margin:0 0 40px;line-height:1.5}
+.fm-wrap { padding: 120px 24px; background: #ffffff; font-family: 'Inter', sans-serif; }
+.fm-inner { max-width: 1000px; margin: 0 auto; }
+.fm-header { text-align: center; margin-bottom: 70px; }
+.fm-title { font-family: 'Playfair Display', Georgia, serif; font-size: 46px; color: #111; margin: 0 0 16px; font-weight: 400; letter-spacing: -0.5px; }
+.fm-sub { color: #666; font-size: 17px; font-weight: 300; max-width: 500px; margin: 0 auto; line-height: 1.6; }
 
-/* Face selector */
-.fm-faces{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:40px}
-.fm-face{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 18px;border:1px solid rgba(0,0,0,.1);border-radius:14px;background:#fff;cursor:pointer;transition:all .18s ease;min-width:90px}
-.fm-face:hover{transform:translateY(-2px);border-color:rgba(0,0,0,.25);box-shadow:0 4px 16px rgba(0,0,0,.05)}
-.fm-face.active{border:2px solid #1e2a5a;background:#f5f6fb;padding:13px 17px}
-.fm-face-ico{color:#5f5e5a;display:flex;align-items:center;justify-content:center;height:48px}
-.fm-face.active .fm-face-ico{color:#1e2a5a}
-.fm-face-lbl{font-size:13px;font-weight:500;color:#5f5e5a}
-.fm-face.active .fm-face-lbl{color:#1e2a5a;font-weight:600}
+.fm-layout { display: flex; gap: 60px; align-items: flex-start; }
+@media (max-width: 860px) { .fm-layout { flex-direction: column; gap: 40px; } }
 
-/* Results */
-.fm-result-title{text-align:center;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9a958c;margin-bottom:24px}
-.fm-result-title strong{color:#1e2a5a}
-.fm-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-@media(max-width:600px){.fm-cards{grid-template-columns:1fr}}
-.fm-card{background:#fff;border:0.5px solid rgba(0,0,0,.1);border-radius:16px;padding:28px 24px;display:flex;align-items:flex-start;gap:20px;transition:transform .18s ease,box-shadow .18s ease}
-.fm-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.06)}
-.fm-card-ico{flex:0 0 auto;color:#1e2a5a;display:flex;align-items:center;justify-content:center}
-.fm-card-body{flex:1}
-.fm-card-name{font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:500;color:#1b2436;margin:0 0 6px}
-.fm-card-why{font-size:13px;color:#8a857b;line-height:1.5;margin:0 0 12px}
-.fm-card-link{font-size:13px;font-weight:600;color:#1e2a5a;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:gap .15s}
-.fm-card-link:hover{gap:8px}
+.fm-sidebar { flex: 0 0 240px; display: flex; flex-direction: column; gap: 8px; }
+@media (max-width: 860px) { .fm-sidebar { flex: 1; width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; } }
 
-/* CTA */
-.fm-cta-wrap{text-align:center;margin-top:40px}
-.fm-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 40px;background:#1b2436;color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;font-family:inherit;text-decoration:none}
-.fm-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,36,54,.25)}
+.fm-tab { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: transparent; border: 1px solid transparent; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: left; }
+.fm-tab:hover { background: #f9f9f9; }
+.fm-tab.active { background: #111; color: #fff; box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+@media (max-width: 860px) { .fm-tab { padding: 12px 16px; flex-direction: column; gap: 8px; align-items: center; text-align: center; } }
+
+.fm-tab-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #111; transition: color 0.3s; }
+.fm-tab.active .fm-tab-icon { color: #fff; }
+.fm-tab-label { font-size: 15px; font-weight: 500; letter-spacing: 0.5px; color: #444; transition: color 0.3s; }
+.fm-tab.active .fm-tab-label { color: #fff; }
+
+.fm-content { flex: 1; min-width: 0; }
+.fm-result-header { margin-bottom: 32px; border-bottom: 1px solid #eee; padding-bottom: 24px; }
+.fm-result-subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #888; font-weight: 600; margin: 0 0 12px; }
+.fm-result-title { font-family: 'Playfair Display', Georgia, serif; font-size: 32px; color: #111; margin: 0; font-weight: 400; }
+
+.fm-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.fm-card { background: #fafafa; border-radius: 12px; padding: 36px 32px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease; border: 1px solid #f0f0f0; display: flex; flex-direction: column; height: 100%; }
+.fm-card:hover { transform: translateY(-6px); background: #f4f4f5; }
+.fm-card-icon { margin-bottom: 28px; color: #111; display: flex; align-items: center; }
+.fm-card-name { font-family: 'Playfair Display', Georgia, serif; font-size: 22px; color: #111; margin: 0 0 12px; font-weight: 400; }
+.fm-card-why { font-size: 14px; color: #666; line-height: 1.7; margin: 0 0 32px; flex-grow: 1; font-weight: 300; }
+.fm-card-link { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #111; text-decoration: none; transition: gap 0.3s ease; }
+.fm-card-link:hover { gap: 12px; }
+
+.fm-cta-wrap { display: flex; justify-content: center; margin-top: 80px; }
+.fm-cta { display: inline-flex; align-items: center; gap: 12px; padding: 18px 48px; background: transparent; color: #111; border: 1px solid #111; border-radius: 50px; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+.fm-cta:hover { background: #111; color: #fff; }
 `;
 
-/* ─── Face icons (SVG stroke) ─── */
+/* ─── Face icons (Minimalist SVG) ─── */
 const FACE_ICONS: Record<string, JSX.Element> = {
-  oval: <svg width="36" height="44" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><ellipse cx="21" cy="26" rx="14" ry="20"/></svg>,
-  round: <svg width="36" height="44" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="21" cy="26" r="18"/></svg>,
-  square: <svg width="36" height="44" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="5" y="9" width="32" height="34" rx="6"/></svg>,
-  heart: <svg width="36" height="44" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round"><path d="M5 12 Q21 6 37 12 Q33 34 21 46 Q9 34 5 12 Z"/></svg>,
-  diamond: <svg width="36" height="44" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round"><path d="M21 5 L37 26 L21 47 L5 26 Z"/></svg>,
+  oval: <svg width="24" height="30" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5"><ellipse cx="12" cy="15" rx="9" ry="13"/></svg>,
+  round: <svg width="24" height="30" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="15" r="11"/></svg>,
+  square: <svg width="24" height="30" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="4" width="18" height="22" rx="4"/></svg>,
+  heart: <svg width="24" height="30" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"><path d="M12 26 C12 26 3 18 3 10 C3 6 6 4 9 4 C10.5 4 12 5.5 12 5.5 C12 5.5 13.5 4 15 4 C18 4 21 6 21 10 C21 18 12 26 12 26 Z"/></svg>,
+  diamond: <svg width="24" height="30" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"><polygon points="12,3 21,15 12,27 3,15"/></svg>,
 };
 
-/* ─── Frame SVG drawings ─── */
+/* ─── Frame SVG drawings (Minimalist) ─── */
 function FrameRect() {
   return (
-    <svg width="100" height="50" viewBox="0 0 160 60" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="8" y="10" width="56" height="36" rx="7"/>
-      <rect x="96" y="10" width="56" height="36" rx="7"/>
-      <path d="M64 28 Q80 20 96 28"/>
-      <line x1="8" y1="22" x2="1" y2="18"/><line x1="152" y1="22" x2="159" y2="18"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="6" width="30" height="18" rx="3"/>
+      <rect x="46" y="6" width="30" height="18" rx="3"/>
+      <path d="M34 14 Q40 10 46 14"/>
+      <line x1="4" y1="12" x2="0" y2="10"/><line x1="76" y1="12" x2="80" y2="10"/>
     </svg>
   );
 }
 function FrameRound() {
   return (
-    <svg width="100" height="50" viewBox="0 0 160 60" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="40" cy="30" r="22"/>
-      <circle cx="120" cy="30" r="22"/>
-      <path d="M62 28 Q80 20 98 28"/>
-      <line x1="18" y1="20" x2="4" y2="14"/><line x1="142" y1="20" x2="156" y2="14"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="19" cy="15" r="12"/>
+      <circle cx="61" cy="15" r="12"/>
+      <path d="M31 14 Q40 10 49 14"/>
+      <line x1="7" y1="11" x2="1" y2="8"/><line x1="73" y1="11" x2="79" y2="8"/>
     </svg>
   );
 }
 function FrameCatEye() {
   return (
-    <svg width="100" height="50" viewBox="0 0 160 60" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 42 Q10 12 38 10 Q62 8 66 28 Q68 42 40 46 Q14 48 12 42 Z"/>
-      <path d="M148 42 Q150 12 122 10 Q98 8 94 28 Q92 42 120 46 Q146 48 148 42 Z"/>
-      <path d="M66 28 Q80 22 94 28"/>
-      <line x1="12" y1="20" x2="2" y2="12"/><line x1="148" y1="20" x2="158" y2="12"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 22 Q4 8 20 6 Q32 5 34 15 Q36 24 22 26 Q8 27 6 22 Z"/>
+      <path d="M74 22 Q76 8 60 6 Q48 5 46 15 Q44 24 58 26 Q72 27 74 22 Z"/>
+      <path d="M34 14 Q40 10 46 14"/>
+      <line x1="6" y1="12" x2="1" y2="8"/><line x1="74" y1="12" x2="79" y2="8"/>
     </svg>
   );
 }
 function FrameAviador() {
   return (
-    <svg width="100" height="50" viewBox="0 0 160 60" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 14 Q10 14 10 20 L8 44 Q8 50 16 50 L56 48 Q66 46 66 30 L66 16 Q64 12 56 12 Z"/>
-      <path d="M146 14 Q150 14 150 20 L152 44 Q152 50 144 50 L104 48 Q94 46 94 30 L94 16 Q96 12 104 12 Z"/>
-      <path d="M66 22 Q80 16 94 22"/>
-      <line x1="14" y1="14" x2="4" y2="10"/><line x1="146" y1="14" x2="156" y2="10"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 8 Q4 8 4 12 L3 24 Q3 27 8 27 L28 26 Q34 25 34 16 L34 9 Q33 7 28 7 Z"/>
+      <path d="M73 8 Q76 8 76 12 L77 24 Q77 27 72 27 L52 26 Q46 25 46 16 L46 9 Q47 7 52 7 Z"/>
+      <path d="M34 12 Q40 9 46 12"/>
+      <line x1="7" y1="8" x2="2" y2="6"/><line x1="73" y1="8" x2="78" y2="6"/>
     </svg>
   );
 }
 function FrameOval() {
   return (
-    <svg width="100" height="50" viewBox="0 0 160 60" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <ellipse cx="40" cy="30" rx="28" ry="20"/>
-      <ellipse cx="120" cy="30" rx="28" ry="20"/>
-      <path d="M68 26 Q80 20 92 26"/>
-      <line x1="12" y1="22" x2="2" y2="16"/><line x1="148" y1="22" x2="158" y2="16"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="20" cy="15" rx="15" ry="10"/>
+      <ellipse cx="60" cy="15" rx="15" ry="10"/>
+      <path d="M35 13 Q40 10 45 13"/>
+      <line x1="5" y1="12" x2="1" y2="9"/><line x1="75" y1="12" x2="79" y2="9"/>
     </svg>
   );
 }
 
 const FRAME_COMPONENTS: Record<string, { icon: JSX.Element; name: string; why: string }> = {
   rect: { icon: <FrameRect/>, name: 'Rectangulares', why: 'Añaden ángulos y definen tus facciones, alargando el rostro.' },
-  round: { icon: <FrameRound/>, name: 'Redondos o Pantos', why: 'Suavizan líneas fuertes y equilibran la mandíbula.' },
-  cat: { icon: <FrameCatEye/>, name: 'Cat Eye', why: 'Acentúan los pómulos y suben la mirada.' },
-  aviador: { icon: <FrameAviador/>, name: 'Aviador', why: 'Equilibran una frente amplia con su base ancha.' },
-  oval: { icon: <FrameOval/>, name: 'Ovalados', why: 'Proporción equilibrada, favorecen casi a todos.' },
+  round: { icon: <FrameRound/>, name: 'Redondos / Pantos', why: 'Suavizan líneas fuertes y equilibran la mandíbula.' },
+  cat: { icon: <FrameCatEye/>, name: 'Cat Eye', why: 'Acentúan los pómulos y elevan la mirada.' },
+  aviador: { icon: <FrameAviador/>, name: 'Estilo Aviador', why: 'Equilibran una frente amplia con su base ancha.' },
+  oval: { icon: <FrameOval/>, name: 'Ovalados', why: 'De proporción equilibrada, favorecen a casi todos.' },
 };
 
 const FACE_RECS: Record<string, string[]> = {
@@ -134,55 +140,59 @@ export default function FaceMatcher({ onOpenCatalog }: FaceMatcherProps) {
     <section className="fm-wrap" id="face-matcher">
       <style>{css}</style>
       <div className="fm-inner">
-        <h2 className="fm-title">¿Qué le queda a tu rostro?</h2>
-        <p className="fm-sub">Elige tu forma de rostro y descubre qué armazones te favorecen.</p>
-
-        {/* Face selector */}
-        <div className="fm-faces">
-          {Object.entries(FACE_ICONS).map(([id, icon]) => (
-            <button key={id} className={`fm-face${face === id ? ' active' : ''}`} onClick={() => setFace(id)}>
-              <div className="fm-face-ico">{icon}</div>
-              <span className="fm-face-lbl">{FACE_LABELS[id]}</span>
-            </button>
-          ))}
+        <div className="fm-header">
+          <h2 className="fm-title">¿Qué le queda a tu rostro?</h2>
+          <p className="fm-sub">Descubre los estilos que mejor armonizan con tus facciones.</p>
         </div>
 
-        {/* Results */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={face}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            <p className="fm-result-title">Para rostro <strong>{FACE_LABELS[face]}</strong> te favorecen:</p>
-            <div className="fm-cards">
-              {recs.map(fk => {
-                const f = FRAME_COMPONENTS[fk];
-                return (
-                  <div key={fk} className="fm-card">
-                    <div className="fm-card-ico">{f.icon}</div>
-                    <div className="fm-card-body">
+        <div className="fm-layout">
+          {/* Sidebar Face selector */}
+          <div className="fm-sidebar">
+            {Object.entries(FACE_ICONS).map(([id, icon]) => (
+              <button key={id} className={`fm-tab ${face === id ? 'active' : ''}`} onClick={() => setFace(id)}>
+                <div className="fm-tab-icon">{icon}</div>
+                <span className="fm-tab-label">{FACE_LABELS[id]}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Main Content Area */}
+          <div className="fm-content">
+            <div className="fm-result-header">
+              <p className="fm-result-subtitle">Recomendaciones para</p>
+              <h3 className="fm-result-title">Rostro {FACE_LABELS[face]}</h3>
+            </div>
+            
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={face}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="fm-cards"
+              >
+                {recs.map(fk => {
+                  const f = FRAME_COMPONENTS[fk];
+                  return (
+                    <div key={fk} className="fm-card">
+                      <div className="fm-card-icon">{f.icon}</div>
                       <h4 className="fm-card-name">{f.name}</h4>
                       <p className="fm-card-why">{f.why}</p>
                       <a href="#catalogo" className="fm-card-link" onClick={(e) => { e.preventDefault(); onOpenCatalog?.(); }}>
-                        Ver armazones ›
+                        Ver armazones <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                       </a>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+                  );
+                })}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
 
         <div className="fm-cta-wrap">
           <button className="fm-cta" onClick={onOpenCatalog}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/>
-            </svg>
-            Ver catálogo completo
+            Explorar catálogo completo
           </button>
         </div>
       </div>

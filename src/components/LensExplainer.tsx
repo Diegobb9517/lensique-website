@@ -438,8 +438,8 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
               <motion.div key="s3" className="le-step-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <h3 className="le-mod-title" style={{ textAlign: 'left', marginBottom: '24px' }}>Selecciona lo que describa mejor tu día a día</h3>
                 
-                <div className="le-slider-row" style={{ alignItems: 'flex-start' }}>
-                  <div style={{ flex: '1 1 50%', minWidth: '320px' }}>
+                <div className="le-slider-row" style={{ alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                  <div style={{ flex: '1 1 0%', minWidth: '300px' }}>
                     <div className="le-life-grid">
                       <div className={`le-life-opt ${treatments.ar ? 'active' : ''}`} onClick={() => toggleTreat('ar')}>
                         <div style={{ flex: 1 }}>
@@ -467,10 +467,10 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                     </div>
                   </div>
 
-                  <div style={{ flex: '1 1 50%' }}>
+                  <div style={{ flex: '1 1 0%', minWidth: '300px' }}>
                     <div style={{ textAlign: 'center', marginBottom: '16px' }}>
                       <h4 style={{ fontFamily: 'Playfair Display', fontSize: '20px', marginBottom: '4px' }}>Simulador en tiempo real</h4>
-                      <p style={{ color: '#6B7280', fontSize: '14px' }}>Así se verá el mundo a través de tus micas.</p>
+                      <p style={{ color: '#6B7280', fontSize: '14px', margin: 0 }}>Así se verá el mundo a través de tus micas.</p>
                     </div>
                     
                     {/* ── Simulator Window ── */}

@@ -292,19 +292,19 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
     });
   };
 
-  // Cost calculation
+  // Cost calculation based on Zeiss L5 2026 Engine
   let totalCost = 0;
-  if (lensType === 'mono') totalCost += 990;
-  if (lensType === 'bif') totalCost += 1490;
-  if (lensType === 'prog') totalCost += 2490;
+  if (lensType === 'mono') totalCost += 1200;
+  if (lensType === 'bif') totalCost += 3050;
+  if (lensType === 'prog') totalCost += 4100;
   
-  if (indexStep === 1) totalCost += 500;
-  if (indexStep === 2) totalCost += 1000;
-  if (indexStep === 3) totalCost += 1800;
+  if (indexStep === 1) totalCost += 200;
+  if (indexStep === 2) totalCost += 450;
+  if (indexStep === 3) totalCost += 5050;
   
-  if (treatments.ar) totalCost += 300;
-  if (treatments.blue) totalCost += 400;
-  if (treatments.photo) totalCost += 700;
+  if (treatments.ar) totalCost += 700;
+  if (treatments.blue) totalCost += 700;
+  if (treatments.photo) totalCost += 1600;
 
   const nextStep = () => { window.scrollTo({ top: document.getElementById('micas-explicador')?.offsetTop! - 80, behavior: 'smooth' }); setStep(s => Math.min(4, s + 1)); };
   const prevStep = () => { window.scrollTo({ top: document.getElementById('micas-explicador')?.offsetTop! - 80, behavior: 'smooth' }); setStep(s => Math.max(1, s - 1)); };

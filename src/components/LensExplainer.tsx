@@ -435,7 +435,7 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
             )}
 
             {step === 3 && (
-              <motion.div key="s3" className="le-step-content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <motion.div key="s3" className="le-step-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <h3 className="le-mod-title" style={{ textAlign: 'left', marginBottom: '24px' }}>Selecciona lo que describa mejor tu día a día</h3>
                 
                 <div className="le-slider-row" style={{ alignItems: 'flex-start' }}>

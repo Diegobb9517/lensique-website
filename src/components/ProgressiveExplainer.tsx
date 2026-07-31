@@ -59,7 +59,7 @@ const css = `
 .pe-cta-wrap { text-align: center; margin-top: 48px; }
 .pe-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 36px; background: #111827; color: #fff; border: none; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform .15s,box-shadow .15s; font-family: inherit; }
 .pe-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(17,24,39,.25); }
-\`;
+`;
 
 const ZONES = [
   {
@@ -106,11 +106,11 @@ export default function ProgressiveExplainer({ onOpenCotizador }: ProgressiveExp
           <div className="pe-sim-bg" />
           
           <div className="pe-lens-overlay">
-            <div className={\`pe-lens-blur \${activeZone}\`} />
+            <div className={`pe-lens-blur ${activeZone}`} />
             
-            <div className={\`pe-lens-label far \${activeZone === 'far' ? 'active' : ''}\`}>Lejos</div>
-            <div className={\`pe-lens-label mid \${activeZone === 'mid' ? 'active' : ''}\`}>Intermedio</div>
-            <div className={\`pe-lens-label near \${activeZone === 'near' ? 'active' : ''}\`}>Cerca</div>
+            <div className={`pe-lens-label far ${activeZone === 'far' ? 'active' : ''}`}>Lejos</div>
+            <div className={`pe-lens-label mid ${activeZone === 'mid' ? 'active' : ''}`}>Intermedio</div>
+            <div className={`pe-lens-label near ${activeZone === 'near' ? 'active' : ''}`}>Cerca</div>
           </div>
         </div>
 
@@ -120,7 +120,7 @@ export default function ProgressiveExplainer({ onOpenCotizador }: ProgressiveExp
             {ZONES.map(z => (
               <div 
                 key={z.id} 
-                className={\`pe-zone-btn \${activeZone === z.id ? 'active' : ''}\`}
+                className={`pe-zone-btn ${activeZone === z.id ? 'active' : ''}`}
                 onClick={() => setActiveZone(z.id)}
               >
                 <div>

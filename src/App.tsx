@@ -1705,7 +1705,7 @@ function App() {
 
         <ProgressiveExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
 
-        <FaceMatcher onOpenCatalog={() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' })} />
+        <FaceMatcher onOpenCatalog={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }} />
 
         <section id="nosotros" className="about-section">
           <div className="about-content">

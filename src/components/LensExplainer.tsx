@@ -72,7 +72,7 @@ const css = `
 .le-sim-glare.off{opacity:0}
 
 /* Blue Light Filter ON */
-.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,235,210,0.12);backdrop-filter:sepia(15%) brightness(0.95);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
+.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,250,235,0.08);backdrop-filter:sepia(5%) brightness(0.97) contrast(1.02);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
 .le-sim-blue.on{opacity:1}
 
 /* Photochromic ON */

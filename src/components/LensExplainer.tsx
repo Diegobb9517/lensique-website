@@ -63,20 +63,20 @@ const css = `
 .le-sim-lens{width:320px;height:240px;border-radius:40% 40% 50% 50% / 30% 30% 55% 55%;border:4px solid rgba(255,255,255,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.2);position:relative;overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);background:url('/images/cafe-view2.jpg') no-repeat center center;background-size:cover;background-attachment:fixed;z-index:4}
 @media(max-width:768px){.le-sim-lens{width:160px;height:120px;border-width:2px}}
 
-/* Washout for AR OFF */
-.le-sim-washout{position:absolute;top:0;left:0;right:0;bottom:0;backdrop-filter:saturate(0.5) contrast(0.85);background:rgba(255,255,255,0.05);transition:opacity 0.6s ease;pointer-events:none}
+/* Washout (Glare simulation) */
+.le-sim-washout{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.15);transition:opacity 0.6s ease;pointer-events:none;border-radius:inherit}
 .le-sim-washout.off{opacity:0}
 
-/* Base glare when AR is OFF */
-.le-sim-glare{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,0.4) 100%);transition:opacity 0.6s ease;pointer-events:none}
+/* Glare Reflections */
+.le-sim-glare{position:absolute;top:0;left:0;width:200%;height:200%;background:linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0) 50%);transform:translate(-20%, -20%);transition:opacity 0.6s ease;pointer-events:none;border-radius:inherit}
 .le-sim-glare.off{opacity:0}
 
 /* Blue Light Filter ON */
-.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,250,235,0.08);backdrop-filter:sepia(5%) brightness(0.97) contrast(1.02);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
+.le-sim-blue{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,250,235,0.08);backdrop-filter:sepia(5%) brightness(0.97) contrast(1.02);opacity:0;transition:opacity 0.6s ease;pointer-events:none;border-radius:inherit}
 .le-sim-blue.on{opacity:1}
 
 /* Photochromic ON */
-.le-sim-photo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(17,24,39,0.7);opacity:0;transition:opacity 1.5s ease;pointer-events:none}
+.le-sim-photo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(17,24,39,0.7);opacity:0;transition:opacity 1.5s ease;pointer-events:none;border-radius:inherit}
 .le-sim-photo.on{opacity:1}
 
 /* Treatments */

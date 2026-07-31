@@ -150,6 +150,7 @@ function FullCatalog({
   onTryOn,
   catalogData, 
   initialFilter = 'Todas',
+  initialSearchQuery = '',
   onConfigureProduct
 }: { 
   isOpen: boolean, 
@@ -158,7 +159,8 @@ function FullCatalog({
   onConfigureProduct: (product: any) => void,
   onTryOn: (product: any) => void,
   catalogData: any[], 
-  initialFilter?: string 
+  initialFilter?: string,
+  initialSearchQuery?: string 
 }) {
 
   const [filter, setFilter] = useState('Todas');
@@ -184,10 +186,11 @@ function FullCatalog({
   useEffect(() => {
     if (isOpen) {
       setFilter(initialFilter || 'Todas');
+      setSearchQuery(initialSearchQuery || '');
       setSelectedBrand('Todas');
       setContactUsageFilter('Todos');
     }
-  }, [isOpen, initialFilter]);
+  }, [isOpen, initialFilter, initialSearchQuery]);
 
   // Update selectedBrand if it becomes invalid (e.g. data changes)
   useEffect(() => {
@@ -726,6 +729,7 @@ function App() {
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
+  const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
@@ -1039,6 +1043,7 @@ function App() {
         onClose={() => setIsCatalogOpen(false)} 
         catalogData={safeJsonParse(settings.full_catalog_data)}
         initialFilter={catalogInitialFilter}
+        initialSearchQuery={catalogInitialSearchQuery}
         onViewProduct={(prod) => {
           setSelectedProductDetail(prod);
         }}
@@ -1705,7 +1710,11 @@ function App() {
 
         <ProgressiveExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
 
-        <FaceMatcher onOpenCatalog={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }} />
+        <FaceMatcher onOpenCatalog={(shape) => { 
+          setCatalogInitialFilter('Armazones'); 
+          setCatalogInitialSearchQuery(shape || '');
+          setIsCatalogOpen(true); 
+        }} />
 
         <section id="nosotros" className="about-section">
           <div className="about-content">

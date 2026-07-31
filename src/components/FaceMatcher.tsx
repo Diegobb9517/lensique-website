@@ -108,12 +108,12 @@ function FrameOval() {
   );
 }
 
-const FRAME_COMPONENTS: Record<string, { icon: JSX.Element; name: string; why: string }> = {
-  rect: { icon: <FrameRect/>, name: 'Rectangulares', why: 'Añaden ángulos y definen tus facciones, alargando el rostro.' },
-  round: { icon: <FrameRound/>, name: 'Redondos / Pantos', why: 'Suavizan líneas fuertes y equilibran la mandíbula.' },
-  cat: { icon: <FrameCatEye/>, name: 'Cat Eye', why: 'Acentúan los pómulos y elevan la mirada.' },
-  aviador: { icon: <FrameAviador/>, name: 'Estilo Aviador', why: 'Equilibran una frente amplia con su base ancha.' },
-  oval: { icon: <FrameOval/>, name: 'Ovalados', why: 'De proporción equilibrada, favorecen a casi todos.' },
+const FRAME_COMPONENTS: Record<string, { icon: JSX.Element; name: string; why: string; searchKeyword: string }> = {
+  rect: { icon: <FrameRect/>, name: 'Rectangulares', why: 'Añaden ángulos y definen tus facciones, alargando el rostro.', searchKeyword: 'rectangular' },
+  round: { icon: <FrameRound/>, name: 'Redondos / Pantos', why: 'Suavizan líneas fuertes y equilibran la mandíbula.', searchKeyword: 'redondo' },
+  cat: { icon: <FrameCatEye/>, name: 'Cat Eye', why: 'Acentúan los pómulos y elevan la mirada.', searchKeyword: 'cat' },
+  aviador: { icon: <FrameAviador/>, name: 'Estilo Aviador', why: 'Equilibran una frente amplia con su base ancha.', searchKeyword: 'aviador' },
+  oval: { icon: <FrameOval/>, name: 'Ovalados', why: 'De proporción equilibrada, favorecen a casi todos.', searchKeyword: 'oval' },
 };
 
 const FACE_RECS: Record<string, string[]> = {
@@ -129,7 +129,7 @@ const FACE_LABELS: Record<string, string> = {
 };
 
 interface FaceMatcherProps {
-  onOpenCatalog?: () => void;
+  onOpenCatalog?: (searchKeyword?: string) => void;
 }
 
 export default function FaceMatcher({ onOpenCatalog }: FaceMatcherProps) {
@@ -179,7 +179,7 @@ export default function FaceMatcher({ onOpenCatalog }: FaceMatcherProps) {
                       <div className="fm-card-icon">{f.icon}</div>
                       <h4 className="fm-card-name">{f.name}</h4>
                       <p className="fm-card-why">{f.why}</p>
-                      <a href="#catalogo" className="fm-card-link" onClick={(e) => { e.preventDefault(); onOpenCatalog?.(); }}>
+                      <a href="#catalogo" className="fm-card-link" onClick={(e) => { e.preventDefault(); onOpenCatalog?.(f.searchKeyword); }}>
                         Ver armazones <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                       </a>
                     </div>

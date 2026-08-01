@@ -172,54 +172,17 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   };
 
   const handleComplete = async () => {
-    setIsSending(true);
-    try {
-      const formData = new FormData();
-      
-      const configData = {
-        isContactLens: true,
-        productName: product?.name,
-        productPrice: product?.price_incl_tax || 0,
+    onComplete({
+      ...product,
+      contactLensConfig: {
         quantityOD,
         quantityOS,
         samePrescription,
         prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
         prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
-        baseCurve: '8.6',
-        diameter: '14.5'
-      };
-
-      formData.append('config', JSON.stringify(configData));
-
-      if (prescriptionPhotoFile) {
-        formData.append('prescriptionPhotoFile', prescriptionPhotoFile);
+        hasPhoto: !!prescriptionPhotoFile
       }
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-      await fetch(`${API_BASE}/api/quotes/send`, {
-        method: 'POST',
-        body: formData,
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-    } catch (e) {
-      console.error('Error sending quote email:', e);
-    } finally {
-      setIsSending(false);
-      onComplete({
-        ...product,
-        contactLensConfig: {
-          quantityOD,
-          quantityOS,
-          samePrescription,
-          prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
-          prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
-          hasPhoto: !!prescriptionPhotoFile
-        }
-      });
-    }
+    });
   };
 
   const renderPrescriptionForm = (eye: 'OD' | 'OS', label: string) => {
@@ -462,10 +425,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               <button 
                 className="cl-btn-primary" 
                 onClick={handleComplete}
-                disabled={isSending}
-                style={{ opacity: isSending ? 0.7 : 1 }}
               >
-                {isSending ? 'Enviando...' : 'Continuar por WhatsApp'}
+                Agregar al carrito
               </button>
             </div>
           </div>

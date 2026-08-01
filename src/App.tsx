@@ -642,6 +642,9 @@ const cookiesData: InfoPageData = {
 function PaymentSuccessView() {
   const estimatedDelivery = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_delivery') : null;
 
+  const deliveryMethod = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_delivery_method') : null;
+  const shippingAddress = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_shipping_address') : null;
+
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8f6f2 0%, #e8e4dc 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: "'Inter', 'Helvetica Neue', sans-serif" }}>
       <div style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)', padding: '48px 36px', maxWidth: '460px', width: '100%', textAlign: 'center' as const }}>
@@ -658,13 +661,23 @@ function PaymentSuccessView() {
         <div style={{ background: '#f0f7ff', border: '1px solid #d0e3f7', borderRadius: '14px', padding: '24px', marginBottom: '32px', textAlign: 'left' as const }}>
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#1a3a5c', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            Instrucciones de Recolección
+            {deliveryMethod === 'HOME_DELIVERY' ? 'Instrucciones de Entrega' : 'Instrucciones de Recolección'}
           </h3>
           <p style={{ fontSize: '14px', color: '#2a5a8a', lineHeight: 1.7, margin: 0 }}>
-            Tu compra se recoge directamente en nuestra sucursal:<br/><br/>
-            <strong>Av. Guadalupe 1296</strong><br/>
-            Jardines de San Ignacio, Zapopan, Jal.<br/><br/>
-            <em>Te avisaremos por WhatsApp o correo en cuanto tu pedido esté listo para ser entregado.</em>
+            {deliveryMethod === 'HOME_DELIVERY' ? (
+              <>
+                Tu pedido será enviado a la siguiente dirección:<br/><br/>
+                <strong>{shippingAddress}</strong><br/><br/>
+                <em>Te enviaremos un mensaje por WhatsApp en cuanto tu paquete esté en camino con la paquetería.</em>
+              </>
+            ) : (
+              <>
+                Tu compra se recoge directamente en nuestra sucursal:<br/><br/>
+                <strong>Av. Guadalupe 1296</strong><br/>
+                Jardines de San Ignacio, Zapopan, Jal.<br/><br/>
+                <em>Te avisaremos por WhatsApp o correo en cuanto tu pedido esté listo para ser entregado.</em>
+              </>
+            )}
           </p>
           {estimatedDelivery && (
             <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #d0e3f7', display: 'flex', alignItems: 'center', gap: '8px', color: '#16a34a', fontWeight: 600, fontSize: '14px' }}>

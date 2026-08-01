@@ -12,7 +12,20 @@ export function CartDrawer() {
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
   const [buyerEmail, setBuyerEmail] = useState('');
+  const [deliveryMethod, setDeliveryMethod] = useState<'STORE_PICKUP' | 'HOME_DELIVERY'>('STORE_PICKUP');
+  const [addressDetails, setAddressDetails] = useState({
+    street: '',
+    exterior: '',
+    interior: '',
+    colony: '',
+    zip: '',
+    city: '',
+    state: ''
+  });
   const [formError, setFormError] = useState('');
+  
+  // FEATURE FLAG: Mantener oculto del público por solicitud del usuario
+  const ENABLE_SHIPPING_FEATURE = true;
 
   const maxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
   let maxDelStr = '';
@@ -30,8 +43,8 @@ export function CartDrawer() {
     }
     
     // Validate form
-    if (!buyerName.trim() || !buyerPhone.trim() || !buyerEmail.trim()) {
-      setFormError('Todos los campos son obligatorios.');
+    if (!buyerName.trim() || !buyerPhone.trim()) {
+      setFormError('Nombre y teléfono son obligatorios.');
       return;
     }
     const phoneClean = buyerPhone.replace(/\D/g, '');
@@ -39,8 +52,13 @@ export function CartDrawer() {
       setFormError('El teléfono debe tener 10 dígitos.');
       return;
     }
-    if (!/^\S+@\S+\.\S+$/.test(buyerEmail)) {
+    if (buyerEmail.trim() && !/^\S+@\S+\.\S+$/.test(buyerEmail)) {
       setFormError('Ingresa un correo electrónico válido.');
+      return;
+    }
+    
+    if (deliveryMethod === 'HOME_DELIVERY' && (!addressDetails.street || !addressDetails.exterior || !addressDetails.colony || !addressDetails.zip || !addressDetails.city || !addressDetails.state)) {
+      setFormError('Por favor completa todos los campos requeridos de la dirección de envío.');
       return;
     }
     
@@ -61,7 +79,10 @@ export function CartDrawer() {
           buyerInfo: {
             name: buyerName.trim(),
             phone: phoneClean,
-            email: buyerEmail.trim()
+            email: buyerEmail.trim(),
+            deliveryMethod,
+            shippingAddress: deliveryMethod === 'HOME_DELIVERY' ? 
+              `${addressDetails.street} ${addressDetails.exterior} ${addressDetails.interior ? `Int ${addressDetails.interior}` : ''}, ${addressDetails.colony}, C.P. ${addressDetails.zip}, ${addressDetails.city}, ${addressDetails.state}`.trim() : null
           }
         })
       });
@@ -126,47 +147,114 @@ export function CartDrawer() {
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
               {showCheckoutForm ? (
-                <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-                  <div style={{ margin: '0 0 8px', fontSize: '16px', color: '#0f172a', fontWeight: 600, fontFamily: 'var(--font-body, system-ui, sans-serif)' }}>Tus datos para la orden</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   
                   {formError && (
-                    <div style={{ padding: '10px', background: '#fef2f2', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 500 }}>
+                    <div style={{ padding: '12px', background: '#fef2f2', color: '#ef4444', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: '1px solid #fecaca' }}>
                       {formError}
                     </div>
                   )}
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Nombre completo</label>
-                    <input 
-                      type="text" 
-                      value={buyerName} 
-                      onChange={e => setBuyerName(e.target.value)} 
-                      placeholder="Ej. Juan Pérez"
-                      style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
-                    />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ fontSize: '18px', color: '#0f172a', fontWeight: 700 }}>Tus datos</div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Nombre completo *</label>
+                      <input 
+                        type="text" 
+                        value={buyerName} 
+                        onChange={e => setBuyerName(e.target.value)} 
+                        placeholder="Ej. Juan Pérez"
+                        style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Teléfono / WhatsApp *</label>
+                      <input 
+                        type="tel" 
+                        value={buyerPhone} 
+                        onChange={e => setBuyerPhone(e.target.value)} 
+                        placeholder="10 dígitos"
+                        maxLength={10}
+                        style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Correo electrónico (Opcional)</label>
+                      <input 
+                        type="email" 
+                        value={buyerEmail} 
+                        onChange={e => setBuyerEmail(e.target.value)} 
+                        placeholder="ejemplo@correo.com"
+                        style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
+                      />
+                    </div>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Teléfono / WhatsApp</label>
-                    <input 
-                      type="tel" 
-                      value={buyerPhone} 
-                      onChange={e => setBuyerPhone(e.target.value)} 
-                      placeholder="10 dígitos"
-                      maxLength={10}
-                      style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
-                    />
-                  </div>
+                  {ENABLE_SHIPPING_FEATURE && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
+                      <div style={{ fontSize: '18px', color: '#0f172a', fontWeight: 700 }}>Entrega</div>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
+                          <input type="radio" name="deliveryMethod" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
+                          <MapPin size={16} color={deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : '#64748b'} />
+                          <span style={{ fontSize: '13px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 600 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#475569' }}>Recoger en sucursal</span>
+                        </label>
+                        <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
+                          <input type="radio" name="deliveryMethod" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
+                          <MapPin size={16} color={deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : '#64748b'} />
+                          <span style={{ fontSize: '13px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 600 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#475569' }}>Envío a domicilio</span>
+                        </label>
+                      </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Correo electrónico</label>
-                    <input 
-                      type="email" 
-                      value={buyerEmail} 
-                      onChange={e => setBuyerEmail(e.target.value)} 
-                      placeholder="ejemplo@correo.com"
-                      style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
-                    />
+                      {deliveryMethod === 'HOME_DELIVERY' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Calle *</label>
+                              <input type="text" value={addressDetails.street} onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Ext *</label>
+                              <input type="text" value={addressDetails.exterior} onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Int</label>
+                              <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Colonia *</label>
+                              <input type="text" value={addressDetails.colony} onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>C.P. *</label>
+                              <input type="text" value={addressDetails.zip} onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Ciudad *</label>
+                              <input type="text" value={addressDetails.city} onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Estado *</label>
+                              <input type="text" value={addressDetails.state} onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', alignItems: 'center' }}>
+                    <Clock size={18} style={{ flexShrink: 0 }} />
+                    <p style={{ fontSize: '13px', margin: 0, fontWeight: 500 }}>
+                      Entrega estimada del pedido: {maxDelStr}
+                    </p>
                   </div>
                   
                   <button 
@@ -232,13 +320,16 @@ export function CartDrawer() {
 
             {items.length > 0 && (
               <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const, flexShrink: 0, paddingBottom: 'calc(20px + env(safe-area-inset-bottom))' }}>
-                <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
-                  <MapPin size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
-                    Todas las compras se recogen en tienda (Zapopan).<br/>
-                    <strong>Entrega estimada del pedido: {maxDelStr}</strong>
-                  </p>
-                </div>
+                {!showCheckoutForm && (
+                  <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
+                    <MapPin size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
+                      {ENABLE_SHIPPING_FEATURE ? "Recoge en tienda o elige envío a domicilio (Gratis)." : "Todas las compras se recogen en tienda (Zapopan)."}
+                      <br/>
+                      <strong>Entrega estimada del pedido: {maxDelStr}</strong>
+                    </p>
+                  </div>
+                )}
 
                 {showCheckoutForm && items.some(i => i.lensConfig || String(i.product?.category || '').toLowerCase().includes('contacto')) && (
                   <div style={{ display: 'flex', gap: '10px', background: '#fef3c7', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>

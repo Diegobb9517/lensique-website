@@ -106,74 +106,120 @@ const defaultInfo = {
 };
 
 const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedImage, onBack, onBook }) => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Ya no usamos window.scrollTo(0, 0) porque es un overlay
 
-  // Normalizar el título para buscar en el diccionario (ignora mayúsculas/minúsculas y espacios extra)
   const infoKey = Object.keys(TECH_INFO).find(k => k.toLowerCase() === tech.title.toLowerCase()) || '';
   const info = TECH_INFO[infoKey] || defaultInfo;
 
   return (
-    <motion.div 
-      className="tech-info-page"
-      initial={{ opacity: 0, x: '100%' }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: '100%' }}
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
-    >
-      <div className="tech-nav">
-        <button onClick={onBack} className="tech-back-btn">
-          <ArrowLeft size={24} />
-          <span>Volver al inicio</span>
+    <div className="tech-drawer-backdrop" onClick={onBack}>
+      <motion.div 
+        className="tech-drawer-panel"
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button onClick={onBack} className="tech-drawer-close">
+          <ArrowLeft size={20} />
+          <span>Volver</span>
         </button>
-      </div>
 
-      <div className="tech-content-wrapper">
-        <div className="tech-hero-section">
-          <div className="tech-hero-img-container d-none-mobile" style={{ backgroundColor: info.altImage ? '#ffffff' : '#f0f0f2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="tech-drawer-content">
+          <motion.div 
+            className="tech-hero-img-container" 
+            style={{ backgroundColor: info.altImage ? '#ffffff' : '#f0f0f2' }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
             <img 
               src={info.altImage || resolvedImage} 
               alt={tech.title} 
               className="tech-hero-img" 
               style={{ 
                 objectFit: info.altImage ? 'contain' : 'cover', 
-                padding: info.altImage ? '40px' : '0',
+                padding: info.altImage ? '30px' : '0',
                 mixBlendMode: info.altImage ? 'multiply' : 'normal',
                 filter: info.altImage ? 'contrast(1.1) brightness(1.05)' : 'none'
               }} 
             />
             {!info.altImage && <div className="tech-hero-overlay"></div>}
-          </div>
+          </motion.div>
           
           <div className="tech-info-content">
-            <span className="tech-eyebrow">Tecnología Visual</span>
-            <h1 className="tech-title">{tech.title}</h1>
-            <p className="tech-description">{info.desc}</p>
+            <motion.span 
+              className="tech-eyebrow"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+            >
+              Tecnología Visual
+            </motion.span>
+            
+            <motion.h1 
+              className="tech-title"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              {tech.title}
+            </motion.h1>
+            
+            <motion.p 
+              className="tech-description"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+            >
+              {info.desc}
+            </motion.p>
             
             <div className="tech-benefits">
-              <h3 className="tech-benefits-title">Beneficios Principales</h3>
+              <motion.h3 
+                className="tech-benefits-title"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                Beneficios Principales
+              </motion.h3>
+              
               <ul className="tech-benefits-list">
                 {info.benefits.map((benefit, idx) => (
-                  <li key={idx} className="tech-benefit-item">
-                    <CheckCircle2 className="tech-benefit-icon" size={20} />
+                  <motion.li 
+                    key={idx} 
+                    className="tech-benefit-item"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35 + (idx * 0.05) }}
+                  >
+                    <div className="tech-benefit-icon-wrap">
+                      <CheckCircle2 size={16} strokeWidth={2.5} />
+                    </div>
                     <span>{benefit}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </div>
 
-            <div className="tech-cta-box">
-              <p>¿Te gustaría probar o conocer más sobre <strong>{tech.title}</strong>?</p>
+            <motion.div 
+              className="tech-cta-box"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, type: 'spring', damping: 20 }}
+            >
+              <p>¿Te gustaría conocer más sobre <strong>{tech.title}</strong>?</p>
               <button onClick={onBook} className="btn btn-primary btn-tech-book">
                 <Calendar size={18} style={{ marginRight: '8px' }} />
                 Agendar Cita Ahora
               </button>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

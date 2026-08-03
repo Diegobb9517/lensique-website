@@ -22,6 +22,7 @@ import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.jpg';
 import { getInventedName, formatProductTitle } from './lib/format';
 import { ProductCard } from './components/ProductCard';
+import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
 import { calculateDeliveryTime } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';

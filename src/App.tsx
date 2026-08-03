@@ -1248,8 +1248,12 @@ function App() {
 
               <div className="modal-header">
                 <Calendar className="modal-icon" style={{ stroke: 'var(--accent)' }} />
-                <h2>Agendar tu cita</h2>
-                <p>Selecciona el día y hora que mejor te acomode.</p>
+                <h2>{isEyeExam ? 'Agendar examen de vista' : 'Agendar tu cita'}</h2>
+                {isEyeExam ? (
+                  <p>El examen de la vista <strong>no tiene costo</strong> y es realizado por un <strong>oftalmólogo</strong>.<br/>Para agendar tu cita, selecciona el día y hora a continuación.</p>
+                ) : (
+                  <p>Selecciona el día y hora que mejor te acomode.</p>
+                )}
               </div>
 
               <div className="calendar-container">
@@ -1487,7 +1491,7 @@ function App() {
         </section>
 
         <section className="perks-bar">
-          <div className="perk-item">Examen de vista<br/>gratis y profesional</div>
+          <div className="perk-item">Examen de vista<br/>profesional</div>
           <div className="perk-separator"></div>
           <div className="perk-item">Servicios de ajuste<br/>y mantenimiento</div>
           <div className="perk-separator"></div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -24,8 +24,49 @@ export function CartDrawer() {
   });
   const [formError, setFormError] = useState('');
   
-  const SHIPPING_COST = 150;
-  const finalTotal = deliveryMethod === 'HOME_DELIVERY' ? total + SHIPPING_COST : total;
+  const [shippingQuote, setShippingQuote] = useState<{ cost: number, zone: string, transitDays: number } | null>(null);
+  const [shippingQuoteLoading, setShippingQuoteLoading] = useState(false);
+  const [shippingQuoteError, setShippingQuoteError] = useState('');
+  
+  const finalTotal = deliveryMethod === 'HOME_DELIVERY' ? total + (shippingQuote?.cost ?? 150) : total;
+
+  useEffect(() => {
+    const fetchShippingQuote = async () => {
+      if (deliveryMethod !== 'HOME_DELIVERY') {
+        setShippingQuote(null);
+        setShippingQuoteError('');
+        return;
+      }
+      
+      const zipClean = addressDetails.zip.replace(/\D/g, '');
+      if (zipClean.length !== 5) {
+        setShippingQuote(null);
+        setShippingQuoteError('Ingresa un CP válido para cotizar');
+        return;
+      }
+      
+      setShippingQuoteLoading(true);
+      setShippingQuoteError('');
+      try {
+        const res = await fetch('https://lensique-pos.onrender.com/api/checkout/shipping-quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ zip: zipClean, subtotal: total })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error cotizando envío');
+        setShippingQuote({ cost: data.cost, zone: data.zone, transitDays: data.transitDays });
+      } catch (err: any) {
+        setShippingQuote(null);
+        setShippingQuoteError(err.message);
+      } finally {
+        setShippingQuoteLoading(false);
+      }
+    };
+    
+    const timeout = setTimeout(fetchShippingQuote, 500);
+    return () => clearTimeout(timeout);
+  }, [deliveryMethod, addressDetails.zip, total]);
   
   // FEATURE FLAG: Mantener oculto del público por solicitud del usuario
   const ENABLE_SHIPPING_FEATURE = true;
@@ -89,8 +130,7 @@ export function CartDrawer() {
             phone: phoneClean,
             email: buyerEmail.trim(),
             deliveryMethod,
-            shippingAddress: deliveryMethod === 'HOME_DELIVERY' ? 
-              `${addressDetails.street} ${addressDetails.exterior} ${addressDetails.interior ? `Int ${addressDetails.interior}` : ''}, ${addressDetails.colony}, C.P. ${addressDetails.zip}, ${addressDetails.city}, ${addressDetails.state}`.trim() : null
+            shippingAddress: deliveryMethod === 'HOME_DELIVERY' ? addressDetails : null
           }
         })
       });
@@ -336,7 +376,11 @@ export function CartDrawer() {
                         <>
                           <div style={{ marginBottom: '4px' }}>Recoge en tienda o elige envío a domicilio.</div>
                           <div style={{ color: '#3b82f6', fontWeight: 500 }}>
-                            {deliveryMethod === 'HOME_DELIVERY' ? `Costo de envío: $${SHIPPING_COST.toFixed(2)} MXN` : 'Recoger en tienda: Gratis'}
+                            {deliveryMethod === 'HOME_DELIVERY' ? (
+                               shippingQuoteLoading ? 'Calculando costo de envío...' :
+                               shippingQuote?.cost === 0 ? 'Envío a domicilio: Gratis' :
+                               `Costo de envío estimado: $${(shippingQuote?.cost ?? 150).toFixed(2)} MXN`
+                            ) : 'Recoger en tienda: Gratis'}
                           </div>
                         </>
                       ) : "Todas las compras se recogen en tienda (Zapopan)."}
@@ -363,8 +407,14 @@ export function CartDrawer() {
                 </div>
                 {deliveryMethod === 'HOME_DELIVERY' && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
-                    <span>Envío a domicilio</span>
-                    <span>${Math.round(SHIPPING_COST).toLocaleString('es-MX')}</span>
+                    <span>Envío a domicilio {shippingQuote?.zone && `(${shippingQuote.zone})`}</span>
+                    {shippingQuoteLoading ? (
+                      <span style={{ fontSize: '13px', color: '#94a3b8' }}>Calculando...</span>
+                    ) : shippingQuote?.cost === 0 ? (
+                      <span style={{ color: '#16a34a', fontWeight: 600 }}>Gratis</span>
+                    ) : (
+                      <span>${Math.round(shippingQuote?.cost ?? 150).toLocaleString('es-MX')}</span>
+                    )}
                   </div>
                 )}
                 <div style={{ borderTop: '1px solid #e2e8f0', margin: '8px 0' }} />

@@ -1246,11 +1246,20 @@ function App() {
               <div className="modal-header">
                 <Calendar className="modal-icon" style={{ stroke: 'var(--accent)' }} />
                 <h2>{isEyeExam ? 'Agendar examen de vista' : 'Agendar tu cita'}</h2>
-                {isEyeExam ? (
-                  <p>El examen de la vista <strong>no tiene costo</strong> y es realizado por un <strong>oftalmólogo</strong>.<br/>Para agendar tu cita, selecciona el día y hora a continuación.</p>
-                ) : (
-                  <p>Selecciona el día y hora que mejor te acomode.</p>
+                {isEyeExam && (
+                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '12px 16px', borderRadius: '8px', fontSize: '14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', textAlign: 'left', lineHeight: 1.4 }}>
+                    <div style={{ flex: '0 0 auto' }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div>
+                      El examen <strong>no tiene costo</strong> y es realizado por un <strong>oftalmólogo certificado</strong>.
+                    </div>
+                  </div>
                 )}
+                
+                <p style={{ lineHeight: 1.5, margin: 0 }}>
+                  {isEyeExam ? 'Selecciona el día y hora a continuación para reservar tu lugar.' : 'Selecciona el día y hora que mejor te acomode.'}
+                </p>
               </div>
 
               <div className="calendar-container">

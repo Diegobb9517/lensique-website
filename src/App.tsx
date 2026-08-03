@@ -19,7 +19,7 @@ import FaceMatcher from './components/FaceMatcher';
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
-import heroImg from './assets/hero_glasses.png';
+import heroImg from './assets/hero_glasses.jpg';
 import { getInventedName, formatProductTitle } from './lib/format';
 import { ProductCard } from './components/ProductCard';
 import { useCart } from './context/CartContext';

@@ -85,28 +85,21 @@ export default function ServiceDetailsPage({ isOpen, onClose, service }: Service
               </div>
 
               {/* Gallery Grid */}
-              <div className="sdp-gallery-column">
-                <motion.div 
-                  className="sdp-image-card"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <img src={service.image} alt={service.title} className="sdp-gallery-img" />
-                </motion.div>
-                
-                {service.gallery && service.gallery.map((img, idx) => (
-                  <motion.div 
-                    key={idx} 
-                    className="sdp-image-card"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.4 + (idx * 0.1) }}
-                  >
-                    <img src={img} alt={`${service.title} - foto ${idx + 1}`} className="sdp-gallery-img" />
-                  </motion.div>
-                ))}
-              </div>
+              {service.gallery && service.gallery.length > 0 && (
+                <div className="sdp-gallery-column">
+                  {service.gallery.map((img, idx) => (
+                    <motion.div 
+                      key={idx} 
+                      className="sdp-image-card"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 + (idx * 0.1) }}
+                    >
+                      <img src={img} alt={`${service.title} - foto ${idx + 1}`} className="sdp-gallery-img" />
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </motion.div>

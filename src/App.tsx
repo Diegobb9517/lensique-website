@@ -1602,7 +1602,7 @@ function App() {
                   id: 's1',
                   title: 'Examen de la vista',
                   subtitle: 'Diagnóstico visual de alta precisión',
-                  description: '<p>Contamos con equipo automatizado de última generación para evaluar tu capacidad visual con exactitud. Nuestras instalaciones están diseñadas para ofrecerte la mayor comodidad durante tu evaluación.</p><ul><li>Revisión refractiva completa</li><li>Toma de agudeza visual</li><li>Diagnóstico personalizado</li></ul>',
+                  description: '<p>Tu salud visual en manos de expertos. Nuestro <strong>examen de vista profesional</strong> es realizado directamente por un <strong>oftalmólogo certificado</strong>, garantizando un diagnóstico clínico sumamente preciso y confiable.</p><p>Utilizamos <strong>equipos automatizados de alta gama y última generación</strong> que nos permiten medir tu agudeza visual con exactitud milimétrica. Todo esto en instalaciones modernas diseñadas para ofrecerte la mayor comodidad.</p><ul><li>Evaluación por oftalmólogo certificado</li><li>Tecnología automatizada de precisión</li><li>Diagnóstico clínico y refractivo 100% personalizado</li></ul>',
                   image: cv7600Img,
                   gallery: [eyeExamImg1, eyeExamImg2],
                   actionText: 'Agendar cita ahora',

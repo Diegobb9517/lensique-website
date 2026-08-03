@@ -7,15 +7,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const css = `
 .le-wrap{background:#FFFFFF;padding:100px 0;font-family:'Outfit','Inter',sans-serif;overflow-x:hidden}
-.le-inner{max-width:900px;margin:0 auto;padding:0 24px}
-.le-title{font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:500;color:#111827;text-align:center;margin:0 0 12px;letter-spacing:-0.5px}
-.le-sub{text-align:center;color:#6B7280;font-size:16px;margin:0 auto 60px;line-height:1.6;max-width:600px}
+.le-inner{max-width:1100px;margin:0 auto;padding:0 24px}
+.le-title{font-family:'Playfair Display',Georgia,serif;font-size:42px;font-weight:500;color:#111827;text-align:center;margin:0 0 12px;letter-spacing:-0.5px}
+.le-sub{text-align:center;color:#6B7280;font-size:17px;margin:0 auto 60px;line-height:1.6;max-width:700px}
 
 /* Module card */
-.le-mod{background:#FFFFFF;border:1px solid rgba(0,0,0,0.04);border-radius:24px;padding:40px;margin-bottom:32px;box-shadow:0 12px 40px rgba(0,0,0,0.03);transition:transform 0.3s ease,box-shadow 0.3s ease}
-@media(max-width:600px){.le-mod{padding:30px 20px}}
-.le-mod:hover{box-shadow:0 16px 50px rgba(0,0,0,0.05);transform:translateY(-2px)}
-.le-mod-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:500;color:#111827;margin:0 0 28px;text-align:center}
+.le-mod{background:#FFFFFF;border:none;border-radius:0;padding:20px 0;margin-bottom:32px;box-shadow:none;transition:transform 0.3s ease}
+@media(max-width:600px){.le-mod{padding:20px 0}}
+.le-mod:hover{transform:translateY(-2px)}
+.le-mod-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:500;color:#111827;margin:0 0 36px;text-align:center}
 
 /* Tabs */
 .le-tabs{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}

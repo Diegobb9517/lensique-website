@@ -1497,7 +1497,7 @@ function App() {
           <div className="perk-separator"></div>
           <div className="perk-item">Asesoría de imagen<br/>personalizada</div>
           <div className="perk-separator"></div>
-          <div className="perk-item">Garantía en adaptación<br/>y defectos</div>
+          <div className="perk-item">Garantías de<br/>adaptación</div>
         </section>
 
         <section id="populares" className="wp-carousel-section">

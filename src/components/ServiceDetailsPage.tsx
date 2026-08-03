@@ -44,35 +44,68 @@ export default function ServiceDetailsPage({ isOpen, onClose, service }: Service
             <div className="sdp-header-title">{service.title}</div>
           </div>
 
-          <div className="sdp-content-wrapper">
-            {/* Hero Image */}
-            <div className="sdp-hero-image-container">
-              <img src={service.image} alt={service.title} className="sdp-hero-image" />
+          <div className="sdp-main-content">
+            {/* Premium Hero Section */}
+            <div className="sdp-hero-section">
+              <div className="sdp-hero-bg" style={{ backgroundImage: `url(${service.image})` }}></div>
+              <div className="sdp-hero-overlay"></div>
+              <div className="sdp-hero-text">
+                <motion.h1 
+                  initial={{ y: 30, opacity: 0 }} 
+                  animate={{ y: 0, opacity: 1 }} 
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                  className="sdp-title-large"
+                >
+                  {service.title}
+                </motion.h1>
+                <motion.h2 
+                  initial={{ y: 30, opacity: 0 }} 
+                  animate={{ y: 0, opacity: 1 }} 
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="sdp-subtitle-large"
+                >
+                  {service.subtitle}
+                </motion.h2>
+              </div>
             </div>
 
-            {/* Content Body */}
-            <div className="sdp-body">
-              <h1 className="sdp-title">{service.title}</h1>
-              <h2 className="sdp-subtitle">{service.subtitle}</h2>
-
-              <div 
-                className="sdp-description" 
-                dangerouslySetInnerHTML={{ __html: service.description }} 
-              />
-
-              {service.gallery && service.gallery.length > 0 && (
-                <div className="sdp-gallery">
-                  {service.gallery.map((img, idx) => (
-                    <img key={idx} src={img} alt={`${service.title} - foto ${idx + 1}`} className="sdp-gallery-img" />
-                  ))}
+            <div className="sdp-content-grid">
+              {/* Text Body */}
+              <div className="sdp-text-column">
+                <div 
+                  className="sdp-description premium-description" 
+                  dangerouslySetInnerHTML={{ __html: service.description }} 
+                />
+                
+                <div className="sdp-action-container">
+                  <button className="sdp-primary-btn glow-btn" onClick={service.onAction}>
+                    {service.actionText}
+                  </button>
                 </div>
-              )}
+              </div>
 
-              {/* Action Button */}
-              <div className="sdp-action-container">
-                <button className="sdp-primary-btn" onClick={service.onAction}>
-                  {service.actionText}
-                </button>
+              {/* Gallery Grid */}
+              <div className="sdp-gallery-column">
+                <motion.div 
+                  className="sdp-image-card"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <img src={service.image} alt={service.title} className="sdp-gallery-img" />
+                </motion.div>
+                
+                {service.gallery && service.gallery.map((img, idx) => (
+                  <motion.div 
+                    key={idx} 
+                    className="sdp-image-card"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 + (idx * 0.1) }}
+                  >
+                    <img src={img} alt={`${service.title} - foto ${idx + 1}`} className="sdp-gallery-img" />
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>

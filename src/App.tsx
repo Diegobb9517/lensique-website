@@ -640,10 +640,43 @@ const cookiesData: InfoPageData = {
 };
 
 function PaymentSuccessView() {
-  const estimatedDelivery = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_delivery') : null;
+  const [deliveryMethod, setDeliveryMethod] = useState<'HOME_DELIVERY' | 'STORE_PICKUP' | null>(null);
+  const [shippingAddress, setShippingAddress] = useState<string | null>(null);
+  const [estimatedDelivery, setEstimatedDelivery] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const deliveryMethod = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_delivery_method') : null;
-  const shippingAddress = typeof window !== 'undefined' ? localStorage.getItem('lensique_last_order_shipping_address') : null;
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref') || urlParams.get('external_reference');
+    const loadFromLocal = () => {
+      setDeliveryMethod(localStorage.getItem('lensique_last_order_delivery_method') as any);
+      setShippingAddress(localStorage.getItem('lensique_last_order_shipping_address'));
+      setEstimatedDelivery(localStorage.getItem('lensique_last_order_delivery'));
+      setIsLoading(false);
+    };
+
+    if (ref) {
+      fetch(`https://lensique-pos.onrender.com/api/checkout/${ref}/buyer-info`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.deliveryMethod) {
+            setDeliveryMethod(data.deliveryMethod);
+            setShippingAddress(data.shippingAddress);
+            setEstimatedDelivery(localStorage.getItem('lensique_last_order_delivery'));
+            setIsLoading(false);
+          } else {
+            loadFromLocal();
+          }
+        })
+        .catch(() => loadFromLocal());
+    } else {
+      loadFromLocal();
+    }
+  }, []);
+
+  if (isLoading) {
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f8f6f2 0%, #e8e4dc 100%)' }}>Obteniendo confirmación...</div>;
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8f6f2 0%, #e8e4dc 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: "'Inter', 'Helvetica Neue', sans-serif" }}>

@@ -71,11 +71,15 @@ export function CartDrawer() {
   // FEATURE FLAG: Mantener oculto del público por solicitud del usuario
   const ENABLE_SHIPPING_FEATURE = true;
 
-  const maxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
+  let finalMaxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
+  if (deliveryMethod === 'HOME_DELIVERY' && shippingQuote?.transitDays) {
+    finalMaxDeliveryDays += shippingQuote.transitDays;
+  }
+  
   let maxDelStr = '';
-  if (maxDeliveryDays <= 5) maxDelStr = '3 a 5 días hábiles';
-  else if (maxDeliveryDays <= 12) maxDelStr = '1 a 2 semanas';
-  else if (maxDeliveryDays <= 21) maxDelStr = '2 a 3 semanas';
+  if (finalMaxDeliveryDays <= 5) maxDelStr = '3 a 5 días hábiles';
+  else if (finalMaxDeliveryDays <= 12) maxDelStr = '1 a 2 semanas';
+  else if (finalMaxDeliveryDays <= 21) maxDelStr = '2 a 3 semanas';
   else maxDelStr = '3 a 4 semanas';
 
   const payOnline = async () => {

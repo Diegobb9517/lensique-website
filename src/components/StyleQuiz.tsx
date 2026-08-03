@@ -164,7 +164,10 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
     setIsCalculating(true);
     
     setTimeout(() => {
-      const framesOnly = catalogData.filter(p => !String(p.category || 'vista').toLowerCase().includes('contacto'));
+      const framesOnly = catalogData.filter(p => 
+        !String(p.category || 'vista').toLowerCase().includes('contacto') && 
+        (p.image || p.image_url)
+      );
 
       const scoredProducts = framesOnly.map(product => {
         let score = 0;
@@ -193,7 +196,7 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
         return { ...product, quizScore: score };
       });
 
-      const topResults = scoredProducts.sort((a, b) => b.quizScore - a.quizScore).slice(0, 4);
+      const topResults = scoredProducts.sort((a, b) => b.quizScore - a.quizScore).slice(0, 3);
       setResults(topResults);
       setIsCalculating(false);
     }, 1500);

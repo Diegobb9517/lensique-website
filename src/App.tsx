@@ -1262,109 +1262,116 @@ function App() {
                 </p>
               </div>
 
-              <div className="calendar-container">
-                <div className="calendar-nav">
-                  <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}>
-                    <ChevronLeft size={20} />
-                  </button>
-                  <h3 style={{ textTransform: 'capitalize' }}>
-                    {currentMonth.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })}
-                  </h3>
-                  <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}>
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-                
-                <div className="calendar-grid">
-                  {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map((d, i) => (
-                    <div key={`weekday-${d}-${i}`} className="calendar-day-label">{d}</div>
-                  ))}
-                  {Array.from({ length: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay() }).map((_, i) => (
-                    <div key={`pad-${i}`} className="calendar-day empty"></div>
-                  ))}
-                  {getDaysInMonth(currentMonth).map(date => {
-                    const isSelected = selectedDate?.toDateString() === date.toDateString();
-                    const today = new Date();
-                    today.setHours(0,0,0,0);
-                    const isToday = date.toDateString() === today.toDateString();
-                    const isPast = date < today;
-                    
-                    return (
-                      <button 
-                        key={`day-${date.toISOString()}`}
-                        className={`calendar-day ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''} ${isToday && !isSelected ? 'is-today' : ''}`}
-                        disabled={isPast}
-                        onClick={() => setSelectedDate(date)}
-                      >
-                        {date.getDate()}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {selectedDate && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="time-selection"
-                >
-                  <div className="time-header">
-                    <Clock size={16} />
-                    <span>Horarios disponibles</span>
+              <div className={`booking-content-grid ${selectedDate ? 'has-date' : ''}`}>
+                <div className="calendar-container">
+                  <div className="calendar-nav">
+                    <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}>
+                      <ChevronLeft size={20} />
+                    </button>
+                    <h3 style={{ textTransform: 'capitalize' }}>
+                      {currentMonth.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })}
+                    </h3>
+                    <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}>
+                      <ChevronRight size={20} />
+                    </button>
                   </div>
-                  <div className="time-grid">
-                    {timeSlots.map(time => {
-                      let isPastTime = false;
-                      if (selectedDate && selectedDate.toDateString() === new Date().toDateString()) {
-                        const now = new Date();
-                        const [timeStr, modifier] = time.split(' ');
-                        let [hours, minutes] = timeStr.split(':').map(Number);
-                        if (hours === 12) {
-                          hours = modifier === 'AM' ? 0 : 12;
-                        } else if (modifier === 'PM') {
-                          hours += 12;
-                        }
-                        const slotTime = new Date(selectedDate);
-                        slotTime.setHours(hours, minutes, 0, 0);
-                        isPastTime = slotTime < now;
-                      }
+                  
+                  <div className="calendar-grid">
+                    {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map((d, i) => (
+                      <div key={`weekday-${d}-${i}`} className="calendar-day-label">{d}</div>
+                    ))}
+                    {Array.from({ length: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay() }).map((_, i) => (
+                      <div key={`pad-${i}`} className="calendar-day empty"></div>
+                    ))}
+                    {getDaysInMonth(currentMonth).map(date => {
+                      const isSelected = selectedDate?.toDateString() === date.toDateString();
+                      const today = new Date();
+                      today.setHours(0,0,0,0);
+                      const isToday = date.toDateString() === today.toDateString();
+                      const isPast = date < today;
+                      
                       return (
                         <button 
-                          key={`time-${time}`}
-                          className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
-                          onClick={() => setSelectedTime(time)}
-                          disabled={isPastTime}
-                          style={{ opacity: isPastTime ? 0.4 : 1, cursor: isPastTime ? 'not-allowed' : 'pointer' }}
+                          key={`day-${date.toISOString()}`}
+                          className={`calendar-day ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''} ${isToday && !isSelected ? 'is-today' : ''}`}
+                          disabled={isPast}
+                          onClick={() => setSelectedDate(date)}
                         >
-                          {time}
+                          {date.getDate()}
                         </button>
                       );
                     })}
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {selectedDate && selectedTime && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="time-selection"
-                  style={{ marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}
-                >
-                  <div className="time-header" style={{ marginBottom: '0.5rem' }}>
-                    <User size={16} />
-                    <span>Tus datos</span>
-                  </div>
-                  <input 
-                    type="text" 
-                    placeholder="Tu nombre completo" 
-                    value={bookingName}
-                    onChange={(e) => setBookingName(e.target.value)}
-                    style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0', outline: 'none' }}
-                  />
-                </motion.div>
-              )}
+                <AnimatePresence mode="popLayout">
+                  {selectedDate && (
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      className="booking-right-panel"
+                    >
+                      <div className="time-selection">
+                        <div className="time-header">
+                          <Clock size={16} />
+                          <span>Horarios disponibles</span>
+                        </div>
+                        <div className="time-grid">
+                          {timeSlots.map(time => {
+                            let isPastTime = false;
+                            if (selectedDate && selectedDate.toDateString() === new Date().toDateString()) {
+                              const now = new Date();
+                              const [timeStr, modifier] = time.split(' ');
+                              let [hours, minutes] = timeStr.split(':').map(Number);
+                              if (hours === 12) {
+                                hours = modifier === 'AM' ? 0 : 12;
+                              } else if (modifier === 'PM') {
+                                hours += 12;
+                              }
+                              const slotTime = new Date(selectedDate);
+                              slotTime.setHours(hours, minutes, 0, 0);
+                              isPastTime = slotTime < now;
+                            }
+                            return (
+                              <button 
+                                key={`time-${time}`}
+                                className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
+                                onClick={() => setSelectedTime(time)}
+                                disabled={isPastTime}
+                                style={{ opacity: isPastTime ? 0.4 : 1, cursor: isPastTime ? 'not-allowed' : 'pointer' }}
+                              >
+                                {time}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {selectedTime && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="time-selection"
+                          style={{ marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}
+                        >
+                          <div className="time-header" style={{ marginBottom: '0.5rem' }}>
+                            <User size={16} />
+                            <span>Tus datos</span>
+                          </div>
+                          <input 
+                            type="text" 
+                            placeholder="Tu nombre completo" 
+                            value={bookingName}
+                            onChange={(e) => setBookingName(e.target.value)}
+                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0', outline: 'none' }}
+                          />
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               <div className="modal-footer" style={{ marginTop: '1.5rem' }}>
                 <button 

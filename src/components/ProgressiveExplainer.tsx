@@ -36,10 +36,13 @@ const css = `
 .pe-lens-label.active { color: #fff; font-size: 13px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
 .pe-lens-label.active::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; background: #fff; border-radius: 2px; }
 
+/* Permanent Aberration Zones (Smoky grey blur in lower corners) */
+.pe-lens-aberrations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(140, 150, 160, 0.45); backdrop-filter: blur(14px) grayscale(0.5); z-index: 3; pointer-events: none; border-radius: inherit; -webkit-mask-image: radial-gradient(ellipse 130px 180px at -5% 85%, black 0%, black 40%, transparent 80%), radial-gradient(ellipse 130px 180px at 105% 85%, black 0%, black 40%, transparent 80%); mask-image: radial-gradient(ellipse 130px 180px at -5% 85%, black 0%, black 40%, transparent 80%), radial-gradient(ellipse 130px 180px at 105% 85%, black 0%, black 40%, transparent 80%); }
+
 /* Aberration labels */
-.pe-aberration-label { position: absolute; top: 50%; transform: translateY(-50%); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.8); text-shadow: 0 1px 4px rgba(0,0,0,0.9); pointer-events: none; z-index: 4; text-align: center; line-height: 1.3; opacity: 0.8; }
-.pe-aberration-label.left { left: 16px; }
-.pe-aberration-label.right { right: 16px; }
+.pe-aberration-label { position: absolute; top: 65%; transform: translateY(-50%); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.95); text-shadow: 0 2px 6px rgba(0,0,0,0.9); pointer-events: none; z-index: 4; text-align: center; line-height: 1.3; opacity: 1; }
+.pe-aberration-label.left { left: 10px; }
+.pe-aberration-label.right { right: 10px; }
 
 /* Controls layout (Right Side) */
 .pe-controls { flex: 0 0 380px; display: flex; flex-direction: column; gap: 24px; }
@@ -116,6 +119,9 @@ export default function ProgressiveExplainer({ onOpenCotizador }: ProgressiveExp
             <div className="pe-sim-bg" />
             
             <div className="pe-lens-overlay">
+              {/* Permanent smoky aberration zones on the sides */}
+              <div className="pe-lens-aberrations" />
+              
               <div className={`pe-lens-blur ${activeZone}`} />
               
               <div className={`pe-lens-label far ${activeZone === 'far' ? 'active' : ''}`}>Lejos</div>

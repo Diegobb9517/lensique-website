@@ -586,14 +586,30 @@ body.no-scroll {
 
 /* About Section */
 .about-section {
-  padding: 120px 40px;
+  padding: 140px 40px;
   background-color: var(--bg-secondary);
+  background-image: url('/images/about-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   text-align: center;
+  position: relative;
+}
+
+.about-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 1;
 }
 
 .about-content {
   max-width: 800px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .about-text {

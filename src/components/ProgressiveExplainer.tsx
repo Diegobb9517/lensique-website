@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const css = `
-.pe-wrap { padding: 80px 20px; background: #faf9f6; overflow: hidden; }
-.pe-inner { max-width: 1000px; margin: 0 auto; }
-.pe-title { text-align: center; font-family: 'Playfair Display', Georgia, serif; font-size: 36px; color: #111827; margin: 0 0 16px; }
-.pe-sub { text-align: center; font-size: 16px; color: #6B7280; max-width: 600px; margin: 0 auto 32px; }
-.pe-tagline { text-align: center; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #1e2a5a; margin-bottom: 40px; }
+.pe-wrap { padding: 100px 20px; background: #faf9f6; overflow: hidden; }
+.pe-inner { max-width: 1100px; margin: 0 auto; }
+.pe-title { text-align: center; font-family: 'Playfair Display', Georgia, serif; font-size: 42px; color: #111827; margin: 0 0 12px; letter-spacing: -0.5px; }
+.pe-sub { text-align: center; font-size: 17px; color: #6B7280; max-width: 700px; margin: 0 auto 24px; }
+.pe-tagline { text-align: center; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #1e2a5a; margin-bottom: 48px; }
 
 /* The Simulator Container */
-.pe-sim-box { position: relative; width: 100%; height: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); margin-bottom: 40px; background: #000; }
-.pe-sim-bg { position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; background: url('/images/cafe-view2.jpg') no-repeat center center; background-size: cover; z-index: 1; }
+.pe-sim-box { position: relative; width: 100%; height: 500px; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.06); margin-bottom: 56px; background: #000; }
+.pe-sim-bg { position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; background: url('/images/cafe-view2.jpg') no-repeat center center; background-size: cover; z-index: 1; filter: saturate(1.2); }
 
 /* Frosted glass outside the lens */
 .pe-lens-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; height: 360px; border-radius: 40% 40% 50% 50% / 30% 30% 55% 55%; border: 3px solid rgba(255,255,255,0.4); box-shadow: 0 0 0 2000px rgba(255,255,255,0.7), inset 0 0 20px rgba(255,255,255,0.5); z-index: 2; }
@@ -33,27 +33,28 @@ const css = `
 .pe-lens-label.active::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; background: #fff; border-radius: 2px; }
 
 /* Controls layout */
-.pe-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
+.pe-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: stretch; }
+@media(max-width: 900px) { .pe-controls { gap: 40px; } }
 @media(max-width: 768px) { .pe-controls { grid-template-columns: 1fr; } }
 
 /* Button list */
-.pe-btn-list { display: flex; flex-direction: column; gap: 12px; }
-.pe-zone-btn { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: #fff; border: 1px solid #E5E7EB; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-.pe-zone-btn:hover { border-color: #D1D5DB; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.pe-zone-btn.active { border-color: #111827; background: #111827; color: #fff; box-shadow: 0 10px 20px rgba(17,24,39,0.15); transform: translateX(8px); }
+.pe-btn-list { display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+.pe-zone-btn { display: flex; align-items: center; justify-content: space-between; padding: 24px 28px; background: #fff; border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+.pe-zone-btn:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.pe-zone-btn.active { background: #111827; color: #fff; box-shadow: 0 12px 30px rgba(17,24,39,0.2); transform: translateX(8px); }
 @media(max-width: 768px) { .pe-zone-btn.active { transform: translateX(0) scale(1.02); } }
-.pe-zone-title { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
-.pe-zone-desc { font-size: 13px; color: #6B7280; transition: color 0.3s; line-height: 1.5; }
+.pe-zone-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.pe-zone-desc { font-size: 14px; color: #6B7280; transition: color 0.3s; line-height: 1.5; }
 .pe-zone-btn.active .pe-zone-desc { color: rgba(255,255,255,0.7); }
 .pe-zone-icon { opacity: 0; transform: translateX(-10px); transition: all 0.3s; color: #fff; }
 .pe-zone-btn.active .pe-zone-icon { opacity: 1; transform: translateX(0); }
 
 /* Info panel */
-.pe-info-panel { background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: center; border: 1px solid #E5E7EB; position: relative; overflow: hidden; }
+.pe-info-panel { background: #fff; border-radius: 16px; padding: 48px; box-shadow: 0 8px 32px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center; border: none; position: relative; overflow: hidden; }
 .pe-info-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #111827; }
-.pe-info-icon-wrap { width: 48px; height: 48px; border-radius: 12px; background: #F3F4F6; display: flex; align-items: center; justify-content: center; color: #111827; margin-bottom: 20px; }
-.pe-info-label { font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 600; color: #111827; margin: 0 0 12px; }
-.pe-info-text { font-size: 15px; color: #4B5563; line-height: 1.7; margin: 0; }
+.pe-info-icon-wrap { width: 56px; height: 56px; border-radius: 14px; background: #F3F4F6; display: flex; align-items: center; justify-content: center; color: #111827; margin-bottom: 24px; }
+.pe-info-label { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 600; color: #111827; margin: 0 0 16px; }
+.pe-info-text { font-size: 16px; color: #4B5563; line-height: 1.8; margin: 0; }
 
 /* CTA */
 .pe-cta-wrap { text-align: center; margin-top: 48px; }

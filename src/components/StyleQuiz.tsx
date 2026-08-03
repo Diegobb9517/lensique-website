@@ -164,10 +164,13 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
     setIsCalculating(true);
     
     setTimeout(() => {
-      const framesOnly = catalogData.filter(p => 
-        !String(p.category || 'vista').toLowerCase().includes('contacto') && 
-        (p.image || p.image_url)
-      );
+      const framesOnly = catalogData.filter(p => {
+        const isOptic = !String(p.category || 'vista').toLowerCase().includes('contacto');
+        const url = (p.images && p.images.length > 0) ? p.images[0].image_url : p.image_url;
+        const fallback = p.image;
+        const isValid = (val: any) => val && val !== 'undefined' && val !== 'null' && val.trim() !== '';
+        return isOptic && (isValid(url) || isValid(fallback));
+      });
 
       const scoredProducts = framesOnly.map(product => {
         let score = 0;

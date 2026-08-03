@@ -276,30 +276,26 @@ function FullCatalog({
               </div>
               
               <div className="filter-group" style={{ margin: 0 }}>
-                <select 
-                  className="brand-select"
+                <CustomSelect
                   value={selectedBrand}
-                  onChange={(e) => setSelectedBrand(e.target.value)}
-                >
-                  <option value="Todas">Marcas</option>
-                  {availableBrands.map(b => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
+                  onChange={(val) => setSelectedBrand(val)}
+                  options={[
+                    { label: 'Marcas', value: 'Todas' },
+                    ...availableBrands.map(b => ({ label: b, value: b }))
+                  ]}
+                />
               </div>
 
               {filter === 'Lentes de Contacto' && (
                 <div className="filter-group" style={{ margin: 0 }}>
-                  <select 
-                    className="brand-select"
+                  <CustomSelect
                     value={contactUsageFilter}
-                    onChange={(e) => setContactUsageFilter(e.target.value)}
-                  >
-                    <option value="Todos">Uso</option>
-                    {['Uso Diario', 'Uso Quincenal', 'Uso Mensual', 'Uso Anual'].map(u => (
-                      <option key={u} value={u}>{u}</option>
-                    ))}
-                  </select>
+                    onChange={(val) => setContactUsageFilter(val)}
+                    options={[
+                      { label: 'Uso', value: 'Todos' },
+                      ...['Uso Diario', 'Uso Quincenal', 'Uso Mensual', 'Uso Anual'].map(u => ({ label: u, value: u }))
+                    ]}
+                  />
                 </div>
               )}
             </div>

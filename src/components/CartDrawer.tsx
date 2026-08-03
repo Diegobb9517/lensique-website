@@ -24,6 +24,9 @@ export function CartDrawer() {
   });
   const [formError, setFormError] = useState('');
   
+  const SHIPPING_COST = 150;
+  const finalTotal = deliveryMethod === 'HOME_DELIVERY' ? total + SHIPPING_COST : total;
+  
   // FEATURE FLAG: Mantener oculto del público por solicitud del usuario
   const ENABLE_SHIPPING_FEATURE = true;
 
@@ -77,7 +80,7 @@ export function CartDrawer() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          amount: total, 
+          amount: finalTotal, 
           // Enviar el carrito enriquecido para que el backend recalcule los precios
           cart: items,
           estimatedDelivery: maxDelStr, // Campo extra limpio para el backend
@@ -326,13 +329,23 @@ export function CartDrawer() {
             {items.length > 0 && (
               <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const, flexShrink: 0, paddingBottom: 'calc(20px + env(safe-area-inset-bottom))' }}>
                 {!showCheckoutForm && (
-                  <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
-                    <MapPin size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
-                    <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
-                      {ENABLE_SHIPPING_FEATURE ? "Recoge en tienda o elige envío a domicilio (Gratis)." : "Todas las compras se recogen en tienda (Zapopan)."}
-                      <br/>
-                      <strong>Entrega estimada del pedido: {maxDelStr}</strong>
-                    </p>
+                  <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', fontSize: '13px', color: '#475569', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                    <MapPin size={16} style={{ flexShrink: 0, marginTop: '2px', color: '#3b82f6' }} />
+                    <div>
+                      {ENABLE_SHIPPING_FEATURE ? (
+                        <>
+                          <div style={{ marginBottom: '4px' }}>Recoge en tienda o elige envío a domicilio.</div>
+                          <div style={{ color: '#3b82f6', fontWeight: 500 }}>
+                            {deliveryMethod === 'HOME_DELIVERY' ? `Costo de envío: $${SHIPPING_COST.toFixed(2)} MXN` : 'Recoger en tienda: Gratis'}
+                          </div>
+                        </>
+                      ) : "Todas las compras se recogen en tienda (Zapopan)."}
+                      {maxDelStr && (
+                        <div style={{ marginTop: '8px', fontWeight: 600, color: '#16a34a' }}>
+                          Entrega estimada del pedido: {maxDelStr}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -344,9 +357,20 @@ export function CartDrawer() {
                   </div>
                 )}
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
                   <span>Subtotal</span>
                   <span>${Math.round(total).toLocaleString('es-MX')}</span>
+                </div>
+                {deliveryMethod === 'HOME_DELIVERY' && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
+                    <span>Envío a domicilio</span>
+                    <span>${Math.round(SHIPPING_COST).toLocaleString('es-MX')}</span>
+                  </div>
+                )}
+                <div style={{ borderTop: '1px solid #e2e8f0', margin: '8px 0' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+                  <span>Total</span>
+                  <span>${Math.round(finalTotal).toLocaleString('es-MX')}</span>
                 </div>
                 
                 <button 

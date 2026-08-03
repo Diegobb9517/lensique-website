@@ -36,6 +36,11 @@ const css = `
 .pe-lens-label.active { color: #fff; font-size: 13px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
 .pe-lens-label.active::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; background: #fff; border-radius: 2px; }
 
+/* Aberration labels */
+.pe-aberration-label { position: absolute; top: 50%; transform: translateY(-50%); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.8); text-shadow: 0 1px 4px rgba(0,0,0,0.9); pointer-events: none; z-index: 4; text-align: center; line-height: 1.3; opacity: 0.8; }
+.pe-aberration-label.left { left: 16px; }
+.pe-aberration-label.right { right: 16px; }
+
 /* Controls layout (Right Side) */
 .pe-controls { flex: 0 0 380px; display: flex; flex-direction: column; gap: 24px; }
 @media(max-width: 1000px) { .pe-controls { flex: auto; } }
@@ -116,6 +121,9 @@ export default function ProgressiveExplainer({ onOpenCotizador }: ProgressiveExp
               <div className={`pe-lens-label far ${activeZone === 'far' ? 'active' : ''}`}>Lejos</div>
               <div className={`pe-lens-label mid ${activeZone === 'mid' ? 'active' : ''}`}>Intermedio</div>
               <div className={`pe-lens-label near ${activeZone === 'near' ? 'active' : ''}`}>Cerca</div>
+              
+              <div className="pe-aberration-label left">Aberración<br/>(Borroso)</div>
+              <div className="pe-aberration-label right">Aberración<br/>(Borroso)</div>
             </div>
           </div>
 

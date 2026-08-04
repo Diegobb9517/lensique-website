@@ -2846,10 +2846,9 @@ body.no-scroll {
   transition: transform 0.6s var(--smooth), opacity 0.4s var(--smooth);
   mix-blend-mode: multiply; /* Drops the white background of the product photo */
   transform-origin: center;
-  transform: scale(1.4);
 }
 .wp-product-card:hover .wp-card-img {
-  transform: scale(1.45);
+  transform: scale(1.05);
 }
 
 .wp-card-info {

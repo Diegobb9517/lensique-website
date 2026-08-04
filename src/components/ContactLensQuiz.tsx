@@ -242,7 +242,7 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
                   )}
                 </AnimatePresence>
 
-                <div className="clq-rx-grid" style={{gridTemplateColumns: samePrescription ? '1fr' : '1fr 1fr'}}>
+                <div className="clq-rx-grid" style={{gridTemplateColumns: samePrescription ? '1fr' : '1fr 1fr', marginTop: '32px'}}>
                   {renderPrescriptionCol('OD', samePrescription ? 'Ambos Ojos (OD y OS)' : 'Ojo Derecho (OD)')}
                   {!samePrescription && renderPrescriptionCol('OS', 'Ojo Izquierdo (OS)')}
                 </div>

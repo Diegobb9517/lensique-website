@@ -71,6 +71,11 @@
   padding: 24px 32px;
   overflow-y: auto;
   flex: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.clq-body::-webkit-scrollbar {
+  display: none;
 }
 
 /* Steps */

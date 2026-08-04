@@ -143,11 +143,11 @@ const LENS_TYPES = [
     desc: 'Corrige UNA distancia (lejos, o cerca para leer). Toda la mica se ve igual de nítida. Es la opción más común y sencilla.',
   },
   {
-    id: 'bif', label: 'Bifocal', subtitle: 'Lejos y cerca, con línea',
+    id: 'bif', label: 'Bifocal', subtitle: 'Lejos y cerca',
     desc: 'Dos zonas: arriba ves de lejos y en un segmento abajo ves de cerca. Se nota una línea que divide ambas. Para quien necesita las dos distancias.',
   },
   {
-    id: 'prog', label: 'Progresivo', subtitle: 'Todo en uno, sin línea',
+    id: 'prog', label: 'Progresivo', subtitle: 'Todo en uno',
     desc: 'Lejos, intermedio y cerca en un solo lente, con transición suave y SIN línea visible. La opción más cómoda y estética.',
   },
 ];

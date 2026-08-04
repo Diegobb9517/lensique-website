@@ -117,12 +117,11 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
     const values = eye === 'OD' ? prescriptionOD : prescriptionOS;
     const setValues = eye === 'OD' ? setPrescriptionOD : setPrescriptionOS;
 
-    // Use WPSelect and the modern configurator layout, in a 2-column grid so it fits without scrolling
+    // Use WPSelect and the modern configurator layout, conditionally 1 or 2 columns
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: samePrescription ? '1fr 1fr' : '1fr', gap: '0 16px' }}>
           <WPSelect 
             label="Esfera (SPH/PWR)"
             value={values.sph}
@@ -211,10 +210,37 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
                 <h3 className="clq-step-title">Captura tu graduación</h3>
                 <p className="clq-step-desc">Ingresa los valores exactos que vienen en la caja de tus lentes de contacto actuales.</p>
                 
-                <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'20px', justifyContent:'center'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'16px', justifyContent:'center'}}>
                   <input type="checkbox" id="sameRx" checked={samePrescription} onChange={(e) => setSamePrescription(e.target.checked)} style={{width:'18px', height:'18px'}} />
                   <label htmlFor="sameRx" style={{fontWeight:500, color:'#111827', cursor:'pointer'}}>Misma graduación en ambos ojos</label>
                 </div>
+
+                <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+                  <button 
+                    onClick={() => setShowRxGuide(!showRxGuide)}
+                    style={{ 
+                      background: 'none', border: 'none', padding: 0, 
+                      color: '#b48c36', fontSize: '12.5px', fontWeight: 600, 
+                      cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' 
+                    }}
+                  >
+                    {showRxGuide ? '▼' : '▶'} ¿Cómo leer mi receta?
+                  </button>
+                </div>
+                
+                <AnimatePresence>
+                  {showRxGuide && (
+                    <motion.div
+                      key="rxguide"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <RxGuide isToric={true} isMultifocal={true} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <div className="clq-rx-grid" style={{gridTemplateColumns: samePrescription ? '1fr' : '1fr 1fr'}}>
                   {renderPrescriptionCol('OD', samePrescription ? 'Ambos Ojos (OD y OS)' : 'Ojo Derecho (OD)')}

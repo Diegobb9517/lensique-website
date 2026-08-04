@@ -136,7 +136,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: samePrescription ? '1fr 1fr' : '1fr', gap: '0 16px' }}>
           <WPSelect 
             label="Esfera (SPH/PWR)"
             value={values.sph}

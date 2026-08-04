@@ -163,9 +163,9 @@ body.no-scroll {
   font-size: clamp(48px, 6vw, 75px);
   font-weight: 300;
   line-height: 1.1;
-  color: #1d1d1f;
+  color: #ffffff;
   margin-bottom: 20px;
-  text-shadow: 0 2px 20px rgba(255,255,255,0.7); /* ensure readable */
+  text-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .hero-subheading {

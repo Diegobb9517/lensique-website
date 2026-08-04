@@ -61,9 +61,9 @@ import lsCustom from './assets/lifestyle_custom.png';
 
 import premiumMonofocal from './assets/premium_monofocal_1785865329187.jpg';
 import premiumBifocal from './assets/premium_bifocal_v2_1785866208612.jpg';
-import premiumProgressive from './assets/premium_progressive_1785865381200.jpg';
+import premiumProgressive from './assets/premium_progressive_v2_1785866839561.jpg';
 import premiumPhotochromic from './assets/premium_photochromic_1785865389796.jpg';
-import premiumBluelight from './assets/premium_bluelight_v2_1785866269289.jpg';
+import premiumBluelight from './assets/premium_bluelight_1785865397362.jpg';
 import premiumCustom from './assets/premium_custom_1785865421645.jpg';
 import premiumAntireflective from './assets/premium_polarized_1785866183086.jpg';
 import lsAntireflective from './assets/realistic_antireflective.png';
@@ -1551,7 +1551,7 @@ function App() {
           </div>
           
           <div className="wp-slider" ref={sliderRef}>
-            {safeJsonParse(settings.featured_products).slice(0, 8).map((product: any) => (
+            {safeJsonParse(settings.featured_products).slice(0, 20).map((product: any) => (
               <ProductCard 
                 key={product.id}
                 product={product}
@@ -1772,7 +1772,7 @@ function App() {
                 onClick={() => setSelectedTech(brick)}
               >
                 <div 
-                  className={`wp-mica-bg ${brick.id === 'm5' ? 'photochromic-anim' : ''}`} 
+                  className="wp-mica-bg" 
                   style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
                 />
                 <div className="wp-mica-overlay" />
@@ -1786,18 +1786,18 @@ function App() {
           </div>
         </section>
 
-        <section className="contact-cta-section" style={{ padding: '60px 20px', background: '#1d1d1f', color: '#fff', textAlign: 'center' }}>
+        <section className="contact-cta-section" style={{ padding: '60px 20px', background: 'linear-gradient(135deg, #f7f9fc 0%, #eef2f6 100%)', color: '#1d1d1f', textAlign: 'center' }}>
           <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 600 }}>¿Quieres saber el costo de tus micas?</h2>
-            <p style={{ fontSize: '18px', color: '#a1a1a6', marginBottom: '32px' }}>
+            <p style={{ fontSize: '18px', color: '#6e6e73', marginBottom: '32px' }}>
               Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un minuto.
             </p>
             <a 
               href="/cotizador/" 
               style={{
                 display: 'inline-block',
-                background: '#ffffff',
-                color: '#1d1d1f',
+                background: '#1d1d1f',
+                color: '#ffffff',
                 padding: '16px 40px',
                 borderRadius: '980px',
                 fontSize: '17px',
@@ -1836,9 +1836,6 @@ function App() {
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
                 <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
-                <button className="btn-wp-outline" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
-                  Ver todos
-                </button>
               </div>
             </div>
             

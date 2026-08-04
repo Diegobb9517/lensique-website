@@ -39,10 +39,10 @@ const formatWhatsappNumber = (waStr: string) => {
   return waStr;
 };
 
-import cv7600Img from './assets/cv-7600.jpg';
-import clinicRoomImg from './assets/clinic-room.jpg';
-import eyeExamImg1 from './assets/eye_exam_1.jpg';
-import eyeExamImg2 from './assets/eye_exam_2.jpg';
+import cv7600Img from './assets/DSC09628.jpg';
+import clinicRoomImg from './assets/DSC09650.jpg';
+import eyeExamImg1 from './assets/DSC09650.jpg';
+import eyeExamImg2 from './assets/DSC09657.jpg';
 import editorialImg1 from './assets/DSC09657.jpg';
 import editorialCk from './assets/editorial-ck.jpg';
 import editorialCarrera from './assets/editorial-carrera.jpg';

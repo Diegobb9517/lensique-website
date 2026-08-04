@@ -14,7 +14,7 @@ export const RxGuide: React.FC<RxGuideProps> = ({ isToric, isMultifocal }) => {
 
       {/* REPLICA DE LA ETIQUETA DE LA CAJA */}
       <div style={{ 
-        maxWidth: '300px', 
+        maxWidth: '340px', 
         margin: '0 auto 16px auto', 
         background: '#ffffff', 
         border: '1px solid #cbd5e1', 
@@ -31,33 +31,33 @@ export const RxGuide: React.FC<RxGuideProps> = ({ isToric, isMultifocal }) => {
           <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', letterSpacing: '1px' }}>RX PRESCRIPTION</div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', marginBottom: '4px' }}>
           {/* PWR / SPH */}
-          <div style={{ flex: 1, minWidth: '60px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
-            <div style={{ fontSize: '18px', fontWeight: 800, color: '#1e40af' }}>-2.50</div>
+          <div style={{ flex: 1, minWidth: '0', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '6px 4px', textAlign: 'center' }}>
+            <div style={{ fontSize: '16px', fontWeight: 800, color: '#1e40af' }}>-2.50</div>
             <div style={{ fontSize: '10px', fontWeight: 700, color: '#3b82f6', marginTop: '2px' }}>D / SPH</div>
           </div>
 
           {/* CYL (Only if Toric) */}
           {isToric && (
-            <div style={{ flex: 1, minWidth: '60px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#1e40af' }}>-1.25</div>
+            <div style={{ flex: 1, minWidth: '0', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '6px 4px', textAlign: 'center' }}>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: '#1e40af' }}>-1.25</div>
               <div style={{ fontSize: '10px', fontWeight: 700, color: '#3b82f6', marginTop: '2px' }}>CYL</div>
             </div>
           )}
 
           {/* AXIS (Only if Toric) */}
           {isToric && (
-            <div style={{ flex: 1, minWidth: '60px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#1e40af' }}>180</div>
+            <div style={{ flex: 1, minWidth: '0', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '6px 4px', textAlign: 'center' }}>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: '#1e40af' }}>180</div>
               <div style={{ fontSize: '10px', fontWeight: 700, color: '#3b82f6', marginTop: '2px' }}>AXIS</div>
             </div>
           )}
 
           {/* ADD (Only if Multifocal) */}
           {isMultifocal && (
-            <div style={{ flex: 1, minWidth: '60px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#1e40af' }}>+2.00</div>
+            <div style={{ flex: 1, minWidth: '0', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '6px 4px', textAlign: 'center' }}>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: '#1e40af' }}>+2.00</div>
               <div style={{ fontSize: '10px', fontWeight: 700, color: '#3b82f6', marginTop: '2px' }}>ADD</div>
             </div>
           )}

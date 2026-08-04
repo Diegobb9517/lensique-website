@@ -14,6 +14,8 @@ import ContactLensConfiguratorModal from './components/ContactLensConfiguratorMo
 import ServiceDetailsPage from './components/ServiceDetailsPage';
 import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
+import ServiceInfoModal from './components/ServiceInfoModal';
+import { FAQSection } from './components/FAQSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import LensExplainer from './components/LensExplainer';
 import FaceMatcher from './components/FaceMatcher';
@@ -1946,6 +1948,8 @@ function App() {
             </div>
           </div>
         </section>
+
+        <FAQSection />
 
         <section id="contacto" className="location-section">
           <div className="location-grid">

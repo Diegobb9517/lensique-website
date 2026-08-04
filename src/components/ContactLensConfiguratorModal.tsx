@@ -136,50 +136,51 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
-        
-        <WPSelect 
-          label="Esfera (SPH/PWR/D)"
-          value={values.sph}
-          options={getSpmOptions()}
-          onChange={(val: string) => setValues({ ...values, sph: val })}
-          zeroValue="0.00"
-        />
-
-        {isToric && (
-          <>
-            <WPSelect 
-              label="Cilindro (CYL)"
-              value={values.cyl}
-              options={getCylOptions()}
-              onChange={(val: string) => setValues({ ...values, cyl: val })}
-            />
-
-            <WPSelect 
-              label="Eje (Axis)"
-              value={values.axis}
-              options={getAxisOptions()}
-              onChange={(val: string) => setValues({ ...values, axis: val })}
-            />
-          </>
-        )}
-
-        {isMultifocal && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
           <WPSelect 
-            label="Adición (ADD)"
-            value={values.add}
-            options={getAddOptions()}
-            onChange={(val: string) => setValues({ ...values, add: val })}
+            label="Esfera (SPH/PWR)"
+            value={values.sph}
+            options={getSpmOptions()}
+            onChange={(val: string) => setValues({ ...values, sph: val })}
+            zeroValue="0.00"
           />
-        )}
 
-        <div className="cl-wp-input-wrapper is-readonly">
-          <label>Curva Base (BC)</label>
-          <input type="text" value="8.6" readOnly />
-        </div>
+          {isToric && (
+            <>
+              <WPSelect 
+                label="Cilindro (CYL)"
+                value={values.cyl}
+                options={getCylOptions()}
+                onChange={(val: string) => setValues({ ...values, cyl: val })}
+              />
 
-        <div className="cl-wp-input-wrapper is-readonly">
-          <label>Diámetro (DIA)</label>
-          <input type="text" value="14.5" readOnly />
+              <WPSelect 
+                label="Eje (Axis)"
+                value={values.axis}
+                options={getAxisOptions()}
+                onChange={(val: string) => setValues({ ...values, axis: val })}
+              />
+            </>
+          )}
+
+          {isMultifocal && (
+            <WPSelect 
+              label="Adición (ADD)"
+              value={values.add}
+              options={getAddOptions()}
+              onChange={(val: string) => setValues({ ...values, add: val })}
+            />
+          )}
+
+          <div className="cl-wp-input-wrapper is-readonly">
+            <label>Curva Base (BC)</label>
+            <input type="text" value="8.6" readOnly />
+          </div>
+
+          <div className="cl-wp-input-wrapper is-readonly">
+            <label>Diámetro (DIA)</label>
+            <input type="text" value="14.5" readOnly />
+          </div>
         </div>
       </div>
     );

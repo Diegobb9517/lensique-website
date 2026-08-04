@@ -4,6 +4,7 @@ import { X, Check } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { getContactLensUsage } from '../lib/format';
 import { WPSelect } from './WPSelect';
+import { RxGuide } from './RxGuide';
 import './ContactLensQuiz.css';
 import eyeExamImg from '../assets/eye_exam_1.jpg'; // We can use the existing exam image
 
@@ -22,6 +23,7 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
   const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
   const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '', add: '' });
   const [samePrescription, setSamePrescription] = useState(true);
+  const [showRxGuide, setShowRxGuide] = useState(false);
 
   // Usage state
   const [usage, setUsage] = useState<string>(''); // 'Diario' or 'Mensual'
@@ -115,48 +117,50 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
     const values = eye === 'OD' ? prescriptionOD : prescriptionOS;
     const setValues = eye === 'OD' ? setPrescriptionOD : setPrescriptionOS;
 
-    // Use WPSelect and the modern configurator layout
+    // Use WPSelect and the modern configurator layout, in a 2-column grid so it fits without scrolling
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
         
-        <WPSelect 
-          label="Esfera (SPH/PWR/D)"
-          value={values.sph}
-          options={getSpmOptions()}
-          onChange={(val: string) => setValues({ ...values, sph: val })}
-          zeroValue="0.00"
-        />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
+          <WPSelect 
+            label="Esfera (SPH/PWR)"
+            value={values.sph}
+            options={getSpmOptions()}
+            onChange={(val: string) => setValues({ ...values, sph: val })}
+            zeroValue="0.00"
+          />
 
-        <WPSelect 
-          label="Cilindro (CYL) - Solo Astigmatismo"
-          value={values.cyl}
-          options={getCylOptions()}
-          onChange={(val: string) => setValues({ ...values, cyl: val })}
-        />
+          <WPSelect 
+            label="Cilindro (CYL) - Astigmatismo"
+            value={values.cyl}
+            options={getCylOptions()}
+            onChange={(val: string) => setValues({ ...values, cyl: val })}
+          />
 
-        <WPSelect 
-          label="Eje (Axis)"
-          value={values.axis}
-          options={getAxisOptions()}
-          onChange={(val: string) => setValues({ ...values, axis: val })}
-        />
+          <WPSelect 
+            label="Eje (Axis)"
+            value={values.axis}
+            options={getAxisOptions()}
+            onChange={(val: string) => setValues({ ...values, axis: val })}
+          />
 
-        <WPSelect 
-          label="Adición (ADD) - Solo Multifocal"
-          value={values.add}
-          options={getAddOptions()}
-          onChange={(val: string) => setValues({ ...values, add: val })}
-        />
-        
-        <div className="cl-wp-input-wrapper is-readonly">
-          <label>Curva Base (BC)</label>
-          <input type="text" value="8.6" readOnly />
-        </div>
+          <WPSelect 
+            label="Adición (ADD) - Multifocal"
+            value={values.add}
+            options={getAddOptions()}
+            onChange={(val: string) => setValues({ ...values, add: val })}
+          />
+          
+          <div className="cl-wp-input-wrapper is-readonly">
+            <label>Curva Base (BC)</label>
+            <input type="text" value="8.6" readOnly />
+          </div>
 
-        <div className="cl-wp-input-wrapper is-readonly">
-          <label>Diámetro (DIA)</label>
-          <input type="text" value="14.5" readOnly />
+          <div className="cl-wp-input-wrapper is-readonly">
+            <label>Diámetro (DIA)</label>
+            <input type="text" value="14.5" readOnly />
+          </div>
         </div>
       </div>
     );

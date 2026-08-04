@@ -8,19 +8,20 @@ import {
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import LensConfiguratorModal from './components/LensConfiguratorModal';
+import { StyleQuiz } from './components/StyleQuiz';
+import { ContactLensQuiz } from './components/ContactLensQuiz';
 import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
 import ServiceDetailsPage from './components/ServiceDetailsPage';
 import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
-import { StyleQuiz } from './components/StyleQuiz';
 import LensExplainer from './components/LensExplainer';
 import FaceMatcher from './components/FaceMatcher';
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.jpg';
-import { getInventedName, formatProductTitle } from './lib/format';
+import { getInventedName, formatProductTitle, getContactLensUsage } from './lib/format';
 import { ProductCard } from './components/ProductCard';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
@@ -133,15 +134,6 @@ const safeJsonParse = (str: any, fallback: any = []) => {
 };
 
 // Catalog will be fetched from API
-
-export const getContactLensUsage = (name: string) => {
-  const n = (name ? name.toString() : '').toUpperCase();
-  if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
-  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
-  if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';
-  if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL')) return 'Uso Anual';
-  return 'Todos';
-};
 
 
 function FullCatalog({ 
@@ -768,6 +760,7 @@ function App() {
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
+  const [isContactQuizOpen, setIsContactQuizOpen] = useState(false);
   const { addItem, items, setIsCartOpen } = useCart();
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
@@ -1095,6 +1088,18 @@ function App() {
         />
       )}
 
+      {isContactQuizOpen && (
+        <ContactLensQuiz
+          catalogData={safeJsonParse(settings.full_catalog_data)}
+          onClose={() => setIsContactQuizOpen(false)}
+          onViewProduct={(prod) => {
+            setIsContactQuizOpen(false);
+            setSelectedProductDetail(prod);
+          }}
+          onBookAppointment={handleOpenBooking}
+        />
+      )}
+
       <FullCatalog 
         isOpen={isCatalogOpen} 
         onClose={() => setIsCatalogOpen(false)} 
@@ -1404,13 +1409,8 @@ function App() {
       </AnimatePresence>
 
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="announcement-bar">
-        <div className="marquee-content">
-          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
-          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
-          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
-          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
-        </div>
+      <div className="announcement-bar">
+        Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong>
       </div>
         <div className="nav-content">
           <div className="nav-left">
@@ -1540,7 +1540,6 @@ function App() {
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollPopulares('left')}><ChevronLeft size={24} /></button>
               <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollPopulares('right')}><ChevronRight size={24} /></button>
-              <button className="btn-wp-outline" onClick={() => setIsCatalogOpen(true)}>Ver catálogo completo</button>
             </div>
           </div>
           
@@ -1665,7 +1664,7 @@ function App() {
                   onAction: () => { setSelectedServiceInfo(null); window.location.hash = 'micas'; }
                 }) 
               },
-              { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); } },
+              { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => setIsContactQuizOpen(true) },
               { id: 's5', title: 'Armazones', img: armazonesServiceImg, action: () => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
             ].map((service) => (
               <motion.div 
@@ -1699,7 +1698,7 @@ function App() {
                 armazones
               </button>
               {' '}y compra{' '}
-              <button className="statement-link" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
+              <button className="statement-link" onClick={() => { setIsContactQuizOpen(true); }}>
                 lentes de contacto
               </button>
               {'\u2014'}todo en tu óptica de confianza.
@@ -1815,7 +1814,7 @@ function App() {
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
                 <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
-                <button className="btn-wp-outline" onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>
+                <button className="btn-wp-outline" onClick={() => { setIsContactQuizOpen(true); }}>
                   Ver todos
                 </button>
               </div>
@@ -1830,7 +1829,7 @@ function App() {
                     key={product.id}
                     product={product}
                     fallbackImage={contactLensesImg}
-                    onClick={() => { setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}
+                    onClick={() => { setIsContactQuizOpen(true); }}
                   />
               ))}
             </div>
@@ -2008,7 +2007,7 @@ function App() {
                 <a href="#armazones" onClick={(e) => { e.preventDefault(); document.getElementById('armazones')?.scrollIntoView({ behavior: 'smooth' }); }}>Lentes oftálmicos</a>
                 <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas monofocales</a>
                 <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas progresivas</a>
-                <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Lentes de Contacto'); setIsCatalogOpen(true); }}>Lentes de contacto</a>
+                <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>
               </div>
               
               <div className="footer-col">

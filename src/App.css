@@ -265,7 +265,7 @@ body.no-scroll {
 
 /* Professional Services Section */
 .pro-services-section {
-  padding: 120px 40px;
+  padding: 80px 40px;
   background-color: var(--bg-primary);
   text-align: center;
 }
@@ -343,7 +343,7 @@ body.no-scroll {
 
 /* Popular Carousel Section (Top) */
 .popular-carousel-section {
-  padding: 80px 0 120px 40px;
+  padding: 80px 0 80px 40px;
   background-color: var(--bg-primary);
 }
 
@@ -355,7 +355,7 @@ body.no-scroll {
 
 /* Bento Services */
 .services-section {
-  padding: 120px 40px;
+  padding: 80px 40px;
   background-color: var(--bg-secondary);
 }
 
@@ -429,7 +429,7 @@ body.no-scroll {
 
 /* Bifocal Comparison Section */
 .comparison-section {
-  padding: 120px 40px 80px;
+  padding: 80px 40px;
   background-color: #f5f5f7;
   overflow: hidden;
   position: relative;
@@ -499,7 +499,7 @@ body.no-scroll {
 
 /* Featured Products */
 .featured-section {
-  padding: 120px 40px;
+  padding: 80px 40px;
   background-color: var(--bg-primary);
 }
 
@@ -586,7 +586,7 @@ body.no-scroll {
 
 /* About Section */
 .about-section {
-  padding: 140px 40px;
+  padding: 100px 40px;
   background-color: var(--bg-secondary);
   background-image: url('/images/about-bg.jpg');
   background-size: cover;
@@ -623,28 +623,15 @@ body.no-scroll {
 .announcement-bar {
   background: var(--accent);
   color: white;
-  padding: 12px 0;
-  font-size: 15px;
-  overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-  position: relative;
+  padding: 10px 20px;
+  font-size: 14px;
+  text-align: center;
   width: 100%;
-}
-
-.marquee-content {
-  display: inline-block;
-  animation: marquee 20s linear infinite;
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
 }
 
 /* Location Section */
 .location-section {
-  padding: 120px 40px;
+  padding: 80px 40px;
 }
 
 .location-grid {

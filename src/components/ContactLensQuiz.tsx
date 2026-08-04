@@ -201,9 +201,18 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
                 <h3 className="clq-step-title">Captura tu graduación</h3>
                 <p className="clq-step-desc">Ingresa los valores exactos que vienen en la caja de tus lentes de contacto actuales.</p>
                 
-                <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'24px', justifyContent:'center'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'20px', justifyContent:'center'}}>
                   <input type="checkbox" id="sameRx" checked={samePrescription} onChange={(e) => setSamePrescription(e.target.checked)} style={{width:'18px', height:'18px'}} />
-                  <label htmlFor="sameRx" style={{fontWeight:500, color:'#111827'}}>Misma graduación en ambos ojos</label>
+                  <label htmlFor="sameRx" style={{fontWeight:500, color:'#111827', cursor:'pointer'}}>Misma graduación en ambos ojos</label>
+                </div>
+
+                <div style={{ background: '#F0FDF4', border: '1px solid #D1FAE5', padding: '12px 16px', borderRadius: '12px', marginBottom: '24px', fontSize: '13px', color: '#065F46', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <div>
+                    <strong>¿Cómo leer tu receta?</strong> Busca en el costado o reverso de la caja de tus lentes actuales. 
+                    Encontrarás las siglas <strong>PWR o SPH</strong> (Esfera), <strong>CYL</strong> (Cilindro para astigmatismo) y <strong>AX o AXIS</strong> (Eje). 
+                    Asegúrate de seleccionar el signo (+ o -) exactamente igual.
+                  </div>
                 </div>
 
                 <div className="clq-rx-grid" style={{gridTemplateColumns: samePrescription ? '1fr' : '1fr 1fr'}}>

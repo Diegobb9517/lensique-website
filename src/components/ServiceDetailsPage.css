@@ -230,30 +230,29 @@
 
 /* Gallery Grid */
 .sdp-gallery-column {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .sdp-image-card {
   width: 100%;
-  border-radius: 32px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.06);
   background: #fff;
-  height: 100%;
 }
 
 .sdp-gallery-img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sdp-image-card:hover .sdp-gallery-img {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 @media(max-width: 991px) {

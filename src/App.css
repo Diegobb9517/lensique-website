@@ -215,9 +215,15 @@ body.no-scroll {
 }
 
 .hero-link a {
-  color: #0b3d91;
+  color: #ffffff;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+.hero-link a:hover {
+  color: #e0e0e0;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5);
 }
 
 /* Perks bar */

@@ -965,7 +965,7 @@ body.no-scroll {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  z-index: 2000;
+  z-index: 999999;
   display: flex;
   align-items: center;
   justify-content: center;

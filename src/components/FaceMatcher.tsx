@@ -57,54 +57,60 @@ const FACE_ICONS: Record<string, JSX.Element> = {
   diamond: <svg width="24" height="30" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3 C15 3, 17 7, 19 11 L21 15 L19 19 C17 24, 15 28, 12 28 C9 28, 7 24, 5 19 L3 15 L5 11 C7 7, 9 3, 12 3 Z"/></svg>,
 };
 
-/* ─── Frame SVG drawings (Minimalist) ─── */
+/* ─── Frame SVG drawings (Premium Realistic) ─── */
 function FrameRect() {
   return (
-    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="6" width="30" height="18" rx="3"/>
-      <rect x="46" y="6" width="30" height="18" rx="3"/>
-      <path d="M34 14 Q40 10 46 14"/>
-      <line x1="4" y1="12" x2="0" y2="10"/><line x1="76" y1="12" x2="80" y2="10"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="10" y="6" width="24" height="16" rx="3" />
+      <rect x="46" y="6" width="24" height="16" rx="3" />
+      <path d="M34 12 Q40 10 46 12" />
+      <line x1="10" y1="10" x2="2" y2="10" />
+      <line x1="70" y1="10" x2="78" y2="10" />
     </svg>
   );
 }
 function FrameRound() {
   return (
-    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="19" cy="15" r="12"/>
-      <circle cx="61" cy="15" r="12"/>
-      <path d="M31 14 Q40 10 49 14"/>
-      <line x1="7" y1="11" x2="1" y2="8"/><line x1="73" y1="11" x2="79" y2="8"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="23" cy="15" r="11" />
+      <circle cx="57" cy="15" r="11" />
+      <path d="M34 13 Q40 10 46 13" />
+      <line x1="12" y1="11" x2="4" y2="11" />
+      <line x1="68" y1="11" x2="76" y2="11" />
     </svg>
   );
 }
 function FrameCatEye() {
   return (
-    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 22 Q4 8 20 6 Q32 5 34 15 Q36 24 22 26 Q8 27 6 22 Z"/>
-      <path d="M74 22 Q76 8 60 6 Q48 5 46 15 Q44 24 58 26 Q72 27 74 22 Z"/>
-      <path d="M34 14 Q40 10 46 14"/>
-      <line x1="6" y1="12" x2="1" y2="8"/><line x1="74" y1="12" x2="79" y2="8"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M 12 7 L 22 6 Q 34 7 32 17 Q 30 25 22 25 Q 12 25 10 7 Z" />
+      <path d="M 68 7 L 58 6 Q 46 7 48 17 Q 50 25 58 25 Q 68 25 70 7 Z" />
+      <path d="M32 13 Q40 11 48 13" />
+      <line x1="10" y1="7" x2="4" y2="9" />
+      <line x1="70" y1="7" x2="76" y2="9" />
     </svg>
   );
 }
 function FrameAviador() {
   return (
-    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M7 8 Q4 8 4 12 L3 24 Q3 27 8 27 L28 26 Q34 25 34 16 L34 9 Q33 7 28 7 Z"/>
-      <path d="M73 8 Q76 8 76 12 L77 24 Q77 27 72 27 L52 26 Q46 25 46 16 L46 9 Q47 7 52 7 Z"/>
-      <path d="M34 12 Q40 9 46 12"/>
-      <line x1="7" y1="8" x2="2" y2="6"/><line x1="73" y1="8" x2="78" y2="6"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M 10 9 L 28 9 Q 34 9 32 18 Q 30 26 22 27 Q 10 27 10 9 Z" />
+      <path d="M 70 9 L 52 9 Q 46 9 48 18 Q 50 26 58 27 Q 70 27 70 9 Z" />
+      <path d="M 24 9 Q 40 7 56 9" />
+      <path d="M 28 14 Q 40 12 52 14" />
+      <line x1="10" y1="11" x2="4" y2="11" />
+      <line x1="70" y1="11" x2="76" y2="11" />
     </svg>
   );
 }
 function FrameOval() {
   return (
-    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <ellipse cx="20" cy="15" rx="15" ry="10"/>
-      <ellipse cx="60" cy="15" rx="15" ry="10"/>
-      <path d="M35 13 Q40 10 45 13"/>
-      <line x1="5" y1="12" x2="1" y2="9"/><line x1="75" y1="12" x2="79" y2="9"/>
+    <svg width="80" height="30" viewBox="0 0 80 30" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="23" cy="15" rx="13" ry="9" />
+      <ellipse cx="57" cy="15" rx="13" ry="9" />
+      <path d="M36 13 Q40 11 44 13" />
+      <line x1="10" y1="13" x2="4" y2="13" />
+      <line x1="70" y1="13" x2="76" y2="13" />
     </svg>
   );
 }

@@ -739,14 +739,13 @@ function App() {
       { name: 'Nosotros', href: '#nosotros' }
     ]),
     category_bricks: JSON.stringify([
-      { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: lsAntifatigue },
-      { id: 'm2', title: 'Bifocales Flat Top', description: 'Bifocal clásico con segmento definido.', image: lsFlattop },
-      { id: 'm3', title: 'Bifocales Invisibles', description: 'Bifocal estético sin líneas visibles.', image: lsInvisible },
-      { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: lsProgressives },
-      { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: lsPhotochromic },
-      { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.', image: lsBluelight },
-      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: lsCustom },
-      { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.', image: lsAntireflective }
+      { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.' },
+      { id: 'm2', title: 'Bifocales', description: 'Visión de cerca y de lejos en un solo lente.' },
+      { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.' },
+      { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.' },
+      { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.' },
+      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.' },
+      { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.' }
     ]),
     featured_products: JSON.stringify([]),
     featured_contact_lenses: JSON.stringify([]),
@@ -1773,17 +1772,17 @@ function App() {
               <motion.div 
                 key={`mica-ls-${idx}-${brick.id}`}
                 className="wp-mica-lifestyle-card"
-                style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
                 onClick={() => setSelectedTech(brick)}
               >
-                <div className="wp-mica-ls-overlay"></div>
-                <button className="wp-service-pill" onClick={(e) => { e.stopPropagation(); setSelectedTech(brick); }}>
-                  {brick.title}
-                </button>
+                <div className="wp-mica-text-content">
+                  <h3 className="wp-mica-title">{brick.title}</h3>
+                  <p className="wp-mica-desc">{brick.description}</p>
+                </div>
+                <div className="wp-mica-action">Conocer más</div>
               </motion.div>
             ))}
           </div>

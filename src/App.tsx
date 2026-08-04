@@ -1536,7 +1536,7 @@ function App() {
 
         <section id="populares" className="wp-carousel-section">
           <div className="wp-section-header">
-            <h2 className="wp-section-title">Nuestros más populares.</h2>
+            <h2 className="wp-section-title">Colección destacada</h2>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollPopulares('left')}><ChevronLeft size={24} /></button>
               <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollPopulares('right')}><ChevronRight size={24} /></button>
@@ -1613,7 +1613,7 @@ function App() {
 
         <section id="servicios" className="wp-services-section">
           <div className="wp-section-header">
-            <h2 className="wp-section-title">Nuestros servicios visuales.</h2>
+            <h2 className="wp-section-title">Nuestros servicios visuales</h2>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollServicios('left')}><ChevronLeft size={24} /></button>
               <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollServicios('right')}><ChevronRight size={24} /></button>
@@ -1714,7 +1714,7 @@ function App() {
             viewport={{ once: true }}
           >
             <div className="lifestyle-banner-text">
-              <h2 className="lifestyle-banner-title">Compra junto a quien más quieres.</h2>
+              <h2 className="lifestyle-banner-title">Compra junto a quien más quieres</h2>
               <p className="lifestyle-banner-desc">
                 Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
               </p>
@@ -1745,7 +1745,7 @@ function App() {
         <section id="micas" className="wp-micas-lifestyle-section">
           <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-              <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión.</h2>
+              <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión</h2>
               <a 
                 href="/cotizador/" 
                 style={{ 
@@ -1810,7 +1810,7 @@ function App() {
         {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
           <section id="lentes-contacto" className="wp-carousel-section">
             <div className="wp-section-header">
-              <h2 className="wp-section-title">Claridad sin límites.</h2>
+              <h2 className="wp-section-title">Claridad sin límites</h2>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
                 <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
@@ -1841,7 +1841,7 @@ function App() {
             <span className="hero-eyebrow">Lo que dicen nuestros pacientes</span>
             
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginBottom: '40px', flexWrap: 'wrap' }}>
-              <h2 className="section-title" style={{ margin: 0 }}>Tu visión es nuestra prioridad.</h2>
+              <h2 className="section-title" style={{ margin: 0 }}>Tu visión es nuestra prioridad</h2>
               <div style={{ display: 'flex', gap: '10px' }} className="reviews-arrows">
                 <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollReviews('left')}><ChevronLeft size={24} /></button>
                 <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollReviews('right')}><ChevronRight size={24} /></button>
@@ -1924,7 +1924,7 @@ function App() {
           <div className="location-grid">
             <div className="location-info">
               <span className="hero-eyebrow">Ubicación</span>
-              <h2 className="section-title">Visítanos hoy mismo.</h2>
+              <h2 className="section-title">Visítanos hoy mismo</h2>
               <div className="info-item">
                 <div className="info-icon"><MapPin /></div>
                 <div>

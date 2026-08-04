@@ -538,6 +538,7 @@ export default function LensExplainer({ onOpenCotizador }: LensExplainerProps) {
                 <div className="le-cta-wrap" style={{ marginTop: '0' }}>
                   <button className="le-cta" onClick={() => {
                     const text = `Hola, usé el asistente web y me sugirió:\n\n- Visión: ${currentLens.label}\n- Material: ${currentIndex.thickness}\n- Tratamientos: ${treatments.ar?'Antirreflejante':''} ${treatments.blue?', Luz Azul':''} ${treatments.photo?', Fotocromático':''}\n\nMe gustaría confirmar la cotización con mi graduación exacta.`;
+                    import('../lib/analytics').then(({ trackLead }) => trackLead());
                     window.open(`https://wa.me/5213329244036?text=${encodeURIComponent(text)}`, '_blank');
                   }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

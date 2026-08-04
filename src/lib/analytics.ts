@@ -111,9 +111,22 @@ export const trackPurchase = (transactionId: string, value: number, items: any[]
   if (window.fbq) {
     window.fbq('track', 'Purchase', {
       value: value,
-      currency: 'MXN',
-      content_ids: mappedItems.map(i => i.item_id),
-      content_type: 'product'
+      currency: 'MXN'
     });
+  }
+};
+
+export const trackLead = () => {
+  if (typeof window === 'undefined') return;
+  
+  if (window.gtag) {
+    window.gtag('event', 'generate_lead', {
+      currency: 'MXN',
+      value: 0
+    });
+  }
+  
+  if (window.fbq) {
+    window.fbq('track', 'Lead');
   }
 };

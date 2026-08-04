@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { getContactLensUsage } from '../lib/format';
+import { WPSelect } from './WPSelect';
 import './ContactLensQuiz.css';
 import eyeExamImg from '../assets/eye_exam_1.jpg'; // We can use the existing exam image
 
@@ -114,43 +115,48 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
     const values = eye === 'OD' ? prescriptionOD : prescriptionOS;
     const setValues = eye === 'OD' ? setPrescriptionOD : setPrescriptionOS;
 
+    // Use WPSelect and the modern configurator layout
     return (
-      <div className="clq-eye-col">
-        <div className="clq-eye-title">
-          <Check size={16} color="#1a4cd2" /> {label}
-        </div>
+      <div className="cl-prescription-column">
+        <h4>{label}</h4>
         
-        <div className="clq-input-group">
-          <label>Esfera (SPH)</label>
-          <select className="clq-select" value={values.sph} onChange={(e) => setValues({...values, sph: e.target.value})}>
-            <option value="">Selecciona</option>
-            <option value="0.00">0.00</option>
-            {getSpmOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
+        <WPSelect 
+          label="Esfera (SPH/PWR/D)"
+          value={values.sph}
+          options={getSpmOptions()}
+          onChange={(val: string) => setValues({ ...values, sph: val })}
+          zeroValue="0.00"
+        />
+
+        <WPSelect 
+          label="Cilindro (CYL) - Solo Astigmatismo"
+          value={values.cyl}
+          options={getCylOptions()}
+          onChange={(val: string) => setValues({ ...values, cyl: val })}
+        />
+
+        <WPSelect 
+          label="Eje (Axis)"
+          value={values.axis}
+          options={getAxisOptions()}
+          onChange={(val: string) => setValues({ ...values, axis: val })}
+        />
+
+        <WPSelect 
+          label="Adición (ADD) - Solo Multifocal"
+          value={values.add}
+          options={getAddOptions()}
+          onChange={(val: string) => setValues({ ...values, add: val })}
+        />
+        
+        <div className="cl-wp-input-wrapper is-readonly">
+          <label>Curva Base (BC)</label>
+          <input type="text" value="8.6" readOnly />
         </div>
 
-        <div className="clq-input-group">
-          <label>Cilindro (CYL) <span style={{fontWeight:'normal',textTransform:'none'}}>- Solo para Astigmatismo</span></label>
-          <select className="clq-select" value={values.cyl} onChange={(e) => setValues({...values, cyl: e.target.value})}>
-            <option value="">Ninguno</option>
-            {getCylOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-
-        <div className="clq-input-group">
-          <label>Eje (Axis)</label>
-          <select className="clq-select" value={values.axis} onChange={(e) => setValues({...values, axis: e.target.value})} disabled={!values.cyl}>
-            <option value="">Selecciona</option>
-            {getAxisOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-
-        <div className="clq-input-group">
-          <label>Adición (ADD) <span style={{fontWeight:'normal',textTransform:'none'}}>- Solo Multifocal</span></label>
-          <select className="clq-select" value={values.add} onChange={(e) => setValues({...values, add: e.target.value})}>
-            <option value="">Ninguno</option>
-            {getAddOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
+        <div className="cl-wp-input-wrapper is-readonly">
+          <label>Diámetro (DIA)</label>
+          <input type="text" value="14.5" readOnly />
         </div>
       </div>
     );

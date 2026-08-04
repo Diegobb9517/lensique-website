@@ -602,12 +602,24 @@ const privacyData: InfoPageData = {
   layout: 'standard',
   sections: [
     {
-      heading: 'Tratamiento de Datos Personales',
-      content: <p>En Óptica Lensique, con domicilio en Av. Guadalupe 1296, Zapopan, Jalisco, somos responsables del uso y protección de sus datos personales. Su información personal (nombre, teléfono, prescripción optométrica) será utilizada para proveer los productos y servicios que ha solicitado, informarle sobre cambios en los mismos y evaluar la calidad del servicio que le brindamos.</p>
+      heading: 'I. Responsable de los Datos Personales',
+      content: <p>En <strong>Óptica Lensique</strong>, con domicilio en Av. Guadalupe 1296, Col. Jardines de San Ignacio, C.P. 45040, Zapopan, Jalisco, México, somos conscientes de la importancia de proteger su privacidad. Por ello, en estricto apego a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), le informamos que somos responsables del uso, tratamiento y protección de sus datos personales y datos sensibles (como su historial optométrico).</p>
     },
     {
-      heading: 'Derechos ARCO',
-      content: <p>Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos y las condiciones del uso que les damos (Acceso). Asimismo, es su derecho solicitar la corrección de su información personal en caso de que esté desactualizada, sea inexacta o incompleta (Rectificación); que la eliminemos de nuestros registros o bases de datos cuando considere que la misma no está siendo utilizada adecuadamente (Cancelación); así como oponerse al uso de sus datos personales para fines específicos (Oposición). Para ejercer estos derechos, puede contactarnos vía WhatsApp.</p>
+      heading: 'II. Fines del Tratamiento de Datos',
+      content: <p>Los datos personales que recabamos (nombre, teléfono, correo electrónico, domicilio y prescripción visual) serán utilizados para: (a) Proveer los productos y servicios solicitados; (b) Dar seguimiento a la fabricación y entrega de sus pedidos; (c) Crear y mantener su expediente clínico optométrico; y (d) Gestionar sus citas de examen de la vista.</p>
+    },
+    {
+      heading: 'III. Uso de Cookies y Tecnologías de Rastreo',
+      content: <p>Le informamos que en nuestra página web utilizamos cookies y tecnologías de terceros (como Google Analytics y Meta Pixel) para monitorear su comportamiento como usuario, medir la efectividad de nuestras campañas y brindarle una mejor experiencia de navegación y publicidad. Puede desactivar estas tecnologías directamente en la configuración de su navegador.</p>
+    },
+    {
+      heading: 'IV. Derechos ARCO',
+      content: <p>Usted tiene derecho a conocer qué datos personales tenemos, para qué los utilizamos (Acceso), solicitar la corrección de su información (Rectificación), pedir que la eliminemos de nuestros registros (Cancelación), u oponerse al uso de sus datos para fines específicos (Oposición). Para ejercer sus derechos ARCO, puede contactarnos a través de nuestro WhatsApp oficial: +52 33 1692 9111.</p>
+    },
+    {
+      heading: 'V. Cambios al Aviso',
+      content: <p>Este aviso de privacidad puede sufrir modificaciones derivadas de nuevos requerimientos legales o prácticas de privacidad. Nos comprometemos a mantenerlo informado sobre los cambios a través de esta misma página web. <em>Última actualización: Agosto 2026.</em></p>
     }
   ]
 };
@@ -2045,7 +2057,7 @@ function App() {
             <div className="footer-links-wrapper">
               <div className="footer-col">
                 <h4>Productos</h4>
-                <a href="#catalogo" onClick={(e) => { e.preventDefault(); setIsCatalogOpen(true); }}>Lentes oftálmicos</a>
+                <a href="#catalogo" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes oftálmicos</a>
                 <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas monofocales</a>
                 <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas progresivas</a>
                 <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>

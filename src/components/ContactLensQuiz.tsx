@@ -290,7 +290,7 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
               <motion.div key="step5" initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} className="clq-exam-cta">
                 <img src={eyeExamImg} alt="Examen de vista" className="clq-exam-img" />
                 <h3 className="clq-step-title">¡No te preocupes!</h3>
-                <p className="clq-step-desc" style={{marginBottom:'24px', maxWidth:'500px', margin:'0 auto 32px'}}>
+                <p className="clq-step-desc" style={{marginBottom:'24px', maxWidth:'500px', margin:'0 auto 16px'}}>
                   Para usar lentes de contacto por primera vez o renovarlos, necesitas una <strong>adaptación especial</strong> y medidas precisas de tu ojo (curva base, diámetro, graduación exacta).<br/><br/>
                   Agenda una cita con nuestro oftalmólogo certificado. Nosotros nos encargamos de todo para que uses lentes de contacto con total seguridad y comodidad.
                 </p>

@@ -158,8 +158,10 @@
 .clq-exam-img {
   width: 100%;
   max-width: 400px;
+  height: 140px;
+  object-fit: cover;
   border-radius: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 /* Rx Grid */

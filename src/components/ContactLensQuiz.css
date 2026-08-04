@@ -216,10 +216,9 @@
   border-color: #111827;
 }
 
-/* Action Buttons */
 .clq-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
   margin-top: 24px;
   border-top: 1px solid #F3F4F6;
@@ -235,6 +234,9 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  flex: 1;
+  max-width: 250px;
+  text-align: center;
 }
 
 .clq-btn-back:hover {
@@ -251,6 +253,7 @@
   cursor: pointer;
   transition: all 0.2s;
   flex: 1;
+  max-width: 250px;
   text-align: center;
   font-size: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);

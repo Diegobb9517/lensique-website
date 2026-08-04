@@ -13,12 +13,12 @@ interface StyleQuizProps {
 
 /* ─── Step Icons ─── */
 const FACE_ICONS: Record<string, JSX.Element> = {
-  oval: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><ellipse cx="21" cy="26" rx="14" ry="20"/></svg>,
-  round: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="21" cy="26" r="18"/></svg>,
-  square: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="5" y="9" width="32" height="34" rx="7"/></svg>,
-  heart: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round"><path d="M5 12 Q21 6 37 12 Q33 34 21 46 Q9 34 5 12 Z"/></svg>,
-  diamond: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round"><path d="M21 5 L37 26 L21 47 L5 26 Z"/></svg>,
-  unknown: <svg width="46" height="56" viewBox="0 0 42 52" fill="none" stroke="currentColor" strokeWidth="2.2" strokeDasharray="3 3"><ellipse cx="21" cy="26" rx="15" ry="20"/></svg>,
+  oval: <svg width="46" height="56" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"><path d="M12 3 C18 3, 21 9, 21 16 C21 23, 16 28, 12 28 C8 28, 3 23, 3 16 C3 9, 6 3, 12 3 Z"/></svg>,
+  round: <svg width="46" height="56" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"><path d="M12 4 C19 4, 22 9, 22 15 C22 21, 19 26, 12 26 C5 26, 2 21, 2 15 C2 9, 5 4, 12 4 Z"/></svg>,
+  square: <svg width="46" height="56" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4 L17 4 C20 4, 21 8, 21 14 L21 18 C21 24, 18 27, 12 27 C6 27, 3 24, 3 18 L3 14 C3 8, 4 4, 7 4 Z"/></svg>,
+  heart: <svg width="46" height="56" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5 C16 3, 22 4, 22 10 C22 16, 16 22, 12 28 C8 22, 2 16, 2 10 C2 4, 8 3, 12 5 Z"/></svg>,
+  diamond: <svg width="46" height="56" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3 C15 3, 17 7, 19 11 L21 15 L19 19 C17 24, 15 28, 12 28 C9 28, 7 24, 5 19 L3 15 L5 11 C7 7, 9 3, 12 3 Z"/></svg>,
+  unknown: <svg width="46" height="56" viewBox="0 0 24 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="2 3"><path d="M12 3 C18 3, 21 9, 21 16 C21 23, 16 28, 12 28 C8 28, 3 23, 3 16 C3 9, 6 3, 12 3 Z"/></svg>,
 };
 
 const USAGE_ICONS: Record<string, JSX.Element> = {

@@ -27,6 +27,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+import { trackAddToCart } from '../lib/analytics';
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     // Auto-clear cart on payment success page
@@ -49,6 +51,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [items]);
 
   const addItem = (item: Omit<CartItem, 'id'>) => {
+    if (item.product) {
+      trackAddToCart(item.product, item.unit_price * item.quantity);
+    }
     setItems(prev => {
       const key = (it: Omit<CartItem, 'id'>) => `${it.product?.id || ''}|${it.lensConfig?.etiqueta || ''}|${it.lensConfig?.indice || ''}|${it.lensConfig?.tipoFab || ''}`;
       const itemKey = key(item);

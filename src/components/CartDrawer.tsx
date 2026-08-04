@@ -86,6 +86,7 @@ export function CartDrawer() {
     if (items.length === 0) return;
     
     if (!showCheckoutForm) {
+      import('../lib/analytics').then(({ trackBeginCheckout }) => trackBeginCheckout(total + shippingCost, items));
       setShowCheckoutForm(true);
       return;
     }
@@ -120,6 +121,8 @@ export function CartDrawer() {
         const fullAddress = `${addressDetails.street} ${addressDetails.exterior} ${addressDetails.interior ? `Int. ${addressDetails.interior}` : ''}, ${addressDetails.colony}, C.P. ${addressDetails.zip}, ${addressDetails.city}, ${addressDetails.state}`.trim();
         localStorage.setItem('lensique_last_order_shipping_address', fullAddress);
       }
+      localStorage.setItem('lensique_last_order_items', JSON.stringify(items));
+      localStorage.setItem('lensique_last_order_total', (total + shippingCost).toString());
 
       const res = await fetch('https://lensique-pos.onrender.com/api/checkout/preference', {
         method: 'POST',

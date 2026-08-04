@@ -109,6 +109,10 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
 @keyframes photoDark{0%{opacity:.06}12%{opacity:.06}46%{opacity:.66}74%{opacity:.66}100%{opacity:.06}}
 @keyframes sunPulse{0%{opacity:.14}12%{opacity:.14}46%{opacity:1}74%{opacity:1}100%{opacity:.14}}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(118,114,107,.3);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(118,114,107,.5)}
 </style></head><body>
 <div class="app firstload">
 <header>
@@ -410,7 +414,7 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
 var $=function(id){return document.getElementById(id);};
 var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
 var TOTAL_STEPS=5;
-function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.60",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
+function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.50",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
 var ST=fresh();var _pfPrev=null;var _thF=null;
 var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 var IC={

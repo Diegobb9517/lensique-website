@@ -655,6 +655,10 @@ function PaymentSuccessView() {
     };
 
     if (ref) {
+      const savedItems = JSON.parse(localStorage.getItem('lensique_last_order_items') || '[]');
+      const savedTotal = Number(localStorage.getItem('lensique_last_order_total') || '0');
+      import('./lib/analytics').then(({ trackPurchase }) => trackPurchase(ref, savedTotal, savedItems));
+
       fetch(`https://lensique-pos.onrender.com/api/checkout/${ref}/buyer-info`)
         .then(res => res.json())
         .then(data => {
@@ -783,6 +787,12 @@ function App() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingName, setBookingName] = useState<string>('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  useEffect(() => {
+    if (selectedProductDetail) {
+      import('./lib/analytics').then(({ trackViewItem }) => trackViewItem(selectedProductDetail));
+    }
+  }, [selectedProductDetail]);
 
   useEffect(() => {
     if (isBookingOpen && !selectedDate) {

@@ -928,13 +928,27 @@ function App() {
   };
 
   const isEyeExam = !selectedProduct || selectedProduct.toLowerCase().includes('examen');
-  const timeSlots = isEyeExam ? [
-    '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
-    '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM'
-  ] : [
-    '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', 
-    '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
-  ];
+  
+  let timeSlots: string[] = [];
+  if (selectedDate) {
+    const dayOfWeek = selectedDate.getDay();
+    if (dayOfWeek === 6) { // Sábado
+      timeSlots = isEyeExam ? [
+        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
+        '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM'
+      ] : [
+        '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '03:00 PM', '04:00 PM', '05:00 PM'
+      ];
+    } else if (dayOfWeek !== 0) { // Lunes - Viernes
+      timeSlots = isEyeExam ? [
+        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
+        '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM'
+      ] : [
+        '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', 
+        '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
+      ];
+    }
+  }
 
   if (isPaymentSuccess) {
     return <PaymentSuccessView />;
@@ -1289,12 +1303,14 @@ function App() {
                       today.setHours(0,0,0,0);
                       const isToday = date.toDateString() === today.toDateString();
                       const isPast = date < today;
+                      const isSunday = date.getDay() === 0;
+                      const isDisabled = isPast || isSunday;
                       
                       return (
                         <button 
                           key={`day-${date.toISOString()}`}
-                          className={`calendar-day ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''} ${isToday && !isSelected ? 'is-today' : ''}`}
-                          disabled={isPast}
+                          className={`calendar-day ${isSelected ? 'selected' : ''} ${isDisabled ? 'past' : ''} ${isToday && !isSelected ? 'is-today' : ''}`}
+                          disabled={isDisabled}
                           onClick={() => setSelectedDate(date)}
                         >
                           {date.getDate()}
@@ -1388,9 +1404,14 @@ function App() {
       </AnimatePresence>
 
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="nav-top-banner">
-          <p>Agenda tu examen de vista hoy. <span style={{ fontWeight: 600 }}>Atención personalizada en Zapopan.</span></p>
+        <div className="announcement-bar">
+        <div className="marquee-content">
+          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
+          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
+          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
+          <span>Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong> &nbsp; • &nbsp; </span>
         </div>
+      </div>
         <div className="nav-content">
           <div className="nav-left">
             <a href="/" className="logo">

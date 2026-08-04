@@ -115,8 +115,8 @@ const css = `
 .le-nav-btns{display:flex;justify-content:flex-end;gap:16px;margin-top:40px;border-top:1px solid #F3F4F6;padding-top:24px}
 .le-btn-back{padding:12px 24px;border:1px solid #E5E7EB;border-radius:50px;background:#fff;color:#4B5563;cursor:pointer;font-weight:500;transition:all 0.2s}
 .le-btn-back:hover{background:#F9FAFB}
-.le-btn-next{padding:12px 32px;border:none;border-radius:50px;background:#111827;color:#fff;cursor:pointer;font-weight:500;transition:all 0.2s}
-.le-btn-next:hover{background:#1F2937;transform:translateY(-1px)}
+.le-btn-next{width:100%;padding:18px;border:none;border-radius:16px;background:#111827;color:#fff;cursor:pointer;font-weight:600;font-size:16px;transition:all 0.2s;text-align:center;margin-top:12px;box-shadow:0 8px 16px rgba(0,0,0,0.1)}
+.le-btn-next:hover{background:#1F2937;transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,0.15)}
 
 /* Lifestyle */
 .le-life-grid{display:flex;flex-direction:column;gap:16px;margin-bottom:40px}

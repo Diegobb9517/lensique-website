@@ -1780,7 +1780,7 @@ function App() {
                   <h3 className="wp-mica-title">{brick.title}</h3>
                   <p className="wp-mica-desc">{brick.description}</p>
                 </div>
-                <div className="wp-mica-action">CONOCER MÁS &rarr;</div>
+                <div className="wp-mica-action">CONOCER MÁS</div>
               </motion.div>
             ))}
           </div>

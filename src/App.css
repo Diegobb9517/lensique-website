@@ -3078,11 +3078,12 @@ body.no-scroll {
 
 .wp-mica-bg {
   position: absolute;
-  top: 160px; left: 0; right: 0; bottom: 20px;
-  background-size: contain;
+  top: 140px; left: 0; right: 0; bottom: 0;
+  background-size: 100% auto;
   background-position: center bottom;
   background-repeat: no-repeat;
   z-index: 0;
+  mix-blend-mode: multiply;
   transition: filter 0.8s ease;
 }
 
@@ -3134,6 +3135,8 @@ body.no-scroll {
   display: flex;
   align-items: center;
   gap: 4px;
+  position: relative;
+  z-index: 2;
 }
 
 .wp-mica-action::after {

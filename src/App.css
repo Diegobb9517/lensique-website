@@ -3044,9 +3044,7 @@ body.no-scroll {
   width: 280px;
   height: 380px;
   border-radius: 20px;
-  background: linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%);
-  background-size: cover;
-  background-position: center;
+  background: #ffffff;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -3066,7 +3064,34 @@ body.no-scroll {
   box-shadow: 0 20px 40px rgba(0,0,0,0.08);
 }
 
+.wp-mica-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  transition: filter 0.8s ease;
+}
+
+.wp-mica-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.85));
+  z-index: 1;
+}
+
+.photochromic-anim {
+  animation: photochromic-darken 8s infinite alternate;
+}
+
+@keyframes photochromic-darken {
+  0%, 20% { filter: brightness(1) sepia(0) hue-rotate(0deg) contrast(1); }
+  80%, 100% { filter: brightness(0.25) sepia(0.2) hue-rotate(180deg) contrast(1.2); }
+}
+
 .wp-mica-text-content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -3296,6 +3321,8 @@ body.no-scroll {
   color: #1d1d1f;
   margin-bottom: 2px;
 }
+
+
 
 @media (max-width: 768px) {
   .product-detail-overlay {

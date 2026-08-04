@@ -60,12 +60,12 @@ import lsInvisible from './assets/lifestyle_invisible.png';
 import lsCustom from './assets/lifestyle_custom.png';
 
 import premiumMonofocal from './assets/premium_monofocal_1785865329187.jpg';
-import premiumBifocal from './assets/premium_bifocal_1785865359110.jpg';
+import premiumBifocal from './assets/premium_bifocal_v2_1785866208612.jpg';
 import premiumProgressive from './assets/premium_progressive_1785865381200.jpg';
 import premiumPhotochromic from './assets/premium_photochromic_1785865389796.jpg';
-import premiumBluelight from './assets/premium_bluelight_1785865397362.jpg';
+import premiumBluelight from './assets/premium_bluelight_v2_1785866269289.jpg';
 import premiumCustom from './assets/premium_custom_1785865421645.jpg';
-import premiumAntireflective from './assets/premium_antireflective_1785865428939.jpg';
+import premiumAntireflective from './assets/premium_polarized_1785866183086.jpg';
 import lsAntireflective from './assets/realistic_antireflective.png';
 import arnette4373 from './assets/arnette_0AN4373.png';
 import styleAviator from './assets/style_aviator.png';
@@ -1753,21 +1753,6 @@ function App() {
           <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
               <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión</h2>
-              <a 
-                href="/cotizador/" 
-                style={{ 
-                  backgroundColor: '#1F3864', 
-                  color: '#ffffff', 
-                  padding: '10px 20px', 
-                  borderRadius: '12px', 
-                  textDecoration: 'none', 
-                  fontWeight: 600,
-                  fontSize: '15px',
-                  boxShadow: '0 4px 14px rgba(31, 56, 100, 0.2)'
-                }}
-              >
-                Cotiza tus micas en línea
-              </a>
             </div>
             <div className="wp-slider-nav" style={{ display: 'flex', gap: '10px' }}>
               <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollMicas('left')}><ChevronLeft size={24} /></button>
@@ -1780,20 +1765,49 @@ function App() {
               <motion.div 
                 key={`mica-ls-${idx}-${brick.id}`}
                 className="wp-mica-lifestyle-card"
-                style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.95)), url(${resolveImageUrl(brick.image_url, brick.image)})` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}
                 viewport={{ once: true }}
                 onClick={() => setSelectedTech(brick)}
               >
+                <div 
+                  className={`wp-mica-bg ${brick.id === 'm5' ? 'photochromic-anim' : ''}`} 
+                  style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
+                />
+                <div className="wp-mica-overlay" />
                 <div className="wp-mica-text-content">
                   <h3 className="wp-mica-title">{brick.title}</h3>
                   <p className="wp-mica-desc">{brick.description}</p>
                 </div>
-                <div className="wp-mica-action">Conocer más</div>
+                <div className="wp-mica-action">CONOCER MÁS &rarr;</div>
               </motion.div>
             ))}
+          </div>
+        </section>
+
+        <section className="contact-cta-section" style={{ padding: '60px 20px', background: '#1d1d1f', color: '#fff', textAlign: 'center' }}>
+          <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 600 }}>¿Quieres saber el costo de tus micas?</h2>
+            <p style={{ fontSize: '18px', color: '#a1a1a6', marginBottom: '32px' }}>
+              Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un minuto.
+            </p>
+            <a 
+              href="/cotizador/" 
+              style={{
+                display: 'inline-block',
+                background: '#ffffff',
+                color: '#1d1d1f',
+                padding: '16px 40px',
+                borderRadius: '980px',
+                fontSize: '17px',
+                fontWeight: 600,
+                textDecoration: 'none',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}
+            >
+              Abrir cotizador de micas
+            </a>
           </div>
         </section>
 

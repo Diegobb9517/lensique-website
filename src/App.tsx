@@ -39,10 +39,10 @@ const formatWhatsappNumber = (waStr: string) => {
   return waStr;
 };
 
-import cv7600Img from './assets/DSC09628.jpg';
-import clinicRoomImg from './assets/DSC09650.jpg';
-import eyeExamImg1 from './assets/DSC09650.jpg';
-import eyeExamImg2 from './assets/DSC09657.jpg';
+import cv7600Img from './assets/cv-7600.jpg';
+import clinicRoomImg from './assets/clinic-room.jpg';
+import eyeExamImg1 from './assets/eye_exam_1.jpg';
+import eyeExamImg2 from './assets/eye_exam_2.jpg';
 import editorialImg1 from './assets/DSC09657.jpg';
 import editorialCk from './assets/editorial-ck.jpg';
 import editorialCarrera from './assets/editorial-carrera.jpg';
@@ -58,6 +58,14 @@ import lsPhotochromic from './assets/lifestyle_photochromic.png';
 import lsFlattop from './assets/lifestyle_flattop.png';
 import lsInvisible from './assets/lifestyle_invisible.png';
 import lsCustom from './assets/lifestyle_custom.png';
+
+import premiumMonofocal from './assets/premium_monofocal_1785865329187.jpg';
+import premiumBifocal from './assets/premium_bifocal_1785865359110.jpg';
+import premiumProgressive from './assets/premium_progressive_1785865381200.jpg';
+import premiumPhotochromic from './assets/premium_photochromic_1785865389796.jpg';
+import premiumBluelight from './assets/premium_bluelight_1785865397362.jpg';
+import premiumCustom from './assets/premium_custom_1785865421645.jpg';
+import premiumAntireflective from './assets/premium_antireflective_1785865428939.jpg';
 import lsAntireflective from './assets/realistic_antireflective.png';
 import arnette4373 from './assets/arnette_0AN4373.png';
 import styleAviator from './assets/style_aviator.png';
@@ -739,13 +747,13 @@ function App() {
       { name: 'Nosotros', href: '#nosotros' }
     ]),
     category_bricks: JSON.stringify([
-      { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.' },
-      { id: 'm2', title: 'Bifocales', description: 'Visión de cerca y de lejos en un solo lente.' },
-      { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.' },
-      { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.' },
-      { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.' },
-      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.' },
-      { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.' }
+      { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: premiumMonofocal },
+      { id: 'm2', title: 'Bifocales', description: 'Visión de cerca y de lejos en un solo lente.', image: premiumBifocal },
+      { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: premiumProgressive },
+      { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: premiumPhotochromic },
+      { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.', image: premiumBluelight },
+      { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: premiumCustom },
+      { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.', image: premiumAntireflective }
     ]),
     featured_products: JSON.stringify([]),
     featured_contact_lenses: JSON.stringify([]),
@@ -1772,6 +1780,7 @@ function App() {
               <motion.div 
                 key={`mica-ls-${idx}-${brick.id}`}
                 className="wp-mica-lifestyle-card"
+                style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.95)), url(${resolveImageUrl(brick.image_url, brick.image)})` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: idx * 0.1 }}

@@ -3073,8 +3073,9 @@ body.no-scroll {
 .wp-mica-bg {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-size: cover;
-  background-position: center;
+  background-size: 125%;
+  background-position: center bottom;
+  background-repeat: no-repeat;
   z-index: 0;
   transition: filter 0.8s ease;
 }

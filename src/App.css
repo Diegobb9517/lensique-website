@@ -3965,3 +3965,17 @@ body.no-scroll {
   }
 }
 
+
+@media (max-width: 768px) {
+  .about-section, .contact-lenses-section, .features-section, .wp-carousel-section {
+    padding: 60px 20px !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 85px !important;
+  }
+}
+

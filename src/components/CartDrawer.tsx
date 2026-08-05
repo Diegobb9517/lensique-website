@@ -23,6 +23,17 @@ export function CartDrawer() {
     state: ''
   });
   const [formError, setFormError] = useState('');
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    // Check if it's likely a mobile device (where keyboard is an issue)
+    if (window.innerWidth < 768) {
+      setTimeout(() => {
+        try {
+          e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        } catch(err) {}
+      }, 300); // Give keyboard time to pop up
+    }
+  };
   
   const [shippingQuote, setShippingQuote] = useState<{ cost: number, zone: string, transitDays: number } | null>(null);
   const [shippingQuoteLoading, setShippingQuoteLoading] = useState(false);
@@ -200,7 +211,7 @@ export function CartDrawer() {
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: showCheckoutForm ? '25vh' : '20px' }}>
               {showCheckoutForm ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   
@@ -219,6 +230,7 @@ export function CartDrawer() {
                         type="text" 
                         value={buyerName} 
                         onChange={e => setBuyerName(e.target.value)} 
+                        onFocus={handleInputFocus}
                         placeholder="Ej. Juan Pérez"
                         style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
                       />
@@ -242,6 +254,7 @@ export function CartDrawer() {
                         type="email" 
                         value={buyerEmail} 
                         onChange={e => setBuyerEmail(e.target.value)} 
+                        onFocus={handleInputFocus}
                         placeholder="ejemplo@correo.com"
                         style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
                       />
@@ -269,35 +282,35 @@ export function CartDrawer() {
                           <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Calle *</label>
-                              <input type="text" value={addressDetails.street} onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.street} onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Ext *</label>
-                              <input type="text" value={addressDetails.exterior} onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.exterior} onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Int</label>
-                              <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                           </div>
                           <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Colonia *</label>
-                              <input type="text" value={addressDetails.colony} onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.colony} onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>C.P. *</label>
-                              <input type="text" value={addressDetails.zip} onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.zip} onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                           </div>
                           <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Ciudad *</label>
-                              <input type="text" value={addressDetails.city} onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.city} onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Estado *</label>
-                              <input type="text" value={addressDetails.state} onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              <input type="text" value={addressDetails.state} onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                             </div>
                           </div>
                         </div>

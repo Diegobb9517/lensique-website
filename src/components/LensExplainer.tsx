@@ -19,7 +19,9 @@ const css = `
 
 /* Tabs */
 .le-tabs{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
-.le-tab{padding:12px 28px;border:1px solid rgba(0,0,0,0.08);border-radius:50px;background:#FFFFFF;color:#6B7280;font-size:15px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit}
+@media(max-width:600px){.le-tabs{flex-direction:column;gap:16px}}
+.le-tab{padding:12px 28px;min-height:48px;border:1px solid rgba(0,0,0,0.08);border-radius:50px;background:#FFFFFF;color:#6B7280;font-size:15px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit;display:flex;align-items:center;justify-content:center}
+@media(max-width:600px){.le-tab{width:100%}}
 .le-tab:hover{border-color:rgba(0,0,0,0.2);color:#111827}
 .le-tab.active{border:1px solid #111827;background:#111827;color:#FFFFFF;font-weight:500;box-shadow:0 8px 20px rgba(17,24,39,0.15)}
 
@@ -82,7 +84,7 @@ const css = `
 /* Treatments */
 .le-treat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 @media(max-width:600px){.le-treat-grid{grid-template-columns:1fr}}
-.le-treat{border:1px solid rgba(0,0,0,0.06);border-radius:20px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);background:#FFFFFF}
+.le-treat{border:1px solid rgba(0,0,0,0.06);border-radius:20px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);background:#FFFFFF;min-height:56px}
 .le-treat:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)}
 .le-treat.on{border:1px solid #111827;background:#FAFAFA;box-shadow:0 8px 24px rgba(17,24,39,0.05)}
 .le-treat-lens{width:80px;height:80px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden}
@@ -93,7 +95,8 @@ const css = `
 
 /* CTA */
 .le-cta-wrap{text-align:center;margin-top:56px}
-.le-cta{display:inline-flex;align-items:center;gap:10px;padding:18px 48px;background:#111827;color:#fff;border:1px solid #111827;border-radius:50px;font-size:16px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit;text-decoration:none;letter-spacing:0.5px}
+.le-cta{display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:18px 48px;min-height:56px;background:#111827;color:#fff;border:1px solid #111827;border-radius:50px;font-size:16px;font-weight:400;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-family:inherit;text-decoration:none;letter-spacing:0.5px}
+@media(max-width:600px){.le-cta{width:100%}}
 .le-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(17,24,39,0.2);background:#FFFFFF;color:#111827}
 
 /* Wizard Steps */
@@ -120,7 +123,7 @@ const css = `
 
 /* Lifestyle */
 .le-life-grid{display:flex;flex-direction:column;gap:16px;margin-bottom:40px}
-.le-life-opt{display:flex;align-items:center;gap:16px;padding:20px;border:1px solid #E5E7EB;border-radius:16px;cursor:pointer;transition:all 0.2s}
+.le-life-opt{display:flex;align-items:center;gap:16px;padding:20px;min-height:56px;border:1px solid #E5E7EB;border-radius:16px;cursor:pointer;transition:all 0.2s}
 .le-life-opt:hover{border-color:#111827;background:#F9FAFB}
 .le-life-opt.active{border-color:#111827;background:#111827;color:#fff}
 .le-life-opt.active .le-life-desc{color:#E5E7EB}

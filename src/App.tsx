@@ -1915,7 +1915,7 @@ function App() {
             <div 
               ref={reviewsSliderRef} 
               className="resenas-track" 
-              style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingBottom: '20px', paddingLeft: '16px', paddingRight: '16px', cursor: 'grab' }}
+              style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingBottom: '20px', paddingLeft: '16px', paddingRight: '16px', scrollPaddingLeft: '16px', cursor: 'grab' }}
               onMouseDown={(e) => {
                 isDragging.current = true;
                 if (reviewsSliderRef.current) {

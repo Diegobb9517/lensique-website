@@ -80,7 +80,7 @@ export function FAQSection() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '20px 24px',
+                    padding: '24px',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',

@@ -245,6 +245,7 @@
   outline: none;
   appearance: none;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .cl-wp-input-wrapper select {
@@ -285,6 +286,9 @@
   padding: 0.25rem 0 0.25rem 0;
   font-size: 1rem;
   color: #0f172a;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 .cl-wp-dropdown-menu {
   position: absolute;
@@ -313,6 +317,10 @@
   font-size: 0.875rem;
   color: #334155;
   transition: background 0.1s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cl-wp-dropdown-item:nth-child(even) {
   border-right: none;

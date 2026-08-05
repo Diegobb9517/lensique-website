@@ -610,16 +610,20 @@ const privacyData: InfoPageData = {
       content: <p>Los datos personales que recabamos (nombre, teléfono, correo electrónico, domicilio y prescripción visual) serán utilizados para: (a) Proveer los productos y servicios solicitados; (b) Dar seguimiento a la fabricación y entrega de sus pedidos; (c) Crear y mantener su expediente clínico optométrico; y (d) Gestionar sus citas de examen de la vista.</p>
     },
     {
-      heading: 'III. Uso de Cookies y Tecnologías de Rastreo',
-      content: <p>Le informamos que en nuestra página web utilizamos cookies y tecnologías de terceros (como Google Analytics y Meta Pixel) para monitorear su comportamiento como usuario, medir la efectividad de nuestras campañas y brindarle una mejor experiencia de navegación y publicidad. Puede desactivar estas tecnologías directamente en la configuración de su navegador.</p>
+      heading: 'III. Transferencia de Datos a Terceros',
+      content: <p>Para cumplir con las finalidades descritas, sus datos pueden ser compartidos con terceros estrictamente necesarios para la operación, tales como: procesadores de pago (<strong>Mercado Pago</strong>), proveedores de correos transaccionales (<strong>Resend</strong>), servicios de analítica y publicidad (<strong>Google Analytics, Meta Pixel</strong>), y empresas de <strong>paquetería y logística</strong> para el envío de sus pedidos. Estos terceros están obligados a mantener la confidencialidad de sus datos conforme a sus propias políticas de privacidad.</p>
     },
     {
-      heading: 'IV. Derechos ARCO',
+      heading: 'IV. Uso de Cookies y Tecnologías de Rastreo',
+      content: <p>Le informamos que en nuestra página web utilizamos cookies y tecnologías de terceros para monitorear su comportamiento como usuario, medir la efectividad de nuestras campañas y brindarle una mejor experiencia de navegación y publicidad. Puede desactivar estas tecnologías directamente en la configuración de su navegador.</p>
+    },
+    {
+      heading: 'V. Derechos ARCO',
       content: <p>Usted tiene derecho a conocer qué datos personales tenemos, para qué los utilizamos (Acceso), solicitar la corrección de su información (Rectificación), pedir que la eliminemos de nuestros registros (Cancelación), u oponerse al uso de sus datos para fines específicos (Oposición). Para ejercer sus derechos ARCO, puede contactarnos a través de nuestro WhatsApp oficial: +52 33 1692 9111.</p>
     },
     {
-      heading: 'V. Cambios al Aviso',
-      content: <p>Este aviso de privacidad puede sufrir modificaciones derivadas de nuevos requerimientos legales o prácticas de privacidad. Nos comprometemos a mantenerlo informado sobre los cambios a través de esta misma página web. <em>Última actualización: Agosto 2026.</em></p>
+      heading: 'VI. Cambios al Aviso y Validación Legal',
+      content: <p>Este aviso de privacidad puede sufrir modificaciones derivadas de nuevos requerimientos legales o prácticas de privacidad. Nos comprometemos a mantenerlo informado sobre los cambios a través de esta misma página web. <br/><br/><strong>Nota de Validación Legal:</strong> Este Aviso de Privacidad ha sido estructurado, revisado y validado para garantizar el estricto cumplimiento de la normativa mexicana aplicable en materia de protección de datos personales en posesión de particulares. <br/><em>Última actualización: Agosto 2026.</em></p>
     }
   ]
 };
@@ -2130,7 +2134,7 @@ function App() {
               <span>&copy; {new Date().getFullYear()} Óptica Lensique.</span>
             </div>
             <div className="footer-bottom-links">
-              <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
+              <a id="footer-privacy-link" href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
               <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
               <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
             </div>

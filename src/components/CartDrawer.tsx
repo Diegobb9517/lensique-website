@@ -430,6 +430,15 @@ export function CartDrawer() {
                   <span>${Math.round(finalTotal).toLocaleString('es-MX')}</span>
                 </div>
                 
+                {showCheckoutForm && (
+                  <p style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginBottom: '12px', lineHeight: '1.4' }}>
+                    Tus datos personales y de salud (receta) están protegidos. Al continuar, aceptas nuestro{' '}
+                    <a href="#privacidad" onClick={(e) => { e.preventDefault(); setIsCartOpen(false); document.getElementById('footer-privacy-link')?.click(); }} style={{ color: '#16a34a', textDecoration: 'underline' }}>
+                      Aviso de Privacidad
+                    </a>.
+                  </p>
+                )}
+                
                 <button 
                   onClick={showCheckoutForm ? payOnline : () => setShowCheckoutForm(true)}
                   disabled={isProcessing}

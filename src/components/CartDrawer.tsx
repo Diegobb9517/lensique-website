@@ -24,15 +24,12 @@ export function CartDrawer() {
   });
   const [formError, setFormError] = useState('');
 
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    // Check if it's likely a mobile device (where keyboard is an issue)
-    if (window.innerWidth < 768) {
-      setTimeout(() => {
-        try {
-          e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        } catch(err) {}
-      }, 300); // Give keyboard time to pop up
-    }
+  const handleInputFocus = (e: React.FocusEvent<HTMLElement>) => {
+    setTimeout(() => {
+      try {
+        e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } catch(err) {}
+    }, 300);
   };
   
   const [shippingQuote, setShippingQuote] = useState<{ cost: number, zone: string, transitDays: number } | null>(null);
@@ -211,7 +208,7 @@ export function CartDrawer() {
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: showCheckoutForm ? '25vh' : '20px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: showCheckoutForm ? '35vh' : '20px' }}>
               {showCheckoutForm ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   
@@ -331,6 +328,7 @@ export function CartDrawer() {
                   >
                     Volver al carrito
                   </button>
+                  <div style={{ height: '35vh', width: '100%', flexShrink: 0 }} />
                 </div>
               ) : items.length === 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', gap: '12px' }}>

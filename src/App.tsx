@@ -622,8 +622,8 @@ const privacyData: InfoPageData = {
       content: <p>Usted tiene derecho a conocer qué datos personales tenemos, para qué los utilizamos (Acceso), solicitar la corrección de su información (Rectificación), pedir que la eliminemos de nuestros registros (Cancelación), u oponerse al uso de sus datos para fines específicos (Oposición). Para ejercer sus derechos ARCO, puede contactarnos a través de nuestro WhatsApp oficial: +52 33 1692 9111.</p>
     },
     {
-      heading: 'VI. Cambios al Aviso y Validación Legal',
-      content: <p>Este aviso de privacidad puede sufrir modificaciones derivadas de nuevos requerimientos legales o prácticas de privacidad. Nos comprometemos a mantenerlo informado sobre los cambios a través de esta misma página web. <br/><br/><strong>Nota de Validación Legal:</strong> Este Aviso de Privacidad ha sido estructurado, revisado y validado para garantizar el estricto cumplimiento de la normativa mexicana aplicable en materia de protección de datos personales en posesión de particulares. <br/><em>Última actualización: Agosto 2026.</em></p>
+      heading: 'VI. Cambios al Aviso',
+      content: <p>Este aviso puede actualizarse conforme a cambios legales o en nuestras prácticas. Nos comprometemos a mantenerlo informado sobre los cambios a través de esta misma página web. Para dudas sobre tus datos, contáctanos en <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a>. <br/><br/><em>Última actualización: Agosto 2026.</em></p>
     }
   ]
 };

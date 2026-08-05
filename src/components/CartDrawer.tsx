@@ -149,15 +149,25 @@ export function CartDrawer() {
           }
         })
       });
-      const responseData = await res.json();
+      const responseText = await res.text();
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (err) {
+        console.error("Non-JSON response from server:", responseText);
+        alert('El servidor está iniciando o hubo un error (502). Por favor, espera un momento e intenta de nuevo.');
+        setIsProcessing(false);
+        return;
+      }
+      
       if (responseData && responseData.init_point) {
         window.location.href = responseData.init_point;
       } else {
-        alert('No se pudo iniciar el pago. Intenta de nuevo.');
+        alert(responseData.error || 'No se pudo iniciar el pago. Intenta de nuevo.');
         setIsProcessing(false);
       }
-    } catch (e) {
-      alert('Error al procesar el pago. Intenta de nuevo.');
+    } catch (e: any) {
+      alert('Error de conexión. Si el servidor estaba inactivo, intenta de nuevo. (' + (e.message || 'Error desconocido') + ')');
       setIsProcessing(false);
     }
   };

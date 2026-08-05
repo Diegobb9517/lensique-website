@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock } from 'lucide-react';
+import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { resolveImageUrl } from '../App';
 
@@ -36,7 +36,8 @@ export function CartDrawer() {
   const [shippingQuoteLoading, setShippingQuoteLoading] = useState(false);
   const [shippingQuoteError, setShippingQuoteError] = useState('');
   
-  const finalTotal = deliveryMethod === 'HOME_DELIVERY' ? total + (shippingQuote?.cost ?? 150) : total;
+  const shippingCost = deliveryMethod === 'HOME_DELIVERY' ? (shippingQuote?.cost ?? 150) : 0;
+  const finalTotal = total + shippingCost;
 
   useEffect(() => {
     const fetchShippingQuote = async () => {
@@ -270,18 +271,22 @@ export function CartDrawer() {
 
                   {ENABLE_SHIPPING_FEATURE && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
-                      <div style={{ fontSize: '18px', color: '#0f172a', fontWeight: 700 }}>Entrega</div>
-                      <div style={{ display: 'flex', gap: '10px' }}>
-                        <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
-                          <input type="radio" name="deliveryMethod" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
-                          <MapPin size={16} color={deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : '#64748b'} />
-                          <span style={{ fontSize: '13px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 600 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#475569' }}>Recoger en sucursal</span>
-                        </label>
-                        <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
-                          <input type="radio" name="deliveryMethod" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
-                          <MapPin size={16} color={deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : '#64748b'} />
-                          <span style={{ fontSize: '13px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 600 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#475569' }}>Envío a domicilio</span>
-                        </label>
+                      <div className="checkout-section">
+                        <h3 className="checkout-section-title"><MapPin size={18} /> ¿Cómo quieres recibir tu pedido?</h3>
+                        <div className="delivery-options-grid">
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}>
+                            <input type="radio" name="deliveryMethod" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
+                            <MapPin size={16} color={deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : '#64748b'} />
+                            <span style={{ fontSize: '14px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 600 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#475569', flex: 1 }}>Recoger en tienda</span>
+                            {deliveryMethod === 'STORE_PICKUP' && <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={10} color="#fff" /></div>}
+                          </label>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}>
+                            <input type="radio" name="deliveryMethod" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
+                            <MapPin size={16} color={deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : '#64748b'} />
+                            <span style={{ fontSize: '14px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 600 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#475569', flex: 1 }}>Envío a domicilio</span>
+                            {deliveryMethod === 'HOME_DELIVERY' && <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={10} color="#fff" /></div>}
+                          </label>
+                        </div>
                       </div>
 
                       {deliveryMethod === 'HOME_DELIVERY' && (

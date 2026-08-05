@@ -3979,3 +3979,11 @@ body.no-scroll {
   }
 }
 
+
+.delivery-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+

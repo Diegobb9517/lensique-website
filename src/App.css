@@ -1228,7 +1228,7 @@ body.no-scroll {
 .catalog-topbar {
   position: sticky;
   top: 0;
-  z-index: 2000;
+  z-index: 100;
   background: #ffffff;
   padding: 0 40px;
   height: 72px;
@@ -1244,7 +1244,7 @@ body.no-scroll {
 .catalog-header {
   position: sticky;
   top: 71px; /* 72px height - 1px border overlap */
-  z-index: 1999;
+  z-index: 99;
   background: #ffffff;
   padding: 0 40px;
   height: 52px;
@@ -1932,8 +1932,8 @@ body.no-scroll {
     gap: 12px;
   }
   .catalog-products .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .catalog-search {
     width: 100%;

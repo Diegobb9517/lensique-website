@@ -95,6 +95,17 @@ export function CartDrawer() {
     if (items.length === 0) return;
     
     if (!showCheckoutForm) {
+      if (deliveryMethod === 'HOME_DELIVERY') {
+        const zipClean = addressDetails.zip.replace(/\D/g, '');
+        if (zipClean.length !== 5) {
+          alert('Ingresa un código postal válido (5 dígitos) para calcular el envío.');
+          return;
+        }
+        if (shippingQuoteError || shippingQuote === null) {
+          alert('No se ha podido calcular el envío para ese CP. Por favor verifica e intenta de nuevo.');
+          return;
+        }
+      }
       import('../lib/analytics').then(({ trackBeginCheckout }) => trackBeginCheckout(total + shippingCost, items));
       setShowCheckoutForm(true);
       return;
@@ -210,9 +221,16 @@ export function CartDrawer() {
             }}
           >
             <div style={{ padding: '20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShoppingBag size={20} color="#0f172a" />
-                <div style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', margin: 0, fontFamily: 'var(--font-body, system-ui, sans-serif)' }}>Tu Carrito</div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <ShoppingBag size={20} color="#0f172a" />
+                  <div style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', margin: 0 }}>Tu Carrito</div>
+                </div>
+                {items.length > 0 && (
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>
+                    {!showCheckoutForm ? 'Paso 1 de 2 · Entrega' : 'Paso 2 de 2 · Datos y pago'}
+                  </div>
+                )}
               </div>
               <button onClick={() => setIsCartOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
                 <X size={24} color="#64748b" />
@@ -271,60 +289,58 @@ export function CartDrawer() {
 
                   {ENABLE_SHIPPING_FEATURE && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
-                      <div className="checkout-section">
-                        <h3 className="checkout-section-title"><MapPin size={18} /> ¿Cómo quieres recibir tu pedido?</h3>
-                        <div className="delivery-options-grid">
-                          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}>
-                            <input type="radio" name="deliveryMethod" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
-                            <MapPin size={16} color={deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : '#64748b'} />
-                            <span style={{ fontSize: '14px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 600 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#475569', flex: 1 }}>Recoger en tienda</span>
-                            {deliveryMethod === 'STORE_PICKUP' && <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={10} color="#fff" /></div>}
-                          </label>
-                          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '8px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}>
-                            <input type="radio" name="deliveryMethod" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
-                            <MapPin size={16} color={deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : '#64748b'} />
-                            <span style={{ fontSize: '14px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 600 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#475569', flex: 1 }}>Envío a domicilio</span>
-                            {deliveryMethod === 'HOME_DELIVERY' && <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={10} color="#fff" /></div>}
-                          </label>
-                        </div>
-                      </div>
-
-                      {deliveryMethod === 'HOME_DELIVERY' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Calle *</label>
-                              <input type="text" value={addressDetails.street} onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                      {deliveryMethod === 'HOME_DELIVERY' ? (
+                        <>
+                          <div style={{ fontSize: '16px', color: '#0f172a', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <MapPin size={18} className="text-indigo-600" /> Dirección de envío
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                              <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Calle *</label>
+                                <input type="text" value={addressDetails.street} onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Ext *</label>
+                                <input type="text" value={addressDetails.exterior} onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Int</label>
+                                <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
                             </div>
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Ext *</label>
-                              <input type="text" value={addressDetails.exterior} onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                              <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Colonia *</label>
+                                <input type="text" value={addressDetails.colony} onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>C.P. *</label>
+                                <input type="text" value={addressDetails.zip} onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
                             </div>
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Int</label>
-                              <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Ciudad *</label>
+                                <input type="text" value={addressDetails.city} onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Estado *</label>
+                                <input type="text" value={addressDetails.state} onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                              </div>
                             </div>
                           </div>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Colonia *</label>
-                              <input type="text" value={addressDetails.colony} onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                            </div>
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>C.P. *</label>
-                              <input type="text" value={addressDetails.zip} onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                            </div>
+                        </>
+                      ) : (
+                        <div style={{ background: '#eff6ff', padding: '16px', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
+                          <div style={{ fontSize: '15px', fontWeight: 700, color: '#1e3a8a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <MapPin size={16} /> Recoger en tienda
                           </div>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Ciudad *</label>
-                              <input type="text" value={addressDetails.city} onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                            </div>
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Estado *</label>
-                              <input type="text" value={addressDetails.state} onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                            </div>
-                          </div>
+                          <p style={{ fontSize: '13px', color: '#1e40af', margin: 0, lineHeight: 1.5 }}>
+                            <strong>Recoges en:</strong> Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jal. 45040.<br/>
+                            <strong>Horario:</strong> Lun-Vie 10:00-20:00, Sáb 10:00-17:00.<br/><br/>
+                            Te avisaremos por WhatsApp o correo cuando tu pedido esté listo.
+                          </p>
                         </div>
                       )}
                     </div>
@@ -402,27 +418,60 @@ export function CartDrawer() {
             {items.length > 0 && (
               <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const, flexShrink: 0, paddingBottom: 'calc(20px + env(safe-area-inset-bottom))' }}>
                 {!showCheckoutForm && (
-                  <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', fontSize: '13px', color: '#475569', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                    <MapPin size={16} style={{ flexShrink: 0, marginTop: '2px', color: '#3b82f6' }} />
-                    <div>
-                      {ENABLE_SHIPPING_FEATURE ? (
-                        <>
-                          <div style={{ marginBottom: '4px' }}>Recoge en tienda o elige envío a domicilio.</div>
-                          <div style={{ color: '#3b82f6', fontWeight: 500 }}>
-                            {deliveryMethod === 'HOME_DELIVERY' ? (
-                               shippingQuoteLoading ? 'Calculando costo de envío...' :
-                               shippingQuote?.cost === 0 ? 'Envío a domicilio: Gratis' :
-                               `Costo de envío estimado: $${(shippingQuote?.cost ?? 150).toFixed(2)} MXN`
-                            ) : 'Recoger en tienda: Gratis'}
-                          </div>
-                        </>
-                      ) : "Todas las compras se recogen en tienda (Zapopan)."}
-                      {maxDelStr && (
-                        <div style={{ marginTop: '8px', fontWeight: 600, color: '#16a34a' }}>
-                          Entrega estimada del pedido: {maxDelStr}
+                  <div style={{ background: '#f8fafc', borderRadius: '12px', fontSize: '13px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {ENABLE_SHIPPING_FEATURE ? (
+                      <div className="checkout-section" style={{ margin: 0, padding: 0, background: 'transparent', border: 'none' }}>
+                        <h3 className="checkout-section-title" style={{ fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <MapPin size={16} /> ¿Cómo quieres recibir tu pedido?
+                        </h3>
+                        <div className="delivery-options-grid" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
+                            <input type="radio" name="deliveryMethodStep1" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 700 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#0f172a' }}>Recoger en tienda</div>
+                              <div style={{ fontSize: '13px', color: deliveryMethod === 'STORE_PICKUP' ? '#2563eb' : '#64748b', marginTop: '2px' }}>Gratis</div>
+                            </div>
+                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'STORE_PICKUP' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {deliveryMethod === 'STORE_PICKUP' && <Check size={14} color="#fff" />}
+                            </div>
+                          </label>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
+                            <input type="radio" name="deliveryMethodStep1" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#0f172a' }}>Envío a domicilio</div>
+                              <div style={{ fontSize: '13px', color: deliveryMethod === 'HOME_DELIVERY' ? '#2563eb' : '#64748b', marginTop: '2px' }}>desde $150</div>
+                            </div>
+                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {deliveryMethod === 'HOME_DELIVERY' && <Check size={14} color="#fff" />}
+                            </div>
+                          </label>
                         </div>
-                      )}
-                    </div>
+                        
+                        {deliveryMethod === 'HOME_DELIVERY' && (
+                          <div style={{ marginTop: '12px', padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                            <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '6px' }}>Código Postal *</label>
+                            <input 
+                              type="text" 
+                              value={addressDetails.zip} 
+                              onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              placeholder="Ej. 45040"
+                              maxLength={5}
+                              style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none', width: '100%', boxSizing: 'border-box' }} 
+                            />
+                            {shippingQuoteError && (
+                              <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
+                                {shippingQuoteError}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                        Todas las compras se recogen en tienda (Zapopan).
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -466,7 +515,7 @@ export function CartDrawer() {
                 )}
                 
                 <button 
-                  onClick={showCheckoutForm ? payOnline : () => setShowCheckoutForm(true)}
+                  onClick={payOnline}
                   disabled={isProcessing}
                   style={{ 
                     width: '100%', 
@@ -486,7 +535,7 @@ export function CartDrawer() {
                   }}
                 >
                   <CreditCard size={20} />
-                  {isProcessing ? 'Procesando...' : (showCheckoutForm ? 'Pagar con Mercado Pago' : 'Proceder al pago')}
+                  {isProcessing ? 'Procesando...' : (showCheckoutForm ? 'Pagar con Mercado Pago' : 'Continuar')}
                 </button>
                 <button 
                   onClick={() => setIsCartOpen(false)}

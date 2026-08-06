@@ -241,7 +241,7 @@ export function CartDrawer() {
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: showCheckoutForm ? '35vh' : '20px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: '20px' }}>
               {showCheckoutForm ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   
@@ -363,7 +363,6 @@ export function CartDrawer() {
                   >
                     Volver al carrito
                   </button>
-                  <div style={{ height: '35vh', width: '100%', flexShrink: 0 }} />
                 </div>
               ) : items.length === 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', gap: '12px' }}>

@@ -23,6 +23,8 @@ export function CartDrawer() {
     state: ''
   });
   const [formError, setFormError] = useState('');
+  const [zipError, setZipError] = useState('');
+  const [paymentError, setPaymentError] = useState('');
 
   const handleInputFocus = (e: React.FocusEvent<HTMLElement>) => {
     setTimeout(() => {
@@ -92,17 +94,19 @@ export function CartDrawer() {
   else maxDelStr = '3 a 4 semanas';
 
   const payOnline = async () => {
+    setPaymentError('');
+    setZipError('');
     if (items.length === 0) return;
     
     if (!showCheckoutForm) {
       if (deliveryMethod === 'HOME_DELIVERY') {
         const zipClean = addressDetails.zip.replace(/\D/g, '');
         if (zipClean.length !== 5) {
-          alert('Ingresa un código postal válido (5 dígitos) para calcular el envío.');
+          setZipError('Ingresa un código postal válido de 5 dígitos.');
           return;
         }
         if (shippingQuoteError || shippingQuote === null) {
-          alert('No se ha podido calcular el envío para ese CP. Por favor verifica e intenta de nuevo.');
+          setZipError('No se ha podido calcular el envío para ese CP. Por favor verifica e intenta de nuevo.');
           return;
         }
       }
@@ -167,7 +171,7 @@ export function CartDrawer() {
         responseData = JSON.parse(responseText);
       } catch (err) {
         console.error("Non-JSON response from server:", responseText);
-        alert('El servidor está iniciando o hubo un error (502). Por favor, espera un momento e intenta de nuevo.');
+        setPaymentError('El servidor está iniciando o hubo un error (502). Por favor, espera un momento e intenta de nuevo.');
         setIsProcessing(false);
         return;
       }
@@ -175,11 +179,11 @@ export function CartDrawer() {
       if (responseData && responseData.init_point) {
         window.location.href = responseData.init_point;
       } else {
-        alert(responseData.error || 'No se pudo iniciar el pago. Intenta de nuevo.');
+        setPaymentError(responseData.error || 'No se pudo iniciar el pago. Intenta de nuevo.');
         setIsProcessing(false);
       }
     } catch (e: any) {
-      alert('Error de conexión. Si el servidor estaba inactivo, intenta de nuevo. (' + (e.message || 'Error desconocido') + ')');
+      setPaymentError('Error de conexión. Si el servidor estaba inactivo, intenta de nuevo. (' + (e.message || 'Error desconocido') + ')');
       setIsProcessing(false);
     }
   };
@@ -453,13 +457,21 @@ export function CartDrawer() {
                             <input 
                               type="text" 
                               value={addressDetails.zip} 
-                              onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} 
+                              onChange={e => {
+                                setAddressDetails({...addressDetails, zip: e.target.value});
+                                setZipError('');
+                              }} 
                               onFocus={handleInputFocus} 
                               placeholder="Ej. 45040"
                               maxLength={5}
                               style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none', width: '100%', boxSizing: 'border-box' }} 
                             />
-                            {shippingQuoteError && (
+                            {zipError && (
+                              <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
+                                {zipError}
+                              </div>
+                            )}
+                            {shippingQuoteError && !zipError && (
                               <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
                                 {shippingQuoteError}
                               </div>
@@ -512,6 +524,12 @@ export function CartDrawer() {
                       Aviso de Privacidad
                     </a>.
                   </p>
+                )}
+                
+                {paymentError && (
+                  <div style={{ padding: '12px', background: '#fef2f2', color: '#ef4444', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: '1px solid #fecaca', marginBottom: '12px' }}>
+                    {paymentError}
+                  </div>
                 )}
                 
                 <button 

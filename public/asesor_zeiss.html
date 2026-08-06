@@ -502,11 +502,50 @@ function engIdx(i){return i==="1.50"?"1.5":(i==="1.60"?"1.6":i);}
 function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polarizado",entintado:"tinte"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polar",entintado:"tinte"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
 function zeissQuote(){var inp={tipo:ST.type,esf:ST.esf||0,cil:ST.cil||0,add:(ST.type!=="mono"?(ST.add||0):0),pd:(ST.pdAsym?"":ST.pd),multiplicador:MULT};inp.opcion=engOpcion();if(ST.type==="mono"){if(ST.poli){inp.poli=true;inp.polyKey="z159";}else{inp.indice=engIdx(ST.idx);if(ST.treat==="ar"&&!ST.arPremium&&engIdx(ST.idx)==="1.5"){var _ch=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"});if(_ch&&_ch.disponible)inp.opcion="chrome";}}if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}else if(ST.type==="prog"){inp.nivel=ST.level;if(ST.poli||ST.perfora){inp.nivel="precision";inp.indice="1.59";}else inp.indice=engIdx(ST.idx);if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}var q=(typeof ZeissEngine!=="undefined"&&ZeissEngine)?ZeissEngine.cotizar(inp):{disponible:false,motivo:"Motor de precios no cargado"};if(q&&q.disponible){var m=multFor(q.costoLista);q.costoIva=Math.round(q.costoLista*1.16);q.pvp=Math.round(q.costoLista*1.16*m/50)*50;q.utilidad=q.pvp-q.costoIva;q.margen=Math.round(q.utilidad/q.pvp*100);q.mult=m;if(ST.type==="mono"&&ST.treat==="ar")q.etiqueta=ST.arPremium?"Antirreflejante premium":"Antirreflejante";if(ST.type==="bif"&&q.entrega==="Consultar")q.entrega="Consultar en tienda";}return q;}
 function priceSection(){var q=zeissQuote();if(!q||!q.disponible){return '<section class="sec"><div class="secK">05 — Tu inversión</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">⚠ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:right"><div class="secK">05 — Tu inversión</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px">'+money(q.pvp)+'</div>'+(q.pvp>=MSI_MIN?'<div style="display:inline-block;margin-top:10px;padding:8px 16px;border-radius:22px;background:var(--gold);color:#fff;font-size:14.5px;font-weight:700;letter-spacing:.2px">'+MSI+' meses sin intereses · '+money(Math.round(q.pvp/MSI))+'/mes</div>':'')+'<div class="muted" style="margin-top:8px">'+q.etiqueta+' · índice '+q.indice+'</div><div class="muted" style="margin-top:2px">Incluye armado y protección UV · entrega '+q.entrega+' ('+q.tipoFab+')</div>'+abbe+'</section>';}
-function rxBlock(){var h='<div class="upToggle" onclick="ST.rxOpen=!ST.rxOpen;render()">'+(ST.rxOpen?"▾":"▸")+' Tu receta (opcional)</div><div class="muted" style="margin:-2px 0 6px">Si no la tienes a la mano, no pasa nada: el precio se calcula igual y la confirmamos en tienda.</div>';if(ST.rxOpen){h+=dataBlock();h+='<div class="upToggle" style="font-size:12.5px;color:var(--gold)" onclick="ST.rxGuide=!ST.rxGuide;render()">'+(ST.rxGuide?"▾":"▸")+' ¿Cómo leer mi receta?</div>';if(ST.rxGuide)h+=rxGuide();}return h;}
+
+  function rxBlock(){
+    var h = '<div class="opts" style="margin-bottom: 24px;">';
+    h += bigOpt(ST.rxMethod === 'upload', IC.ar || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>', 'Subir mi receta', 'Sube una foto o PDF y nosotros nos encargamos', 'onclick="pick(\'rxMethod\',\'upload\')"');
+    h += bigOpt(ST.rxMethod === 'manual', IC.foto || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>', 'Ingresar datos', 'Copia los datos de tu receta manualmente', 'onclick="pick(\'rxMethod\',\'manual\')"');
+    h += bigOpt(ST.rxMethod === 'contact', IC.entintado || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 'Asesoría / Agendar cita', 'Te contactaremos para guiarte o agendar cita', 'onclick="pick(\'rxMethod\',\'contact\')"');
+    h += '</div>';
+
+    if (ST.rxMethod === 'upload') {
+      h += '<div style="margin-bottom: 24px; padding: 20px; border: 2px dashed var(--line); border-radius: 12px; text-align: center; background: #fff;">';
+      h += '<input type="file" id="rxUploadInput" accept="image/*,.pdf" style="display:none" onchange="handleRxUpload(event)">';
+      h += '<div id="rxUploadPreview" style="margin-bottom: 12px; font-size: 13px; font-weight: 600; color: var(--navy);">' + (ST.rxFileName || 'Ningún archivo seleccionado') + '</div>';
+      h += '<button onclick="document.getElementById(\'rxUploadInput\').click()" style="background: var(--navy); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">Seleccionar archivo</button>';
+      h += '</div>';
+    } else if (ST.rxMethod === 'manual') {
+      var st="style='display:block'";
+      h += "<div "+st+"><details style='margin-bottom:14px' open><summary class='upToggle'><div class='uplbl'>Tu receta</div><div style='font-size:13.5px'>Ingresa los valores (opcional afinar)</div></summary>";
+      h += dataBlock();
+      h += "</details></div>";
+    } else if (ST.rxMethod === 'contact') {
+      h += '<div style="margin-bottom: 24px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #f0fdf4; color: #166534; font-size: 14px; line-height: 1.5;">';
+      h += '<strong>¡Excelente elección!</strong> Puedes continuar con tu compra ahora mismo. Nuestro equipo se pondrá en contacto contigo muy pronto para agendar tu cita o ayudarte a obtener tu graduación.';
+      h += '</div>';
+    }
+
+    return h;
+  }
+
 function rxGuide(){return '<div style="margin:8px 0 4px;padding:16px 16px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8"><div style="font-family:Georgia,serif;font-size:15px;font-weight:600;color:var(--navy)">Cómo leer tu receta</div><div style="font-size:11px;color:var(--grey);margin:2px 0 12px">Ejemplo — así se ve una receta de lentes</div><div style="display:flex;gap:14px"><div style="flex:1;min-width:0"><div style="text-align:center;font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Ojo derecho (OD)</div><svg viewBox="0 0 120 84" width="100%" style="max-width:150px;display:block;margin:0 auto;overflow:visible"><path d="M8 70 A52 52 0 0 1 112 70" fill="none" stroke="#c9d2e0" stroke-width="2"/><line x1="8" y1="70" x2="112" y2="70" stroke="#e3e8f0" stroke-width="1.4"/><line x1="60" y1="70" x2="48.3" y2="19.3" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round"/><circle cx="60" cy="70" r="2.6" fill="#2563eb"/><text x="60" y="82" text-anchor="middle" font-size="7.5" fill="#9aa3b2">0–180°</text><text x="46.3" y="15.3" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb" font-family="Georgia,serif">103°</text></svg><div style="display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px;background:#fff"><div style="flex:1;padding:7px 2px;text-align:center;"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Esf</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">−0.50</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Cil</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">−0.75</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Eje</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">103°</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Add</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">+3.00</div></div></div></div><div style="flex:1;min-width:0"><div style="text-align:center;font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Ojo izquierdo (OI)</div><svg viewBox="0 0 120 84" width="100%" style="max-width:150px;display:block;margin:0 auto;overflow:visible"><path d="M8 70 A52 52 0 0 1 112 70" fill="none" stroke="#c9d2e0" stroke-width="2"/><line x1="8" y1="70" x2="112" y2="70" stroke="#e3e8f0" stroke-width="1.4"/><line x1="60" y1="70" x2="61.8" y2="18.0" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round"/><circle cx="60" cy="70" r="2.6" fill="#2563eb"/><text x="60" y="82" text-anchor="middle" font-size="7.5" fill="#9aa3b2">0–180°</text><text x="69.8" y="14.0" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb" font-family="Georgia,serif">88°</text></svg><div style="display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px;background:#fff"><div style="flex:1;padding:7px 2px;text-align:center;"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Esf</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">+1.25</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Cil</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">−2.00</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Eje</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">88°</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Add</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">+3.00</div></div></div></div></div><div style="margin-top:13px;font-size:11.5px;line-height:1.8;color:var(--grey);border-top:1px solid var(--line);padding-top:11px"><b style="color:var(--navy)">Esfera</b> potencia principal: signo − miopía, + hipermetropía.<br><b style="color:var(--navy)">Cilindro</b> astigmatismo (si va en 0 o vacío, no tienes).<br><b style="color:var(--navy)">Eje</b> dirección del astigmatismo, de 0 a 180° (la rayita azul).<br><b style="color:var(--navy)">Adición</b> potencia extra para ver de cerca (progresivos y bifocales).<br><b style="color:var(--navy)">DI / DIP</b> distancia entre pupilas en mm (suele ser 58–66).</div></div>';}
 
 /* ===== Visuales ===== */
-function selOpts(hi,lo,cur){var h="";for(var v=hi;v>=lo-0.001;v-=0.25){var val=Math.round(v*100)/100;var lbl=(val>0.0001?"+":"")+val.toFixed(2);h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>'+lbl+'</option>';}return h;}
+
+  function handleRxUpload(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    ST.rxFileName = file.name;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      ST.rxFileBase64 = evt.target.result;
+      render();
+    };
+    reader.readAsDataURL(file);
+  }
+\n  function selOpts(hi,lo,cur){var h="";for(var v=hi;v>=lo-0.001;v-=0.25){var val=Math.round(v*100)/100;var lbl=(val>0.0001?"+":"")+val.toFixed(2);h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>'+lbl+'</option>';}return h;}
 function addOpts(cur){var h='<option value="0"'+(!cur?" selected":"")+'>—</option>';for(var v=0.75;v<=3.5001;v+=0.25){var val=Math.round(v*100)/100;h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>+'+val.toFixed(2)+'</option>';}return h;}
 function dataBlock(){
  var prog=ST.type!=="mono";var RS='style="width:100%;padding:8px 3px;border:1px solid var(--line);border-radius:7px;font-size:12.5px;text-align:center;background:#fff;color:var(--navy);min-width:0"';
@@ -838,20 +877,24 @@ function waLabText(){
 }
 function sendWALab(){var t=waLabText();if(!t){alert('Configura el lente primero.');return;}window.open('https://wa.me/'+LAB_WA+'?text='+encodeURIComponent(t),'_blank');}
 
+
+
 function stepWrap(stepNum, content) {
   var isMobile = window.innerWidth <= 560;
   if(!isMobile) return content;
   var on = ST.step === stepNum ? ' m-active' : '';
   var btns = '<div class="m-nav">';
   if(stepNum > 1) btns += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
-  if(stepNum === 3 || stepNum === 4) {
-    btns += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:#15223e;color:#fff;" onclick="go(1)">Continuar</button>';
-  } else if(stepNum === 5) {
-    btns += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:#15223e;color:#fff;" onclick="var cb=document.getElementById(\'cartBtn\'); if(cb) cb.click();">Agregar al carrito</button>';
-  }
+  
+  var disabledNext = false;
+  if(stepNum === 3 && !ST.rxMethod) disabledNext = true;
+  
+  if(stepNum < 5) btns += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:#fff;" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
   btns += '</div>';
   return '<div class="m-step m-step-' + stepNum + on + '">' + content + btns + '</div>';
 }
+
+
 
 function render(){
  $("prog").style.display="none";
@@ -866,7 +909,7 @@ function render(){
  var o3=rxBlock();
  if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
  o3+=materialSimple();
- R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Si tienes tu receta, agrégala (opcional) para afinar el grosor; si no, solo elige tu material.")+o3+'</section>');
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
  // 04 Beneficios
  var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
  o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
@@ -967,7 +1010,7 @@ function addToCart(){
  var q=zeissQuote();
  var b=$("cartBtn");
  if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
- var payload={etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd}};
+ var payload={etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
  try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
  if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
 }

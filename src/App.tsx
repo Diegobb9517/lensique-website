@@ -252,7 +252,7 @@ function FullCatalog({
                 </span>
               )}
             </button>
-          </div>    </div>
+          </div>
 
           {/* Second bar: Volver + Buscar */}
           <div className="catalog-header">

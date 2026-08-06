@@ -42,6 +42,17 @@ export function CartDrawer() {
   const finalTotal = total + shippingCost;
 
   useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isCartOpen]);
+
+  useEffect(() => {
     const fetchShippingQuote = async () => {
       if (deliveryMethod !== 'HOME_DELIVERY') {
         setShippingQuote(null);

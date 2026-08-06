@@ -545,7 +545,8 @@ function rxGuide(){return '<div style="margin:8px 0 4px;padding:16px 16px 14px;b
     };
     reader.readAsDataURL(file);
   }
-\n  function selOpts(hi,lo,cur){var h="";for(var v=hi;v>=lo-0.001;v-=0.25){var val=Math.round(v*100)/100;var lbl=(val>0.0001?"+":"")+val.toFixed(2);h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>'+lbl+'</option>';}return h;}
+
+  function selOpts(hi,lo,cur){var h="";for(var v=hi;v>=lo-0.001;v-=0.25){var val=Math.round(v*100)/100;var lbl=(val>0.0001?"+":"")+val.toFixed(2);h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>'+lbl+'</option>';}return h;}
 function addOpts(cur){var h='<option value="0"'+(!cur?" selected":"")+'>—</option>';for(var v=0.75;v<=3.5001;v+=0.25){var val=Math.round(v*100)/100;h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>+'+val.toFixed(2)+'</option>';}return h;}
 function dataBlock(){
  var prog=ST.type!=="mono";var RS='style="width:100%;padding:8px 3px;border:1px solid var(--line);border-radius:7px;font-size:12.5px;text-align:center;background:#fff;color:var(--navy);min-width:0"';

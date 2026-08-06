@@ -1,0 +1,606 @@
+
+var $=function(id){return document.getElementById(id);};
+var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
+var TOTAL_STEPS=5;
+function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.50",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
+var ST=fresh();var _pfPrev=null;var _thF=null;
+var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
+var IC={
+ mono:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M8.5 8.6a4.3 4.3 0 0 0-1.3 3.4" stroke-opacity=".45"/></svg>',
+ prog:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M5.2 10h13.6M5.8 14h12.4"/></svg>',
+ bif:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M5.8 14.5h12.4"/></svg>',
+ sinlinea:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M5.8 14.5h12.4" stroke-dasharray="2.2 2.2" opacity=".5"/></svg>',
+ ar:_s+'<path d="M12 3.2l1.7 4.1 4.1 1.7-4.1 1.7L12 14.8l-1.7-4.1L6.2 9l4.1-1.7z"/><path d="M18.2 14.4l.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8z"/></svg>',
+ azul:_s+'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M9 21h6M12 17v4"/></svg>',
+ foto:_s+'<circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.2 5.2l1.5 1.5M17.3 17.3l1.5 1.5M18.8 5.2l-1.5 1.5M6.7 17.3l-1.5 1.5"/></svg>',
+ polar:_s+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><path d="M12 3.4v6.2M5.3 15.8l5.3-3.1M18.7 15.8l-5.3-3.1"/></svg>',
+ invisible:_s+'<path d="M2.6 12S6 6.2 12 6.2 21.4 12 21.4 12 18 17.8 12 17.8 2.6 12 2.6 12z"/><circle cx="12" cy="12" r="2.6"/></svg>',
+ entintado:_s+'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor" stroke="none"/></svg>',
+ espejo:_s+'<circle cx="12" cy="12" r="8.5"/><path d="M8.5 15.5l5-5M11 15.5l4.5-4.5"/></svg>',
+ uv:_s+'<path d="M12 3l7 3v5c0 4.6-3.1 7.8-7 9-3.9-1.2-7-4.4-7-9V6z"/></svg>',
+ shield:_s+'<path d="M12 3l7 3v5c0 4.6-3.1 7.8-7 9-3.9-1.2-7-4.4-7-9V6z"/><path d="M9 11.5l2 2 4-4.5"/></svg>',
+ thin:_s+'<path d="M20 4C11.5 4 5.5 9.5 5.5 17.5L4 20M19.5 5C12.5 7 9 12.5 8 19"/></svg>',
+ ring:_s+'<circle cx="9" cy="12" r="3.2"/><circle cx="16" cy="12" r="1.4"/><path d="M12.2 12H14.6"/></svg>',
+ comfort:_s+'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.4 1.8 3.5 1.8 3.5-1.8 3.5-1.8"/><path d="M9 9.5h.01M15 9.5h.01"/></svg>'
+};
+
+/* ===== Precio (mismos defaults del cotizador: ×2.5, IVA 16%, redondeo 100) ===== */
+function cylSur(cil){var a=Math.abs(cil||0);return a<2.5?0:(a<=4?150:350);}
+var IDX_SUR={"1.50":0,"1.60":0,"1.67":550,"1.74":1100};
+var LEVEL_SUR={entrada:0,medio:100,premium:200};
+function baseCost(){
+ var cyl=cylSur(ST.cil),perf=(ST.perfora&&ST.type!=="prog")?120:0,b=0;
+ if(ST.poli){
+  if(ST.type==="mono")b=({ar:800,azul:800,foto:900,polar:850})[ST.treat||"ar"]||800;
+  else if(ST.type==="bif")b=({ar:420,foto:900})[ST.treat||"ar"]||420;
+  else if(ST.type==="sinlinea")b=({ar:600,foto:900})[ST.treat||"ar"]||600;
+  else b=((ST.perfora?{ar:2500,azul:2500,foto:3000}:{ar:1850,azul:1850,foto:2200})[ST.treat||"ar"]||(ST.perfora?2500:1850))+LEVEL_SUR[ST.level];
+  b+=cyl;
+ }else{
+  var sur=IDX_SUR[ST.idx]||0;
+  if(ST.type==="mono")b=({ar:400,azul:650,foto:1100,polar:850,entintado:1000,espejo:1200})[ST.treat||"ar"]+cyl+sur;
+  else if(ST.type==="bif")b=({ar:750,azul:950,foto:1400,entintado:1000})[ST.treat||"ar"]+cyl+sur;
+  else if(ST.type==="sinlinea")b=({ar:850,azul:1050,foto:1500,entintado:1100})[ST.treat||"ar"]+cyl+sur;
+  else b=({ar:1250,azul:1500,foto:1850,entintado:1500})[ST.treat||"ar"]+LEVEL_SUR[ST.level]+cyl+sur;
+ }
+ return b+perf;
+}
+function clientPrice(){var q=zeissQuote();return (q&&q.disponible)?q.pvp:null;}
+
+var TYPES={
+ mono:{ic:"mono",nm:"Una distancia",ds:"Para ver de lejos, o solo para leer de cerca."},
+ prog:{ic:"prog",nm:"Todo en uno (progresivo)",ds:"Lejos, intermedio y cerca en un lente, sin línea."},
+ bif:{ic:"bif",nm:"Lejos y cerca (bifocal)",ds:"Dos zonas con una línea visible."}
+};
+function treatList(){
+ if(ST.type==="bif")return [
+  {k:"ar",nm:"Antirreflejante",ds:"Visión nítida, sin reflejos molestos"},
+  {k:"azul",nm:"Filtro de luz azul",ds:"Para mucho celular y computadora; menos cansancio"},
+  {k:"foto",nm:"Que se oscurezca al sol",ds:"Lente y lentes de sol en uno"}
+ ];
+ if(ST.type==="prog")return [
+  {k:"ar",nm:"Antirreflejante",ds:"Visión nítida en las 3 distancias, sin reflejos"},
+  {k:"azul",nm:"Filtro de luz azul",ds:"Para mucho celular y computadora; menos cansancio"},
+  {k:"foto",nm:"Que se oscurezca al sol",ds:"Cómodo dentro y fuera, 2 en 1"},
+  {k:"polar",nm:"Polarizado (sol)",ds:"Sol sin reflejos, ideal para manejar"},
+  {k:"entintado",nm:"Entintado (color fijo)",ds:"Tono fijo de sol: gris, café o el que elijas"}
+ ];
+ return [
+  {k:"ar",nm:"Antirreflejante",ds:"Visión nítida, sin reflejos molestos"},
+  {k:"azul",nm:"Filtro de luz azul",ds:"Para mucho celular y computadora; menos cansancio"},
+  {k:"foto",nm:"Que se oscurezca al sol",ds:"Lente diario y de sol en uno solo"},
+  {k:"polar",nm:"Polarizado (sol)",ds:"Sol sin reflejos, ideal para manejar"},
+  {k:"entintado",nm:"Entintado (color fijo)",ds:"Tono fijo de sol: gris, café o el que elijas"}
+ ];
+}
+var MATS=[["1.50","Estándar"],["1.60","Delgado"],["1.67","Más delgado"],["1.74","Ultra delgado"]];
+var LEVELS=[
+ {k:"precision",nm:"Precision Classic",ds:"Progresivo de entrada, económico; buenos campos"},
+ {k:"pure",nm:"SmartLife Pure",ds:"Campos cómodos para el día a día"},
+ {k:"plus",nm:"SmartLife Plus",ds:"Campos más amplios; mejor pantalla y lectura"},
+ {k:"superb",nm:"SmartLife Superb",ds:"Visión muy natural y amplia"},
+ {k:"individual",nm:"SmartLife Individual 3",ds:"Lo más personalizado, amplio y natural"}
+];
+var LEVEL_Q={precision:0.30,pure:0.45,plus:0.62,superb:0.80,individual:0.95};
+var MULT=2.2;var MSI=3;var MSI_MIN=3000;
+/* Multiplicador decreciente: micas baratas markup alto, micas caras markup menor */
+function multFor(c){c=c||0;return c<600?2.45:c<1500?2.2:c<3000?2.1:2.0;}
+function levelName(k){return ({precision:"Precision Classic",pure:"SmartLife Pure",plus:"SmartLife Plus",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
+function engIdx(i){return i==="1.50"?"1.5":(i==="1.60"?"1.6":i);}
+function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polarizado",entintado:"tinte"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polar",entintado:"tinte"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
+function zeissQuote(){var inp={tipo:ST.type,esf:ST.esf||0,cil:ST.cil||0,add:(ST.type!=="mono"?(ST.add||0):0),pd:(ST.pdAsym?"":ST.pd),multiplicador:MULT};inp.opcion=engOpcion();if(ST.type==="mono"){if(ST.poli){inp.poli=true;inp.polyKey="z159";}else{inp.indice=engIdx(ST.idx);if(ST.treat==="ar"&&!ST.arPremium&&engIdx(ST.idx)==="1.5"){var _ch=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"});if(_ch&&_ch.disponible)inp.opcion="chrome";}}if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}else if(ST.type==="prog"){inp.nivel=ST.level;if(ST.poli||ST.perfora){inp.nivel="precision";inp.indice="1.59";}else inp.indice=engIdx(ST.idx);if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}var q=(typeof ZeissEngine!=="undefined"&&ZeissEngine)?ZeissEngine.cotizar(inp):{disponible:false,motivo:"Motor de precios no cargado"};if(q&&q.disponible){var m=multFor(q.costoLista);q.costoIva=Math.round(q.costoLista*1.16);q.pvp=Math.round(q.costoLista*1.16*m/50)*50;q.utilidad=q.pvp-q.costoIva;q.margen=Math.round(q.utilidad/q.pvp*100);q.mult=m;if(ST.type==="mono"&&ST.treat==="ar")q.etiqueta=ST.arPremium?"Antirreflejante premium":"Antirreflejante";if(ST.type==="bif"&&q.entrega==="Consultar")q.entrega="Consultar en tienda";}return q;}
+function priceSection(){var q=zeissQuote();if(!q||!q.disponible){return '<section class="sec"><div class="secK">05 — Tu inversión</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">⚠ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:right"><div class="secK">05 — Tu inversión</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px">'+money(q.pvp)+'</div>'+(q.pvp>=MSI_MIN?'<div style="display:inline-block;margin-top:10px;padding:8px 16px;border-radius:22px;background:var(--gold);color:#fff;font-size:14.5px;font-weight:700;letter-spacing:.2px">'+MSI+' meses sin intereses · '+money(Math.round(q.pvp/MSI))+'/mes</div>':'')+'<div class="muted" style="margin-top:8px">'+q.etiqueta+' · índice '+q.indice+'</div><div class="muted" style="margin-top:2px">Incluye armado y protección UV · entrega '+q.entrega+' ('+q.tipoFab+')</div>'+abbe+'</section>';}
+
+  function rxBlock(){
+    var h = '<div class="opts" style="margin-bottom: 24px;">';
+    h += bigOpt(ST.rxMethod === 'upload', IC.ar || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>', 'Subir mi receta', 'Sube una foto o PDF y nosotros nos encargamos', 'onclick="pick(\'rxMethod\',\'upload\')"');
+    h += bigOpt(ST.rxMethod === 'manual', IC.foto || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>', 'Ingresar datos', 'Copia los datos de tu receta manualmente', 'onclick="pick(\'rxMethod\',\'manual\')"');
+    h += bigOpt(ST.rxMethod === 'contact', IC.entintado || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 'Asesoría / Agendar cita', 'Te contactaremos para guiarte o agendar cita', 'onclick="pick(\'rxMethod\',\'contact\')"');
+    h += '</div>';
+
+    if (ST.rxMethod === 'upload') {
+      h += '<div style="margin-bottom: 24px; padding: 20px; border: 2px dashed var(--line); border-radius: 12px; text-align: center; background: #fff;">';
+      h += '<input type="file" id="rxUploadInput" accept="image/*,.pdf" style="display:none" onchange="handleRxUpload(event)">';
+      h += '<div id="rxUploadPreview" style="margin-bottom: 12px; font-size: 13px; font-weight: 600; color: var(--navy);">' + (ST.rxFileName || 'Ningún archivo seleccionado') + '</div>';
+      h += '<button onclick="document.getElementById(\'rxUploadInput\').click()" style="background: var(--navy); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">Seleccionar archivo</button>';
+      h += '</div>';
+    } else if (ST.rxMethod === 'manual') {
+      var st="style='display:block'";
+      h += "<div "+st+"><details style='margin-bottom:14px' open><summary class='upToggle'><div class='uplbl'>Tu receta</div><div style='font-size:13.5px'>Ingresa los valores (opcional afinar)</div></summary>";
+      h += dataBlock();
+      h += "</details></div>";
+    } else if (ST.rxMethod === 'contact') {
+      h += '<div style="margin-bottom: 24px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #f0fdf4; color: #166534; font-size: 14px; line-height: 1.5;">';
+      h += '<strong>¡Excelente elección!</strong> Puedes continuar con tu compra ahora mismo. Nuestro equipo se pondrá en contacto contigo muy pronto para agendar tu cita o ayudarte a obtener tu graduación.';
+      h += '</div>';
+    }
+
+    return h;
+  }
+
+function rxGuide(){return '<div style="margin:8px 0 4px;padding:16px 16px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8"><div style="font-family:Georgia,serif;font-size:15px;font-weight:600;color:var(--navy)">Cómo leer tu receta</div><div style="font-size:11px;color:var(--grey);margin:2px 0 12px">Ejemplo — así se ve una receta de lentes</div><div style="display:flex;gap:14px"><div style="flex:1;min-width:0"><div style="text-align:center;font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Ojo derecho (OD)</div><svg viewBox="0 0 120 84" width="100%" style="max-width:150px;display:block;margin:0 auto;overflow:visible"><path d="M8 70 A52 52 0 0 1 112 70" fill="none" stroke="#c9d2e0" stroke-width="2"/><line x1="8" y1="70" x2="112" y2="70" stroke="#e3e8f0" stroke-width="1.4"/><line x1="60" y1="70" x2="48.3" y2="19.3" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round"/><circle cx="60" cy="70" r="2.6" fill="#2563eb"/><text x="60" y="82" text-anchor="middle" font-size="7.5" fill="#9aa3b2">0–180°</text><text x="46.3" y="15.3" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb" font-family="Georgia,serif">103°</text></svg><div style="display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px;background:#fff"><div style="flex:1;padding:7px 2px;text-align:center;"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Esf</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">−0.50</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Cil</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">−0.75</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Eje</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">103°</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Add</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">+3.00</div></div></div></div><div style="flex:1;min-width:0"><div style="text-align:center;font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Ojo izquierdo (OI)</div><svg viewBox="0 0 120 84" width="100%" style="max-width:150px;display:block;margin:0 auto;overflow:visible"><path d="M8 70 A52 52 0 0 1 112 70" fill="none" stroke="#c9d2e0" stroke-width="2"/><line x1="8" y1="70" x2="112" y2="70" stroke="#e3e8f0" stroke-width="1.4"/><line x1="60" y1="70" x2="61.8" y2="18.0" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round"/><circle cx="60" cy="70" r="2.6" fill="#2563eb"/><text x="60" y="82" text-anchor="middle" font-size="7.5" fill="#9aa3b2">0–180°</text><text x="69.8" y="14.0" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb" font-family="Georgia,serif">88°</text></svg><div style="display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px;background:#fff"><div style="flex:1;padding:7px 2px;text-align:center;"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Esf</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">+1.25</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Cil</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">−2.00</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Eje</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">88°</div></div><div style="flex:1;padding:7px 2px;text-align:center;border-left:1px solid var(--line)"><div style="font-size:8.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.3px">Add</div><div style="font-size:12px;color:var(--navy);font-weight:600;margin-top:2px">+3.00</div></div></div></div></div><div style="margin-top:13px;font-size:11.5px;line-height:1.8;color:var(--grey);border-top:1px solid var(--line);padding-top:11px"><b style="color:var(--navy)">Esfera</b> potencia principal: signo − miopía, + hipermetropía.<br><b style="color:var(--navy)">Cilindro</b> astigmatismo (si va en 0 o vacío, no tienes).<br><b style="color:var(--navy)">Eje</b> dirección del astigmatismo, de 0 a 180° (la rayita azul).<br><b style="color:var(--navy)">Adición</b> potencia extra para ver de cerca (progresivos y bifocales).<br><b style="color:var(--navy)">DI / DIP</b> distancia entre pupilas en mm (suele ser 58–66).</div></div>';}
+
+/* ===== Visuales ===== */
+
+  function handleRxUpload(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    ST.rxFileName = file.name;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      ST.rxFileBase64 = evt.target.result;
+      render();
+    };
+    reader.readAsDataURL(file);
+  }
+\n  function selOpts(hi,lo,cur){var h="";for(var v=hi;v>=lo-0.001;v-=0.25){var val=Math.round(v*100)/100;var lbl=(val>0.0001?"+":"")+val.toFixed(2);h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>'+lbl+'</option>';}return h;}
+function addOpts(cur){var h='<option value="0"'+(!cur?" selected":"")+'>—</option>';for(var v=0.75;v<=3.5001;v+=0.25){var val=Math.round(v*100)/100;h+='<option value="'+val+'"'+(Math.abs(val-(cur||0))<0.001?" selected":"")+'>+'+val.toFixed(2)+'</option>';}return h;}
+function dataBlock(){
+ var prog=ST.type!=="mono";var RS='style="width:100%;padding:8px 3px;border:1px solid var(--line);border-radius:7px;font-size:12.5px;text-align:center;background:#fff;color:var(--navy);min-width:0"';
+ function hd(t){return '<div style="flex:1;text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--grey)">'+t+'</div>';}
+ function head(){return '<div style="display:flex;gap:6px;padding:0 2px 5px"><div style="width:26px"></div>'+hd('Esfera')+hd('Cilindro')+hd('Eje')+(prog?hd('Adición'):'')+'</div>';}
+ function row(tag,nm){var E=ST[tag+'E'],C=ST[tag+'C'],Ax=ST[tag+'Ax'],Ad=ST[tag+'Add'];var h='<div style="display:flex;gap:6px;align-items:center;margin-bottom:7px"><div style="width:26px;font-size:11px;font-weight:700;color:#2563eb">'+nm+'</div>';h+='<div style="flex:1;min-width:0"><select id="'+tag+'E" '+RS+'>'+selOpts(8,-20,E)+'</select></div>';h+='<div style="flex:1;min-width:0"><select id="'+tag+'C" '+RS+'>'+selOpts(0,-6,C)+'</select></div>';h+='<div style="flex:1;min-width:0"><input id="'+tag+'Ax" '+RS+' type="number" min="0" max="180" value="'+(Ax||"")+'" placeholder="—"></div>';if(prog)h+='<div style="flex:1;min-width:0"><select id="'+tag+'Add" '+RS+'>'+addOpts(Ad)+'</select></div>';h+='</div>';return h;}
+ var h='<div style="margin-bottom:8px">'+head()+row('od','OD')+row('oi','OI')+'</div>';
+ if(!ST.pdAsym)h+='<div class="grad" style="margin-top:-2px"><div><label>DI / PD (mm)</label><input type="number" id="pd" step="0.5" value="'+(ST.pd||"")+'" placeholder="ej. 62"></div></div>';
+ else h+='<div class="grad" style="margin-top:-2px"><div><label>PD derecho (OD)</label><input type="number" id="pdR" step="0.5" value="'+(ST.pdR||"")+'" placeholder="mm"></div><div><label>PD izquierdo (OI)</label><input type="number" id="pdL" step="0.5" value="'+(ST.pdL||"")+'" placeholder="mm"></div></div>';
+ h+='<div class="muted" style="margin:4px 0 14px;cursor:pointer" onclick="togglePD()"><span style="text-decoration:underline">'+(ST.pdAsym?"Usar un solo PD (simétrico)":"¿PD diferente por ojo? Márcalo")+'</span></div>';
+ return h;
+}
+function syncRx(){var odP=Math.max(Math.abs(ST.odE||0),Math.abs((ST.odE||0)+(ST.odC||0)));var oiP=Math.max(Math.abs(ST.oiE||0),Math.abs((ST.oiE||0)+(ST.oiC||0)));if(odP>=oiP){ST.esf=ST.odE||0;ST.cil=ST.odC||0;}else{ST.esf=ST.oiE||0;ST.cil=ST.oiC||0;}ST.add=Math.max(ST.odAdd||0,ST.oiAdd||0);}
+function togglePD(){ST.pdAsym=!ST.pdAsym;render();}
+function rxText(){var t="Esf "+(ST.esf>=0?"+":"")+(ST.esf||0).toFixed(2)+" · Cil "+(ST.cil||0).toFixed(2);if(ST.type!=="mono"&&ST.add)t+=" · Add +"+Number(ST.add).toFixed(2);if(ST.pdAsym){if(ST.pdR||ST.pdL)t+=" · PD "+(ST.pdR||"?")+"/"+(ST.pdL||"?")+" mm";}else if(ST.pd)t+=" · PD "+ST.pd+" mm";return t;}
+function rxGrid(){var cells=[["Esfera",(ST.esf>=0?"+":"")+(ST.esf||0).toFixed(2)],["Cilindro",(ST.cil||0).toFixed(2)]];if(ST.type!=="mono"&&ST.add)cells.push(["Adición","+"+Number(ST.add).toFixed(2)]);var pd=ST.pdAsym?((ST.pdR||"?")+"/"+(ST.pdL||"?")):(ST.pd||"");if(pd)cells.push(["DIP",pd+" mm"]);var h='<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:13px;padding-top:13px">';cells.forEach(function(c,i){h+='<div style="flex:1;min-width:62px;text-align:center;padding:0 6px;'+(i>0?"border-left:1px solid var(--line)":"")+'"><div style="font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">'+c[0]+'</div><div style="font-family:Georgia,serif;font-size:18px;color:var(--navy);margin-top:5px">'+c[1]+'</div></div>';});h+='</div>';return h;}
+var _lf=1,_lmm=1;
+function lensMM(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P);var n=ST.poli?1.59:parseFloat(ST.idx);return 1.0+(pot*484)/(2000*(n-1));}
+function tweenMM(a,b){var t0=null;function s(ts){var el=$("lensMM");if(!el)return;if(t0===null)t0=ts;var p=Math.min((ts-t0)/600,1);var k=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;el.textContent="≈ "+(a+(b-a)*k).toFixed(1)+" mm";if(p<1)requestAnimationFrame(s);}requestAnimationFrame(s);}
+function thickSVG(){
+ var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;
+ var f=ST.poli?0.85:(({"1.50":1,"1.60":0.86,"1.67":0.74,"1.74":0.66})[ST.idx]||1);
+ var cx=110,topY=20,botY=190,cyY=105,thin=7,thick=Math.min(10+pot*4,32);
+ var eT=minus?thick:thin,cT=minus?thin:thick,cl=cx+(eT-2*cT),cr=cx-(eT-2*cT);
+ var p="M"+(cx-eT)+" "+topY+" L"+(cx+eT)+" "+topY+" Q"+cr+" "+cyY+" "+(cx+eT)+" "+botY+" L"+(cx-eT)+" "+botY+" Q"+cl+" "+cyY+" "+(cx-eT)+" "+topY+" Z";
+ var svg='<svg viewBox="0 0 220 216" width="100%" style="max-width:148px;display:block;margin:0 auto;overflow:visible"><defs><linearGradient id="lg" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#46638f"/><stop offset="1" stop-color="#15223e"/></linearGradient></defs><ellipse cx="110" cy="202" rx="'+(eT+10)+'" ry="6" fill="#16223f" opacity="0.1"/><path d="'+p+'" fill="url(#lg)" stroke="#0f1a30" stroke-width="1.3"/><path d="M'+(cx-eT*0.45)+' '+(topY+12)+' Q'+(cx-eT*0.95)+' '+cyY+' '+(cx-eT*0.45)+' '+(botY-12)+'" stroke="#fff" stroke-width="1.6" fill="none" opacity="0.27" stroke-linecap="round"/></svg>';
+ var red=Math.round((1-f)*100);
+ var badge=red>0?'<div class="lbadge">−'+red+'% más delgado</div>':'<div class="lbadge" style="background:#e7eaf2;color:var(--grey);box-shadow:none">Grosor estándar</div>';
+ var prev=_lf;_lf=f;var newMM=lensMM(),prevMM=_lmm;_lmm=newMM;
+ setTimeout(function(){var w=$("lensWrap");if(w)w.style.transform="scaleX("+f+")";tweenMM(prevMM,newMM);},40);
+ return '<div class="lensStage">'+badge+'<div id="lensWrap" style="transform:scaleX('+prev+');transition:transform .65s cubic-bezier(.34,.02,.16,1);transform-origin:center">'+svg+'</div><div class="muted" style="text-align:center;margin-top:6px">'+(minus?"Grosor del borde":"Grosor central")+': <b id="lensMM" style="color:var(--navy);font-size:15px">≈ '+prevMM.toFixed(1)+' mm</b></div></div>';
+}
+function zonesSVG(q){
+ var cx=140,w=140,x0=70,xr=210,yt=12,H=170,yb=182,ydist=yt+H*0.32,yW=yt+H*0.72;
+ var cwT=w*0.18+q*w*0.14,cw=w*0.12+q*w*0.16,nw=w*0.15+q*w*0.17,n=function(v){return Math.round(v*10)/10;};
+ var L='M'+n(cx-cwT)+' '+n(ydist)+' C'+n(cx-cw)+' '+n(yW)+' '+n(cx-cw)+' '+n(yW)+' '+n(cx-nw)+' '+yb+' L'+x0+' '+yb+' L'+x0+' '+n(ydist)+' Z';
+ var R='M'+n(cx+cwT)+' '+n(ydist)+' C'+n(cx+cw)+' '+n(yW)+' '+n(cx+cw)+' '+n(yW)+' '+n(cx+nw)+' '+yb+' L'+xr+' '+yb+' L'+xr+' '+n(ydist)+' Z';
+ return '<svg viewBox="0 0 280 210" width="100%" style="max-width:250px;display:block;margin:0 auto">'
+ +'<defs><filter id="gb"><feGaussianBlur stdDeviation="4"/></filter><clipPath id="lc"><rect x="'+x0+'" y="'+yt+'" width="'+w+'" height="'+H+'" rx="66"/></clipPath></defs>'
+ +'<rect x="'+x0+'" y="'+yt+'" width="'+w+'" height="'+H+'" rx="66" fill="#f5f6fb" stroke="#16223f" stroke-width="2.5"/>'
+ +'<g clip-path="url(#lc)"><path d="'+L+'" fill="#aeb9c6" opacity=".85" filter="url(#gb)"/><path d="'+R+'" fill="#aeb9c6" opacity=".85" filter="url(#gb)"/></g>'
+ +'<text x="140" y="48" text-anchor="middle" font-size="13" font-weight="800" fill="#16223f">LEJOS</text>'
+ +'<text x="140" y="108" text-anchor="middle" font-size="11" font-weight="800" fill="#2c416c">INTERMEDIO</text>'
+ +'<text x="140" y="166" text-anchor="middle" font-size="13" font-weight="800" fill="#16223f">CERCA</text></svg>';
+}
+function heroSVG(){
+ var t=ST.treat,tintFill="#000",tintOp=0;
+ if(t==="entintado"){tintFill=TINTS[ST.tintColor][1];tintOp=TINT_A[ST.tintInt];}
+ else if(t==="foto"){tintFill=ST.fotoColor==="cafe"?"#6e4720":"#3f4a5e";tintOp=0.6;}
+ else if(t==="polar"){tintFill="#2b2f36";tintOp=0.72;}
+ else if(t==="espejo"){tintFill="#c4ccd6";tintOp=0.3;}
+ var blueOp=t==="azul"?0.16:0,mirOp=t==="espejo"?0.85:0,arOp=t==="ar"?1:0,sunOp=t==="foto"?1:0;
+ var progOp=ST.type==="prog"?1:0,bifOp=(ST.type==="bif"||ST.type==="sinlinea")?1:0;
+ var rw=ST.poli?5:(({"1.50":7,"1.60":6,"1.67":4.5,"1.74":3.5})[ST.idx]||6);
+ var A="",AT=11,isFoto=(t==="foto");
+ function lens(g){
+  var ox=g.x-AT,oy=g.y-AT,ow=g.w+2*AT,oh=g.h+2*AT,orx=g.rx+AT;
+  var Rn='x="'+g.x+'" y="'+g.y+'" width="'+g.w+'" height="'+g.h+'"',Rr=Rn+' rx="'+g.rx+'" ry="'+g.rx+'"';
+  var cx=g.x+g.w/2,cy=g.y+g.h/2,rx=g.w/2,ry=g.h/2,by=cy+ry*0.32;
+  var pq=(ST.type==="prog"&&LEVEL_Q[ST.level]!=null)?LEVEL_Q[ST.level]:0.6,wf=0.26+pq*0.5,wingOp=(0.84-pq*0.22).toFixed(2);
+  var dark=(tintOp>0.45||mirOp>0),labCol=dark?"#f0f2f5":"#2c3543",wingCol=dark?"#cfd4da":"#54616f";
+  var hxx=cx-rx*0.34,hyy=cy-ry*0.36;
+  var tintSty=isFoto?('fill:'+tintFill+';animation:photoDark 4.4s ease-in-out infinite'):('opacity:'+tintOp+';'+A);
+  var rvx=(g.id==="L")?(ox+12):(ox+ow-12);
+  var plate='';
+  var glass='<g clip-path="url(#hc'+g.id+')">'
+   +'<rect '+Rn+' fill="url(#lensG)"/>'
+   +'<rect '+Rn+' fill="'+tintFill+'" style="'+tintSty+'"/>'
+   +'<rect '+Rn+' fill="#3b6fd0" style="opacity:'+blueOp+';'+A+'"/>'
+   +'<rect '+Rn+' fill="url(#hMirrorG)" style="opacity:'+mirOp+';'+A+'"/>'
+   +'<rect '+Rn+' fill="url(#hVig)"/>'
+   +'<ellipse cx="'+hxx+'" cy="'+hyy+'" rx="'+(rx*0.46)+'" ry="'+(ry*0.25)+'" fill="url(#hHi)" transform="rotate(-20 '+hxx+' '+hyy+')" style="opacity:'+(t==="ar"?0.4:0.54)+';'+A+'"/>'
+   +'<g style="opacity:'+progOp+';'+A+'"><path d="M'+(cx-rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx-rx*wf)+' '+(cy+ry*0.32)+' '+(cx-rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx-rx*wf)+' '+(cy+ry*1.05)+' L'+(cx-rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><path d="M'+(cx+rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx+rx*wf)+' '+(cy+ry*0.32)+' '+(cx+rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx+rx*wf)+' '+(cy+ry*1.05)+' L'+(cx+rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><text x="'+cx+'" y="'+(cy-ry*0.44)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.8" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">LEJOS</text><text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-size="8.5" font-weight="500" letter-spacing="1.2" fill="'+labCol+'" opacity=".55" font-family="-apple-system,Segoe UI,sans-serif">INTERMEDIO</text><text x="'+cx+'" y="'+(cy+ry*0.54)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.8" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">CERCA</text></g>'
+   +'<g style="opacity:'+bifOp+';'+A+'">'+(ST.treat==="invisible"?'<path d="M'+(cx-rx*0.8)+' '+(by+ry*0.04)+' H'+(cx+rx*0.8)+' L'+(cx+rx*0.6)+' '+(cy+ry*0.92)+' Q'+cx+' '+(cy+ry*1.0)+' '+(cx-rx*0.6)+' '+(cy+ry*0.92)+' Z" fill="'+wingCol+'" opacity=".34" filter="url(#pblur)"/><path d="M'+(cx-rx*0.8)+' '+(by+ry*0.02)+' H'+(cx+rx*0.8)+'" stroke="'+(dark?"#e8ebef":"#16223f")+'" stroke-width="1.1" opacity=".14"/>':'<path d="M'+(cx-rx*0.84)+' '+by+' H'+(cx+rx*0.84)+' L'+(cx+rx*0.62)+' '+(cy+ry*0.94)+' Q'+cx+' '+(cy+ry*1.02)+' '+(cx-rx*0.62)+' '+(cy+ry*0.94)+' Z" fill="'+wingCol+'" opacity=".14"/><path d="M'+(cx-rx*0.82)+' '+by+' H'+(cx+rx*0.82)+'" stroke="'+(dark?"#dfe3e8":"#2c3543")+'" stroke-width="1.5" opacity=".5"/>')+'<text x="'+cx+'" y="'+(cy-ry*0.08)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.6" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">LEJOS</text><text x="'+cx+'" y="'+(cy+ry*0.66)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.6" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">CERCA</text></g>'
+   +'</g>'
+   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+rx+'" fill="none" stroke="url(#metalBk)" stroke-width="4.6"/>'
+   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+(rx-2.7)+'" fill="none" stroke="#454850" stroke-width="0.8" opacity=".5"/>';
+  return plate+glass;
+ }
+ var LENS=[{cx:841,cy:818,rx:398,ry:372,id:"L"},{cx:1974,cy:820,rx:397,ry:374,id:"R"}];
+ function fx(g){
+  var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry,by=cy+ry*0.3,hxx=cx-rx*0.3,hyy=cy-ry*0.34;
+  var pq=(ST.type==="prog"&&LEVEL_Q[ST.level]!=null)?LEVEL_Q[ST.level]:0.6,wf=0.26+pq*0.5,wingOp=(0.84-pq*0.22).toFixed(2);
+  var dark=(tintOp>0.45||mirOp>0),labCol=dark?"#f0f2f5":"#2c3543",wingCol=dark?"#cfd4da":"#54616f";
+  var R='x="'+(cx-rx)+'" y="'+(cy-ry)+'" width="'+(2*rx)+'" height="'+(2*ry)+'"';
+  var tintSty=isFoto?('mix-blend-mode:multiply;animation:photoDark 4.4s ease-in-out infinite'):('opacity:'+tintOp+';mix-blend-mode:multiply;'+A);
+  var lf=' font-weight="500" fill="'+labCol+'" opacity=".62" font-family="-apple-system,Segoe UI,sans-serif"';
+  return '<g>'
+   +'<rect class="tintRect" '+R+' fill="'+tintFill+'" style="'+tintSty+'"/>'
+   +'<rect '+R+' fill="#3b6fd0" style="opacity:'+blueOp+';mix-blend-mode:multiply;'+A+'"/>'
+   +'<rect '+R+' fill="url(#fMir)" style="opacity:'+(mirOp?0.6:0)+';mix-blend-mode:screen;'+A+'"/>'
+   +''
+   +'<g style="opacity:'+progOp+';'+A+'"><path d="M'+(cx-rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx-rx*wf)+' '+(cy+ry*0.32)+' '+(cx-rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx-rx*wf)+' '+(cy+ry*1.05)+' L'+(cx-rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><path d="M'+(cx+rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx+rx*wf)+' '+(cy+ry*0.32)+' '+(cx+rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx+rx*wf)+' '+(cy+ry*1.05)+' L'+(cx+rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><text x="'+cx+'" y="'+(cy-ry*0.42)+'" text-anchor="middle" font-size="40" letter-spacing="5"'+lf+'>LEJOS</text><text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="40" letter-spacing="5"'+lf+'>INTERMEDIO</text><text x="'+cx+'" y="'+(cy+ry*0.54)+'" text-anchor="middle" font-size="40" letter-spacing="5"'+lf+'>CERCA</text></g>'
+   +'<g style="opacity:'+bifOp+';'+A+'">'+(ST.type==="sinlinea"?'<rect x="'+(cx-rx*1.18)+'" y="'+by+'" width="'+(rx*2.36)+'" height="'+(ry*1.3)+'" fill="'+wingCol+'" opacity=".22" filter="url(#pblur)"/>':'<rect x="'+(cx-rx*1.18)+'" y="'+by+'" width="'+(rx*2.36)+'" height="'+(ry*1.3)+'" fill="'+wingCol+'" opacity=".13"/><path d="M'+(cx-rx*1.18)+' '+by+' H'+(cx+rx*1.18)+'" stroke="'+(dark?"#dfe3e8":"#2c3543")+'" stroke-width="5" opacity=".5"/>')+'<text x="'+cx+'" y="'+(cy-ry*0.06)+'" text-anchor="middle" font-size="44" letter-spacing="5"'+lf+'>LEJOS</text><text x="'+cx+'" y="'+(cy+ry*0.66)+'" text-anchor="middle" font-size="44" letter-spacing="5"'+lf+'>CERCA</text></g>'
+   +'</g>';
+ }
+ var sunRays='';for(var sa=0;sa<360;sa+=30){var sr=sa*Math.PI/180;sunRays+='<line x1="'+(Math.cos(sr)*58).toFixed(1)+'" y1="'+(Math.sin(sr)*58).toFixed(1)+'" x2="'+(Math.cos(sr)*84).toFixed(1)+'" y2="'+(Math.sin(sr)*84).toFixed(1)+'"/>';}
+ var sun=isFoto?'<g transform="translate(1407,250)" style="animation:sunPulse 4.4s ease-in-out infinite"><circle r="155" fill="url(#sunGlow)"/><g stroke="#eda52c" stroke-width="6.5" stroke-linecap="round">'+sunRays+'</g><circle r="46" fill="url(#sunDisk)"/></g>':'';
+ var swap=(_pfPrev!==null&&_pfPrev!==ST.perfora);_pfPrev=ST.perfora;
+ var _e=ST.esf||0,_c=ST.cil||0,_P=Math.abs(_e)>=Math.abs(_e+_c)?_e:(_e+_c),_pot=Math.abs(_P),_minus=_P<0;
+ var _idxv=ST.poli?"1.59":ST.idx,_mm=mmFor(_pot,_idxv),_base=mmFor(_pot,"1.50"),_red=_pot>=0.5?Math.round((1-_mm/_base)*100):0;
+ var thCal="";
+ if(_pot>=0.5){
+  var ff='font-family="-apple-system,Segoe UI,sans-serif"';
+  var xr=142,cy=182,len=152,hE=Math.min(_mm*18,82),hC=Math.max(6,hE*0.16);
+  var hFront=_minus?hE:hC,hTip=_minus?hC:hE;
+  var wp="M"+xr+" "+(cy-hFront)+" L"+(xr+len)+" "+(cy-hTip)+" L"+(xr+len)+" "+(cy+hTip)+" L"+xr+" "+(cy+hFront)+" Z";
+  var capX=xr-30,he=hFront;
+  thCal='<svg class="thCal" id="thCal" viewBox="0 0 1072 373" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .45s ease;pointer-events:none;overflow:visible">'
+   +'<defs><linearGradient id="thgC" x1="0" y1="0" x2="1" y2="0.3"><stop offset="0" stop-color="#cfe0f3" stop-opacity=".9"/><stop offset="1" stop-color="#5b7da6" stop-opacity=".9"/></linearGradient></defs>'
+   +'<path d="'+wp+'" fill="url(#thgC)" stroke="#27405f" stroke-width="2" stroke-opacity=".75"/>'
+   +'<path d="M'+(xr+6)+' '+(cy-hFront+8)+' L'+(xr+len-6)+' '+(cy-hTip+5)+'" stroke="#ffffff" stroke-width="3" fill="none" opacity=".4" stroke-linecap="round"/>'
+   +'<line x1="'+capX+'" y1="'+(cy-he)+'" x2="'+capX+'" y2="'+(cy+he)+'" stroke="#15223e" stroke-width="2.2"/>'
+   +'<line x1="'+(capX-9)+'" y1="'+(cy-he)+'" x2="'+(capX+9)+'" y2="'+(cy-he)+'" stroke="#15223e" stroke-width="2.2"/>'
+   +'<line x1="'+(capX-9)+'" y1="'+(cy+he)+'" x2="'+(capX+9)+'" y2="'+(cy+he)+'" stroke="#15223e" stroke-width="2.2"/>'
+   +'<text x="'+(capX-6)+'" y="'+(cy+7)+'" text-anchor="end" font-size="30" font-weight="700" fill="#15223e" '+ff+'>'+_mm.toFixed(1)+' mm</text>'
+   +'<text x="'+(xr+len/2)+'" y="'+(cy+Math.max(hFront,hTip)+42)+'" text-anchor="middle" font-size="23" font-weight="600" fill="#46638f" '+ff+'>Índice '+_idxv+(_red>0?' · −'+_red+'% más delgado que 1.50':'')+'</text>'
+   +'</svg>';
+ }
+ var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" src="'+(ST.perfora?IMG_AIRE:IMG_ARM)+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+'<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
+  +'<mask id="lensMask"><image href="'+IMG_MASK+'" x="0" y="0" width="2816" height="1536"/></mask>'
+  +'<radialGradient id="sunGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f8cf57" stop-opacity=".5"/><stop offset=".45" stop-color="#f2b63f" stop-opacity=".2"/><stop offset="1" stop-color="#f2b63f" stop-opacity="0"/></radialGradient>'
+  +'<radialGradient id="sunDisk" cx=".42" cy=".4" r=".62"><stop offset="0" stop-color="#fff3cf"/><stop offset=".55" stop-color="#f6c44e"/><stop offset="1" stop-color="#e89a2a"/></radialGradient>'
+  +'<linearGradient id="fMir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd0e6"/><stop offset=".4" stop-color="#b89cf0"/><stop offset=".7" stop-color="#f0a6c8"/><stop offset="1" stop-color="#f3d9a0"/></linearGradient>'
+  +'<filter id="pblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="42"/></filter>'
+  +'</defs><g mask="url(#lensMask)">'+fx(LENS[0])+fx(LENS[1])+'</g>'+sun+'</svg></div>'+heroSideHTML()+'</div>';
+ var parts=[],trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[t]||"";
+ if(trn)parts.push(trn);
+ if(t==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");
+ if(t==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt.charAt(0).toUpperCase()+ST.tintInt.slice(1));
+ parts.push(ST.poli?"Policarbonato":"Índice "+ST.idx);
+ if(ST.type==="prog")parts.push(levelName(ST.level));
+ if(ST.perfora)parts.push("Al aire");
+ var cap=!ST.type?"Elige tu tipo de lente para empezar":("<b>"+parts.join("</b> · <b>")+"</b>");
+ var tag=TYPES[ST.type]?TYPES[ST.type].nm:"Tu lente";
+ return '<div class="heroStage"><div class="heroTag">'+tag+'</div>'+svg+'<div class="heroCap" id="heroCap">'+cap+'</div></div>';
+}
+function thProfile(minus){var cx=60,top=24,bot=136,cyy=80,edge=minus?20:9,ctr=minus?9:20;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
+function thDetailSVG(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfile(minus);return '<div class="thDetail"><svg viewBox="0 0 120 160" width="52" height="69" style="overflow:visible;flex-shrink:0"><defs><linearGradient id="thDg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe0f3"/><stop offset="1" stop-color="#5b7da6"/></linearGradient></defs><path id="thGhost" d="'+P+'" fill="none" stroke="#c2cad6" stroke-width="2.4" stroke-dasharray="3 3"/><g id="thActive" style="transform:scaleX('+ratio+')"><path id="thActPath" d="'+P+'" fill="url(#thDg)" stroke="#27405f" stroke-width="2.4" stroke-opacity=".55"/></g></svg><div style="line-height:1.2;text-align:left;white-space:nowrap"><div class="matlbl" style="margin:0;font-size:10px" id="thLbl">Grosor del borde</div><div style="font-size:21px;font-weight:700;color:var(--navy);font-family:Georgia,serif;margin-top:1px" id="thMm">—</div><div style="font-size:11.5px;color:var(--gold);font-weight:600" id="thPct">—</div></div></div>';}
+function recIdx(){var e=ST.esf||0,c=ST.cil||0,pot=Math.max(Math.abs(e),Math.abs(e+c));return pot<=2?"1.50":pot<=4?"1.60":pot<=6?"1.67":"1.74";}
+function deliveryTime(){var q=zeissQuote();return (q&&q.disponible)?q.entrega:"—";}
+function materialBlock(){
+ var rec=recIdx();
+ var opts="";
+ MATS.forEach(function(m){opts+='<option value="'+m[0]+'"'+(!ST.poli&&ST.idx===m[0]?" selected":"")+'>'+m[1]+' · índice '+m[0]+(m[0]===rec?'   ·   recomendado':'')+'</option>';});
+ opts+='<option value="poli"'+(ST.poli?" selected":"")+'>Policarbonato · resistente al impacto</option>';
+ var h='<div class="matlbl">Material e índice</div>';
+ h+='<select class="matsel" id="matSel" onchange="setMatSel(this.value)">'+opts+'</select>';
+ h+='<div class="toggle'+(ST.perfora?" on":"")+'" onclick="togglePerf()"><span class="sw"></span><div><div class="tt">Armazón al aire / 3 piezas</div><div class="td">Perforado · look ligero (usa policarbonato)</div></div></div>';
+ return h;
+}
+function setMatSel(v){if(v==="poli"){ST.poli=true;}else{ST.idx=v;ST.poli=false;ST.perfora=false;}render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function mmFor(pot,idx){var n=parseFloat(idx);return 1.0+(pot*484)/(2000*(n-1));}
+var _gc=0;
+function miniLens(pot,minus,mm,sel){var cx=24,topY=6,botY=78,cyY=42,thin=3,thick=Math.max(thin,Math.min(3+(mm-1)*5,20));var eT=minus?thick:thin,cT=minus?thin:thick,cl=cx+(eT-2*cT),cr=cx-(eT-2*cT);var p="M"+(cx-eT)+" "+topY+" L"+(cx+eT)+" "+topY+" Q"+cr+" "+cyY+" "+(cx+eT)+" "+botY+" L"+(cx-eT)+" "+botY+" Q"+cl+" "+cyY+" "+(cx-eT)+" "+topY+" Z";var gid="lg"+(_gc++);var c1=sel?"#46638f":"#e3e8ef",c2=sel?"#15223e":"#c3cad7",hl=cx-eT*0.42;return '<svg viewBox="0 0 48 88" width="40" height="74" style="overflow:visible;display:block;margin:0 auto"><defs><linearGradient id="'+gid+'" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="'+c1+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient></defs><ellipse cx="'+cx+'" cy="83" rx="'+(eT+3.5)+'" ry="2.6" fill="#16223f" opacity="0.1"/><path d="'+p+'" fill="url(#'+gid+')" stroke="'+(sel?"#0f1a30":"#aab2c0")+'" stroke-width="1"/><path d="M'+hl+' '+(topY+5)+' Q'+(cx-eT*0.92)+' '+cyY+' '+hl+' '+(botY-5)+'" stroke="#fff" stroke-width="1.2" fill="none" opacity="'+(sel?0.3:0.55)+'" stroke-linecap="round"/></svg>';}
+function bigCross(eT,minus){var cx=70,topY=18,botY=162,cyY=90,thin=9;var edge=minus?eT:thin,ctr=minus?thin:eT,cl=cx+(edge-2*ctr),cr=cx-(edge-2*ctr);var p="M"+(cx-edge)+" "+topY+" L"+(cx+edge)+" "+topY+" Q"+cr+" "+cyY+" "+(cx+edge)+" "+botY+" L"+(cx-edge)+" "+botY+" Q"+cl+" "+cyY+" "+(cx-edge)+" "+topY+" Z";return '<ellipse cx="'+cx+'" cy="170" rx="'+(edge+8)+'" ry="4" fill="#16223f" opacity=".1"/><path d="'+p+'" fill="url(#thG)" stroke="#0f1a30" stroke-width="1.4"/><path d="M'+(cx-edge*0.45)+' '+(topY+12)+' Q'+(cx-edge*0.95)+' '+cyY+' '+(cx-edge*0.45)+' '+(botY-12)+'" stroke="#fff" stroke-width="2" fill="none" opacity=".28" stroke-linecap="round"/>';}
+function thickPreview(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P);var idx=ST.poli?"1.59":ST.idx,mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var lbl=pot<0.5?'<span class="muted">Pon tu graduación arriba para ver el grosor.</span>':'Grosor del borde <b style="color:var(--navy)">≈ '+mm.toFixed(1)+' mm</b>'+(red>0?'<br><b style="color:var(--gold)">−'+red+'% más delgado que 1.50</b>':'');var leyenda=pot>=5?'<div style="margin-top:9px;padding:8px 11px;border-radius:9px;background:#f4efe2;color:#8a6d2f;font-size:12.5px;font-weight:600;line-height:1.45">Tu graduación es alta — sí hay maneras de adelgazarla: sube de índice (1.67/1.74) y suma antirreflejante para una mica más fina y ligera.</div>':'';return '<div style="margin:10px 0 4px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.5;color:var(--grey)">Al elegir el índice, la imagen muestra <b style="color:var(--navy)">tu mica de perfil</b> con el grosor.<br>'+lbl+leyenda+'<div style="display:flex;gap:8px;margin-top:10px"><button onclick="showFrontNow()" style="flex:1;padding:8px 6px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer">Ver armazón</button><button onclick="showSide()" style="flex:1;padding:8px 6px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer">Ver grosor de mica</button></div></div>';}
+function lensCompare(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0,rec=recIdx();var list=["1.50","1.60","1.67","1.74"];var base=mmFor(pot,"1.50");var h='<div class="matlbl">Material e índice</div><div class="muted" style="margin-top:3px">Toca el grosor que prefieras · ★ recomendado para tu graduación</div>'+thickPreview()+'<div style="display:flex;gap:7px;margin:8px 0 2px">';list.forEach(function(ix){var sel=(!ST.poli&&ST.idx===ix),mm=mmFor(pot,ix),red=pot>=0.5?Math.round((1-mm/base)*100):0;h+='<div onclick="setMat(\''+ix+'\')" style="flex:1;cursor:pointer;text-align:center;padding:17px 4px;border:1px solid '+(sel?"var(--navy)":"var(--line)")+';border-radius:10px;background:'+(sel?"#faf9f6":"#fff")+';transition:border-color .15s"><div style="font-size:18px;font-weight:700;color:var(--navy);letter-spacing:.3px">'+ix+(ix===rec?' <span style="color:var(--gold)">★</span>':'')+'</div></div>';});h+='</div>';return h;}
+function poliPerfBlock(){var h='<div class="matlbl" style="margin-top:22px">Otras opciones</div><div class="chips"><span class="chip'+(ST.poli?" on":"")+'" onclick="setPoli()">Policarbonato · resistente al impacto</span></div>';h+='<div class="toggle'+(ST.perfora?" on":"")+'" onclick="togglePerf()"><span class="sw"></span><div><div class="tt">Armazón al aire / 3 piezas</div><div class="td">Perforado · look ligero (usa policarbonato)</div></div></div>';return h;}
+function fotoColorBlock(){if(ST.treat!=="foto")return "";var cs=[["gris","Gris","#e8ecf2","#46566e"],["cafe","Café","#f4ecdb","#8f5e1e"]];var nm={gris:"Gris",cafe:"Café"}[ST.fotoColor]||"";var h='<div id="fotoBlock" style="margin:-4px 0 4px;padding:18px 20px;border:1px solid var(--navy);border-top:none;border-radius:0 0 12px 12px;background:#faf9f6">';h+='<div class="matlbl" style="margin-top:0">Color<span style="text-transform:none;letter-spacing:0;font-weight:600;color:var(--navy);margin-left:7px;font-size:13px">'+nm+'</span></div><div style="display:flex;gap:14px;margin-top:14px">';cs.forEach(function(co){var sel=ST.fotoColor===co[0];h+='<div onclick="setFColor(\''+co[0]+'\')" title="'+co[1]+'" style="width:40px;height:40px;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,'+co[2]+' 0%,'+co[3]+' 100%);box-shadow:'+(sel?'0 0 0 2.5px #faf9f6,0 0 0 4px var(--navy)':'inset 0 0 0 1px rgba(0,0,0,.16)')+';transition:box-shadow .15s ease"></div>';});h+='</div><div class="muted" style="margin-top:11px;font-size:11.5px">El tono va de claro (interior) a oscuro (exterior). Otros colores bajo pedido en línea premium.</div></div>';return h;}
+function setFColor(c){ST.fotoColor=c;var ov=document.getElementById("frameOverlay"),fb=document.getElementById("fotoBlock");if(ov&&fb&&ST.treat==="foto"){var col=ST.fotoColor==="cafe"?"#6e4720":"#3f4a5e";var rects=ov.querySelectorAll(".tintRect");for(var i=0;i<rects.length;i++){rects[i].style.fill=col;}var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var cap=document.getElementById("heroCap"),nc=tmp.querySelector(".heroCap");if(cap&&nc&&cap.parentNode)cap.parentNode.replaceChild(nc,cap);fb.outerHTML=fotoColorBlock();}else{render();}if(ST.step===TOTAL_STEPS)renderUps();}
+var TINTS={cafe:["Café","#9c6b2e"],azul:["Azul","#2d5b9e"],amarillo:["Amarillo","#d9b125"],naranja:["Naranja","#d97a1e"],rojo:["Rojo","#b53030"]};
+var TINT_A={baja:0.32,media:0.6,alta:0.9};
+var TINT_DESC={cafe:"<b>Exteriores</b> con mucho sol — manejar, playa, golf.",azul:"<b>Exteriores</b> y diario — moda y sol ligero.",amarillo:"<b>Interiores y poca luz</b> — pantallas, manejo nocturno, niebla y tiro.",naranja:"<b>Exteriores y deporte</b> — ciclismo, esquí, luz cambiante.",rojo:"<b>Interiores y pantallas</b> — descanso visual; altera un poco los colores."};
+function hexA(hex,a){var n=parseInt(hex.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;return 'rgba('+r+','+g+','+b+','+a+')';}
+function tintBlock(){if(ST.treat!=="entintado")return "";var a=TINT_A[ST.tintInt],col=TINTS[ST.tintColor][1];var h='<div id="tintBlock" style="margin:-4px 0 4px;padding:18px 20px;border:1px solid var(--navy);border-top:none;border-radius:0 0 12px 12px;background:#faf9f6">';h+='<div class="matlbl" style="margin-top:0">Color<span style="text-transform:none;letter-spacing:0;font-weight:600;color:var(--navy);margin-left:7px;font-size:13px">'+TINTS[ST.tintColor][0]+'</span></div><div style="display:flex;gap:14px;margin-top:14px">';Object.keys(TINTS).forEach(function(k){var sel=ST.tintColor===k;h+='<div onclick="setTint(\'tintColor\',\''+k+'\')" title="'+TINTS[k][0]+'" style="width:40px;height:40px;border-radius:50%;cursor:pointer;background:'+TINTS[k][1]+';box-shadow:'+(sel?'0 0 0 2.5px #faf9f6,0 0 0 4px var(--navy)':'inset 0 0 0 1px rgba(0,0,0,.16)')+';transition:box-shadow .15s ease"></div>';});h+='</div>';h+='<div style="margin-top:12px;font-size:12px;line-height:1.45;color:var(--grey)"><b style="color:var(--navy)">'+TINTS[ST.tintColor][0]+':</b> '+TINT_DESC[ST.tintColor]+'</div>';h+='<div class="matlbl" style="margin-top:18px">Intensidad</div><div style="display:flex;margin-top:11px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff">';[["baja","Baja"],["media","Media"],["alta","Alta"]].forEach(function(it,i){var sel=ST.tintInt===it[0];h+='<div onclick="setTint(\'tintInt\',\''+it[0]+'\')" style="flex:1;text-align:center;padding:11px 6px;cursor:pointer;font-size:13.5px;font-weight:'+(sel?'600':'500')+';color:'+(sel?'#fff':'var(--navy)')+';background:'+(sel?'var(--navy)':'transparent')+';'+(i>0?'border-left:1px solid var(--line);':'')+'transition:background .15s ease">'+it[1]+'</div>';});h+='</div>';h+='<div class="matlbl" style="margin-top:20px">Vista previa</div><div style="margin-top:9px;height:32px;border-radius:9px;border:1px solid var(--line);background:linear-gradient(90deg,'+hexA(col,a*0.5)+' 0%,'+hexA(col,a)+' 100%)"></div>';h+='</div>';return h;}
+function liveOverlay(){var live=document.getElementById("frameOverlay"),cap=document.getElementById("heroCap");if(!live||!live.parentNode)return false;var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var nOv=tmp.querySelector("#frameOverlay"),nCap=tmp.querySelector(".heroCap");if(nOv)live.parentNode.replaceChild(nOv,live);if(nCap&&cap&&cap.parentNode)cap.parentNode.replaceChild(nCap,cap);return true;}
+function setTint(f,v){ST[f]=v;var ov=document.getElementById("frameOverlay"),tb=document.getElementById("tintBlock");if(ov&&tb&&ST.treat==="entintado"){var col=TINTS[ST.tintColor][1],op=TINT_A[ST.tintInt];var rects=ov.querySelectorAll(".tintRect");for(var i=0;i<rects.length;i++){rects[i].style.fill=col;rects[i].style.opacity=op;}var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var cap=document.getElementById("heroCap"),nc=tmp.querySelector(".heroCap");if(cap&&nc&&cap.parentNode)cap.parentNode.replaceChild(nc,cap);tb.outerHTML=tintBlock();}else{render();}if(ST.step===TOTAL_STEPS)renderUps();}
+
+/* ===== Render ===== */
+var STEP_LABELS=["Tipo","Tratamiento","Medidas","Resumen"];
+function renderProg(){var h="";for(var i=1;i<=TOTAL_STEPS;i++){var on=i<=ST.step,cur=i===ST.step;h+='<div class="seg'+(on?" on":"")+(cur?" cur":"")+'"><div class="bar"></div><div class="pl">'+STEP_LABELS[i-1]+'</div></div>';}$("prog").innerHTML=h;}
+function bigOpt(sel,ic,nm,ds,attr){return '<div class="big'+(sel?" sel":"")+'" '+attr+'>'+(ic?'<div class="ic">'+ic+'</div>':'')+'<div><div class="nm">'+nm+'</div><div class="ds">'+ds+'</div></div><div class="ck">'+(sel?"✓":"")+'</div></div>';}
+
+function secHead(k,q,sub){return '<div class="secK">'+k+'</div><div class="secQ">'+q+'</div>'+(sub?'<div class="secS">'+sub+'</div>':'');}
+function crossfadeFrame(oldSrc){var hf=document.getElementById("heroFront");if(!hf)return;var ov=hf.querySelector(".frameOverlay");var c=document.createElement("img");c.className="frameImg";c.setAttribute("src",oldSrc);c.style.cssText="position:absolute;left:0;top:0;width:100%;pointer-events:none;animation:fadeOut .75s ease forwards";if(ov)hf.insertBefore(c,ov);else hf.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},820);}
+function updateHeroPieces(){var tmp=document.createElement("div");tmp.innerHTML=heroSVG();[".heroCap",".heroTag"].forEach(function(s){var live=document.querySelector(s),nn=tmp.querySelector(s);if(live&&nn&&live.parentNode)live.parentNode.replaceChild(nn,live);});var liveOv=document.getElementById("frameOverlay"),nOv=tmp.querySelector("#frameOverlay");if(liveOv&&nOv&&liveOv.parentNode){if(liveOv.innerHTML!==nOv.innerHTML){nOv.style.opacity="0";nOv.style.transition="opacity .45s ease";liveOv.removeAttribute("id");nOv.setAttribute("id","frameOverlay");liveOv.style.transition="opacity .45s ease";liveOv.parentNode.appendChild(nOv);requestAnimationFrame(function(){requestAnimationFrame(function(){nOv.style.opacity="1";liveOv.style.opacity="0";});});var dead=liveOv;setTimeout(function(){if(dead.parentNode)dead.parentNode.removeChild(dead);},520);}}var img=document.querySelector("#heroFront .frameImg"),nImg=tmp.querySelector("#heroFront .frameImg");if(img&&nImg&&img.getAttribute("src")!==nImg.getAttribute("src"))img.setAttribute("src",nImg.getAttribute("src"));var oldTh=document.getElementById("thCal");if(oldTh&&oldTh.parentNode)oldTh.parentNode.removeChild(oldTh);var nTh=tmp.querySelector("#thCal"),rotor=document.getElementById("rotor");if(nTh&&rotor)rotor.appendChild(nTh);}
+function thProfileSide(minus){var cx=80,top=22,bot=338,cyy=180,edge=minus?44:13,ctr=minus?13:44;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
+function heroSideHTML(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfileSide(minus);return '<div class="heroSide" id="heroSide"><div class="lensStage"><svg class="lensSvg" viewBox="0 0 160 360" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;overflow:visible"><defs><linearGradient id="thSg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7fbff"/><stop offset=".5" stop-color="#d3e4f3"/><stop offset="1" stop-color="#f7fbff"/></linearGradient><linearGradient id="thEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".7"/><stop offset=".26" stop-color="#ffffff" stop-opacity="0"/><stop offset=".74" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity=".5"/></linearGradient><filter id="lensSoft" x="-40%" y="-15%" width="180%" height="130%"><feGaussianBlur stdDeviation="1.7"/></filter></defs><path id="sideGhost" d="'+P+'" fill="#dbe6f1" opacity=".28"/><g id="sideActive" style="transform:scaleX('+ratio+')"><path id="sideActPath" d="'+P+'" fill="url(#thSg)" fill-opacity=".55" stroke="#7e9cbd" stroke-width="1.1" stroke-opacity=".42"/><path id="sideEdge" d="'+P+'" fill="url(#thEdge)"/><path d="M74 62 Q63 180 74 298" stroke="#ffffff" stroke-width="6.5" fill="none" opacity=".42" stroke-linecap="round" filter="url(#lensSoft)"/><path d="M88 96 Q82 180 88 264" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".3" stroke-linecap="round" filter="url(#lensSoft)"/></g><g id="sideCota" style="opacity:0;transition:opacity .4s ease"><line id="cotaL" stroke="#15223e" stroke-width="1.3"/><line id="cotaT1" stroke="#15223e" stroke-width="1.3"/><line id="cotaT2" stroke="#15223e" stroke-width="1.3"/><text id="cotaTxt" text-anchor="middle" font-size="15" font-weight="700" fill="#15223e" font-family="Georgia,serif">—</text></g></svg></div><div class="lensLabels"><div class="ll1">Grosor de la mica</div><div class="ll2" id="sideMm">—</div><div class="ll3" id="sidePct">—</div></div></div>';}
+function updateSideTh(){var g=document.getElementById("sideActive");if(!g)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);g.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfileSide(minus),gh=document.getElementById("sideGhost"),ap=document.getElementById("sideActPath"),ed=document.getElementById("sideEdge");if(gh)gh.setAttribute("d",d);if(ap)ap.setAttribute("d",d);if(ed)ed.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("sideMm"),pctEl=document.getElementById("sidePct");if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Índice base · sube para adelgazar");var hw=44*ratio,cy=minus?28:180,ty=minus?17:171,cL=document.getElementById("cotaL"),cT1=document.getElementById("cotaT1"),cT2=document.getElementById("cotaT2"),cTx=document.getElementById("cotaTxt"),cota=document.getElementById("sideCota");if(cL&&cTx){cL.setAttribute("x1",80-hw);cL.setAttribute("x2",80+hw);cL.setAttribute("y1",cy);cL.setAttribute("y2",cy);cT1.setAttribute("x1",80-hw);cT1.setAttribute("x2",80-hw);cT1.setAttribute("y1",cy-4);cT1.setAttribute("y2",cy+4);cT2.setAttribute("x1",80+hw);cT2.setAttribute("x2",80+hw);cT2.setAttribute("y1",cy-4);cT2.setAttribute("y2",cy+4);cTx.setAttribute("x",80);cTx.setAttribute("y",ty);cTx.textContent="≈ "+mm.toFixed(1)+" mm";}if(cota)cota.style.opacity=pot>=0.5?"1":"0";}
+function showSide(){var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(!hf||!hs)return;updateSideTh();hf.style.opacity="0";hf.style.transform="scale(1.4)";hs.style.opacity="1";hs.style.transform="translateY(-50%) scale(1)";}
+function showFrontNow(){if(window._sideT)clearTimeout(window._sideT);var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(hf){hf.style.opacity="1";hf.style.transform="scale(1)";}if(hs){hs.style.opacity="0";hs.style.transform="translateY(-50%) scale(.9)";}}
+function updateThickness(){var el=document.getElementById("thActive");if(!el)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);el.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfile(minus),g=document.getElementById("thGhost"),ap=document.getElementById("thActPath");if(g)g.setAttribute("d",d);if(ap)ap.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("thMm"),pctEl=document.getElementById("thPct"),lbl=document.getElementById("thLbl");if(lbl)lbl.textContent=minus?"Grosor del borde":"Grosor del centro";if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Índice base · sube para adelgazar");}
+function potVal(){var e=ST.esf||0,c=ST.cil||0;return Math.max(Math.abs(e),Math.abs(e+c));}
+function dispIdx(k){return k==="1.5"?"1.50":k==="1.6"?"1.60":k;}
+function materialSimple(){
+ var pot=potVal();
+ if(pot<4){
+  if(!ST.poli){
+   if(ST.type==="mono"&&ST.treat==="foto")ST.idx="1.60";
+   else ST.idx="1.50";
+  }
+  return '<div style="margin:6px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación es ligera, así que va en <b style="color:var(--navy)">material estándar'+(ST.idx==="1.60"?" (1.60)":"")+'</b> — ya es delgado y ligero. No necesitas pagar de más por adelgazar.</div>';
+ }
+ var _r=ZeissEngine.recomendarIndice(ST.esf||0,ST.cil||0).recIndex||"1.74",_o=["1.5","1.6","1.67","1.74"];if(!ST.poli&&_o.indexOf(engIdx(ST.idx))<_o.indexOf(_r))ST.idx=dispIdx(_r);
+ return thinOptions();
+}
+function thinOptions(){
+ var pot=potVal(),e=ST.esf||0,c=ST.cil||0;
+ var recI=ZeissEngine.recomendarIndice(e,c).recIndex||"1.74";
+ var NAMES={"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
+ var order=["1.5","1.6","1.67","1.74"],recPos=order.indexOf(recI);if(recPos<0)recPos=2;
+ var base=mmFor(pot,"1.5");
+ var cards=order.filter(function(k,i){return i>=recPos;}).map(function(ix){
+  var sel=(!ST.poli&&engIdx(ST.idx)===ix);
+  var mm=mmFor(pot,ix),red=Math.round((1-mm/base)*100);
+  var star=(ix===recI)?' <span style="color:var(--gold)">★</span>':'';
+  return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'−'+red+'% más delgado':'base')+'</div></div>';
+ }).join('');
+ return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+cards+'</div>'+thickPreview();
+}
+
+function arUpgradeBlock(){
+ var ci=engIdx(ST.idx);
+ var chromeOK=(ci==="1.5")&&ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"}).disponible;
+ if(!chromeOK)return '';
+ function pv(op){var r=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:op,indice:"1.5"});return r.disponible?Math.round(r.costoLista*1.16*multFor(r.costoLista)/50)*50:0;}
+ var d=pv("verde")-pv("chrome"),on=ST.arPremium;
+ return '<div class="toggle'+(on?' on':'')+'" style="margin-top:10px" onclick="ST.arPremium=!ST.arPremium;render()"><span class="sw"></span><div><div class="tt">Mejorar a AR premium</div><div class="td">Repele agua y grasa · más resistente a rayas · se limpia más fácil'+(d>0?' · +'+money(d):'')+'</div></div></div>';
+}
+function waText(){
+ var q=zeissQuote();if(!q||!q.disponible)return '';
+ var L=[];
+ L.push('Hola, vengo del asesor de Lensique. Me interesa esta cotización:');
+ L.push('• '+q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' ('+TYPES[ST.type].nm+')');
+ var pl='• Precio aprox: '+money(q.pvp);
+ if(q.pvp>=MSI_MIN)pl+=' ('+MSI+' meses sin intereses de '+money(Math.round(q.pvp/MSI))+')';
+ L.push(pl);
+ var od={E:ST.odE||0,C:ST.odC||0,Ax:ST.odAx,Ad:ST.odAdd||0},oi={E:ST.oiE||0,C:ST.oiC||0,Ax:ST.oiAx,Ad:ST.oiAdd||0};
+ function nz(o){return (o.E||o.C||o.Ax||o.Ad);}
+ function fmt(o){return 'Esf '+(o.E>=0?'+':'')+(o.E).toFixed(2)+' Cil '+(o.C).toFixed(2)+(o.Ax?(' Eje '+o.Ax+'°'):'')+(o.Ad?(' Add +'+Number(o.Ad).toFixed(2)):'');}
+ if(nz(od)||nz(oi)){L.push('Mi graduación:');L.push('  OD: '+fmt(od));L.push('  OI: '+fmt(oi));}
+ if(ST.pd)L.push('• DI/PD: '+ST.pd+' mm');
+ L.push('¿Me ayudan a agendar?');
+ return L.join('\n');
+}
+function sendWA(){var t=waText();if(!t){alert('Configura tu lente primero.');return;}window.open('https://wa.me/523316929111?text='+encodeURIComponent(t),'_blank');}
+
+window.payOnline = function payOnline() {
+  var q = zeissQuote();
+  if (!q || !q.disponible) {
+    alert('Configura un lente disponible primero.');
+    return;
+  }
+  
+  var btn = document.getElementById("payBtn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Cargando pago...";
+  }
+
+  var payload = {
+    amount: q.pvp,
+    cart: [
+      {
+        type: 'product',
+        title: "Micas ZEISS " + q.etiqueta,
+        quantity: 1,
+        unit_price: q.pvp,
+        lensConfig: q // Send the whole quote as config for backend to price
+      }
+    ]
+  };
+
+  fetch("https://lensique-pos.onrender.com/api/checkout/preference", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.init_point) {
+      window.location.href = data.init_point;
+    } else {
+      alert("Error al crear el pago. Intenta de nuevo.");
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Pagar en línea";
+      }
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error de conexión al iniciar el pago.");
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Pagar en línea";
+    }
+  });
+}
+
+function rxLine(o){var s='Esf '+((Number(o.E)||0)>=0?'+':'')+(Number(o.E)||0).toFixed(2)+' / Cil '+(Number(o.C)||0).toFixed(2);if(o.C&&o.Ax)s+=' x '+o.Ax+'°';if(ST.type!=="mono"&&o.Ad)s+=' / Add +'+Number(o.Ad).toFixed(2);return s;}
+function isOptica(){return /optica/i.test((location.search||"")+(location.hash||""));}
+function labPanel(){
+ if(!isOptica())return '';
+ var q=zeissQuote();if(!q||!q.disponible)return '';
+ var lines=[q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' · '+q.tipoFab];
+ lines.push('OD: '+rxLine({E:ST.odE,C:ST.odC,Ax:ST.odAx,Ad:ST.odAdd}));
+ lines.push('OI: '+rxLine({E:ST.oiE,C:ST.oiC,Ax:ST.oiAx,Ad:ST.oiAdd}));
+ var foot='DI/PD: '+(ST.pd||'—')+' mm';
+ if(ST.type!=="mono")foot+=' · Altura: '+(ST.altura||'—')+' mm';
+ lines.push(foot);
+ var orden=lines.join('\n');
+ var altBlock='';
+ if(ST.type!=="mono"){var altLbl=ST.type==="bif"?"Altura del segmento (mm)":"Altura de pupila (mm)";altBlock='<label style="font-size:11px;color:var(--grey);font-weight:600;display:block;margin:8px 0 3px">'+altLbl+'</label><input type="number" id="altura" step="0.5" value="'+(ST.altura||"")+'" placeholder="mídela sobre el armazón montado" style="width:220px;max-width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px">';}
+ var h='<section class="sec" style="border-top:2px solid var(--navy);margin-top:6px">';
+ h+='<div class="secK" style="color:var(--navy)">◆ Orden para laboratorio · uso interno</div>';
+ h+=altBlock;
+ h+='<div id="ordenLab" style="white-space:pre-line;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#1b2436;background:#f1f3f8;border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-top:9px;line-height:1.55">'+orden+'</div>';
+ h+='<button onclick="copyLab(this)" style="margin-top:9px;padding:10px 20px;border:none;border-radius:9px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;cursor:pointer">Copiar orden</button>';
+ h+='<div class="muted" style="margin-top:7px;font-size:11px">Costo lab: '+money(q.costoLista)+' /par + IVA · '+q.tipoFab+' · entrega '+q.entrega+'</div>';
+ h+='</section>';
+ return h;
+}
+function copyLab(btn){var el=document.getElementById("ordenLab");var txt=el?el.textContent:"";function done(){btn.textContent="✓ Copiado";setTimeout(function(){btn.textContent="Copiar orden";},1500);}function fb(){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(ta);done();}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fb);}else fb();}
+
+var LAB_WA="523316929111"; /* número al que llega la orden interna (cámbialo por el de Adrián si quieres) */
+function waLabText(){
+ var q=zeissQuote();if(!q||!q.disponible)return '';
+ var lines=['ORDEN LENSIQUE → laboratorio'];
+ lines.push(q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' · '+q.tipoFab);
+ lines.push('OD: '+rxLine({E:ST.odE,C:ST.odC,Ax:ST.odAx,Ad:ST.odAdd}));
+ lines.push('OI: '+rxLine({E:ST.oiE,C:ST.oiC,Ax:ST.oiAx,Ad:ST.oiAdd}));
+ var foot='DI/PD: '+(ST.pd||'—')+' mm';
+ if(ST.type!=="mono")foot+=' · Altura: '+(ST.altura||'—')+' mm';
+ lines.push(foot);
+ lines.push('Costo lab: '+money(q.costoLista)+' /par + IVA · PVP '+money(q.pvp)+' · entrega '+q.entrega);
+ return lines.join('\n');
+}
+function sendWALab(){var t=waLabText();if(!t){alert('Configura el lente primero.');return;}window.open('https://wa.me/'+LAB_WA+'?text='+encodeURIComponent(t),'_blank');}
+
+
+
+function stepWrap(stepNum, content) {
+  var isMobile = window.innerWidth <= 560;
+  if(!isMobile) return content;
+  var on = ST.step === stepNum ? ' m-active' : '';
+  var btns = '<div class="m-nav">';
+  if(stepNum > 1) btns += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
+  
+  var disabledNext = false;
+  if(stepNum === 3 && !ST.rxMethod) disabledNext = true;
+  
+  if(stepNum < 5) btns += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:#fff;" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
+  btns += '</div>';
+  return '<div class="m-step m-step-' + stepNum + on + '">' + content + btns + '</div>';
+}
+
+
+
+function render(){
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:230px;padding:12px 26px">Agregar al carrito</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="payBtn" onclick="payOnline()" style="flex:0 0 auto;min-width:200px;padding:12px 26px;background:#009ee3;color:white;margin-right:10px;">Pagar en línea</button><button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#1b2436;color:white;border:1px solid rgba(255,255,255,0.2);">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+}
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}

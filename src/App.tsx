@@ -238,8 +238,8 @@ function FullCatalog({
           className="full-catalog-view"
         >
           {/* Top bar: logo and cart */}
-          <div className="catalog-topbar" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', padding: '15px 20px', background: '#fff', borderBottom: '1px solid #f1f1f4' }}>
-            <img src={logo} alt="Lensique" className="catalog-header-logo" style={{ height: '24px' }} />
+          <div className="catalog-topbar">
+            <img src={logo} alt="Lensique" className="catalog-header-logo" />
             <button 
               className="nav-icon-btn" 
               onClick={() => setIsCartOpen(true)} 

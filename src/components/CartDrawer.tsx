@@ -417,83 +417,89 @@ export function CartDrawer() {
                   ))}
                 </div>
               )}
+              
+              {items.length > 0 && (
+                <div style={{ marginTop: '20px' }}>
+                  {!showCheckoutForm && (
+                    <div style={{ background: '#f8fafc', borderRadius: '12px', fontSize: '13px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {ENABLE_SHIPPING_FEATURE ? (
+                        <div className="checkout-section" style={{ margin: 0, padding: 0, background: 'transparent', border: 'none' }}>
+                          <h3 className="checkout-section-title" style={{ fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <MapPin size={16} /> ¿Cómo quieres recibir tu pedido?
+                          </h3>
+                          <div className="delivery-options-grid" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
+                              <input type="radio" name="deliveryMethodStep1" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 700 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#0f172a' }}>Recoger en tienda</div>
+                                <div style={{ fontSize: '13px', color: deliveryMethod === 'STORE_PICKUP' ? '#2563eb' : '#64748b', marginTop: '2px' }}>Gratis</div>
+                              </div>
+                              <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'STORE_PICKUP' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                {deliveryMethod === 'STORE_PICKUP' && <Check size={14} color="#fff" />}
+                              </div>
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
+                              <input type="radio" name="deliveryMethodStep1" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#0f172a' }}>Envío a domicilio</div>
+                                <div style={{ fontSize: '13px', color: deliveryMethod === 'HOME_DELIVERY' ? '#2563eb' : '#64748b', marginTop: '2px' }}>desde $150</div>
+                              </div>
+                              <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                {deliveryMethod === 'HOME_DELIVERY' && <Check size={14} color="#fff" />}
+                              </div>
+                            </label>
+                          </div>
+                          
+                          {deliveryMethod === 'HOME_DELIVERY' && (
+                            <div style={{ marginTop: '12px', padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                              <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '6px' }}>Código Postal *</label>
+                              <input 
+                                type="text" 
+                                value={addressDetails.zip} 
+                                onChange={e => {
+                                  setAddressDetails({...addressDetails, zip: e.target.value});
+                                  setZipError('');
+                                }} 
+                                onFocus={handleInputFocus} 
+                                placeholder="Ej. 45040"
+                                maxLength={5}
+                                style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none', width: '100%', boxSizing: 'border-box' }} 
+                              />
+                              {zipError && (
+                                <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
+                                  {zipError}
+                                </div>
+                              )}
+                              {shippingQuoteError && !zipError && (
+                                <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
+                                  {shippingQuoteError}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                          Todas las compras se recogen en tienda (Zapopan).
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {showCheckoutForm && items.some(i => i.lensConfig || String(i.product?.category || '').toLowerCase().includes('contacto')) && (
+                    <div style={{ display: 'flex', gap: '10px', background: '#fef3c7', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
+                      <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
+                        🔍 Tu pedido será validado por nuestro optometrista antes de elaborarse. Si por alguna razón no podemos procesarlo, te contactamos y te reembolsamos el 100%.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {items.length > 0 && (
               <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const, flexShrink: 0, paddingBottom: 'calc(20px + env(safe-area-inset-bottom))' }}>
-                {!showCheckoutForm && (
-                  <div style={{ background: '#f8fafc', borderRadius: '12px', fontSize: '13px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {ENABLE_SHIPPING_FEATURE ? (
-                      <div className="checkout-section" style={{ margin: 0, padding: 0, background: 'transparent', border: 'none' }}>
-                        <h3 className="checkout-section-title" style={{ fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <MapPin size={16} /> ¿Cómo quieres recibir tu pedido?
-                        </h3>
-                        <div className="delivery-options-grid" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
-                          <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
-                            <input type="radio" name="deliveryMethodStep1" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
-                            <div style={{ flex: 1 }}>
-                              <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 700 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#0f172a' }}>Recoger en tienda</div>
-                              <div style={{ fontSize: '13px', color: deliveryMethod === 'STORE_PICKUP' ? '#2563eb' : '#64748b', marginTop: '2px' }}>Gratis</div>
-                            </div>
-                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'STORE_PICKUP' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {deliveryMethod === 'STORE_PICKUP' && <Check size={14} color="#fff" />}
-                            </div>
-                          </label>
-                          <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
-                            <input type="radio" name="deliveryMethodStep1" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
-                            <div style={{ flex: 1 }}>
-                              <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#0f172a' }}>Envío a domicilio</div>
-                              <div style={{ fontSize: '13px', color: deliveryMethod === 'HOME_DELIVERY' ? '#2563eb' : '#64748b', marginTop: '2px' }}>desde $150</div>
-                            </div>
-                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {deliveryMethod === 'HOME_DELIVERY' && <Check size={14} color="#fff" />}
-                            </div>
-                          </label>
-                        </div>
-                        
-                        {deliveryMethod === 'HOME_DELIVERY' && (
-                          <div style={{ marginTop: '12px', padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '6px' }}>Código Postal *</label>
-                            <input 
-                              type="text" 
-                              value={addressDetails.zip} 
-                              onChange={e => {
-                                setAddressDetails({...addressDetails, zip: e.target.value});
-                                setZipError('');
-                              }} 
-                              onFocus={handleInputFocus} 
-                              placeholder="Ej. 45040"
-                              maxLength={5}
-                              style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none', width: '100%', boxSizing: 'border-box' }} 
-                            />
-                            {zipError && (
-                              <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
-                                {zipError}
-                              </div>
-                            )}
-                            {shippingQuoteError && !zipError && (
-                              <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
-                                {shippingQuoteError}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                        Todas las compras se recogen en tienda (Zapopan).
-                      </div>
-                    )}
-                  </div>
-                )}
 
-                {showCheckoutForm && items.some(i => i.lensConfig || String(i.product?.category || '').toLowerCase().includes('contacto')) && (
-                  <div style={{ display: 'flex', gap: '10px', background: '#fef3c7', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
-                    <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
-                      🔍 Tu pedido será validado por nuestro optometrista antes de elaborarse. Si por alguna razón no podemos procesarlo, te contactamos y te reembolsamos el 100%.
-                    </p>
-                  </div>
-                )}
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
                   <span>Subtotal</span>

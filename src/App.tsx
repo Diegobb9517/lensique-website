@@ -165,7 +165,7 @@ function FullCatalog({
   initialFilter?: string,
   initialSearchQuery?: string 
 }) {
-
+  const { items, setIsCartOpen } = useCart();
   const [filter, setFilter] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [contactUsageFilter, setContactUsageFilter] = useState('Todos');
@@ -228,7 +228,6 @@ function FullCatalog({
     return matchesSearch && matchesBrand && matchesCategory;
   });
 
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -238,10 +237,22 @@ function FullCatalog({
           exit={{ opacity: 0, x: '100%' }}
           className="full-catalog-view"
         >
-          {/* Top bar: solo logo */}
-          <div className="catalog-topbar">
-            <img src={logo} alt="Lensique" className="catalog-header-logo" />
-          </div>
+          {/* Top bar: logo and cart */}
+          <div className="catalog-topbar" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', padding: '15px 20px', background: '#fff', borderBottom: '1px solid #f1f1f4' }}>
+            <img src={logo} alt="Lensique" className="catalog-header-logo" style={{ height: '24px' }} />
+            <button 
+              className="nav-icon-btn" 
+              onClick={() => setIsCartOpen(true)} 
+              style={{ position: 'absolute', right: '20px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            >
+              <ShoppingBag size={24} color="#0f172a" />
+              {items.length > 0 && (
+                <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {items.length}
+                </span>
+              )}
+            </button>
+          </div>    </div>
 
           {/* Second bar: Volver + Buscar */}
           <div className="catalog-header">

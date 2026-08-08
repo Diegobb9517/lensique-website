@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
-import { getInventedName } from '../lib/format';
+import { getInventedName, getProductSlug } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 
@@ -31,6 +31,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const isOutOfStock = product.stock != null && product.stock !== '' && Number(product.stock) <= 0;
   
   const imageUrl = resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
+  const slug = getProductSlug(product);
+  const href = `/producto/${slug}`;
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onClick(product);
+  };
   
   if (isEditorial) {
     return (
@@ -40,16 +47,75 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         className={`product-card-editorial hover-scale ${className}`}
         style={{ cursor: 'pointer', ...style }}
-        onClick={() => onClick(product)}
       >
-        <div className="product-img-area" style={{ position: 'relative' }}>
+        <a 
+          href={href} 
+          onClick={handleCardClick}
+          style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+        >
+          <div className="product-img-area" style={{ position: 'relative' }}>
+            {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
+            <ImageWithSkeleton 
+              src={imageUrl || fallbackImage} 
+              alt={product.name} 
+              className="product-main-img smooth-img"
+              loading="lazy"
+              decoding="async"
+              onError={(e: any) => {
+                if (fallbackImage) {
+                  e.target.onerror = null;
+                  e.target.src = fallbackImage;
+                }
+              }}
+            />
+          </div>
+
+          <div className="product-info-editorial">
+            <div className="product-name-row">
+              <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
+              <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+            </div>
+            <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
+              {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
+            </p>
+            
+            {onSelectAction && (
+              <button 
+                className="product-main-view-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onSelectAction(product);
+                }}
+              >
+                Seleccionar
+              </button>
+            )}
+          </div>
+        </a>
+      </motion.div>
+    );
+  }
+
+  // Standard WP Card (used in carousels and quiz)
+  return (
+    <div 
+      className={className}
+      style={style}
+    >
+      <a 
+        href={href}
+        onClick={handleCardClick}
+        style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
+      >
+        <div className="wp-card-img-area">
           {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 
             alt={product.name} 
-            className="product-main-img smooth-img"
+            className="wp-card-img"
             loading="lazy"
-            decoding="async"
+            decoding="async" 
             onError={(e: any) => {
               if (fallbackImage) {
                 e.target.onerror = null;
@@ -59,66 +125,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           />
         </div>
 
-        <div className="product-info-editorial">
-          <div className="product-name-row">
-            <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-            <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
-          </div>
-          <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
-            {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
-          </p>
+        <div className="wp-card-info">
+          <p className="wp-card-category">{product.brand || 'Lensique'}</p>
+          <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
+          <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
           
           {onSelectAction && (
-            <button 
-              className="product-main-view-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelectAction(product);
-              }}
-            >
-              Seleccionar
-            </button>
+            <span className="wp-card-cta-hover">
+              Personalizar ›
+            </span>
           )}
         </div>
-      </motion.div>
-    );
-  }
-
-  // Standard WP Card (used in carousels and quiz)
-  return (
-    <div 
-      className={className}
-      onClick={() => onClick(product)}
-      style={style}
-    >
-      <div className="wp-card-img-area">
-        {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
-        <ImageWithSkeleton 
-          src={imageUrl || fallbackImage} 
-          alt={product.name} 
-          className="wp-card-img"
-          loading="lazy"
-          decoding="async" 
-          onError={(e: any) => {
-            if (fallbackImage) {
-              e.target.onerror = null;
-              e.target.src = fallbackImage;
-            }
-          }}
-        />
-      </div>
-
-      <div className="wp-card-info">
-        <p className="wp-card-category">{product.brand || 'Lensique'}</p>
-        <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-        <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
-        
-        {onSelectAction && (
-          <span className="wp-card-cta-hover">
-            Personalizar ›
-          </span>
-        )}
-      </div>
+      </a>
     </div>
   );
 };

@@ -23,7 +23,7 @@ import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.jpg';
-import { getInventedName, formatProductTitle, getContactLensUsage } from './lib/format';
+import { getInventedName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug } from './lib/format';
 import { ProductCard } from './components/ProductCard';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
@@ -815,9 +815,138 @@ function App() {
   const [bookingName, setBookingName] = useState<string>('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  // 1. Inspect URL on load and handle popstate for /producto/[slug]
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/producto/')) {
+        const slug = path.replace(/^\/producto\//, '').replace(/\/$/, '');
+        const catalog = safeJsonParse(settings.full_catalog_data, []);
+        if (catalog.length > 0) {
+          const product = findProductBySlug(catalog, slug);
+          if (product) {
+            setSelectedProductDetail(product);
+          } else {
+            document.title = "404 - Producto no encontrado | Óptica Lensique";
+            let robotsEl = document.querySelector('meta[name="robots"]');
+            if (!robotsEl) {
+              robotsEl = document.createElement('meta');
+              robotsEl.setAttribute('name', 'robots');
+              document.head.appendChild(robotsEl);
+            }
+            robotsEl.setAttribute('content', 'noindex, follow');
+          }
+        }
+      }
+    };
+
+    handleUrlRoute();
+    window.addEventListener('popstate', handleUrlRoute);
+    return () => window.removeEventListener('popstate', handleUrlRoute);
+  }, [settings.full_catalog_data]);
+
+  // 2. Sync history pushState, SEO title, meta tags, and JSON-LD when selectedProductDetail changes
   useEffect(() => {
     if (selectedProductDetail) {
       import('./lib/analytics').then(({ trackViewItem }) => trackViewItem(selectedProductDetail));
+
+      const slug = getProductSlug(selectedProductDetail);
+      const targetPath = `/producto/${slug}`;
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ productId: selectedProductDetail.id }, '', targetPath);
+      }
+
+      // Dynamic Title & Description
+      const brand = (selectedProductDetail.brand && selectedProductDetail.brand !== 'null') ? `${selectedProductDetail.brand.trim()} ` : '';
+      const model = (selectedProductDetail.model || selectedProductDetail.name || '').trim();
+      const isContact = String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
+      const categoryLabel = isContact ? 'Lentes de Contacto' : 'Armazón oftálmico';
+      const pageTitle = `${brand}${model} | ${categoryLabel} | Óptica Lensique`;
+      document.title = pageTitle;
+
+      // Dynamic Canonical link
+      let canonicalEl = document.querySelector('link[rel="canonical"]');
+      if (!canonicalEl) {
+        canonicalEl = document.createElement('link');
+        canonicalEl.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonicalEl);
+      }
+      const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}`;
+      canonicalEl.setAttribute('href', canonicalUrl);
+
+      // Dynamic Meta Description
+      let descEl = document.querySelector('meta[name="description"]');
+      if (!descEl) {
+        descEl = document.createElement('meta');
+        descEl.setAttribute('name', 'description');
+        document.head.appendChild(descEl);
+      }
+      const descText = selectedProductDetail.description || `Compra ${brand}${model} (${categoryLabel}) en Óptica Lensique. Examen de vista gratis y envío disponible.`;
+      descEl.setAttribute('content', descText);
+
+      // Dynamic Open Graph Tags
+      const setMetaProperty = (property: string, content: string) => {
+        let el = document.querySelector(`meta[property="${property}"]`);
+        if (!el) {
+          el = document.createElement('meta');
+          el.setAttribute('property', property);
+          document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+      };
+
+      const rawImg = (selectedProductDetail.images && selectedProductDetail.images.length > 0) 
+        ? selectedProductDetail.images[0].image_url 
+        : selectedProductDetail.image_url;
+      const absImage = resolveImageUrl(rawImg, 'https://www.lensique.com.mx/hero_glasses.jpg');
+      
+      setMetaProperty('og:title', pageTitle);
+      setMetaProperty('og:description', descText);
+      setMetaProperty('og:image', absImage);
+      setMetaProperty('og:url', canonicalUrl);
+      setMetaProperty('og:type', 'product');
+
+      // Dynamic JSON-LD schema
+      const isOutOfStock = selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0;
+      const numericPrice = (Number(selectedProductDetail.price_incl_tax) || 0).toFixed(2);
+      
+      const productSchema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": `${brand}${model} - ${categoryLabel}`,
+        "image": [absImage],
+        "description": descText,
+        "sku": selectedProductDetail.sku || slug,
+        "mpn": selectedProductDetail.sku || slug,
+        "brand": { "@type": "Brand", "name": selectedProductDetail.brand || "Lensique" },
+        "offers": {
+          "@type": "Offer",
+          "url": canonicalUrl,
+          "priceCurrency": "MXN",
+          "price": numericPrice,
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": isOutOfStock ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Óptica Lensique" }
+        }
+      };
+
+      let scriptEl = document.getElementById('product-jsonld');
+      if (!scriptEl) {
+        scriptEl = document.createElement('script');
+        scriptEl.id = 'product-jsonld';
+        scriptEl.setAttribute('type', 'application/ld+json');
+        document.head.appendChild(scriptEl);
+      }
+      scriptEl.textContent = JSON.stringify(productSchema, null, 2);
+
+    } else {
+      if (window.location.pathname.startsWith('/producto/')) {
+        window.history.pushState(null, '', '/armazones');
+      }
+      document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+      
+      const scriptEl = document.getElementById('product-jsonld');
+      if (scriptEl) scriptEl.remove();
     }
   }, [selectedProductDetail]);
 

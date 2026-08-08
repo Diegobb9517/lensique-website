@@ -52,3 +52,39 @@ export const getContactLensUsage = (name: string) => {
   if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL')) return 'Uso Anual';
   return 'Todos';
 };
+
+export const slugify = (str: string): string => {
+  if (!str) return '';
+  return String(str)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
+export const getProductSlug = (product: any): string => {
+  if (!product) return '';
+  const brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
+  const model = (product.model || product.name || '').trim();
+  const sku = (product.sku || '').trim();
+  
+  const parts = [brand, model, sku].filter(Boolean);
+  let slug = slugify(parts.join(' '));
+  if (!slug) slug = `producto-${product.id}`;
+  return slug;
+};
+
+export const findProductBySlug = (catalog: any[], slug: string): any | null => {
+  if (!catalog || !Array.isArray(catalog) || !slug) return null;
+  const targetSlug = slug.toLowerCase().trim();
+  
+  const exact = catalog.find(p => getProductSlug(p) === targetSlug);
+  if (exact) return exact;
+
+  return catalog.find(p => {
+    if (p.id && String(p.id) === targetSlug) return true;
+    if (p.sku && slugify(p.sku) === targetSlug) return true;
+    return false;
+  }) || null;
+};

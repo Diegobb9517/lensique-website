@@ -790,7 +790,23 @@ window.payOnline = function payOnline() {
     alert('Configura un lente disponible primero.');
     return;
   }
-  
+
+  var name = prompt("Para registrar tu pedido de micas, ingresa tu Nombre completo:");
+  if (name === null) return;
+  name = name.trim();
+  if (!name || name.length < 3) {
+    alert("Por favor ingresa un nombre válido.");
+    return;
+  }
+
+  var phone = prompt("Ingresa tu número de teléfono / WhatsApp (10 dígitos):");
+  if (phone === null) return;
+  phone = phone.replace(/\D/g, '');
+  if (phone.length !== 10) {
+    alert("Por favor ingresa un número de teléfono válido de 10 dígitos.");
+    return;
+  }
+
   var btn = document.getElementById("payBtn");
   if (btn) {
     btn.disabled = true;
@@ -805,9 +821,15 @@ window.payOnline = function payOnline() {
         title: "Micas ZEISS " + q.etiqueta,
         quantity: 1,
         unit_price: q.pvp,
-        lensConfig: q // Send the whole quote as config for backend to price
+        lensConfig: q
       }
-    ]
+    ],
+    buyerInfo: {
+      name: name,
+      phone: phone,
+      email: "",
+      deliveryMethod: "STORE_PICKUP"
+    }
   };
 
   fetch("https://lensique-pos.onrender.com/api/checkout/preference", {
@@ -820,7 +842,7 @@ window.payOnline = function payOnline() {
     if (data.init_point) {
       window.location.href = data.init_point;
     } else {
-      alert("Error al crear el pago. Intenta de nuevo.");
+      alert(data.error || "Error al crear el pago. Intenta de nuevo.");
       if (btn) {
         btn.disabled = false;
         btn.textContent = "Pagar en línea";

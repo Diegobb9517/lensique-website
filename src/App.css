@@ -27,6 +27,21 @@ body.no-scroll {
   border-bottom: 1px solid var(--border);
 }
 
+/* Announcement bar: oculta suavemente al hacer scroll */
+.announcement-bar {
+  max-height: 50px;
+  overflow: hidden;
+  transition: max-height 0.4s var(--swift), opacity 0.3s var(--swift), padding 0.3s var(--swift);
+  opacity: 1;
+}
+
+.navbar.scrolled .announcement-bar {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .nav-top-banner {
   background: #f5f5f7;
   text-align: center;

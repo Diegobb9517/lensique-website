@@ -23,6 +23,8 @@ body.no-scroll {
   width: 100%;
   z-index: 1000;
   transition: all 0.4s var(--swift);
+  background: white;
+  border-bottom: 1px solid var(--border);
 }
 
 .nav-top-banner {
@@ -31,7 +33,7 @@ body.no-scroll {
   padding: 8px;
   font-size: 13px;
   color: var(--text-primary);
-  border-bottom: 1px solid #e5e5e7;
+  border-bottom: 1px solid var(--border);
 }
 
 .nav-content {

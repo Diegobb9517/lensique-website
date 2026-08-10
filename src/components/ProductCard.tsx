@@ -32,7 +32,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   
   const imageUrl = resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
   const slug = getProductSlug(product);
-  const href = `/producto/${slug}/`;
+  const href = `/producto/${slug}`;
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();

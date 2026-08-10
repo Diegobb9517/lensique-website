@@ -108,7 +108,7 @@ products.forEach(p => {
   const isContact = String(p.category || '').toLowerCase().includes('contacto');
   const categoryLabel = isContact ? 'Lentes de Contacto' : 'Armazón oftálmico';
   const slug = getProductSlug(p);
-  const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}/`;
+  const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}`;
   sitemapUrls.push(canonicalUrl);
 
   const isOutOfStock = p.stock != null && p.stock !== '' && Number(p.stock) <= 0;

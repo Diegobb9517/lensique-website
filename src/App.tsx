@@ -851,7 +851,7 @@ function App() {
       import('./lib/analytics').then(({ trackViewItem }) => trackViewItem(selectedProductDetail));
 
       const slug = getProductSlug(selectedProductDetail);
-      const targetPath = `/producto/${slug}`;
+      const targetPath = `/producto/${slug}/`;
       if (window.location.pathname !== targetPath) {
         window.history.pushState({ productId: selectedProductDetail.id }, '', targetPath);
       }
@@ -871,7 +871,7 @@ function App() {
         canonicalEl.setAttribute('rel', 'canonical');
         document.head.appendChild(canonicalEl);
       }
-      const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}`;
+      const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}/`;
       canonicalEl.setAttribute('href', canonicalUrl);
 
       // Dynamic Meta Description

@@ -1,4 +1,17 @@
 routes:
+  - type: redirect
+    source: /producto/:slug
+    destination: /producto/:slug/
   - type: rewrite
-    source: /*
+    source: /
     destination: /index.html
+  - type: rewrite
+    source: /armazones
+    destination: /index.html
+  - type: rewrite
+    source: /lentes-de-contacto
+    destination: /index.html
+  - type: rewrite
+    source: /pago/exito
+    destination: /index.html
+

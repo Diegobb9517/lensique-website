@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { DatabaseSync } from 'node:sqlite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +36,7 @@ const getProductSlug = (product) => {
 let products = [];
 if (fs.existsSync(dbPath)) {
   try {
+    const { DatabaseSync } = await import('node:sqlite');
     const db = new DatabaseSync(dbPath);
     products = db.prepare(`
       SELECT p.id, p.name, p.sku, p.brand, p.price_incl_tax, p.stock, c.name as category, p.image_url, p.description

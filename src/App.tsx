@@ -940,8 +940,13 @@ function App() {
       scriptEl.textContent = JSON.stringify(productSchema, null, 2);
 
     } else {
-      if (window.location.pathname.startsWith('/producto/')) {
-        window.history.pushState(null, '', '/armazones');
+      const catalog = safeJsonParse(settings.full_catalog_data, []);
+      if (catalog.length > 0 && window.location.pathname.startsWith('/producto/')) {
+        const slug = window.location.pathname.replace(/^\/producto\//, '').replace(/\/$/, '');
+        const product = findProductBySlug(catalog, slug);
+        if (product) {
+          window.history.pushState(null, '', '/armazones');
+        }
       }
       document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
       

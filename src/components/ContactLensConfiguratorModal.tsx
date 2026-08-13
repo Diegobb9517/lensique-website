@@ -382,12 +382,20 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const totalQuantity = quantityOD + quantityOS;
   const totalPrice = (product?.price_incl_tax || 0) * (totalQuantity > 0 ? totalQuantity : 1);
 
+  const isSinglePiece = productName.includes('LUNARE') || productName.includes('STARS') || productName.includes('SENSE') || productName.includes('LIBERTI') || productName.includes('OPTIMA 38');
+
   const getUsageType = () => {
     const n = productName;
-    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Lentes de uso diario';
-    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Lentes de uso quincenal';
-    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Lentes de uso mensual';
-    if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL')) return 'Lentes de uso anual';
+    if (n.includes('COLOR') || n.includes('LUNARE') || n.includes('STARS') || n.includes('AIR OPTIX COLORS') || n.includes('FRESHLOOK')) {
+      if (n.includes('AIR OPTIX')) return 'Formato: Caja con 2 lentes · Duración: 1 mes de uso por lente';
+      if (n.includes('FRESHLOOK')) return 'Formato: Caja con 10 lentes diarios · Uso ocasional / eventos';
+      if (n.includes('LUNARE') || n.includes('STARS')) return 'Formato: Lente Individual (Pieza) · Duración: 1 año de uso por lente';
+      return 'Formato: Lentes de Contacto Cosméticos de Color';
+    }
+    if (n.includes('SENSE') || n.includes('ANUAL') || n.includes('LIBERTI') || n.includes('OPTIMA 38')) return 'Formato: Lente Individual (Pieza) · Duración: 1 año de uso por lente';
+    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Formato: Caja con 30 lentes diarios · Uso diario';
+    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Formato: Caja con 6 lentes (Uso quincenal)';
+    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Formato: Caja con 6 lentes (Uso mensual)';
     return 'Lentes de Contacto';
   };
 
@@ -422,14 +430,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           <h3 className="contact-lens-summary-name">
             {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
           </h3>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', marginTop: '0.25rem' }}>{getUsageType()}</p>
+          <p style={{ fontSize: '0.875rem', color: '#0f172a', fontWeight: 600, marginTop: '0.25rem' }}>{getUsageType()}</p>
           
           <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
             <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#0f172a' }}>
               Cantidad seleccionada:
             </p>
             <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>
-              {quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'} (OD) • {quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'} (OS)
+              {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
             </p>
           </div>
 

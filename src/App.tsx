@@ -1323,6 +1323,9 @@ function App() {
             };
 
             const clConfig = config.contactLensConfig;
+            if (clConfig.selectedColor) {
+              configText += `- Color seleccionado: *${clConfig.selectedColor}*\n`;
+            }
             if (clConfig.samePrescription) {
               configText += `- Ambos ojos (OD y OS):\n  ${formatEye(clConfig.prescriptionOD)}\n`;
             } else {
@@ -1345,9 +1348,10 @@ function App() {
             const totalPrice = (contactConfiguratorProduct.price_incl_tax || 0) * (totalQty > 0 ? totalQty : 1);
             configText += `\n*Precio Estimado Total:* $${Math.round(totalPrice).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
+            const colorTitle = clConfig.selectedColor ? ` (Color: ${clConfig.selectedColor})` : '';
             addItem({
               type: 'product',
-              title: `Lentes de contacto ${contactConfiguratorProduct.name}`,
+              title: `Lentes de contacto ${contactConfiguratorProduct.name}${colorTitle}`,
               quantity: totalQty > 0 ? totalQty : 1,
               unit_price: contactConfiguratorProduct.price_incl_tax || 0,
               product: contactConfiguratorProduct,

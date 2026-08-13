@@ -43,6 +43,24 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const productName = (product?.name ? product.name.toString() : '').toUpperCase();
   const isToric = productName.includes('ASTIGMATISMO') || productName.includes('TORIC') || productName.includes('ASTIGMATISM');
   const isMultifocal = productName.includes('MULTIFOCAL') || productName.includes('PRESBICIA') || productName.includes('PRESBYOPIA');
+
+  const getAvailableColors = () => {
+    const n = productName;
+    if (n.includes('AIR OPTIX')) return ['Gris Intenso (Sterling Gray)', 'Gris (Gray)', 'Verde Gema (Gemstone Green)', 'Verde (Green)', 'Azul Brillante (Brilliant Blue)', 'Azul (Blue)', 'Miel (Pure Hazel)', 'Café (Honey)'];
+    if (n.includes('FRESHLOOK')) return ['Verde (Green)', 'Azul (Blue)', 'Gris (Gray)', 'Pure Hazel (Miel)'];
+    if (n.includes('LUNARE')) return ['Blue (Azul)', 'Green (Verde)', 'Gray (Gris)', 'Hazel (Miel)', 'Dark Green (Verde Oscuro)', 'Light Blue (Azul Claro)', 'Violet (Violeta)'];
+    if (n.includes('STARS') || n.includes('SOFLENS')) return ['Blue (Azul)', 'Dark Blue (Azul Oscuro)', 'Green (Verde)', 'Amazon Green (Verde Amazona)', 'Gray (Gris)', 'Hazel (Miel)'];
+    return [];
+  };
+
+  const availableColors = getAvailableColors();
+  const [selectedColor, setSelectedColor] = useState<string>(availableColors[0] || '');
+
+  useEffect(() => {
+    if (availableColors.length > 0 && !selectedColor) {
+      setSelectedColor(availableColors[0]);
+    }
+  }, [availableColors]);
   
   const [prescriptionPhotoFile, setPrescriptionPhotoFile] = useState<File | null>(null);
   const [isSending, setIsSending] = useState(false);
@@ -121,6 +139,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
       contactLensConfig: {
         quantityOD,
         quantityOS,
+        selectedColor,
         samePrescription,
         prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
         prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
@@ -221,6 +240,23 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 <button className="cl-qty-btn" onClick={() => setQuantityOS(quantityOS + 1)}>+</button>
               </div>
             </div>
+
+            {availableColors.length > 0 && (
+              <div style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '0.75rem', backgroundColor: '#f8fafc' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.5rem' }}>
+                  🎨 Selecciona el color de tus lentes:
+                </label>
+                <select 
+                  value={selectedColor} 
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  style={{ width: '100%', padding: '0.625rem', borderRadius: '0.5rem', border: '1px solid #cbd5e1', fontSize: '0.9375rem', fontWeight: 600, color: '#0f172a', backgroundColor: '#ffffff' }}
+                >
+                  {availableColors.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <button 
               className="cl-btn-primary" 

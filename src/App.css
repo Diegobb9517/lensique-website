@@ -29,10 +29,26 @@ body.no-scroll {
 
 /* Announcement bar: oculta suavemente al hacer scroll */
 .announcement-bar {
-  max-height: 50px;
+  background: var(--accent);
+  color: white;
+  padding: 10px 20px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  text-align: center;
+  width: 100%;
+  max-height: 100px;
   overflow: hidden;
+  box-sizing: border-box;
   transition: max-height 0.4s var(--swift), opacity 0.3s var(--swift), padding 0.3s var(--swift);
   opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .announcement-bar {
+    padding: 9px 16px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
 }
 
 .navbar.scrolled .announcement-bar {
@@ -639,15 +655,6 @@ body.no-scroll {
   color: var(--text-primary);
   margin-top: 32px;
   font-weight: 400;
-}
-
-.announcement-bar {
-  background: var(--accent);
-  color: white;
-  padding: 10px 20px;
-  font-size: 14px;
-  text-align: center;
-  width: 100%;
 }
 
 /* Location Section */

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CheckCircle2, Calendar } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Calendar, X } from 'lucide-react';
 import monofocalImg from '../assets/monofocal.png';
 import flattopImg from '../assets/bifocal-flat-top.png';
 import invisibleImg from '../assets/bifocal-invisible.png';
@@ -106,8 +106,6 @@ const defaultInfo = {
 };
 
 const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedImage, onBack, onBook }) => {
-  // Ya no usamos window.scrollTo(0, 0) porque es un overlay
-
   const infoKey = Object.keys(TECH_INFO).find(k => k.toLowerCase() === tech.title.toLowerCase()) || '';
   const info = TECH_INFO[infoKey] || defaultInfo;
 
@@ -121,10 +119,16 @@ const TechnologyInfoPage: React.FC<TechnologyInfoPageProps> = ({ tech, resolvedI
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onBack} className="tech-drawer-close">
-          <ArrowLeft size={20} />
-          <span>Volver</span>
-        </button>
+        <div className="tech-drawer-header">
+          <button onClick={onBack} className="tech-drawer-back-btn" aria-label="Volver">
+            <ArrowLeft size={18} />
+            <span>Volver</span>
+          </button>
+          <span className="tech-drawer-header-title">{tech.title}</span>
+          <button onClick={onBack} className="tech-drawer-close-btn" aria-label="Cerrar">
+            <X size={18} />
+          </button>
+        </div>
 
         <div className="tech-drawer-content">
           <motion.div 

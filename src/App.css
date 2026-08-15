@@ -2978,7 +2978,7 @@ body.no-scroll {
   display: flex;
   gap: 24px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
   padding-bottom: 30px;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -3003,7 +3003,6 @@ body.no-scroll {
   justify-content: center;
   padding: 24px;
   flex-shrink: 0;
-  scroll-snap-align: start;
   cursor: pointer;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
@@ -4055,4 +4054,16 @@ body.no-scroll .whatsapp-float {
   gap: 12px;
   margin-bottom: 16px;
 }
+
+
+@media (max-width: 768px) {
+  .hidden-on-mobile { display: none !important; }
+}
+@media (min-width: 769px) {
+  .d-md-none { display: none !important; }
+}
+
+
+.nav-left { flex: 1; justify-content: flex-start; }
+.nav-right { flex: 1; justify-content: flex-end; }
 

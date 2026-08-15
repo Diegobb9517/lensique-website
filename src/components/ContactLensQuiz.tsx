@@ -121,7 +121,7 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
-        <div style={{ display: 'grid', gridTemplateColumns: samePrescription ? '1fr 1fr' : '1fr', gap: '0 16px' }}>
+        <div className={`clq-presc-inputs ${samePrescription ? 'same-rx' : 'diff-rx'}`}>
           <WPSelect 
             label="Esfera (SPH/PWR)"
             value={values.sph}

@@ -1,0 +1,1 @@
+try{if(window.self===window.top)document.getElementById("closeBtnStandalone").style.display="flex";}catch(e){}

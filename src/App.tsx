@@ -202,11 +202,26 @@ function FullCatalog({
     }
   }, [availableBrands, selectedBrand]);
 
-  const filteredProducts = (catalogData || []).map(p => ({
-    ...p,
-    image: resolveImageUrl(p.image_url, p.image),
-    model: p.sku 
-  })).filter(p => {
+  function getContactLensType(name: string) {
+    const nm = name.toLowerCase();
+    if (nm.includes('toric') || nm.includes('astigmatismo') || nm.includes('tórico')) return 'Blando Tórico';
+    if (nm.includes('multifocal')) return 'Blando Multifocal';
+    if (nm.includes('color') || nm.includes('colors') || nm.includes('freshlook') || nm.includes('lunare') || nm.includes('stars')) return 'Blando Cosmético';
+    return 'Blando Esférico';
+  }
+
+  const filteredProducts = (catalogData || []).map(p => {
+    let displayName = p.name;
+    if (String(p.category || '').toLowerCase().includes('contacto')) {
+      displayName = `${p.name} (${getContactLensType(p.name || '')})`;
+    }
+    return {
+      ...p,
+      name: displayName,
+      image: resolveImageUrl(p.image_url, p.image),
+      model: p.sku 
+    };
+  }).filter(p => {
     const searchLower = searchQuery.toLowerCase();
     const nameLower = (p.name || '').toLowerCase();
     const brandLower = (p.brand || '').toLowerCase();
@@ -237,41 +252,40 @@ function FullCatalog({
           exit={{ opacity: 0, x: '100%' }}
           className="full-catalog-view"
         >
-          {/* Top bar: logo and cart */}
-          <div className="catalog-topbar">
-            <img src={logo} alt="Lensique" className="catalog-header-logo" />
-            <button 
-              className="nav-icon-btn" 
-              onClick={() => setIsCartOpen(true)} 
-              style={{ position: 'absolute', right: '20px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-            >
-              <ShoppingBag size={24} color="#0f172a" />
-              {items.length > 0 && (
-                <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {items.length}
-                </span>
-              )}
+          {/* Combined Top bar: Volver, Logo, Cart */}
+          <div className="catalog-topbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: '64px', borderBottom: 'none' }}>
+            <button className="catalog-back" onClick={onClose} style={{ flex: 1, justifyContent: 'flex-start' }}>
+              <ChevronLeft size={20} /> <span className="d-none-mobile">Volver</span>
             </button>
-          </div>
-
-          {/* Second bar: Volver + Buscar */}
-          <div className="catalog-header">
-            <div className="catalog-header-left">
-              <button className="catalog-back" onClick={onClose}>
-                <ChevronLeft size={20} /> Volver
+            
+            <img src={logo} alt="Lensique" className="catalog-header-logo" style={{ height: '56px', maxHeight: '56px', flexShrink: 0 }} />
+            
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <button 
+                className="nav-icon-btn" 
+                onClick={() => setIsCartOpen(true)} 
+                style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              >
+                <ShoppingBag size={24} color="#0f172a" />
+                {items.length > 0 && (
+                  <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {items.length}
+                  </span>
+                )}
               </button>
             </div>
+          </div>
 
-            <div className="catalog-header-right">
-              <div className="catalog-search">
-                <Search size={16} className="search-icon" />
-                <input 
-                  type="text" 
-                  placeholder="Buscar modelo..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
+          {/* Search Bar */}
+          <div className="catalog-header" style={{ padding: '0 20px 16px', height: 'auto', minHeight: 'auto', borderBottom: '1px solid #eaeaea' }}>
+            <div className="catalog-search" style={{ width: '100%' }}>
+              <Search size={16} className="search-icon" />
+              <input 
+                type="text" 
+                placeholder="Buscar modelo..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
 
@@ -1467,7 +1481,7 @@ function App() {
               </div>
 
               <div className={`booking-content-grid ${selectedDate ? 'has-date' : ''}`}>
-                <div className="calendar-container">
+                <div className={`calendar-container ${selectedDate ? 'hidden-on-mobile' : ''}`}>
                   <div className="calendar-nav">
                     <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}>
                       <ChevronLeft size={20} />
@@ -1519,9 +1533,18 @@ function App() {
                       className="booking-right-panel"
                     >
                       <div className="time-selection">
-                        <div className="time-header">
-                          <Clock size={16} />
-                          <span>Horarios disponibles</span>
+                        <div className="time-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Clock size={16} />
+                            <span>Horarios disponibles</span>
+                          </div>
+                          <button 
+                            className="d-md-none" 
+                            style={{ background: 'none', border: 'none', color: '#009ee3', textDecoration: 'underline', fontSize: '14px', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+                            onClick={() => setSelectedDate(null)}
+                          >
+                            Cambiar fecha
+                          </button>
                         </div>
                         <div className="time-grid">
                           {timeSlots.map(time => {
@@ -1602,27 +1625,27 @@ function App() {
             <a href="/" className="logo">
               <img src={logo} alt="Lensique" className="logo-img" />
             </a>
+          </div>
 
-            <div className="nav-links d-none-mobile">
-              {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
-                <a 
-                  key={`nav-${i}-${link.name}`} 
-                  href={link.href} 
-                  className="nav-link"
-                  onClick={(e) => {
-                    if (link.name === 'Catálogo') {
-                      e.preventDefault();
-                      setIsCatalogOpen(true);
-                    } else if (link.name === 'Examen') {
-                      e.preventDefault();
-                      handleOpenBooking('Examen de la Vista');
-                    }
-                  }}
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
+          <div className="nav-links d-none-mobile">
+            {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
+              <a 
+                key={`nav-${i}-${link.name}`} 
+                href={link.href} 
+                className="nav-link"
+                onClick={(e) => {
+                  if (link.name === 'Catálogo') {
+                    e.preventDefault();
+                    setIsCatalogOpen(true);
+                  } else if (link.name === 'Examen') {
+                    e.preventDefault();
+                    handleOpenBooking('Examen de la Vista');
+                  }
+                }}
+              >
+                {link.name}
+              </a>
+            ))}
           </div>
 
           <div className="nav-right">

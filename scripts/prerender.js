@@ -229,6 +229,104 @@ if (!fs.existsSync(agendarDir)) {
 }
 fs.writeFileSync(path.join(agendarDir, 'index.html'), agendarHtml, 'utf8');
 console.log('✅ Pre-rendered /agendar-cita/index.html');
+// Generate /cotizador prerender
+const cotizadorTitle = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
+const cotizadorDesc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";
+const cotizadorCanonical = "https://www.lensique.com.mx/cotizador";
+sitemapUrls.push(cotizadorCanonical);
+
+const cotizadorHeadInjection = `
+    <title>${cotizadorTitle}</title>
+    <meta name="description" content="${cotizadorDesc}" />
+    <link rel="canonical" href="${cotizadorCanonical}" />
+    <meta property="og:title" content="${cotizadorTitle}" />
+    <meta property="og:description" content="${cotizadorDesc}" />
+    <meta property="og:url" content="${cotizadorCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+
+const cotizadorBodyInjection = `
+  <div style="max-width: 600px; margin: 40px auto; padding: 24px; font-family: sans-serif;">
+    <h1 style="font-size: 28px; font-weight: 700; color: #111827;">Cotiza tus micas en menos de un minuto</h1>
+    <p style="font-size: 16px; color: #4b5563;">Descubre las opciones de micas monofocales, bifocales, progresivos, fotocromáticos, filtro azul y antirreflejante.</p>
+  </div>
+`;
+
+let cotizadorHtml = indexTemplate;
+if (cotizadorHtml.includes('<title>')) {
+  cotizadorHtml = cotizadorHtml.replace(/<title>.*?<\/title>/s, `<title>${cotizadorTitle}</title>`);
+}
+cotizadorHtml = cotizadorHtml.replace('</head>', `${cotizadorHeadInjection}\n</head>`);
+cotizadorHtml = cotizadorHtml.replace('<div id="root"></div>', `<div id="root">${cotizadorBodyInjection}</div>`);
+
+const cotizadorDir = path.join(distDir, 'cotizador');
+if (!fs.existsSync(cotizadorDir)) {
+  fs.mkdirSync(cotizadorDir, { recursive: true });
+}
+fs.writeFileSync(path.join(cotizadorDir, 'index.html'), cotizadorHtml, 'utf8');
+console.log('✅ Pre-rendered /cotizador/index.html');
+
+// Generate /marca/[slug] prerender
+const uniqueBrandsMap = new Map();
+products.forEach(p => {
+  const brand = (p.brand && p.brand !== 'null') ? String(p.brand).trim() : '';
+  if (brand && brand.toLowerCase() !== 'ch') {
+    const slug = slugify(brand);
+    if (!uniqueBrandsMap.has(slug)) {
+      uniqueBrandsMap.set(slug, { name: brand, products: [] });
+    }
+    uniqueBrandsMap.get(slug).products.push(p);
+  }
+});
+
+let brandCount = 0;
+for (const [slug, brandData] of uniqueBrandsMap.entries()) {
+  const brandName = brandData.name;
+  const brandTitle = `Armazones ${brandName} en Zapopan | Óptica Lensique`;
+  const brandDesc = `Armazones ${brandName} originales en Zapopan. Examen de vista sin costo con oftalmólogo. Envío gratis en compras mayores a $2,500. Cotiza en línea.`;
+  const brandCanonical = `https://www.lensique.com.mx/marca/${slug}`;
+  sitemapUrls.push(brandCanonical);
+  
+  const brandHeadInjection = `
+    <title>${brandTitle}</title>
+    <meta name="description" content="${brandDesc}" />
+    <link rel="canonical" href="${brandCanonical}" />
+    <meta property="og:title" content="${brandTitle}" />
+    <meta property="og:description" content="${brandDesc}" />
+    <meta property="og:url" content="${brandCanonical}" />
+    <meta property="og:type" content="website" />
+  `;
+  
+  const productsHtml = brandData.products.slice(0, 24).map(p => 
+    `<li>${p.model || p.name} - $${Math.round(p.price_incl_tax)}</li>`
+  ).join('');
+
+  const brandBodyInjection = `
+    <div style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif;">
+      <h1 style="font-size: 32px; font-weight: 700;">Armazones ${brandName} en Zapopan | Óptica Lensique</h1>
+      <p style="font-size: 16px; color: #4b5563;">Descubre nuestra colección de ${brandName}. Agenda tu examen de vista sin costo con oftalmólogo en Chapalita, Zapopan.</p>
+      <ul style="margin-top: 20px;">
+        ${productsHtml}
+      </ul>
+    </div>
+  `;
+
+  let brandHtml = indexTemplate;
+  if (brandHtml.includes('<title>')) {
+    brandHtml = brandHtml.replace(/<title>.*?<\/title>/s, `<title>${brandTitle}</title>`);
+  }
+  brandHtml = brandHtml.replace('</head>', `${brandHeadInjection}\n</head>`);
+  brandHtml = brandHtml.replace('<div id="root"></div>', `<div id="root">${brandBodyInjection}</div>`);
+
+  const brandDir = path.join(distDir, 'marca', slug);
+  if (!fs.existsSync(brandDir)) {
+    fs.mkdirSync(brandDir, { recursive: true });
+  }
+  fs.writeFileSync(path.join(brandDir, 'index.html'), brandHtml, 'utf8');
+  brandCount++;
+}
+console.log(`✅ Pre-rendered ${brandCount} brand HTML pages in /dist/marca/[slug]/index.html`);
+
 
 // 2. Generate sitemap.xml
 const todayStr = new Date().toISOString().split('T')[0];

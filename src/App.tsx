@@ -23,7 +23,8 @@ import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.jpg';
-import { getInventedName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug } from './lib/format';
+import { getInventedName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify } from './lib/format';
+import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
 import { ProductCard } from './components/ProductCard';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
@@ -154,6 +155,7 @@ function FullCatalog({
   catalogData, 
   initialFilter = 'Todas',
   initialSearchQuery = '',
+  initialBrand = 'Todas',
   onConfigureProduct
 }: { 
   isOpen: boolean, 
@@ -163,7 +165,8 @@ function FullCatalog({
   onTryOn: (product: any) => void,
   catalogData: any[], 
   initialFilter?: string,
-  initialSearchQuery?: string 
+  initialSearchQuery?: string,
+  initialBrand?: string
 }) {
   const { items, setIsCartOpen } = useCart();
   const [filter, setFilter] = useState('Todas');
@@ -190,10 +193,10 @@ function FullCatalog({
     if (isOpen) {
       setFilter(initialFilter || 'Todas');
       setSearchQuery(initialSearchQuery || '');
-      setSelectedBrand('Todas');
+      setSelectedBrand(initialBrand || 'Todas');
       setContactUsageFilter('Todos');
     }
-  }, [isOpen, initialFilter, initialSearchQuery]);
+  }, [isOpen, initialFilter, initialSearchQuery, initialBrand]);
 
   // Update selectedBrand if it becomes invalid (e.g. data changes)
   useEffect(() => {
@@ -306,7 +309,16 @@ function FullCatalog({
               <div className="filter-group" style={{ margin: 0 }}>
                 <CustomSelect
                   value={selectedBrand}
-                  onChange={(val) => setSelectedBrand(val)}
+                  onChange={(val) => {
+                    setSelectedBrand(val);
+                    if (val === 'Todas') {
+                      window.history.pushState(null, '', '/armazones');
+                      document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+                    } else {
+                      window.history.pushState(null, '', `/marca/${slugify(val)}`);
+                      document.title = `Armazones ${val} en Zapopan | Óptica Lensique`;
+                    }
+                  }}
                   options={[
                     { label: 'Marcas', value: 'Todas' },
                     ...availableBrands.map(b => ({ label: b, value: b }))
@@ -824,10 +836,12 @@ function App() {
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
+  const [isCotizadorGeneralOpen, setIsCotizadorGeneralOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingName, setBookingName] = useState<string>('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [catalogInitialBrand, setCatalogInitialBrand] = useState('Todas');
 
   // 1. Inspect URL on load and handle popstate for /producto/[slug]
   useEffect(() => {
@@ -854,6 +868,27 @@ function App() {
       } else if (path === '/agendar-cita') {
         setSelectedProduct('Examen de la Vista');
         setIsBookingOpen(true);
+      } else if (path === '/cotizador') {
+        setIsCotizadorGeneralOpen(true);
+      } else if (path.startsWith('/marca/')) {
+        const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
+        const catalog = safeJsonParse(settings.full_catalog_data, []);
+        const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
+        const matchedBrand = uniqueBrands.find(b => slugify(b) === slug);
+        if (matchedBrand) {
+          setCatalogInitialFilter('Todas');
+          setCatalogInitialBrand(matchedBrand);
+          setIsCatalogOpen(true);
+        } else {
+          document.title = "404 - Marca no encontrada | Óptica Lensique";
+          let robotsEl = document.querySelector('meta[name="robots"]');
+          if (!robotsEl) {
+            robotsEl = document.createElement('meta');
+            robotsEl.setAttribute('name', 'robots');
+            document.head.appendChild(robotsEl);
+          }
+          robotsEl.setAttribute('content', 'noindex, follow');
+        }
       }
     };
 
@@ -991,6 +1026,29 @@ function App() {
       }
     }
   }, [isBookingOpen]);
+
+  useEffect(() => {
+    if (isCotizadorGeneralOpen) {
+      if (window.location.pathname !== '/cotizador') {
+        window.history.pushState({ cotizador: true }, '', '/cotizador');
+      }
+      document.title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
+    } else {
+      if (window.location.pathname === '/cotizador') {
+        window.history.pushState(null, '', '/');
+        document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+      }
+    }
+  }, [isCotizadorGeneralOpen]);
+
+  useEffect(() => {
+    if (!isCatalogOpen) {
+      if (window.location.pathname.startsWith('/marca/')) {
+        window.history.pushState(null, '', '/armazones');
+        document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+      }
+    }
+  }, [isCatalogOpen]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -1387,6 +1445,32 @@ function App() {
               image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url)
             });
             setContactConfiguratorProduct(null);
+          }}
+        />
+      )}
+
+      {isCotizadorGeneralOpen && (
+        <StandaloneCotizadorModal
+          onClose={() => setIsCotizadorGeneralOpen(false)}
+          onComplete={(config) => {
+            setIsCotizadorGeneralOpen(false);
+            
+            let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
+            
+            if (config.etiqueta) {
+              configText += `- ${config.etiqueta} (Índice ${config.indice})\n`;
+            }
+            if (config.ar) configText += `- Antirreflejante: ${config.ar}\n`;
+            if (config.photochromic) configText += `- Fotocromático: ${config.photochromic}\n`;
+            if (config.tint) configText += `- Entintado: ${config.tint}\n`;
+            if (config.material) configText += `- Material: ${config.material}\n`;
+            
+            configText += `\n*Precio estimado de micas:* $${Math.round(config.price).toLocaleString('es-MX')}\n\n¿Me pueden confirmar precio y tiempo de entrega?`;
+            
+            const phone = settings.contact_whatsapp || '523316929111';
+            const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;
+            import('./lib/analytics').then(({ trackLead }) => trackLead());
+            window.open(url, '_blank');
           }}
         />
       )}
@@ -2009,7 +2093,8 @@ function App() {
               Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un minuto.
             </p>
             <a 
-              href="/cotizador/" 
+              href="/cotizador" 
+              onClick={(e) => { e.preventDefault(); setIsCotizadorGeneralOpen(true); }}
               style={{
                 display: 'inline-block',
                 background: '#1d1d1f',
@@ -2027,9 +2112,9 @@ function App() {
           </div>
         </section>
 
-        <LensExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
+        <LensExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
 
-        <ProgressiveExplainer onOpenCotizador={() => window.open('/cotizador/', '_blank')} />
+        <ProgressiveExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
 
         <FaceMatcher onOpenCatalog={(shape) => { 
           setCatalogInitialFilter('Armazones'); 

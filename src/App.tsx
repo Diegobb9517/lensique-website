@@ -851,6 +851,9 @@ function App() {
             robotsEl.setAttribute('content', 'noindex, follow');
           }
         }
+      } else if (path === '/agendar-cita') {
+        setSelectedProduct('Examen de la Vista');
+        setIsBookingOpen(true);
       }
     };
 
@@ -970,10 +973,22 @@ function App() {
   }, [selectedProductDetail]);
 
   useEffect(() => {
-    if (isBookingOpen && !selectedDate) {
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      setSelectedDate(today);
+    if (isBookingOpen) {
+      if (window.location.pathname !== '/agendar-cita') {
+        window.history.pushState({ booking: true }, '', '/agendar-cita');
+      }
+      document.title = "Agenda tu Examen de Vista Sin Costo | Óptica Lensique Zapopan";
+      
+      if (!selectedDate) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        setSelectedDate(today);
+      }
+    } else {
+      if (window.location.pathname === '/agendar-cita') {
+        window.history.pushState(null, '', '/');
+        document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+      }
     }
   }, [isBookingOpen]);
 

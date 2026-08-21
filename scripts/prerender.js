@@ -97,7 +97,8 @@ const resolveAbsImage = (imgUrl) => {
 const sitemapUrls = [
   'https://www.lensique.com.mx/',
   'https://www.lensique.com.mx/armazones',
-  'https://www.lensique.com.mx/lentes-de-contacto'
+  'https://www.lensique.com.mx/lentes-de-contacto',
+  'https://www.lensique.com.mx/agendar-cita'
 ];
 
 let generatedCount = 0;
@@ -190,6 +191,44 @@ ${JSON.stringify(jsonLd, null, 2)}
 });
 
 console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /dist/producto/[slug]/index.html`);
+
+// Generate /agendar-cita prerender
+const agendarTitle = "Agenda tu Examen de Vista Sin Costo | Óptica Lensique Zapopan";
+const agendarDesc = "Agenda tu examen de la vista sin costo en Zapopan. Realizado por oftalmólogo certificado. Elige día y hora en línea.";
+const agendarCanonical = "https://www.lensique.com.mx/agendar-cita";
+
+const agendarHeadInjection = `
+    <title>${agendarTitle}</title>
+    <meta name="description" content="${agendarDesc}" />
+    <link rel="canonical" href="${agendarCanonical}" />
+    <meta property="og:title" content="${agendarTitle}" />
+    <meta property="og:description" content="${agendarDesc}" />
+    <meta property="og:image" content="https://www.lensique.com.mx/hero_glasses.jpg" />
+    <meta property="og:url" content="${agendarCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+
+const agendarBodyInjection = `
+  <div style="max-width: 600px; margin: 40px auto; padding: 24px; text-align: center; font-family: sans-serif;">
+    <h1 style="font-size: 28px; font-weight: 700; color: #111827;">Agenda tu Examen de Vista Sin Costo</h1>
+    <p style="font-size: 16px; color: #4b5563;">El examen no tiene costo y es realizado por un oftalmólogo certificado.</p>
+    <a href="${agendarCanonical}" style="display: inline-block; margin-top: 20px; padding: 14px 28px; background: #1b2436; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600;">Confirmar y enviar WhatsApp</a>
+  </div>
+`;
+
+let agendarHtml = indexTemplate;
+if (agendarHtml.includes('<title>')) {
+  agendarHtml = agendarHtml.replace(/<title>.*?<\/title>/s, `<title>${agendarTitle}</title>`);
+}
+agendarHtml = agendarHtml.replace('</head>', `${agendarHeadInjection}\n</head>`);
+agendarHtml = agendarHtml.replace('<div id="root"></div>', `<div id="root">${agendarBodyInjection}</div>`);
+
+const agendarDir = path.join(distDir, 'agendar-cita');
+if (!fs.existsSync(agendarDir)) {
+  fs.mkdirSync(agendarDir, { recursive: true });
+}
+fs.writeFileSync(path.join(agendarDir, 'index.html'), agendarHtml, 'utf8');
+console.log('✅ Pre-rendered /agendar-cita/index.html');
 
 // 2. Generate sitemap.xml
 const todayStr = new Date().toISOString().split('T')[0];

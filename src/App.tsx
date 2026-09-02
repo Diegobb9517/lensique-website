@@ -1054,6 +1054,19 @@ function App() {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     
+    const handleWhatsappClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"]');
+      if (!link) return;
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'contacto_whatsapp', {
+          origen: link.className || 'desconocido',
+          pagina: window.location.pathname
+        });
+      }
+    };
+    document.addEventListener('click', handleWhatsappClick);
+    
     const fetchContent = async () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
@@ -1094,7 +1107,10 @@ function App() {
     };
 
     fetchContent();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleWhatsappClick);
+    };
   }, []);
 
   // UseEffect for body scroll lock when any overlay is open
@@ -1127,6 +1143,11 @@ function App() {
   };
 
   const handleOpenBooking = (productName?: string) => {
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'agendar_cita', {
+        pagina: window.location.pathname
+      });
+    }
     setSelectedProduct(productName || null);
     setIsBookingOpen(true);
   };
@@ -1134,6 +1155,13 @@ function App() {
   const handleBookingConfirm = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!selectedDate || !selectedTime) return;
+    
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'cita_confirmada', {
+        pagina: window.location.pathname
+      });
+    }
+
     const message = formatWhatsAppMessage();
     const phone = settings.contact_whatsapp || '523316929111';
     const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;

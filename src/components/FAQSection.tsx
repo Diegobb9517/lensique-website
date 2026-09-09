@@ -3,8 +3,8 @@ import { ChevronDown } from 'lucide-react';
 
 const faqs = [
   {
-    question: "¿El examen de la vista tiene costo?",
-    answer: "El examen visual es 100% gratuito y sin compromiso. Sin embargo, toma en cuenta que la receta con tu graduación es de uso interno y se entrega impresa únicamente al adquirir tus lentes o micas con nosotros."
+    question: "¿Cómo es el examen de la vista?",
+    answer: "Nuestro examen visual es realizado por un oftalmólogo certificado, garantizando tu salud visual. Toma en cuenta que la receta con tu graduación es de uso interno y se entrega impresa únicamente al adquirir tus lentes o micas con nosotros."
   },
   {
     question: "¿Cuánto tarda mi pedido?",

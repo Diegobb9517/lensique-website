@@ -148,16 +148,27 @@ const safeJsonParse = (str: any, fallback: any = []) => {
 
 
 function FullCatalog({ 
-  isOpen, 
-  onClose, 
-  onViewProduct, 
-  onTryOn,
-  catalogData, 
-  initialFilter = 'Todas',
-  initialSearchQuery = '',
-  initialBrand = 'Todas',
-  onConfigureProduct
-}: { 
+    isOpen, 
+    onClose, 
+    onViewProduct, 
+    onTryOn,
+    catalogData, 
+    initialFilter = 'Todas',
+    initialSearchQuery = '',
+    initialBrand = 'Todas',
+    onConfigureProduct,
+    isStandalone = false
+  }: { 
+    isOpen: boolean, 
+    onClose: () => void, 
+    onViewProduct: (product: any) => void,
+    onConfigureProduct: (product: any) => void,
+    onTryOn: (product: any) => void,
+    catalogData: any[], 
+    initialFilter?: string,
+    initialSearchQuery?: string,
+    initialBrand?: string,
+    isStandalone?: boolean 
   isOpen: boolean, 
   onClose: () => void, 
   onViewProduct: (product: any) => void,
@@ -253,10 +264,10 @@ function FullCatalog({
           initial={{ opacity: 0, x: '100%' }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: '100%' }}
-          className="full-catalog-view"
+          className={isStandalone ? "full-catalog-view standalone" : "full-catalog-view"} style={isStandalone ? {position:"relative", zIndex:1, height:"auto", minHeight:"100vh"} : {}}
         >
           {/* Combined Top bar: Volver, Logo, Cart */}
-          <div className="catalog-topbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: '64px', borderBottom: 'none' }}>
+          <div className="catalog-topbar" style={{ display: isStandalone ? "none" : "flex",  justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: '64px', borderBottom: 'none' }}>
             <button className="catalog-back" onClick={onClose} style={{ flex: 1, justifyContent: 'flex-start' }}>
               <ChevronLeft size={20} /> <span className="d-none-mobile">Volver</span>
             </button>
@@ -313,7 +324,7 @@ function FullCatalog({
                     setSelectedBrand(val);
                     if (val === 'Todas') {
                       window.history.pushState(null, '', '/armazones');
-                      document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+                      document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
                     } else {
                       window.history.pushState(null, '', `/marca/${slugify(val)}`);
                       document.title = `Armazones ${val} en Zapopan | Óptica Lensique`;
@@ -597,7 +608,7 @@ const warrantyData: InfoPageData = {
     {
       heading: 'Garantía de Adaptación',
       icon: Glasses,
-      content: <p>Entendemos que adaptarse a una nueva graduación puede tomar tiempo. Si después de 15 días sientes molestias o no logras adaptarte a tus nuevas micas, te ofrecemos una revisión gratuita y, de ser necesario, un cambio de graduación sin costo adicional.</p>
+      content: <p>Entendemos que adaptarse a una nueva graduación puede tomar tiempo. Si después de 15 días sientes molestias o no logras adaptarte a tus nuevas micas, te ofrecemos una revisión con nuestro oftalmólogo y, de ser necesario, un cambio de graduación respaldado por nuestra garantía.</p>
     },
     {
       heading: 'Garantía en Tratamientos',
@@ -788,6 +799,44 @@ function PaymentSuccessView() {
 }
 
 function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // SEO Update
+  useEffect(() => {
+    let title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
+    let desc = "Óptica en Zapopan y Guadalajara. Armazones de diseño, micas con la mejor tecnología y lentes de contacto. Tu graduación con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
+    let canonical = `https://www.lensique.com.mx${currentPath}`;
+
+    if (currentPath === '/armazones') {
+      title = "Armazones y Lentes Graduados | Óptica Lensique Zapopan";
+      desc = "Más de 130 modelos de armazones de marca: Ray-Ban, Vogue, Carrera, Lacoste, Calvin Klein y Puma. Graduación a tu medida. Envío gratis en compras mayores a $2,500.";
+    } else if (currentPath === '/cotizador') {
+      title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
+      desc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";
+    } else if (currentPath === '/lentes-de-contacto') {
+      title = "Lentes de Contacto en Zapopan | Óptica Lensique";
+      desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
+    }
+
+    if (['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath)) {
+        document.title = title;
+        let descEl = document.querySelector('meta[name="description"]');
+        if (descEl) descEl.setAttribute('content', desc);
+        let canonicalEl = document.querySelector('link[rel="canonical"]');
+        if (!canonicalEl) {
+          canonicalEl = document.createElement('link');
+          canonicalEl.setAttribute('rel', 'canonical');
+          document.head.appendChild(canonicalEl);
+        }
+        canonicalEl.setAttribute('href', canonical);
+    }
+  }, [currentPath]);
+
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(() => window.location.pathname.includes('/pago/exito'));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -868,9 +917,7 @@ function App() {
       } else if (path === '/agendar-cita') {
         setSelectedProduct('Examen de la Vista');
         setIsBookingOpen(true);
-      } else if (path === '/cotizador') {
-        setIsCotizadorGeneralOpen(true);
-      } else if (path.startsWith('/marca/')) {
+      }  else if (path.startsWith('/marca/')) {
         const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
         const catalog = safeJsonParse(settings.full_catalog_data, []);
         const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
@@ -933,7 +980,7 @@ function App() {
         descEl.setAttribute('name', 'description');
         document.head.appendChild(descEl);
       }
-      const descText = selectedProductDetail.description || `Compra ${brand}${model} (${categoryLabel}) en Óptica Lensique. Examen de vista gratis y envío disponible.`;
+      const descText = selectedProductDetail.description || `Compra ${brand}${model} (${categoryLabel}) en Óptica Lensique. Atención profesional y envío disponible.`;
       descEl.setAttribute('content', descText);
 
       // Dynamic Open Graph Tags
@@ -1000,7 +1047,7 @@ function App() {
           window.history.pushState(null, '', '/armazones');
         }
       }
-      document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+      document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
       
       const scriptEl = document.getElementById('product-jsonld');
       if (scriptEl) scriptEl.remove();
@@ -1012,7 +1059,7 @@ function App() {
       if (window.location.pathname !== '/agendar-cita') {
         window.history.pushState({ booking: true }, '', '/agendar-cita');
       }
-      document.title = "Agenda tu Examen de Vista Sin Costo | Óptica Lensique Zapopan";
+      document.title = "Agenda tu Examen de Vista con Oftalmólogo | Óptica Lensique Zapopan";
       
       if (!selectedDate) {
         const today = new Date();
@@ -1022,7 +1069,7 @@ function App() {
     } else {
       if (window.location.pathname === '/agendar-cita') {
         window.history.pushState(null, '', '/');
-        document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+        document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isBookingOpen]);
@@ -1036,7 +1083,7 @@ function App() {
     } else {
       if (window.location.pathname === '/cotizador') {
         window.history.pushState(null, '', '/');
-        document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+        document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isCotizadorGeneralOpen]);
@@ -1045,7 +1092,7 @@ function App() {
     if (!isCatalogOpen) {
       if (window.location.pathname.startsWith('/marca/')) {
         window.history.pushState(null, '', '/armazones');
-        document.title = "Óptica en Zapopan | Examen de vista gratis y lentes | Lensique";
+        document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isCatalogOpen]);
@@ -1597,7 +1644,7 @@ function App() {
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     </div>
                     <div>
-                      El examen <strong>no tiene costo</strong> y es realizado por un <strong>oftalmólogo certificado</strong>.
+                      Tu examen es realizado con equipo de vanguardia por un <strong>oftalmólogo certificado</strong>.
                     </div>
                   </div>
                 )}
@@ -1824,6 +1871,116 @@ function App() {
       </AnimatePresence>
 
       <main>
+        {currentPath === '/armazones' && (
+          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc' }}>
+            <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px', textAlign: 'center', marginBottom: '20px' }}>Armazones y lentes graduados en Zapopan</h1>
+            <FullCatalog 
+              isOpen={true} 
+              isStandalone={true}
+              onClose={() => {}} 
+              catalogData={safeJsonParse(settings.full_catalog_data)}
+              initialFilter="Armazones"
+              onViewProduct={(prod) => {
+                setSelectedProductDetail(prod);
+                setIsCatalogOpen(false);
+              }}
+              onConfigureProduct={(prod) => {
+                setConfiguratorProduct(prod);
+                setIsCatalogOpen(false);
+              }}
+              onTryOn={(prod) => {
+                setTryOnProduct(prod);
+                setIsTryOnOpen(true);
+                setIsCatalogOpen(false);
+              }}
+            />
+            <section className="statement-banner-section" style={{ marginTop: '0' }}>
+              <div className="statement-block">
+                <span className="statement-eyebrow">Garantía Lensique</span>
+                <p className="statement-headline">Tu visión perfecta, garantizada.</p>
+                <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
+                    <div style={{ textAlign: 'center', maxWidth: '200px' }}>
+                        <Shield size={32} color="#0066cc" style={{ margin: '0 auto 10px' }} />
+                        <h4 style={{ fontWeight: 600 }}>Garantía de adaptación</h4>
+                        <p style={{ fontSize: '14px', color: '#515154' }}>30 días para adaptarte a tu graduación.</p>
+                    </div>
+                </div>
+                <button className="btn btn-wp-primary" onClick={() => handleOpenBooking()} style={{ marginTop: '30px' }}>Agendar cita</button>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {currentPath === '/cotizador' && (
+          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
+            <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Cotiza tus micas en menos de un minuto</h1>
+            <StandaloneCotizadorModal 
+              isInline={true}
+              onClose={() => {}}
+              onComplete={(config) => {
+                let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
+                if (config.etiqueta) configText += `- ${config.etiqueta} (Índice ${config.indice})\n`;
+                if (config.tratamientos && config.tratamientos.length > 0) configText += `- Tratamientos: ${config.tratamientos.join(', ')}\n`;
+                if (config.material) configText += `- Material sugerido: ${config.material}\n`;
+                if (config.precioCalculado) configText += `\nPrecio estimado: ${config.precioCalculado}\n`;
+                
+                const url = `https://api.whatsapp.com/send?phone=523316929111&text=${encodeURIComponent(configText)}`;
+                window.open(url, '_blank');
+              }}
+            />
+          </div>
+        )}
+
+        {currentPath === '/lentes-de-contacto' && (
+          <div style={{ paddingTop: '80px', backgroundColor: '#ffffff', paddingBottom: '80px' }}>
+            <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Lentes de contacto en Zapopan</h1>
+            
+            <section className="contact-cta-section" style={{ padding: '40px 20px', background: '#f0fdf4', color: '#166534', textAlign: 'center', marginBottom: '40px' }}>
+              <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <h3 style={{ fontSize: '24px', marginBottom: '16px', fontWeight: 600 }}>Adaptación Profesional</h3>
+                <p style={{ fontSize: '16px', color: '#166534', marginBottom: '20px' }}>
+                  Los lentes de contacto requieren adaptación, no solo graduación. La adaptación la realiza un oftalmólogo y el examen es realizado por un oftalmólogo certificado.
+                </p>
+                <a 
+                  href="https://api.whatsapp.com/send?phone=523316929111&text=Hola,%20tengo%20dudas%20sobre%20lentes%20de%20contacto"
+                  target="_blank" rel="noopener noreferrer"
+                  className="btn btn-wp-primary" 
+                  style={{ backgroundColor: '#16a34a', borderColor: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  Dudas por WhatsApp
+                </a>
+              </div>
+            </section>
+
+            <div className="wp-carousel-grid" style={{ maxWidth: '1200px', margin: '0 auto 60px', padding: '0 20px' }}>
+              {safeJsonParse(settings.featured_contact_lenses).map((product: any, idx: number) => (
+                <div 
+                  key={`contact-${idx}-${product.id}`}
+                  className="wp-product-card"
+                  onClick={() => setSelectedProductDetail(product)}
+                >
+                  <div className="wp-product-image-wrapper">
+                    <img src={resolveImageUrl(product.image_url, product.image)} alt={product.name} className="wp-product-image" loading="lazy" />
+                  </div>
+                  <div className="wp-product-info">
+                    <div className="wp-product-title">{product.name}</div>
+                    <div className="wp-product-price">{product.price ? `${product.price}` : ''}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div style={{ textAlign: 'center' }}>
+                <button className="btn btn-wp-secondary" onClick={() => setIsContactQuizOpen(true)}>
+                  Iniciar guía interactiva
+                </button>
+            </div>
+          </div>
+        )}
+
+        {!['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath) && (
+          <div>
+
         <section className="hero">
           <img 
             src={resolveImageUrl(settings.hero_image_url, heroImg, 1200)} 
@@ -2342,7 +2499,9 @@ function App() {
             data={selectedInfoPage}
           />
 
-      </main>
+      </div>
+)}
+</main>
 
       <a 
         href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me interesa agendar una cita.')}`} 

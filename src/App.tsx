@@ -324,7 +324,7 @@ function FullCatalog({
                     setSelectedBrand(val);
                     if (val === 'Todas') {
                       window.history.pushState(null, '', '/armazones');
-                      document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
+                      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
                     } else {
                       window.history.pushState(null, '', `/marca/${slugify(val)}`);
                       document.title = `Armazones ${val} en Zapopan | Óptica Lensique`;
@@ -808,8 +808,8 @@ function App() {
 
   // SEO Update
   useEffect(() => {
-    let title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
-    let desc = "Óptica en Zapopan y Guadalajara. Armazones de diseño, micas con la mejor tecnología y lentes de contacto. Tu graduación con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
+    let title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
+    let desc = "Óptica en Zapopan (zona Guadalajara). Armazones de diseño, micas de alta tecnología y lentes de contacto, con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
     let canonical = `https://www.lensique.com.mx${currentPath}`;
 
     if (currentPath === '/armazones') {
@@ -1047,7 +1047,7 @@ function App() {
           window.history.pushState(null, '', '/armazones');
         }
       }
-      document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
+      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       
       const scriptEl = document.getElementById('product-jsonld');
       if (scriptEl) scriptEl.remove();
@@ -1069,7 +1069,7 @@ function App() {
     } else {
       if (window.location.pathname === '/agendar-cita') {
         window.history.pushState(null, '', '/');
-        document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
+        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isBookingOpen]);
@@ -1083,7 +1083,7 @@ function App() {
     } else {
       if (window.location.pathname === '/cotizador') {
         window.history.pushState(null, '', '/');
-        document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
+        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isCotizadorGeneralOpen]);
@@ -1092,7 +1092,7 @@ function App() {
     if (!isCatalogOpen) {
       if (window.location.pathname.startsWith('/marca/')) {
         window.history.pushState(null, '', '/armazones');
-        document.title = "Lensique | Óptica en Zapopan y Guadalajara — Examen con oftalmólogo";
+        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isCatalogOpen]);

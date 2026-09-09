@@ -18,7 +18,7 @@ import ServiceInfoModal from './components/ServiceInfoModal';
 import { FAQSection } from './components/FAQSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import LensExplainer from './components/LensExplainer';
-import FaceMatcher from './components/FaceMatcher';
+
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
@@ -2301,11 +2301,7 @@ function App() {
 
         <ProgressiveExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
 
-        <FaceMatcher onOpenCatalog={(shape) => { 
-          setCatalogInitialFilter('Armazones'); 
-          setCatalogInitialSearchQuery(shape || '');
-          setIsCatalogOpen(true); 
-        }} />
+        
 
         <section id="nosotros" className="about-section">
           <div className="about-content">

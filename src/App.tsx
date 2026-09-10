@@ -839,6 +839,15 @@ function App() {
     }
   }, [currentPath]);
 
+  const isInitialRender = useRef(true);
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    } else {
+      import('./lib/analytics').then(({ trackPageView }) => trackPageView());
+    }
+  }, [currentPath]);
+
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(() => window.location.pathname.includes('/pago/exito'));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

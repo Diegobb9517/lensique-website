@@ -5,6 +5,13 @@ declare global {
   }
 }
 
+export const trackPageView = () => {
+  if (typeof window === 'undefined') return;
+  if (window.fbq) {
+    window.fbq('track', 'PageView');
+  }
+};
+
 export const trackViewItem = (product: any) => {
   if (typeof window === 'undefined') return;
   const itemData = {
@@ -83,16 +90,23 @@ export const trackBeginCheckout = (cartTotal: number, items: any[]) => {
     window.fbq('track', 'InitiateCheckout', {
       value: cartTotal,
       currency: 'MXN',
-      num_items: items.length
+      num_items: items.length,
+      content_ids: mappedItems.map(i => i.item_id)
     });
   }
 };
 
-let purchaseTracked = false;
-
 export const trackPurchase = (transactionId: string, value: number, items: any[]) => {
-  if (typeof window === 'undefined' || purchaseTracked) return;
-  purchaseTracked = true; // Guard anti-duplicado en memoria
+  if (typeof window === 'undefined') return;
+  
+  // Guard anti-duplicado persistente (localStorage)
+  const trackedOrders = JSON.parse(window.localStorage.getItem('lensique_tracked_orders') || '[]');
+  if (trackedOrders.includes(transactionId)) {
+    return; // Ya se registró esta compra antes
+  }
+  
+  trackedOrders.push(transactionId);
+  window.localStorage.setItem('lensique_tracked_orders', JSON.stringify(trackedOrders));
   
   const mappedItems = items.map(i => ({
     item_id: i.id || i.product?.id || 'custom',
@@ -111,7 +125,9 @@ export const trackPurchase = (transactionId: string, value: number, items: any[]
   if (window.fbq) {
     window.fbq('track', 'Purchase', {
       value: value,
-      currency: 'MXN'
+      currency: 'MXN',
+      content_ids: mappedItems.map(i => i.item_id),
+      content_type: 'product'
     });
   }
 };

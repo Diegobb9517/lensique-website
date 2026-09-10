@@ -328,6 +328,134 @@ for (const [slug, brandData] of uniqueBrandsMap.entries()) {
 console.log(`✅ Pre-rendered ${brandCount} brand HTML pages in /dist/marca/[slug]/index.html`);
 
 
+// Generate /blog prerender
+const blogIndexTitle = "Blog de Salud Visual | Óptica Lensique";
+const blogIndexDesc = "Consejos, guías y respuestas sobre salud visual, lentes y tratamientos. Todo lo que necesitas saber para cuidar tus ojos, escrito por oftalmólogos.";
+const blogIndexCanonical = "https://www.lensique.com.mx/blog";
+sitemapUrls.push(blogIndexCanonical);
+
+const blogPostsData = [
+  {
+    slug: 'cada-cuanto-examen-de-la-vista',
+    title: '¿Cada cuánto hacerte un examen de la vista? | Óptica Lensique',
+    metaDescription: '¿Cada cuánto debes revisarte la vista? Guía por edad y señales de alerta, explicada por el equipo de Óptica Lensique en Zapopan. Agenda tu examen con oftalmólogo.',
+    image: 'https://www.lensique.com.mx/assets/eye_exam_2.jpg',
+    author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
+    datePublished: '2024-03-20T10:00:00Z',
+    excerpt: 'Muchos problemas visuales avanzan en silencio, así que revisarte a tiempo es la mejor forma de cuidar tus ojos. Aquí te explicamos cuándo acudir según tu edad y síntomas.',
+  },
+  {
+    slug: 'filtro-luz-azul-sirve',
+    title: 'Lentes con filtro de luz azul: ¿de verdad sirven? | Óptica Lensique',
+    metaDescription: '¿Los lentes con filtro de luz azul reducen la fatiga o protegen tus ojos? Esto es lo que dice la ciencia, explicado con honestidad por Óptica Lensique en Zapopan.',
+    image: 'https://www.lensique.com.mx/assets/hero_glasses.jpg',
+    author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
+    datePublished: '2024-03-21T10:00:00Z',
+    excerpt: 'Vas a encontrar el "filtro de luz azul" en casi cualquier anuncio de lentes. Aquí te explicamos qué es real, qué es marketing, y si de verdad vale la pena.',
+  }
+];
+
+const blogIndexHeadInjection = `
+    <title>${blogIndexTitle}</title>
+    <meta name="description" content="${blogIndexDesc}" />
+    <link rel="canonical" href="${blogIndexCanonical}" />
+    <meta property="og:title" content="${blogIndexTitle}" />
+    <meta property="og:description" content="${blogIndexDesc}" />
+    <meta property="og:url" content="${blogIndexCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+
+const blogIndexBodyInjection = `
+  <div style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif;">
+    <h1 style="font-size: 32px; font-weight: 700;">Blog de Salud Visual</h1>
+    ${blogPostsData.map(p => `<article style="margin-bottom: 24px;"><h2 style="font-size: 24px;"><a href="/blog/${p.slug}">${p.title}</a></h2><p>${p.excerpt}</p></article>`).join('')}
+  </div>
+`;
+
+let blogIndexHtml = indexTemplate;
+if (blogIndexHtml.includes('<title>')) {
+  blogIndexHtml = blogIndexHtml.replace(/<title>.*?<\/title>/s, `<title>${blogIndexTitle}</title>`);
+}
+blogIndexHtml = blogIndexHtml.replace('</head>', `${blogIndexHeadInjection}\n</head>`);
+blogIndexHtml = blogIndexHtml.replace('<div id="root"></div>', `<div id="root">${blogIndexBodyInjection}</div>`);
+
+const blogDir = path.join(distDir, 'blog');
+if (!fs.existsSync(blogDir)) {
+  fs.mkdirSync(blogDir, { recursive: true });
+}
+fs.writeFileSync(path.join(blogDir, 'index.html'), blogIndexHtml, 'utf8');
+console.log('✅ Pre-rendered /blog/index.html');
+
+// Generate /blog/:slug prerender
+for (const post of blogPostsData) {
+  const postTitle = post.title;
+  const postDesc = post.metaDescription;
+  const postCanonical = `https://www.lensique.com.mx/blog/${post.slug}`;
+  sitemapUrls.push(postCanonical);
+  
+  const postJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.metaDescription,
+    "image": post.image,
+    "datePublished": post.datePublished,
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Óptica Lensique",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.lensique.com.mx/favicon.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": postCanonical
+    }
+  };
+
+  const postHeadInjection = `
+    <title>${postTitle}</title>
+    <meta name="description" content="${postDesc}" />
+    <link rel="canonical" href="${postCanonical}" />
+    <meta property="og:title" content="${postTitle}" />
+    <meta property="og:description" content="${postDesc}" />
+    <meta property="og:image" content="${post.image}" />
+    <meta property="og:url" content="${postCanonical}" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="${post.datePublished}" />
+    <meta property="article:author" content="${post.author}" />
+    <script type="application/ld+json">${JSON.stringify(postJsonLd)}</script>
+  `;
+
+  const postBodyInjection = `
+    <div style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif;">
+      <h1 style="font-size: 32px; font-weight: 700;">${postTitle}</h1>
+      <img src="${post.image}" alt="${post.title}" style="width: 100%; max-height: 400px; object-fit: cover;" />
+      <p style="font-size: 16px; color: #4b5563;">${post.excerpt}</p>
+    </div>
+  `;
+
+  let postHtml = indexTemplate;
+  if (postHtml.includes('<title>')) {
+    postHtml = postHtml.replace(/<title>.*?<\/title>/s, `<title>${postTitle}</title>`);
+  }
+  postHtml = postHtml.replace('</head>', `${postHeadInjection}\n</head>`);
+  postHtml = postHtml.replace('<div id="root"></div>', `<div id="root">${postBodyInjection}</div>`);
+
+  const postDir = path.join(blogDir, post.slug);
+  if (!fs.existsSync(postDir)) {
+    fs.mkdirSync(postDir, { recursive: true });
+  }
+  fs.writeFileSync(path.join(postDir, 'index.html'), postHtml, 'utf8');
+}
+console.log(`✅ Pre-rendered ${blogPostsData.length} blog post HTML pages in /dist/blog/[slug]/index.html`);
+
+
 // 2. Generate sitemap.xml
 const todayStr = new Date().toISOString().split('T')[0];
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -18,6 +18,8 @@ import ServiceInfoModal from './components/ServiceInfoModal';
 import { FAQSection } from './components/FAQSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import LensExplainer from './components/LensExplainer';
+import BlogList from './components/BlogList';
+import BlogPost from './components/BlogPost';
 
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
@@ -1978,7 +1980,17 @@ function App() {
           </div>
         )}
 
-        {!['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath) && (
+        {currentPath === '/blog' && (
+          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
+            <BlogList />
+          </div>
+        )}
+
+        {currentPath.startsWith('/blog/') && (
+          <BlogPost slug={currentPath.replace('/blog/', '')} />
+        )}
+
+        {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog'].some(p => currentPath === p || currentPath.startsWith('/blog/')) && (
           <div>
 
         <section className="hero">

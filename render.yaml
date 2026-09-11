@@ -15,3 +15,8 @@ routes:
     source: /pago/exito
     destination: /index.html
 
+
+headers:
+  - path: /*
+    name: Content-Security-Policy-Report-Only
+    value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://connect.facebook.net https://*.mercadopago.com https://*.mercadolibre.com https://*.mlstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.facebook.com https://connect.facebook.net https://*.mercadopago.com https://lensique-pos.onrender.com; frame-src https://*.mercadopago.com https://*.mercadolibre.com; object-src 'none'; base-uri 'self';"

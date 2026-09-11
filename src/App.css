@@ -1028,12 +1028,6 @@ body.no-scroll {
     align-items: start;
     gap: 48px;
   }
-  /* Fix vertical alignment asymmetry on desktop */
-  .time-selection {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-  }
 }
 
 .modal-close {
@@ -1198,6 +1192,14 @@ body.no-scroll {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+}
+
+@media(min-width: 768px) {
+  .time-selection {
+    margin-top: 8px;
+    padding-top: 0;
+    border-top: none;
+  }
 }
 
 .time-slot {

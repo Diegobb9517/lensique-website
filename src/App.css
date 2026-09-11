@@ -1028,6 +1028,12 @@ body.no-scroll {
     align-items: start;
     gap: 48px;
   }
+  /* Fix vertical alignment asymmetry on desktop */
+  .time-selection {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
 }
 
 .modal-close {
@@ -1077,6 +1083,18 @@ body.no-scroll {
 }
 
 /* Calendar Container */
+.calendar-container {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.booking-right-panel {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
 .calendar-nav {
   display: flex;
   justify-content: space-between;
@@ -1118,6 +1136,7 @@ body.no-scroll {
 }
 
 .calendar-day {
+  width: 100%;
   aspect-ratio: 1;
   border: none;
   background: none;

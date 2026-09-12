@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
-  Maximize, Camera, Trash2, Sliders, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope, AlertTriangle
+  Maximize, Camera, Trash2, Sliders, Shield, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope, AlertTriangle
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
@@ -859,7 +859,7 @@ function App() {
     about_title: 'Nuestro Compromiso',
     about_text: 'Lensique nació en Zapopan con una idea simple: comprar lentes no debería ser aburrido, complicado, ni costoso. Nos dimos cuenta de que la gente tenía que elegir entre diseños increíbles a precios inalcanzables, o armazones genéricos de mala calidad. Por eso decidimos cambiar las reglas. Traemos los armazones con más estilo y usamos tecnología de última generación en nuestro consultorio clínico para darte una graduación perfecta. Todo esto con un trato humano, directo y transparente. Porque ver bien y verte bien es tu derecho, no un lujo.',
     nav_links: JSON.stringify([
-      { name: 'Catálogo', href: '#armazones' },
+      { name: 'Catálogo', href: '/catalogo' },
       { name: 'Servicios', href: '#servicios' },
       { name: 'Examen', href: '#servicios' },
       { name: 'Micas', href: '#micas' },

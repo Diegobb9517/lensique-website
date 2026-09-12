@@ -11,9 +11,11 @@ routes:
   - type: rewrite
     source: /lentes-de-contacto
     destination: /index.html
+
   - type: rewrite
-    source: /pago/exito
-    destination: /index.html
+    source: /catalogo
+    destination: /catalogo/index.html
+
 
 
 headers:

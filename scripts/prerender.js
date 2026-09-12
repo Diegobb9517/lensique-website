@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
+const templatePath = path.join(distDir, 'index.html');
 const dbPath = path.resolve(rootDir, '../lensique-pos/database.sqlite');
 
 console.log('🚀 Starting Google Shopping SSG Prerender build script...');
@@ -21,64 +22,43 @@ const slugify = (str) => {
     .replace(/^-+|-+$/g, '');
 };
 
+const fetchProductsFromAPI = async (attempts = 3, delayMs = 1000) => {
+  const apiUrl = 'https://lensique-pos.onrender.com/api/products';
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.warn(`[API] Attempt ${i + 1} failed: ${err.message}`);
+      if (i < attempts - 1) await new Promise(r => setTimeout(r, delayMs));
+    }
+  }
+  return [];
+};
+
 const getProductSlug = (product) => {
   if (!product) return '';
   const brand = (product.brand && product.brand !== 'null') ? String(product.brand).trim() : '';
   const model = String(product.model || product.name || '').trim();
   const sku = String(product.sku || '').trim();
-  
   const parts = [brand, model, sku].filter(Boolean);
   let slug = slugify(parts.join(' '));
   if (!slug) slug = `producto-${product.id}`;
   return slug;
 };
 
-// 1. Fetch Products
+
 let products = [];
-if (fs.existsSync(dbPath)) {
-  try {
-    const { DatabaseSync } = await import('node:sqlite');
-    const db = new DatabaseSync(dbPath);
-    products = db.prepare(`
-      SELECT p.id, p.name, p.sku, p.brand, p.price_incl_tax, p.stock, c.name as category, p.image_url, p.description
-      FROM products p 
-      JOIN product_categories c ON p.category_id = c.id 
-      WHERE p.status = 'ACTIVE' 
-      AND UPPER(TRIM(COALESCE(p.brand, ''))) != 'CH'
-      ORDER BY p.brand ASC, p.name ASC
-    `).all();
-    console.log(`[Database] Loaded ${products.length} products from SQLite database.`);
-  } catch (err) {
-    console.warn('[Database] Error loading from SQLite, falling back to content2.json:', err.message);
-  }
-}
+const indexTemplate = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf8') : '';
 
-if (products.length === 0) {
-  const content2Path = path.join(rootDir, 'content2.json');
-  if (fs.existsSync(content2Path)) {
-    try {
-      const content = JSON.parse(fs.readFileSync(content2Path, 'utf8'));
-      const fullCat = typeof content.full_catalog_data === 'string' ? JSON.parse(content.full_catalog_data) : (content.full_catalog_data || []);
-      products = fullCat.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
-      console.log(`[content2.json] Loaded ${products.length} products.`);
-    } catch (e) {
-      console.error('[content2.json] Error reading content2.json:', e);
-    }
-  }
-}
-
-if (products.length === 0) {
-  console.error('❌ Error: No products found for prerendering!');
-  process.exit(1);
-}
-
-const templatePath = path.join(distDir, 'index.html');
-if (!fs.existsSync(templatePath)) {
-  console.error(`❌ Template not found at ${templatePath}. Run vite build first.`);
-  process.exit(1);
-}
-
-const indexTemplate = fs.readFileSync(templatePath, 'utf8');
+const sitemapUrls = [
+  'https://www.lensique.com.mx/',
+  'https://www.lensique.com.mx/armazones',
+  'https://www.lensique.com.mx/lentes-de-contacto',
+  'https://www.lensique.com.mx/agendar-cita'
+];
 
 const formatPrice = (amount) => {
   const num = Number(amount) || 0;
@@ -95,15 +75,32 @@ const resolveAbsImage = (imgUrl) => {
   return `https://lensique-pos.onrender.com/${url}`;
 };
 
-const sitemapUrls = [
-  'https://www.lensique.com.mx/',
-  'https://www.lensique.com.mx/armazones',
-  'https://www.lensique.com.mx/lentes-de-contacto',
-  'https://www.lensique.com.mx/agendar-cita'
-];
+// Try fetching from API with retries
+const apiProducts = await fetchProductsFromAPI();
+if (apiProducts && apiProducts.length) {
+  products = apiProducts.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
+  console.log(`[API] Loaded ${products.length} products from API.`);
+}
 
+// If still empty, fallback to content2.json
+if (products.length === 0) {
+  const content2Path = path.join(rootDir, 'content2.json');
+  if (fs.existsSync(content2Path)) {
+    try {
+      const content = JSON.parse(fs.readFileSync(content2Path, 'utf8'));
+      const fullCat = typeof content.full_catalog_data === 'string'
+        ? JSON.parse(content.full_catalog_data)
+        : (content.full_catalog_data || []);
+      products = fullCat.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
+      console.log(`[content2.json] Loaded ${products.length} products.`);
+    } catch (e) {
+      console.warn('Failed to load fallback content2.json:', e.message);
+    }
+  }
+}
+
+// Process each product
 let generatedCount = 0;
-
 products.forEach(p => {
   const brand = (p.brand && p.brand !== 'null') ? p.brand.trim() : '';
   const model = (p.model || p.name || '').trim();
@@ -116,7 +113,7 @@ products.forEach(p => {
   const isOutOfStock = p.stock != null && p.stock !== '' && Number(p.stock) <= 0;
   const availabilitySchema = isOutOfStock ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock';
   const availabilityText = isOutOfStock ? 'Sobre pedido' : 'En existencia';
-  
+
   const numericPrice = (Number(p.price_incl_tax) || 0).toFixed(2);
   const formattedPriceMxn = `${formatPrice(p.price_incl_tax)} MXN`;
   const absImg = resolveAbsImage(p.image_url);
@@ -170,9 +167,7 @@ ${JSON.stringify(jsonLd, null, 2)}
       </div>
       <p style="font-size: 15px; color: #4b5563; line-height: 1.6;">${pageDesc}</p>
       <p style="font-size: 13px; color: #9ca3af; margin-top: 12px;">SKU: <strong>${p.sku || slug}</strong></p>
-      <a href="${canonicalUrl}" style="display: inline-block; margin-top: 20px; padding: 14px 28px; background: #1b2436; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600;">
-        Seleccionar micas y comprar
-      </a>
+      <a href="${canonicalUrl}" style="display: inline-block; margin-top: 20px; padding: 14px 28px; background: #1b2436; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600;">Seleccionar micas y comprar</a>
     </div>
   `;
 
@@ -190,6 +185,54 @@ ${JSON.stringify(jsonLd, null, 2)}
   fs.writeFileSync(path.join(prodDir, 'index.html'), html, 'utf8');
   generatedCount++;
 });
+// ----------------------------------------------------------
+// Generate /catalogo prerender (static catalog page)
+// ----------------------------------------------------------
+const catalogTitle = "Catálogo de armazones y lentes | Óptica Lensique";
+const catalogDesc = "Explora nuestro catálogo completo de armazones y lentes de contacto. Compra online o agenda tu examen de vista sin costo en Zapopan.";
+const catalogCanonical = "https://www.lensique.com.mx/catalogo";
+// Add catalog URL to sitemap
+sitemapUrls.push(catalogCanonical);
+
+const catalogHeadInjection = `
+    <title>${catalogTitle}</title>
+    <meta name="description" content="${catalogDesc}" />
+    <link rel="canonical" href="${catalogCanonical}" />
+    <meta property="og:title" content="${catalogTitle}" />
+    <meta property="og:description" content="${catalogDesc}" />
+    <meta property="og:url" content="${catalogCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+
+// Build list of product links
+const catalogLinks = products.map(p => {
+  const slug = getProductSlug(p);
+  const label = `${p.brand ? p.brand + ' ' : ''}${p.model || p.name}`;
+  return `<li><a href="/producto/${slug}">${label}</a></li>`;
+}).join('\n');
+
+const catalogBodyInjection = `
+  <section class="catalog-page" style="max-width: 800px; margin: 40px auto; font-family: sans-serif;">
+    <h1 class="section-title" style="font-family:'Playfair Display', serif; text-align:center; margin-bottom:2rem;">Catálogo</h1>
+    <ul style="list-style:none; padding:0;">
+      ${catalogLinks}
+    </ul>
+  </section>
+`;
+
+let catalogHtml = indexTemplate;
+if (catalogHtml.includes('<title>')) {
+  catalogHtml = catalogHtml.replace(/<title>.*?<\/title>/s, `<title>${catalogTitle}</title>`);
+}
+// Insert head injection right after opening <head>
+catalogHtml = catalogHtml.replace('<head>', `<head>\n${catalogHeadInjection}`);
+// Replace the root div with our catalog body
+catalogHtml = catalogHtml.replace('<div id="root"></div>', `<div id="root">${catalogBodyInjection}</div>`);
+
+const catalogDir = path.join(distDir, 'catalogo');
+if (!fs.existsSync(catalogDir)) { fs.mkdirSync(catalogDir, { recursive: true }); }
+fs.writeFileSync(path.join(catalogDir, 'index.html'), catalogHtml, 'utf8');
+console.log('✅ Pre-rendered /catalogo/index.html');
 
 console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /dist/producto/[slug]/index.html`);
 

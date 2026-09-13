@@ -28,7 +28,7 @@ const faqs = [
   }
 ];
 
-export function FAQSection() {
+export function FAQSection({ limit, onOpenAll }: { limit?: number, onOpenAll?: () => void }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
@@ -113,6 +113,21 @@ export function FAQSection() {
             );
           })}
         </div>
+
+      {onOpenAll && limit && faqs.length > limit && (
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <button 
+            onClick={onOpenAll}
+            style={{ 
+              background: '#1d1d1f', color: '#fff', padding: '12px 28px', 
+              borderRadius: '980px', fontSize: '15px', fontWeight: 600, 
+              border: 'none', cursor: 'pointer', transition: 'background 0.3s' 
+            }}
+          >
+            Ver todas las preguntas frecuentes
+          </button>
+        </div>
+      )}
       </div>
     </section>
   );

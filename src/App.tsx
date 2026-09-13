@@ -2225,61 +2225,39 @@ function App() {
           </div>
         </section>
 
-        {/* Editorial Cards Section - Warby Parker Style */}
-        <section className="editorial-cards-section">
-          <div className="editorial-cards-grid">
-            {/* Card izquierda - Calvin Klein */}
-            <motion.div
-              className="editorial-card editorial-card--tall"
-              style={{ backgroundImage: `url(${editorialCk})` }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0 }}
-              viewport={{ once: true }}
-              onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}
-            >
-              <div className="editorial-card-overlay" />
-              <div className="editorial-card-content">
-                <p className="editorial-card-headline">Encuentra el armazón perfecto para ti.</p>
-                <button className="editorial-card-btn">Ver armazones</button>
+          {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
+<section id="lentes-contacto" className="wp-carousel-section">
+            <div className="wp-section-header">
+              <h2 className="wp-section-title">Claridad sin límites</h2>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
+                <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
               </div>
-            </motion.div>
+            </div>
+            
+            <div className="wp-slider" ref={contactSliderRef}>
+              {safeJsonParse(settings.full_catalog_data)
+                .filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))
+                .slice(0, 6)
+                .map((product: any) => (
+                  <ProductCard 
+                    key={product.id}
+                    product={product}
+                    fallbackImage={contactLensesImg}
+                    onClick={() => { setSelectedProductDetail(product); }}
+                  />
+              ))}
+            </div>
 
-            {/* Card central - Carrera, offset hacia abajo */}
-            <motion.div
-              className="editorial-card editorial-card--offset"
-              style={{ backgroundImage: `url(${editorialCarrera})` }}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
-              viewport={{ once: true }}
-              onClick={() => handleOpenBooking()}
-            >
-              <div className="editorial-card-overlay" />
-              <div className="editorial-card-content">
-                <p className="editorial-card-headline">Estilo que define tu personalidad.</p>
-                <button className="editorial-card-btn" onClick={(e) => { e.stopPropagation(); handleOpenBooking(); }}>Agendar cita</button>
-              </div>
-            </motion.div>
-
-            {/* Card derecha - Calvin Klein premium */}
-            <motion.div
-              className="editorial-card editorial-card--tall"
-              style={{ backgroundImage: `url(${editorialArmazon})` }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              viewport={{ once: true }}
-              onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}
-            >
-              <div className="editorial-card-overlay" />
-              <div className="editorial-card-content">
-                <p className="editorial-card-headline">Armazón con elegancia arquitectónica.</p>
-                <button className="editorial-card-btn">Explorar armazón vista</button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+            <div style={{ marginTop: '48px', background: 'linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%)', borderRadius: '24px', padding: '48px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#1d1d1f', marginBottom: '12px' }}>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
+              <p style={{ color: '#86868b', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
+              <button className="glow-btn" style={{ padding: '16px 32px', width: 'auto', fontSize: '16px' }} onClick={() => { setIsContactQuizOpen(true); }}>
+                Iniciar guía interactiva
+              </button>
+            </div>
+          </section> 
+)}
 
         <section id="servicios" className="wp-services-section">
           <div className="wp-section-header">
@@ -2352,6 +2330,134 @@ function App() {
             ))}
           </div>
         </section>
+
+        {/* Editorial Cards Section - Warby Parker Style */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2489,41 +2595,9 @@ function App() {
 
 
 
-        {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
-          <section id="lentes-contacto" className="wp-carousel-section">
-            <div className="wp-section-header">
-              <h2 className="wp-section-title">Claridad sin límites</h2>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
-                <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
-              </div>
-            </div>
-            
-            <div className="wp-slider" ref={contactSliderRef}>
-              {safeJsonParse(settings.full_catalog_data)
-                .filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))
-                .slice(0, 6)
-                .map((product: any) => (
-                  <ProductCard 
-                    key={product.id}
-                    product={product}
-                    fallbackImage={contactLensesImg}
-                    onClick={() => { setSelectedProductDetail(product); }}
-                  />
-              ))}
-            </div>
+        
 
-            <div style={{ marginTop: '48px', background: 'linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%)', borderRadius: '24px', padding: '48px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
-              <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#1d1d1f', marginBottom: '12px' }}>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
-              <p style={{ color: '#86868b', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
-              <button className="glow-btn" style={{ padding: '16px 32px', width: 'auto', fontSize: '16px' }} onClick={() => { setIsContactQuizOpen(true); }}>
-                Iniciar guía interactiva
-              </button>
-            </div>
-          </section>
-        )}
-
-        <section className="reviews-section" style={{ padding: '80px 24px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
+        <section className="reviews-section" style={{ padding: '40px 24px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
             <span className="hero-eyebrow">Lo que dicen nuestros pacientes</span>
             
@@ -2607,7 +2681,7 @@ function App() {
           </div>
         </section>
 
-        <FAQSection />
+        <FAQSection limit={4} onOpenAll={() => setSelectedInfoPage(faqData)} />
 
         <section id="contacto" className="location-section">
           <div className="location-grid">

@@ -802,6 +802,22 @@ function PaymentSuccessView() {
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    if (window.location.hash && currentPath === '/') {
+      const id = window.location.hash.substring(1);
+      const scroll = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+      setTimeout(scroll, 100);
+      setTimeout(scroll, 500);
+      setTimeout(scroll, 1000);
+    }
+  }, [currentPath]);
+
   useEffect(() => {
     const handlePopState = () => setCurrentPath(window.location.pathname);
     window.addEventListener('popstate', handlePopState);

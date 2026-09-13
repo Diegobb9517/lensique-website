@@ -66,7 +66,7 @@ En **Óptica Lensique** tu examen lo realiza un **oftalmólogo**, no solo un apa
 
 Cuidar tu vista es más barato y más fácil cuando lo haces a tiempo. Si ya te tocaba o notaste alguna de las señales de arriba, **agenda tu examen con nuestro oftalmólogo en Zapopan** — y de paso, aprovecha para probarte los nuevos armazones. 🔓
 
-> **¿Listo para revisarte?** [Agenda tu cita aquí](/#examen) o escríbenos por WhatsApp. Y si ya tienes tu graduación, puedes elegir tus [Ver nuestro catálogo](/#armazones) en línea y recibirlos en casa o recogerlos en tienda.
+> **¿Listo para revisarte?** [Agenda tu cita aquí](/#servicios) o escríbenos por WhatsApp. Y si ya tienes tu graduación, puedes elegir tus [Ver nuestro catálogo](/catalogo) en línea y recibirlos en casa o recogerlos en tienda.
 
 *Artículo informativo del equipo de Óptica Lensique (Zapopan, Guadalajara), revisado por oftalmólogo. No sustituye una consulta profesional.*`
   },
@@ -122,7 +122,7 @@ El filtro de luz azul **no reduce la fatiga ni protege tus ojos del daño de las
 
 En Óptica Lensique preferimos que gastes tu dinero en lo que de verdad funciona. Si quieres, **agenda tu examen con nuestro oftalmólogo** y te asesoramos con honestidad sobre qué micas te convienen —incluido el antirreflejante— según tu caso. 🔓
 
-**¿Los ojos cansados frente a la pantalla?** [Agenda tu cita aquí](/#examen) y te decimos qué necesitas de verdad. También puedes [Ver nuestras micas](/#micas) o [Ir al cotizador](/cotizador).
+**¿Los ojos cansados frente a la pantalla?** [Agenda tu cita aquí](/#servicios) y te decimos qué necesitas de verdad. También puedes [Ver nuestras micas](/#micas) o [Ir al cotizador](/cotizador).
 
 *Artículo informativo del equipo de Óptica Lensique (Zapopan, Guadalajara), revisado por oftalmólogo. Basado en evidencia científica disponible (revisión Cochrane 2023; recomendaciones de la Academia Americana de Oftalmología). No sustituye una consulta profesional.*`
   }

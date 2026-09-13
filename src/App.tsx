@@ -878,9 +878,9 @@ function App() {
       { name: 'Catálogo', href: '/catalogo' },
       { name: 'Servicios', href: '#servicios' },
       { name: 'Examen', href: '#servicios' },
-      { name: 'Micas', href: '#micas' },
+      { name: 'Micas', href: '/micas' },
         { name: 'Blog', href: '/blog' },
-      { name: 'Nosotros', href: '#nosotros' }
+      { name: 'Nosotros', href: '/nosotros' }
     ]),
     category_bricks: JSON.stringify([
       { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: premiumMonofocal },
@@ -2012,11 +2012,151 @@ function App() {
           </div>
         )}
 
+        
+        {currentPath === '/micas' && (
+          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '0' }}>
+        <section id="micas" className="wp-micas-lifestyle-section">
+          <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión</h2>
+            </div>
+            <div className="wp-slider-nav" style={{ display: 'flex', gap: '10px' }}>
+              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollMicas('left')}><ChevronLeft size={24} /></button>
+              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollMicas('right')}><ChevronRight size={24} /></button>
+            </div>
+          </div>
+          
+          <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
+            {safeJsonParse(settings.category_bricks).map((brick: any, idx: number) => (
+              <motion.div 
+                key={`mica-ls-${idx}-${brick.id}`}
+                className="wp-mica-lifestyle-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                onClick={() => setSelectedTech(brick)}
+              >
+                <div 
+                  className="wp-mica-bg" 
+                  style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
+                />
+                <div className="wp-mica-overlay" />
+                <div className="wp-mica-text-content">
+                  <h3 className="wp-mica-title">{brick.title}</h3>
+                  <p className="wp-mica-desc">{brick.description}</p>
+                </div>
+                <div className="wp-mica-action">CONOCER MÁS</div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section className="contact-cta-section" style={{ padding: '60px 20px', background: 'linear-gradient(135deg, #f7f9fc 0%, #eef2f6 100%)', color: '#1d1d1f', textAlign: 'center' }}>
+          <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 600 }}>¿Quieres saber el costo de tus micas?</h2>
+            <p style={{ fontSize: '18px', color: '#6e6e73', marginBottom: '32px' }}>
+              Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un minuto.
+            </p>
+            <a 
+              href="/cotizador" 
+              onClick={(e) => { e.preventDefault(); setIsCotizadorGeneralOpen(true); }}
+              style={{
+                display: 'inline-block',
+                background: '#1d1d1f',
+                color: '#ffffff',
+                padding: '16px 40px',
+                borderRadius: '980px',
+                fontSize: '17px',
+                fontWeight: 600,
+                textDecoration: 'none',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}
+            >
+              Abrir cotizador de micas
+            </a>
+          </div>
+        </section>
+        <LensExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
+        <ProgressiveExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
+          </div>
+        )}
+
+        {currentPath === '/nosotros' && (
+          <div style={{ paddingTop: '80px', backgroundColor: '#ffffff', paddingBottom: '0' }}>
+        <section id="nosotros" className="about-section">
+          <div className="about-content">
+            <span className="hero-eyebrow">Nosotros</span>
+            <h2 className="section-title">{settings.about_title}</h2>
+            <p className="about-text">{settings.about_text}</p>
+          </div>
+        </section>
+        {/* Typographic Statement + Lifestyle Banner */}
+        <section className="statement-banner-section">
+          {/* Part 1: Typographic Statement */}
+          <div className="statement-block">
+            <span className="statement-eyebrow">Todo lo que tus ojos necesitan</span>
+            <p className="statement-headline">
+              Agenda un{' '}
+              <button className="statement-link" onClick={() => handleOpenBooking('Examen de la Vista')}>
+                examen de vista
+              </button>
+              , pruébate{' '}
+              <button className="statement-link" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
+                armazones
+              </button>
+              {' '}y compra{' '}
+              <button className="statement-link" onClick={() => { setIsContactQuizOpen(true); }}>
+                lentes de contacto
+              </button>
+              {'\u2014'}todo en tu óptica de confianza.
+            </p>
+          </div>
+
+          {/* Part 2: Lifestyle Banner */}
+          <motion.div
+            className="lifestyle-banner"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="lifestyle-banner-text">
+              <h2 className="lifestyle-banner-title">Compra junto a quien más quieres</h2>
+              <p className="lifestyle-banner-desc">
+                Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
+              </p>
+              <div className="lifestyle-banner-btns">
+                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
+                  Ver armazones
+                </button>
+                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
+                  Ver lentes de sol
+                </button>
+              </div>
+              <button className="lifestyle-banner-link" onClick={() => handleOpenBooking()}>
+                Agenda tu cita &rsaquo;
+              </button>
+            </div>
+            <div className="lifestyle-banner-img-col">
+              <img
+                src={storeInteriorImg}
+                alt="Óptica Lensique - Atención personalizada"
+                className="lifestyle-banner-img"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </motion.div>
+        </section>
+          </div>
+        )}
+
         {currentPath.startsWith('/blog/') && (
           <BlogPost slug={currentPath.replace('/blog/', '')} />
         )}
 
-        {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog'].some(p => currentPath === p || currentPath.startsWith('/blog/')) && (
+        {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros'].some(p => currentPath === p || currentPath.startsWith('/blog/')) && (
           <div>
 
         <section className="hero">
@@ -2191,7 +2331,7 @@ function App() {
                   description: '<p>Si ya tienes un armazón que te encanta, nosotros nos encargamos de cambiarle las micas con tu nueva graduación o el tratamiento que necesites.</p><p>Es un proceso rápido y seguro para darle una nueva vida a tus lentes favoritos.</p>',
                   image: micasImg,
                   actionText: 'Ver opciones de micas',
-                  onAction: () => { setSelectedServiceInfo(null); window.location.hash = 'micas'; }
+                  onAction: () => { setSelectedServiceInfo(null); window.location.href = '/micas'; }
                 }) 
               },
               { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => setIsContactQuizOpen(true) },
@@ -2213,141 +2353,141 @@ function App() {
           </div>
         </section>
 
-        {/* Typographic Statement + Lifestyle Banner */}
-        <section className="statement-banner-section">
-          {/* Part 1: Typographic Statement */}
-          <div className="statement-block">
-            <span className="statement-eyebrow">Todo lo que tus ojos necesitan</span>
-            <p className="statement-headline">
-              Agenda un{' '}
-              <button className="statement-link" onClick={() => handleOpenBooking('Examen de la Vista')}>
-                examen de vista
-              </button>
-              , pruébate{' '}
-              <button className="statement-link" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
-                armazones
-              </button>
-              {' '}y compra{' '}
-              <button className="statement-link" onClick={() => { setIsContactQuizOpen(true); }}>
-                lentes de contacto
-              </button>
-              {'\u2014'}todo en tu óptica de confianza.
-            </p>
-          </div>
 
-          {/* Part 2: Lifestyle Banner */}
-          <motion.div
-            className="lifestyle-banner"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <div className="lifestyle-banner-text">
-              <h2 className="lifestyle-banner-title">Compra junto a quien más quieres</h2>
-              <p className="lifestyle-banner-desc">
-                Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
-              </p>
-              <div className="lifestyle-banner-btns">
-                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
-                  Ver armazones
-                </button>
-                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
-                  Ver lentes de sol
-                </button>
-              </div>
-              <button className="lifestyle-banner-link" onClick={() => handleOpenBooking()}>
-                Agenda tu cita &rsaquo;
-              </button>
-            </div>
-            <div className="lifestyle-banner-img-col">
-              <img
-                src={storeInteriorImg}
-                alt="Óptica Lensique - Atención personalizada"
-                className="lifestyle-banner-img"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </motion.div>
-        </section>
 
-        <section id="micas" className="wp-micas-lifestyle-section">
-          <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-              <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión</h2>
-            </div>
-            <div className="wp-slider-nav" style={{ display: 'flex', gap: '10px' }}>
-              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollMicas('left')}><ChevronLeft size={24} /></button>
-              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollMicas('right')}><ChevronRight size={24} /></button>
-            </div>
-          </div>
-          
-          <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
-            {safeJsonParse(settings.category_bricks).map((brick: any, idx: number) => (
-              <motion.div 
-                key={`mica-ls-${idx}-${brick.id}`}
-                className="wp-mica-lifestyle-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                onClick={() => setSelectedTech(brick)}
-              >
-                <div 
-                  className="wp-mica-bg" 
-                  style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
-                />
-                <div className="wp-mica-overlay" />
-                <div className="wp-mica-text-content">
-                  <h3 className="wp-mica-title">{brick.title}</h3>
-                  <p className="wp-mica-desc">{brick.description}</p>
-                </div>
-                <div className="wp-mica-action">CONOCER MÁS</div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
 
-        <section className="contact-cta-section" style={{ padding: '60px 20px', background: 'linear-gradient(135deg, #f7f9fc 0%, #eef2f6 100%)', color: '#1d1d1f', textAlign: 'center' }}>
-          <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 600 }}>¿Quieres saber el costo de tus micas?</h2>
-            <p style={{ fontSize: '18px', color: '#6e6e73', marginBottom: '32px' }}>
-              Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un minuto.
-            </p>
-            <a 
-              href="/cotizador" 
-              onClick={(e) => { e.preventDefault(); setIsCotizadorGeneralOpen(true); }}
-              style={{
-                display: 'inline-block',
-                background: '#1d1d1f',
-                color: '#ffffff',
-                padding: '16px 40px',
-                borderRadius: '980px',
-                fontSize: '17px',
-                fontWeight: 600,
-                textDecoration: 'none',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-              }}
-            >
-              Abrir cotizador de micas
-            </a>
-          </div>
-        </section>
 
-        <LensExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
 
-        <ProgressiveExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
 
-        <section id="nosotros" className="about-section">
-          <div className="about-content">
-            <span className="hero-eyebrow">Nosotros</span>
-            <h2 className="section-title">{settings.about_title}</h2>
-            <p className="about-text">{settings.about_text}</p>
-          </div>
-        </section>
+
+
+
+
+
+
+
 
         {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
           <section id="lentes-contacto" className="wp-carousel-section">
@@ -2557,8 +2697,8 @@ function App() {
               <div className="footer-col">
                 <h4>Productos</h4>
                 <a href="#catalogo" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes oftálmicos</a>
-                <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas monofocales</a>
-                <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Micas progresivas</a>
+                <a href="/micas">Micas monofocales</a>
+                <a href="/micas">Micas progresivas</a>
                 <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>
               </div>
               
@@ -2575,7 +2715,7 @@ function App() {
               <div className="footer-col">
                 <h4>Nosotros</h4>
                   <a href="/blog">Blog</a>
-                <a href="#nosotros" onClick={(e) => { e.preventDefault(); document.getElementById('nosotros')?.scrollIntoView({ behavior: 'smooth' }); }}>Nuestra historia</a>
+                <a href="/nosotros">Nuestra historia</a>
                 <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
                 <h4 className="mt-8">Legal</h4>
                 <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>

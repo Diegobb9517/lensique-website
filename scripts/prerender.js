@@ -236,6 +236,49 @@ console.log('✅ Pre-rendered /catalogo/index.html');
 
 console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /dist/producto/[slug]/index.html`);
 
+
+// Generate /micas prerender
+const micasTitle = "Micas y Tecnologías de Visión | Óptica Lensique Zapopan";
+const micasDesc = "Conoce nuestras opciones de micas: monofocales, progresivos, antirreflejante y más. Calcula el costo en nuestro cotizador de micas.";
+const micasCanonical = "https://www.lensique.com.mx/micas";
+
+const micasHeadInjection = `
+    <title>${micasTitle}</title>
+    <meta name="description" content="${micasDesc}" />
+    <link rel="canonical" href="${micasCanonical}" />
+    <meta property="og:title" content="${micasTitle}" />
+    <meta property="og:description" content="${micasDesc}" />
+    <meta property="og:url" content="${micasCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+let micasHtml = fs.readFileSync(templatePath, 'utf8').replace(/<title>.*<\/title>/, '');
+micasHtml = micasHtml.replace('</head>', micasHeadInjection + '</head>');
+const micasDir = path.join(distDir, 'micas');
+if (!fs.existsSync(micasDir)) fs.mkdirSync(micasDir, { recursive: true });
+fs.writeFileSync(path.join(micasDir, 'index.html'), micasHtml, 'utf8');
+console.log('✅ Pre-rendered /micas/index.html');
+
+// Generate /nosotros prerender
+const nosotrosTitle = "Nosotros | Óptica Lensique Zapopan";
+const nosotrosDesc = "Nuestra Pasión es tu Visión. Conoce la historia de Óptica Lensique y nuestro compromiso con tu salud visual y tu estilo.";
+const nosotrosCanonical = "https://www.lensique.com.mx/nosotros";
+
+const nosotrosHeadInjection = `
+    <title>${nosotrosTitle}</title>
+    <meta name="description" content="${nosotrosDesc}" />
+    <link rel="canonical" href="${nosotrosCanonical}" />
+    <meta property="og:title" content="${nosotrosTitle}" />
+    <meta property="og:description" content="${nosotrosDesc}" />
+    <meta property="og:url" content="${nosotrosCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+let nosotrosHtml = fs.readFileSync(templatePath, 'utf8').replace(/<title>.*<\/title>/, '');
+nosotrosHtml = nosotrosHtml.replace('</head>', nosotrosHeadInjection + '</head>');
+const nosotrosDir = path.join(distDir, 'nosotros');
+if (!fs.existsSync(nosotrosDir)) fs.mkdirSync(nosotrosDir, { recursive: true });
+fs.writeFileSync(path.join(nosotrosDir, 'index.html'), nosotrosHtml, 'utf8');
+console.log('✅ Pre-rendered /nosotros/index.html');
+
 // Generate /agendar-cita prerender
 const agendarTitle = "Agenda tu Examen Visual | Óptica Lensique Zapopan";
 const agendarDesc = "Agenda tu examen visual en Zapopan. Realizado por oftalmólogo certificado. Elige día y hora en línea.";

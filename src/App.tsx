@@ -863,6 +863,7 @@ function App() {
       { name: 'Servicios', href: '#servicios' },
       { name: 'Examen', href: '#servicios' },
       { name: 'Micas', href: '#micas' },
+        { name: 'Blog', href: '/blog' },
       { name: 'Nosotros', href: '#nosotros' }
     ]),
     category_bricks: JSON.stringify([
@@ -2557,6 +2558,7 @@ function App() {
 
               <div className="footer-col">
                 <h4>Nosotros</h4>
+                  <a href="/blog">Blog</a>
                 <a href="#nosotros" onClick={(e) => { e.preventDefault(); document.getElementById('nosotros')?.scrollIntoView({ behavior: 'smooth' }); }}>Nuestra historia</a>
                 <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
                 <h4 className="mt-8">Legal</h4>

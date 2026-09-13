@@ -118,7 +118,7 @@ products.forEach(p => {
   const formattedPriceMxn = `${formatPrice(p.price_incl_tax)} MXN`;
   const absImg = resolveAbsImage(p.image_url);
   const pageTitle = `${brand ? brand + ' ' : ''}${model} | ${categoryLabel} | Óptica Lensique`;
-  const pageDesc = p.description || `Compra ${brand ? brand + ' ' : ''}${model} (${categoryLabel}) en Óptica Lensique. Examen de vista gratis en Zapopan y envío a todo México.`;
+  const pageDesc = p.description || `Compra ${brand ? brand + ' ' : ''}${model} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;
 
   const jsonLd = {
     "@context": "https://schema.org/",
@@ -189,7 +189,7 @@ ${JSON.stringify(jsonLd, null, 2)}
 // Generate /catalogo prerender (static catalog page)
 // ----------------------------------------------------------
 const catalogTitle = "Catálogo de armazones y lentes | Óptica Lensique";
-const catalogDesc = "Explora nuestro catálogo completo de armazones y lentes de contacto. Compra online o agenda tu examen de vista sin costo en Zapopan.";
+const catalogDesc = "Explora nuestro catálogo de armazones de diseño (Ray-Ban, Calvin Klein, Carrera y más) y lentes de contacto, con respaldo de oftalmólogo. Compra en línea o recoge en Zapopan.";
 const catalogCanonical = "https://www.lensique.com.mx/catalogo";
 // Add catalog URL to sitemap
 sitemapUrls.push(catalogCanonical);
@@ -237,8 +237,8 @@ console.log('✅ Pre-rendered /catalogo/index.html');
 console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /dist/producto/[slug]/index.html`);
 
 // Generate /agendar-cita prerender
-const agendarTitle = "Agenda tu Examen de Vista Sin Costo | Óptica Lensique Zapopan";
-const agendarDesc = "Agenda tu examen de la vista sin costo en Zapopan. Realizado por oftalmólogo certificado. Elige día y hora en línea.";
+const agendarTitle = "Agenda tu Examen Visual | Óptica Lensique Zapopan";
+const agendarDesc = "Agenda tu examen visual en Zapopan. Realizado por oftalmólogo certificado. Elige día y hora en línea.";
 const agendarCanonical = "https://www.lensique.com.mx/agendar-cita";
 
 const agendarHeadInjection = `
@@ -254,7 +254,7 @@ const agendarHeadInjection = `
 
 const agendarBodyInjection = `
   <div style="max-width: 600px; margin: 40px auto; padding: 24px; text-align: center; font-family: sans-serif;">
-    <h1 style="font-size: 28px; font-weight: 700; color: #111827;">Agenda tu Examen de Vista Sin Costo</h1>
+    <h1 style="font-size: 28px; font-weight: 700; color: #111827;">Agenda tu Examen Visual</h1>
     <p style="font-size: 16px; color: #4b5563;">El examen no tiene costo y es realizado por un oftalmólogo certificado.</p>
     <a href="${agendarCanonical}" style="display: inline-block; margin-top: 20px; padding: 14px 28px; background: #1b2436; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600;">Confirmar y enviar WhatsApp</a>
   </div>
@@ -327,7 +327,7 @@ let brandCount = 0;
 for (const [slug, brandData] of uniqueBrandsMap.entries()) {
   const brandName = brandData.name;
   const brandTitle = `Armazones ${brandName} en Zapopan | Óptica Lensique`;
-  const brandDesc = `Armazones ${brandName} originales en Zapopan. Examen de vista sin costo con oftalmólogo. Envío gratis en compras mayores a $2,500. Cotiza en línea.`;
+  const brandDesc = `Armazones ${brandName} originales en Zapopan. Respaldo de oftalmólogo certificado. Cotiza en línea.`;
   const brandCanonical = `https://www.lensique.com.mx/marca/${slug}`;
   sitemapUrls.push(brandCanonical);
   
@@ -348,7 +348,7 @@ for (const [slug, brandData] of uniqueBrandsMap.entries()) {
   const brandBodyInjection = `
     <div style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif;">
       <h1 style="font-size: 32px; font-weight: 700;">Armazones ${brandName} en Zapopan | Óptica Lensique</h1>
-      <p style="font-size: 16px; color: #4b5563;">Descubre nuestra colección de ${brandName}. Agenda tu examen de vista sin costo con oftalmólogo en Chapalita, Zapopan.</p>
+      <p style="font-size: 16px; color: #4b5563;">Descubre nuestra colección de ${brandName}. Agenda tu examen visual con oftalmólogo en Chapalita, Zapopan.</p>
       <ul style="margin-top: 20px;">
         ${productsHtml}
       </ul>

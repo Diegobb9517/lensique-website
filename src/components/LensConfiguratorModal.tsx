@@ -85,10 +85,15 @@ export default function LensConfiguratorModal({
             <X size={24} color="#1b2436" />
           </button>
           
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 1, backgroundColor: '#f8fafc' }}>
+             <div className="spinner" style={{ width: '40px', height: '40px', border: '4px solid #e2e8f0', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+             <p style={{ marginTop: '16px', color: '#64748b', fontWeight: 500 }}>Cargando configurador...</p>
+          </div>
+
           <iframe 
             src="/asesor_zeiss.html?v=1.0.2"
             title="Asesor Visual ZEISS"
-            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit' }}
+            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit', position: 'relative', zIndex: 2 }}
           />
         </motion.div>
       </motion.div>

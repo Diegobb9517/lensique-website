@@ -79,6 +79,11 @@ import styleRectangular from './assets/style_rectangular.png';
 import styleRound from './assets/style_round.png';
 import './App.css';
 
+if (typeof window !== 'undefined') {
+  fetch('https://lensique-pos.onrender.com/api/ping').catch(() => {});
+}
+
+
 const faceShapeGuide = [
   { 
     id: 'f1',

@@ -360,13 +360,27 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 )}
               </div>
 
-              <button 
-                className="cl-btn-primary" 
-                disabled={!isPrescriptionComplete()}
-                onClick={() => setStep(4)}
-              >
-                Continuar
-              </button>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                <button 
+                  className="cl-btn-primary" 
+                  disabled={!isPrescriptionComplete()}
+                  onClick={() => setStep(4)}
+                  style={{ flex: 1 }}
+                >
+                  Continuar
+                </button>
+                <button 
+                  className="cl-btn-secondary" 
+                  onClick={() => {
+                    setPrescriptionOD({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
+                    setPrescriptionOS({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
+                    setStep(4);
+                  }}
+                  style={{ flex: 1, backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1' }}
+                >
+                  No la tengo ahora (Enviar después)
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -401,7 +415,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 <CheckCircle size={32} />
               </div>
               <h3 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>¡Todo listo!</h3>
-              <p style={{ color: '#64748b' }}>Tu pedido de lentes de contacto será procesado.</p>
+              <p style={{ color: '#64748b', marginBottom: '1rem' }}>Tu pedido de lentes de contacto será procesado.</p>
+              
+              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+                <p style={{ fontSize: '0.875rem', color: '#334155', margin: 0, lineHeight: 1.5 }}>
+                  <strong>🔒 Compra segura:</strong> Compra ahora y nosotros validamos tu graduación. Tu examen de la vista está incluido, y todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
+                </p>
+              </div>
               
               <button 
                 className="cl-btn-primary" 

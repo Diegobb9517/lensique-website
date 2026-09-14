@@ -1951,8 +1951,8 @@ function App() {
                 if (config.tratamientos && config.tratamientos.length > 0) configText += `- Tratamientos: ${config.tratamientos.join(', ')}\n`;
                 if (config.material) configText += `- Material sugerido: ${config.material}\n`;
                 if (config.precioCalculado) configText += `\nPrecio estimado: ${config.precioCalculado}\n`;
-                
-                const url = `https://api.whatsapp.com/send?phone=523316929111&text=${encodeURIComponent(configText)}`;
+                const phone = settings.contact_whatsapp || '523316929111';
+                const url = `https://api.whatsapp.com/send?phone=${phone.replace(/\D/g, '')}&text=${encodeURIComponent(configText)}`;
                 window.open(url, '_blank');
               }}
             />
@@ -1970,7 +1970,7 @@ function App() {
                   Los lentes de contacto requieren adaptación, no solo graduación. La adaptación la realiza un oftalmólogo y el examen es realizado por un oftalmólogo certificado.
                 </p>
                 <a 
-                  href="https://api.whatsapp.com/send?phone=523316929111&text=Hola,%20tengo%20dudas%20sobre%20lentes%20de%20contacto"
+                  href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, tengo dudas sobre lentes de contacto')}`}
                   target="_blank" rel="noopener noreferrer"
                   className="btn btn-wp-primary" 
                   style={{ backgroundColor: '#16a34a', borderColor: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '8px' }}

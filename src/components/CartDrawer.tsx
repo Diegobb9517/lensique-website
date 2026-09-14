@@ -499,7 +499,7 @@ export function CartDrawer() {
                   {showCheckoutForm && items.some(i => i.lensConfig || String(i.product?.category || '').toLowerCase().includes('contacto')) && (
                     <div style={{ display: 'flex', gap: '10px', background: '#fef3c7', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
                       <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
-                        <strong>🔒 Compra segura:</strong> Compra ahora y nosotros validamos tu graduación. Tu examen de la vista está incluido, y todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
+                        <strong>🔒 Compra segura:</strong> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
                       </p>
                     </div>
                   )}

@@ -14,7 +14,7 @@ const WP_NAMES = [
 ];
 
 export const toTitleCase = (str: string) => {
-  return str.toLowerCase().replace(/\b(\w)/g, s => s.toUpperCase());
+  return str.toLowerCase().replace(/(?:^|\s|-)\S/g, s => s.toUpperCase());
 };
 
 export const getInventedName = (productName: string, category: string = '') => {

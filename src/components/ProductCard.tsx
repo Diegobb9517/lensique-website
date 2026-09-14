@@ -126,7 +126,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         <div className="wp-card-info">
-          <p className="wp-card-category">{product.brand || 'Lensique'}</p>
+                    <p className="wp-card-category">
+            {product.brand || (
+              String(product.category || '').toLowerCase().includes('contacto') 
+                ? (product.name.toLowerCase().includes('acuvue') ? 'Acuvue' :
+                   product.name.toLowerCase().includes('bausch') ? 'Bausch + Lomb' :
+                   product.name.toLowerCase().includes('biofinity') || product.name.toLowerCase().includes('clariti') || product.name.toLowerCase().includes('lunare') ? 'CooperVision' :
+                   product.name.toLowerCase().includes('air optix') || product.name.toLowerCase().includes('freshlook') || product.name.toLowerCase().includes('dailies') ? 'Alcon' :
+                   'Lentes de Contacto')
+                : 'Lensique'
+            )}
+          </p>
           <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
           <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
           

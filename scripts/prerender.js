@@ -23,13 +23,13 @@ const slugify = (str) => {
 };
 
 const fetchProductsFromAPI = async (attempts = 3, delayMs = 1000) => {
-  const apiUrl = 'https://lensique-pos.onrender.com/api/products';
+  const apiUrl = 'https://lensique-pos.onrender.com/api/website/content';
   for (let i = 0; i < attempts; i++) {
     try {
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      return data;
+      return typeof data.full_catalog_data === 'string' ? JSON.parse(data.full_catalog_data) : data.full_catalog_data;
     } catch (err) {
       console.warn(`[API] Attempt ${i + 1} failed: ${err.message}`);
       if (i < attempts - 1) await new Promise(r => setTimeout(r, delayMs));
@@ -178,12 +178,24 @@ ${JSON.stringify(jsonLd, null, 2)}
   html = html.replace('</head>', `${headInjection}\n</head>`);
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyInjection}</div>`);
 
+  
   const prodDir = path.join(distDir, 'producto', slug);
   if (!fs.existsSync(prodDir)) {
     fs.mkdirSync(prodDir, { recursive: true });
   }
-  fs.writeFileSync(path.join(prodDir, 'index.html'), html, 'utf8');
+  
+  const filePath = path.join(prodDir, 'index.html');
+  fs.writeFileSync(filePath, html, 'utf8');
+  
+  // Validation: Check if the file is 0 bytes
+  const stats = fs.statSync(filePath);
+  if (stats.size === 0) {
+    console.error(`[ERROR] Generado archivo vacío (0 bytes) para el producto: ${slug}`);
+    process.exit(1);
+  }
+  
   generatedCount++;
+
 });
 // ----------------------------------------------------------
 // Generate /catalogo prerender (static catalog page)

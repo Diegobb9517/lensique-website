@@ -39,6 +39,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   
   const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
   const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '', add: '' });
+  const [prescriptionPending, setPrescriptionPending] = useState(false);
   
   const productName = (product?.name ? product.name.toString() : '').toUpperCase();
   const isToric = productName.includes('ASTIGMATISMO') || productName.includes('TORIC') || productName.includes('ASTIGMATISM');
@@ -143,6 +144,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         samePrescription,
         prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
         prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
+          prescriptionPending,
         hasPhoto: !!prescriptionPhotoFile
       }
     });
@@ -374,6 +376,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   onClick={() => {
                     setPrescriptionOD({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
                     setPrescriptionOS({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
+                    setPrescriptionPending(true);
                     setStep(4);
                   }}
                   style={{ flex: 1, backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1' }}
@@ -395,6 +398,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             
             <h2 className="contact-lens-title">Resumen y Verificación</h2>
             <p style={{ color: '#64748b', marginBottom: '2rem' }}>Por último, si gustas puedes adjuntar una foto de tu receta para que nuestro equipo la valide.</p>
+
+            {prescriptionPending && (
+              <div style={{ backgroundColor: '#fff7ed', border: '1px solid #fdba74', borderRadius: '8px', padding: '12px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#c2410c' }}>
+                <span style={{ fontSize: '1.25rem' }}>📋</span>
+                <span style={{ fontWeight: '600' }}>Receta pendiente — la enviarás por WhatsApp</span>
+              </div>
+            )}
+
             
             <div 
               className="cl-file-upload" 
@@ -419,7 +430,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               
               <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
                 <p style={{ fontSize: '0.875rem', color: '#334155', margin: 0, lineHeight: 1.5 }}>
-                  <strong>🔒 Compra segura:</strong> Compra ahora y nosotros validamos tu graduación. Tu examen de la vista está incluido, y todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
+                  <strong>🔒 Compra segura:</strong> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
                 </p>
               </div>
               

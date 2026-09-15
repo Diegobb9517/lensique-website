@@ -394,7 +394,14 @@ export function CartDrawer() {
                       )}
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0', lineHeight: 1.3 }}>{item.title}</div>
+                        
+                        {item.lensConfig && item.lensConfig.prescriptionPending && (
+                          <div style={{ fontSize: '12px', color: '#c2410c', margin: '0 0 8px 0', lineHeight: 1.4, background: '#fff7ed', padding: '6px 8px', borderRadius: '6px', border: '1px solid #fdba74', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{fontSize: '14px'}}>📋</span> Receta pendiente — la enviarás por WhatsApp
+                          </div>
+                        )}
                         {item.lensConfig && item.lensConfig.etiqueta && (
+
                           <div style={{ fontSize: '12px', color: '#64748b', margin: '0 0 8px 0', lineHeight: 1.4, background: '#f8fafc', padding: '6px 8px', borderRadius: '6px' }}>
                             <div style={{color: '#0f172a', fontWeight: 500}}>Micas {item.lensConfig.etiqueta}</div>
                             <div style={{ fontSize: '11px', marginTop: '2px' }}>

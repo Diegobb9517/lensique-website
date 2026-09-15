@@ -1511,6 +1511,7 @@ function App() {
             let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name}${brandText}.\n\nEsta es mi receta:\n`;
             
             const formatEye = (eye: any) => {
+              if (eye.sph === 'NA') return '📋 Receta pendiente — el cliente la enviará por WhatsApp';
               let text = `Esfera: ${eye.sph}`;
               if (eye.cyl && eye.axis) text += ` | Cilindro: ${eye.cyl} | Eje: ${eye.axis}`;
               if (eye.add) text += ` | ADD: ${eye.add}`;
@@ -1550,7 +1551,10 @@ function App() {
               quantity: totalQty > 0 ? totalQty : 1,
               unit_price: contactConfiguratorProduct.price_incl_tax || 0,
               product: contactConfiguratorProduct,
-              image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url)
+              image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url),
+              lensConfig: clConfig,
+              receta: clConfig.prescriptionOD.sph === 'NA' ? 'PENDIENTE' : undefined,
+              rxText: configText
             });
             setContactConfiguratorProduct(null);
           }}

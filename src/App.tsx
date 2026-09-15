@@ -652,6 +652,53 @@ const faqData: InfoPageData = {
   ]
 };
 
+const returnsData: InfoPageData = {
+  title: 'Política de devoluciones, cambios y garantías',
+  layout: 'standard',
+  sections: [
+    {
+      heading: 'Validación de tu receta (antes de fabricar)',
+      content: <><p>Todos los pedidos en línea los revisa nuestro optometrista antes de fabricarlos o enviarlos. <strong>Si tu receta no procede o no podemos validarla, cancelamos el pedido y te reembolsamos el 100%</strong> al mismo método de pago.</p><p>Si hiciste tu pedido con la opción <strong>"No la tengo ahora"</strong>, tu pedido queda en espera hasta que nos envíes tu receta por WhatsApp. Si no la recibimos en <strong>7 días naturales</strong>, lo cancelamos y te reembolsamos el 100%.</p></>
+    },
+    {
+      heading: 'Lentes graduados (armazón + micas)',
+      content: <ul><li><strong>Cambio o devolución:</strong> tienes <strong>30 días naturales</strong> desde que recibes tus lentes para cambiar de modelo o color, o para devolverlos y recibir tu reembolso, siempre que estén sin uso y con sus accesorios.</li><li><strong>Garantía de adaptación:</strong> si la graduación no se siente bien, tienes <strong>30 días</strong> para traer tus lentes. Verificamos que tus micas coincidan exactamente con la receta con la que se fabricaron:<ul><li><strong>Si hay error de laboratorio</strong> (las micas no coinciden con tu receta): <strong>rehacemos tus micas una vez sin costo</strong>, y si después de rehacerlas sigues sin adaptarte, te reembolsamos.</li><li><strong>Si tu receta la hicimos nosotros</strong> (examen en Lensique): la ajustamos y rehacemos tus micas <strong>sin costo</strong>.</li><li><strong>Si tu receta es de otro consultorio</strong> y las micas coinciden con ella, la graduación es responsabilidad de quien la emitió y <strong>no aplica esta garantía</strong>. Con gusto te hacemos un examen de la vista en Lensique y te cotizamos micas nuevas.</li></ul></li></ul>
+    },
+    {
+      heading: 'Nota sobre receta externa',
+      content: <p><em>Al comprar con receta externa: fabricamos tus micas exactamente según la receta que nos proporcionas; la exactitud de esa graduación es responsabilidad de quien la emitió. Conservamos tu receta junto con tu pedido.</em></p>
+    },
+    {
+      heading: 'Garantía contra rayaduras',
+      content: <p>Hasta <strong>90 días naturales</strong> para reponer micas rayadas (aplica a micas monofocales).</p>
+    },
+    {
+      heading: 'Lentes de contacto',
+      content: <ul><li>Devolución <strong>solo de cajas selladas</strong>, sin abrir ni manipular, hasta <strong>15 días naturales</strong> después de recibirlas. Por higiene, <strong>una caja abierta no se puede devolver</strong>.</li><li>Si la graduación que enviamos <strong>no coincide con tu receta</strong>, la cambiamos sin costo.</li></ul>
+    },
+    {
+      heading: 'Armazones sin graduación y accesorios',
+      content: <p>Cambio o devolución hasta <strong>30 días naturales</strong>, sin uso, con etiquetas y empaque original.</p>
+    },
+    {
+      heading: 'Reembolsos',
+      content: <p>Al <strong>mismo método de pago</strong> (Mercado Pago o tarjeta). Si el pedido aún no se fabricó, de inmediato; si ya recibiste el producto, en un máximo de <strong>10 días hábiles</strong> después de recibirlo de vuelta.</p>
+    },
+    {
+      heading: 'Envíos de devolución',
+      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>gratis si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
+    },
+    {
+      heading: 'No aplica devolución',
+      content: <p>Lentes de contacto abiertos, micas con daños por mal uso, y productos fuera de los plazos indicados.</p>
+    },
+    {
+      heading: 'Cómo solicitarlo',
+      content: <p>Escríbenos por WhatsApp o correo con tu número de pedido. Te respondemos en horario de tienda.</p>
+    }
+  ]
+};
+
 const privacyData: InfoPageData = {
   title: 'Aviso de Privacidad',
   layout: 'standard',
@@ -947,7 +994,9 @@ function App() {
             robotsEl.setAttribute('content', 'noindex, follow');
           }
         }
-      } else if (path === '/agendar-cita') {
+      } else if (path === '/devoluciones') {
+          setSelectedInfoPage(returnsData);
+        } else if (path === '/agendar-cita') {
         setSelectedProduct('Examen de la Vista');
         setIsBookingOpen(true);
       }  else if (path.startsWith('/marca/')) {
@@ -1511,7 +1560,7 @@ function App() {
             let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name}${brandText}.\n\nEsta es mi receta:\n`;
             
             const formatEye = (eye: any) => {
-              if (eye.sph === 'NA') return '📋 Receta pendiente — el cliente la enviará por WhatsApp';
+              if (eye.sph === 'NA') return '📋 Receta pendiente — el cliente la enviará por WhatsApp (7 días)';
               let text = `Esfera: ${eye.sph}`;
               if (eye.cyl && eye.axis) text += ` | Cilindro: ${eye.cyl} | Eje: ${eye.axis}`;
               if (eye.add) text += ` | ADD: ${eye.add}`;
@@ -1554,6 +1603,7 @@ function App() {
               image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url),
               lensConfig: clConfig,
               receta: clConfig.prescriptionOD.sph === 'NA' ? 'PENDIENTE' : undefined,
+              receta_origen: clConfig.prescriptionOD.sph !== 'NA' ? 'EXTERNA' : undefined,
               rxText: configText
             });
             setContactConfiguratorProduct(null);
@@ -2802,6 +2852,7 @@ function App() {
                 <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
                 <h4 className="mt-8">Legal</h4>
                 <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
+                  <a href="/devoluciones" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(returnsData); window.history.pushState({}, '', '/devoluciones'); }}>Devoluciones y Garantías</a>
                 <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
                 <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
               </div>

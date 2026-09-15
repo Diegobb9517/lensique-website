@@ -316,6 +316,29 @@ if (!fs.existsSync(agendarDir)) {
 }
 fs.writeFileSync(path.join(agendarDir, 'index.html'), agendarHtml, 'utf8');
 console.log('✅ Pre-rendered /agendar-cita/index.html');
+
+// Generate /devoluciones prerender
+const devTitle = "Política de devoluciones, cambios y garantías | Óptica Lensique";
+const devDesc = "Consulta nuestra política de cambios, devoluciones y garantías de adaptación para armazones y micas en Óptica Lensique Zapopan.";
+const devCanonical = "https://www.lensique.com.mx/devoluciones";
+sitemapUrls.push(devCanonical);
+
+const devHeadInjection = `
+    <title>${devTitle}</title>
+    <meta name="description" content="${devDesc}" />
+    <link rel="canonical" href="${devCanonical}" />
+`;
+let devHtml = indexTemplate;
+if (devHtml.includes('<title>')) devHtml = devHtml.replace(/<title>.*?<\/title>/s, `<title>${devTitle}</title>`);
+devHtml = devHtml.replace('</head>', `${devHeadInjection}\n</head>`);
+
+const devDir = path.join(distDir, 'devoluciones');
+if (!fs.existsSync(devDir)) {
+  fs.mkdirSync(devDir, { recursive: true });
+}
+fs.writeFileSync(path.join(devDir, 'index.html'), devHtml, 'utf8');
+console.log('✅ Pre-rendered /devoluciones/index.html');
+
 // Generate /cotizador prerender
 const cotizadorTitle = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
 const cotizadorDesc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";

@@ -385,6 +385,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   No la tengo ahora (Enviar después)
                 </button>
               </div>
+              <div style={{ marginTop: '16px', fontSize: '12px', color: '#64748b', textAlign: 'center' }}><em>Fabricamos según la receta que nos proporcionas; su exactitud es responsabilidad de quien la emitió.</em></div>
             </div>
           </div>
         );

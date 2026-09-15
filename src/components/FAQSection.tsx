@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     question: "¿Puedo pagar en línea?",
-    answer: "Sí, aceptamos pagos 100% seguros a través de Mercado Pago. Todos los pedidos en línea pasan por una revisión por nuestro optometrista. Si tu receta no procede o hay algún problema, te reembolsamos el 100% inmediatamente."
+    answer: "Sí, aceptamos pagos 100% seguros a través de Mercado Pago. Todos los pedidos en línea los revisa nuestro optometrista antes de fabricarlos; si tu receta no procede, cancelamos y te reembolsamos el 100%. Consulta nuestra política completa de <a href=\"/devoluciones\" style=\"text-decoration: underline\">devoluciones y garantías</a>."
   },
   {
     question: "¿Hacen envíos?",
@@ -106,7 +106,7 @@ export function FAQSection({ limit, onOpenAll }: { limit?: number, onOpenAll?: (
                   }}
                 >
                   <div style={{ padding: '0 24px 20px 24px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>
-                    {faq.answer}
+                    <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
                   </div>
                 </div>
               </div>

@@ -508,6 +508,7 @@ export function CartDrawer() {
                       <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
                         <strong>🔒 Compra segura:</strong> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
                       </p>
+                      <p style={{ marginTop: '8px', fontSize: '12px' }}><a href="/devoluciones" style={{ color: '#0f172a', textDecoration: 'underline' }}>Políticas de devoluciones y garantías</a></p>
                     </div>
                   )}
                 </div>

@@ -145,6 +145,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
         prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
           prescriptionPending,
+          prescription_pending: prescriptionPending,
         hasPhoto: !!prescriptionPhotoFile
       }
     });

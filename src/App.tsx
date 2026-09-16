@@ -1170,11 +1170,19 @@ function App() {
     }
   }, [isCotizadorGeneralOpen]);
 
-  useEffect(() => {
-    if (!isCatalogOpen) {
-      if (window.location.pathname.startsWith('/marca/')) {
+    useEffect(() => {
+    if (isCatalogOpen) {
+      if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/')) {
+        window.history.pushState({ catalog: true }, '', '/catalogo');
+        document.title = "Catálogo | Óptica Lensique";
+      }
+    } else {
+      if (window.location.pathname === '/catalogo') {
+        window.history.pushState(null, '', '/');
+        document.title = window.location.pathname === '/armazones' ? 'Armazones de diseño en Zapopan | Óptica Lensique' : 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
+      } else if (window.location.pathname.startsWith('/marca/')) {
         window.history.pushState(null, '', '/armazones');
-        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
+        document.title = "Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo";
       }
     }
   }, [isCatalogOpen]);
@@ -2829,7 +2837,7 @@ function App() {
             <div className="footer-links-wrapper">
               <div className="footer-col">
                 <h4>Productos</h4>
-                <a href="#catalogo" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes oftálmicos</a>
+                <a href="/catalogo" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes oftálmicos</a>
                 <a href="/micas">Micas monofocales</a>
                 <a href="/micas">Micas progresivas</a>
                 <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>

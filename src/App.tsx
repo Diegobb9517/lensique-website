@@ -883,8 +883,8 @@ function App() {
     let canonical = `https://www.lensique.com.mx${currentPath}`;
 
     if (currentPath === '/armazones') {
-      title = "Armazones y Lentes Graduados | Óptica Lensique Zapopan";
-      desc = "Más de 130 modelos de armazones de marca: Ray-Ban, Vogue, Carrera, Lacoste, Calvin Klein y Puma. Graduación a tu medida. Envío gratis en compras mayores a $2,500.";
+      title = "Armazones de diseño en Zapopan | Óptica Lensique";
+      desc = "Armazones de diseño y lentes oftálmicos en Zapopan (zona Guadalajara), con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
     } else if (currentPath === '/cotizador') {
       title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
       desc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";

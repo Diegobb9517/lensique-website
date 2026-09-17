@@ -415,7 +415,9 @@ var $=function(id){return document.getElementById(id);};
 var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
 var TOTAL_STEPS=5;
 function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.50",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
-var ST=fresh();var _pfPrev=null;var _thF=null;
+var ST=fresh();
+var urlParams = new URLSearchParams(window.location.search);
+var framePrice = parseInt(urlParams.get('framePrice') || '0', 10);var _pfPrev=null;var _thF=null;
 var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 var IC={
  mono:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M8.5 8.6a4.3 4.3 0 0 0-1.3 3.4" stroke-opacity=".45"/></svg>',
@@ -501,7 +503,7 @@ function levelName(k){return ({precision:"Precision Classic",pure:"SmartLife Pur
 function engIdx(i){return i==="1.50"?"1.5":(i==="1.60"?"1.6":i);}
 function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polarizado",entintado:"tinte"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polar",entintado:"tinte"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
 function zeissQuote(){var inp={tipo:ST.type,esf:ST.esf||0,cil:ST.cil||0,add:(ST.type!=="mono"?(ST.add||0):0),pd:(ST.pdAsym?"":ST.pd),multiplicador:MULT};inp.opcion=engOpcion();if(ST.type==="mono"){if(ST.poli){inp.poli=true;inp.polyKey="z159";}else{inp.indice=engIdx(ST.idx);if(ST.treat==="ar"&&!ST.arPremium&&engIdx(ST.idx)==="1.5"){var _ch=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"});if(_ch&&_ch.disponible)inp.opcion="chrome";}}if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}else if(ST.type==="prog"){inp.nivel=ST.level;if(ST.poli||ST.perfora){inp.nivel="precision";inp.indice="1.59";}else inp.indice=engIdx(ST.idx);if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}var q=(typeof ZeissEngine!=="undefined"&&ZeissEngine)?ZeissEngine.cotizar(inp):{disponible:false,motivo:"Motor de precios no cargado"};if(q&&q.disponible){var m=multFor(q.costoLista);q.costoIva=Math.round(q.costoLista*1.16);q.pvp=Math.round(q.costoLista*1.16*m/50)*50;q.utilidad=q.pvp-q.costoIva;q.margen=Math.round(q.utilidad/q.pvp*100);q.mult=m;if(ST.type==="mono"&&ST.treat==="ar")q.etiqueta=ST.arPremium?"Antirreflejante premium":"Antirreflejante";if(ST.type==="bif"&&q.entrega==="Consultar")q.entrega="Consultar en tienda";}return q;}
-function priceSection(){var q=zeissQuote();if(!q||!q.disponible){return '<section class="sec" style="padding-top:24px"><div class="secK">05 — Tu inversión</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">ℹ️ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:left; padding-top:28px"><div class="secK">05 — Tu inversión</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px">'+money(q.pvp)+'</div>'+(q.pvp>=MSI_MIN?'<div style="display:inline-block;margin-top:10px;padding:8px 16px;border-radius:22px;background:var(--gold);color:#fff;font-size:14.5px;font-weight:700;letter-spacing:.2px">'+MSI+' meses sin intereses · '+money(Math.round(q.pvp/MSI))+'/mes</div>':'')+'<div class="muted" style="margin-top:8px">'+q.etiqueta+' · índice '+q.indice+'</div><div class="muted" style="margin-top:2px">Incluye armado y protección UV · entrega '+q.entrega+' ('+q.tipoFab+')</div>'+abbe+'<div style="margin-top:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;color:#334155;line-height:1.4"><b>🔒 Compra segura:</b> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.</div></section>';}
+function priceSection(){var q=zeissQuote();if(!q||!q.disponible){return '<section class="sec" style="padding-top:24px"><div class="secK">05 — Tu inversión</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">ℹ️ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:left; padding-top:28px"><div class="secK">05 — Tu inversión</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px">'+money(framePrice + (q?q.pvp:0)) + '<div style="font-size:16px;color:var(--grey);font-weight:500;margin-top:4px">Desglose: Armazón '+money(framePrice)+' + Micas '+money(q?q.pvp:0)+'</div>'+'</div>'+(q.pvp>=MSI_MIN?'<div style="display:inline-block;margin-top:10px;padding:8px 16px;border-radius:22px;background:var(--gold);color:#fff;font-size:14.5px;font-weight:700;letter-spacing:.2px">'+MSI+' meses sin intereses · '+money(Math.round((framePrice + (q?q.pvp:0))/MSI))+'/mes</div>':'')+'<div class="muted" style="margin-top:8px">'+q.etiqueta+' · índice '+q.indice+'</div><div class="muted" style="margin-top:2px">Incluye armado y protección UV · entrega '+q.entrega+' ('+q.tipoFab+')</div>'+abbe+'<div style="margin-top:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;color:#334155;line-height:1.4"><b>🔒 Compra segura:</b> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.</div></section>';}
 
   function rxBlock(){
     var h = '';
@@ -763,8 +765,9 @@ function thinOptions(){
   var sel=(!ST.poli&&engIdx(ST.idx)===ix);
   var mm=mmFor(pot,ix),red=Math.round((1-mm/base)*100);
   var star=(ix===recI)?' <span style="color:var(--gold)">★</span>':'';
-  return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'−'+red+'% más delgado':'base')+'</div></div>';
- }).join('');
+  var pTag = '<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">' + getPriceTag('mat', dispIdx(ix)) + '</div>';
+  return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'▼ '+red+'% más delgado':'base')+'</div>'+pTag+'</div>';
+}).join('');
  return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+cards+'</div>'+thickPreview();
 }
 
@@ -944,7 +947,174 @@ function stepWrap(stepNum, content) {
 
 
 
-function render(){
+function renderTopBar() {
+  var topBar = document.getElementById("top-price-bar");
+  if (!topBar) {
+    topBar = document.createElement("div");
+    topBar.id = "top-price-bar";
+    topBar.style.cssText = "position:sticky;top:0;background:#f8fafc;color:var(--navy);padding:12px;text-align:center;font-size:14px;font-weight:600;z-index:100;border-bottom:1px solid #e2e8f0;box-shadow:0 2px 4px rgba(0,0,0,0.05);";
+    document.body.insertBefore(topBar, document.body.firstChild);
+  }
+  var q = zeissQuote();
+  var micas = q && q.disponible ? q.pvp : 0;
+  var total = framePrice + micas;
+  if (framePrice > 0) {
+    topBar.innerHTML = "Armazón " + money(framePrice) + " + Micas " + money(micas) + " = Total " + money(total);
+  } else {
+    topBar.style.display = 'none';
+  }
+}
+function getPriceTag(field, val) {
+  var old = ST[field];
+  var baseVal = old;
+  if (field === 'type') baseVal = 'mono';
+  if (field === 'treat') baseVal = 'ar';
+  if (field === 'level') baseVal = 'smart';
+  
+  var qOld = zeissQuote();
+  var pvpCurrent = qOld && qOld.disponible ? qOld.pvp : 0;
+  
+  var oldPoli = ST.poli;
+  var oldIdx = ST.idx;
+  if (field === 'mat') {
+     ST.poli = (val === 'poli');
+     ST.idx = val === 'poli' ? '1.59' : val;
+  } else {
+     ST[field] = val;
+  }
+  var qNew = zeissQuote();
+  var pvpNew = qNew && qNew.disponible ? qNew.pvp : 0;
+  
+  if (field === 'mat') {
+     ST.poli = oldPoli; ST.idx = oldIdx;
+  } else {
+     ST[field] = old;
+  }
+  
+  var diff = pvpNew - pvpCurrent;
+  if (diff > 0) return '+
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm + ' <span style="font-size:12px;color:#16a34a;font-weight:700;margin-left:6px;background:#f0fdf4;padding:2px 6px;border-radius:12px">' + getPriceTag('type',k) + '</span>',TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm + ' <span style="font-size:12px;color:#16a34a;font-weight:700;margin-left:6px;background:#f0fdf4;padding:2px 6px;border-radius:12px">' + getPriceTag('treat',t.k) + '</span>',t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm + ' <span style="font-size:12px;color:#16a34a;font-weight:700;margin-left:6px;background:#f0fdf4;padding:2px 6px;border-radius:12px">' + getPriceTag('level',l.k) + '</span>',l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + diff.toLocaleString();
+  if (diff < 0) return '-
  $("prog").style.display="none";
  var R="";
  // 01 Tipo
@@ -968,7 +1138,870 @@ function render(){
  if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
  else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
  updateSideTh();
- var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:230px;padding:12px 26px">Agregar al carrito</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + Math.abs(diff).toLocaleString();
+  return 'Incluido';
+}
+function render(){
+renderTopBar();
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + diff.toLocaleString();
+  if (diff < 0) return '-
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + diff.toLocaleString();
+  if (diff < 0) return '-
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + Math.abs(diff).toLocaleString();
+  return 'Incluido';
+}
+function render(){
+renderTopBar();
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + Math.abs(diff).toLocaleString();
+  return 'Incluido';
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + diff.toLocaleString();
+  if (diff < 0) return '-
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ $("restart").style.display="block";
+ ["od","oi"].forEach(function(t){
+  if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"C"))$(t+"C").addEventListener("change",function(){ST[t+"C"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Add"))$(t+"Add").addEventListener("change",function(){ST[t+"Add"]=parseFloat(this.value)||0;syncRx();render();});
+  if($(t+"Ax"))$(t+"Ax").addEventListener("input",function(){ST[t+"Ax"]=this.value;});
+ });
+ if($("pd"))$("pd").addEventListener("input",function(){ST.pd=this.value;});
+ if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
+ if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
+ if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
+ }
+
+function benefitsList(){
+ var arr=[];
+ if(ST.type==="prog")arr.push({ic:"prog",t:"Todo en un solo lente",d:"Lejos, pantalla y lectura sin cambiar de lentes ni línea visible."});
+ if(ST.type==="bif")arr.push({ic:"bif",t:"Lejos y cerca",d:"Dos zonas en un lente."});
+ if(ST.type==="sinlinea")arr.push({ic:"sinlinea",t:"Lejos y cerca, sin la línea",d:"Dos zonas en un lente, con la división disimulada."});
+ if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
+ var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
+  azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
+  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
+  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
+  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
+  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+ if(tr)arr.push(tr);
+ if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
+ if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
+ arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
+ return arr;
+}
+function matLabel(){
+ if(ST.poli)return "Policarbonato";
+ return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
+}
+function renderSummary(){
+ var name=TYPES[ST.type].nm;
+ var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
+ var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
+ h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
+ benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ h+='</div>';
+ var pr=clientPrice();
+ h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ h+='<div style="margin-top:16px"><div id="up"></div></div>';
+ return h;
+}
+function chipUp(on,label,oc){return '<span class="chip'+(on?" on":"")+'" onclick="'+oc+'">'+label+'</span>';}
+function upSec(lbl,arr){return '<div style="margin-top:14px"><div class="uplbl">'+lbl+'</div><div class="chips">'+arr.join("")+'</div></div>';}
+function renderUps(){
+ var box=$("up");if(!box)return;
+ var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
+ if(ST.upsOpen){
+  if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
+  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
+  h+=upSec("Delgadez y material",mh);
+  h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
+ }
+ box.innerHTML=h;
+}
+
+function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
+function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+var _rotAF=null,ROT_N=30;
+function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
+function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function go(dir){
+ if(dir>0){
+  if(ST.step===1&&!ST.type)return;
+  if(ST.step===2&&!ST.treat)return;
+  ST.step=Math.min(TOTAL_STEPS,ST.step+1);
+ }else ST.step=Math.max(1,ST.step-1);
+ render();if(ST.step===TOTAL_STEPS)renderUps();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function reset(){ST=fresh();render();}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function addToCart(){
+ var q=zeissQuote();
+ var b=$("cartBtn");
+ if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
+ if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
+}
+render();
+try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
+</script></body></html>
+ + Math.abs(diff).toLocaleString();
+  return 'Incluido';
+}
+function render(){
+renderTopBar();
+ $("prog").style.display="none";
+ var R="";
+ // 01 Tipo
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ // 02 Tratamiento
+ var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
+ // 03 Medidas y material
+ var o3=rxBlock();
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ o3+=materialSimple();
+ R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ // 04 Beneficios
+ var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
+ // 05 Inversión
+ R+=stepWrap(5, priceSection()+labPanel());
+ var _sb=document.getElementById("stageBody");
+ if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
+ else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ updateSideTh();
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">Comprar ahora</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
  $("restart").style.display="block";
  ["od","oi"].forEach(function(t){
   if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});

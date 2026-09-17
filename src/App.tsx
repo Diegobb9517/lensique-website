@@ -1447,8 +1447,9 @@ function App() {
               {/* Right: Info */}
               <div className="product-detail-info-col">
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
-                <h2 className="product-detail-name">
-                  {getInventedName(selectedProductDetail.name, selectedProductDetail.category)}
+                <h2 className="product-detail-name" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                  <span>{getInventedName(selectedProductDetail.name, selectedProductDetail.category)}</span>
+                  <span style={{ color: '#16a34a', whiteSpace: 'nowrap' }}>${(selectedProductDetail.price_incl_tax || 0).toLocaleString('es-MX')}</span>
                 </h2>
                 <p className="product-detail-desc">
                   {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') 

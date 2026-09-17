@@ -380,7 +380,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                     setPrescriptionPending(true);
                     setStep(4);
                   }}
-                  style={{ flex: 1, backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1' }}
+                  style={{ flex: 1 }}
                 >
                   No la tengo ahora (Enviar después)
                 </button>

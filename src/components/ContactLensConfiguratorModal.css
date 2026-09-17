@@ -407,6 +407,24 @@
   background-color: #12369e;
 }
 
+.cl-btn-secondary {
+  width: 100%;
+  background-color: transparent;
+  color: #1a4cd2;
+  border: 1px solid #1a4cd2;
+  border-radius: 30px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.cl-btn-secondary:hover {
+  background-color: #f8fafc;
+}
+
 .cl-btn-primary:disabled {
   background-color: #94a3b8;
   cursor: not-allowed;

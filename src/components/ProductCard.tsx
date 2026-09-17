@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="product-info-editorial">
             <div className="product-name-row">
               <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-              <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+              <span className="product-price-label">${product.price_incl_tax ? '$' + product.price_incl_tax.toLocaleString('en-US') : '$1,200'}</span>
             </div>
             <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
               {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
@@ -138,7 +138,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </p>
           <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-          <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+          <span className="wp-product-price">${product.price_incl_tax ? '$' + product.price_incl_tax.toLocaleString('en-US') : '$1,200'}</span>
           
           {onSelectAction && (
             <span className="wp-card-cta-hover">

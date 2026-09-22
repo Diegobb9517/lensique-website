@@ -21,6 +21,15 @@ export default function LensConfiguratorModal({
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       // Allow messages from the same origin iframe
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === 'lensique-lead') {
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Lead');
+        }
+        return;
+      }
+
       if (event.data?.source === 'lensique-asesor' && event.data?.type === 'ready') {
         setIframeLoaded(true);
       }
@@ -95,7 +104,7 @@ export default function LensConfiguratorModal({
           </div>
 
           <iframe 
-            src={`/asesor_zeiss.html?v=1.0.3&framePrice=${product?.price_incl_tax || product?.price || 0}`}
+            src={`/asesor_zeiss.html?v=1.0.4&framePrice=${product?.price_incl_tax || product?.price || 0}`}
             title="Asesor Visual ZEISS"
             style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit', position: 'relative', zIndex: 2, opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
             onLoad={() => setIframeLoaded(true)}

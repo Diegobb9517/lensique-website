@@ -1001,14 +1001,14 @@ renderTopBar();
  $("prog").style.display="none";
  var R="";
  // 01 Tipo
- var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){var pt='<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">'+getPriceTag('type',k)+'</div>';o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"',pt);});o1+='</div>';
  R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
  // 02 Tratamiento
- var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
+ var o2='<div class="opts">';treatList().forEach(function(t){var pt='<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">'+getPriceTag('treat',t.k)+'</div>';o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"',pt);if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
  R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
  // 03 Medidas y material
  var o3=rxBlock();
- if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
+ if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){var pt='<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">'+getPriceTag('level',l.k)+'</div>';o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"',pt);});o3+='</div>';}
  o3+=materialSimple();
  R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
  // 04 Beneficios

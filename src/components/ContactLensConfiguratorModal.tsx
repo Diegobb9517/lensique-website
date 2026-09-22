@@ -1,40 +1,39 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { X, CheckCircle, Upload } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { X, CheckCircle, Upload, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toTitleCase } from '../lib/format';
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
+import { WPSelect } from './WPSelect';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 const resolveImageUrl = (url: any, fallback?: any) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
-  
   const processUrl = (u: string) => {
     const targetUrl = String(u).trim();
     if (targetUrl.startsWith('http') || targetUrl.startsWith('data:')) return targetUrl;
     const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
     return `${API_BASE}${cleanUrl}`;
   };
-
   if (!isInvalid(url)) return processUrl(url);
   if (!isInvalid(fallback)) return processUrl(fallback);
   return '';
 };
 
-import { WPSelect } from './WPSelect';
-
 interface ContactLensConfiguratorModalProps {
   product: any;
   onClose: () => void;
-  onComplete: (configData: any) => void;
+  onComplete: (configData: any, checkoutNow: boolean) => void;
 }
 
 export default function ContactLensConfiguratorModal({ product, onClose, onComplete }: ContactLensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
   const [quantityOD, setQuantityOD] = useState(1);
   const [quantityOS, setQuantityOS] = useState(1);
   
-  const [samePrescription, setSamePrescription] = useState<boolean | null>(null);
+  const [samePrescription, setSamePrescription] = useState<boolean>(true);
   const [showRxGuide, setShowRxGuide] = useState(false);
   
   const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
@@ -54,7 +53,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return [];
   };
 
-  const availableColors = getAvailableColors();
+  const availableColors = useMemo(() => getAvailableColors(), [productName]);
   const [selectedColor, setSelectedColor] = useState<string>(availableColors[0] || '');
 
   useEffect(() => {
@@ -64,7 +63,6 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   }, [availableColors]);
   
   const [prescriptionPhotoFile, setPrescriptionPhotoFile] = useState<File | null>(null);
-  const [isSending, setIsSending] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -82,42 +80,50 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return product?.image || 'https://via.placeholder.com/300x200?text=Lente+de+Contacto';
   };
 
-  const getSpmOptions = () => {
+  // Memoize options to avoid recreating large arrays on every render
+  const spmOptions = useMemo(() => {
     const opts = [];
     for (let i = 0.25; i <= 10; i += 0.25) {
       opts.push(`-${i.toFixed(2)}`);
       opts.push(`+${i.toFixed(2)}`);
     }
     return opts;
-  };
+  }, []);
 
-  const getCylOptions = () => {
+  const cylOptions = useMemo(() => {
     const opts = [];
     for (let i = -0.25; i >= -6; i -= 0.25) {
       opts.push(i.toFixed(2));
     }
     return opts;
-  };
+  }, []);
 
-  const getAxisOptions = () => {
+  const axisOptions = useMemo(() => {
     const opts = [];
     for (let i = 10; i <= 180; i += 10) {
       opts.push(i.toString());
     }
     return opts;
-  };
+  }, []);
 
-  const getAddOptions = () => {
+  const addOptions = useMemo(() => {
     const opts = ['LOW', 'MED', 'HIGH'];
     for (let i = 0.75; i <= 3.50; i += 0.25) {
       opts.push(`+${i.toFixed(2)}`);
     }
     return opts;
+  }, []);
+
+  const changeStep = (newStep: number) => {
+    setIsTransitioning(true);
+    // Let the browser paint the spinner before heavy React transitions
+    setTimeout(() => {
+      setStep(newStep);
+      setIsTransitioning(false);
+    }, 10);
   };
 
   const isPrescriptionComplete = () => {
-    if (samePrescription === null) return false;
-    
     const checkEye = (eye: any) => {
       if (eye.sph === '') return false;
       if (isToric && (eye.cyl === '' || eye.axis === '')) return false;
@@ -134,21 +140,26 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     }
   };
 
-  const handleComplete = async () => {
-    onComplete({
-      ...product,
-      contactLensConfig: {
-        quantityOD,
-        quantityOS,
-        selectedColor,
-        samePrescription,
-        prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
-        prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
+  const handleComplete = (checkoutNow: boolean) => {
+    setIsTransitioning(true);
+    // Simulating processing for checkout/adding
+    setTimeout(() => {
+      onComplete({
+        ...product,
+        contactLensConfig: {
+          quantityOD,
+          quantityOS,
+          selectedColor,
+          samePrescription,
+          prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
+          prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
           prescriptionPending,
           prescription_pending: prescriptionPending,
-        hasPhoto: !!prescriptionPhotoFile
-      }
-    });
+          hasPhoto: !!prescriptionPhotoFile
+        }
+      }, checkoutNow);
+      setIsTransitioning(false);
+    }, 10);
   };
 
   const renderPrescriptionForm = (eye: 'OD' | 'OS', label: string) => {
@@ -162,7 +173,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           <WPSelect 
             label="Esfera (SPH/PWR)"
             value={values.sph}
-            options={getSpmOptions()}
+            options={spmOptions}
             onChange={(val: string) => setValues({ ...values, sph: val })}
             zeroValue="0.00"
           />
@@ -172,14 +183,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               <WPSelect 
                 label="Cilindro (CYL)"
                 value={values.cyl}
-                options={getCylOptions()}
+                options={cylOptions}
                 onChange={(val: string) => setValues({ ...values, cyl: val })}
               />
 
               <WPSelect 
                 label="Eje (Axis)"
                 value={values.axis}
-                options={getAxisOptions()}
+                options={axisOptions}
                 onChange={(val: string) => setValues({ ...values, axis: val })}
               />
             </>
@@ -189,7 +200,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             <WPSelect 
               label="Adición (ADD)"
               value={values.add}
-              options={getAddOptions()}
+              options={addOptions}
               onChange={(val: string) => setValues({ ...values, add: val })}
             />
           )}
@@ -209,12 +220,21 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   };
 
   const renderStepContent = () => {
+    if (isTransitioning) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', width: '100%' }}>
+          <Loader2 className="spinner-animation" size={48} color="#1a4cd2" />
+          <p style={{ marginTop: '1rem', color: '#64748b', fontWeight: 500 }}>Cargando...</p>
+        </div>
+      );
+    }
+
     switch (step) {
       case 1:
         return (
           <div className="contact-lens-content-panel">
             <div className="contact-lens-step-header">
-              <span className="contact-lens-step-indicator">Paso 1 de 4</span>
+              <span className="contact-lens-step-indicator">Paso 1 de 3</span>
             </div>
             
             <h2 className="contact-lens-title">Selecciona la cantidad</h2>
@@ -265,14 +285,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               className="cl-btn-primary" 
               style={{ marginTop: '2rem' }}
               disabled={quantityOD === 0 && quantityOS === 0}
-              onClick={() => {
-                if (quantityOD > 0 && quantityOS > 0) {
-                  setStep(2); // Ask if same prescription
-                } else {
-                  setSamePrescription(false);
-                  setStep(3); // Go straight to prescription for one eye
-                }
-              }}
+              onClick={() => changeStep(2)}
             >
               Continuar
             </button>
@@ -283,48 +296,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         return (
           <div className="contact-lens-content-panel">
             <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => setStep(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 2 de 4</span>
-            </div>
-            
-            <h2 className="contact-lens-title">¿Tienes la misma graduación en ambos ojos?</h2>
-            
-            <div className="contact-lens-options-list" style={{ marginTop: '2rem' }}>
-              <button 
-                className="contact-lens-option-btn" 
-                onClick={() => { setSamePrescription(true); setStep(3); }}
-              >
-                <div className="contact-lens-option-text">
-                  <h3>Sí</h3>
-                </div>
-              </button>
-              
-              <button 
-                className="contact-lens-option-btn" 
-                onClick={() => { setSamePrescription(false); setStep(3); }}
-              >
-                <div className="contact-lens-option-text">
-                  <h3>No</h3>
-                </div>
-              </button>
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="contact-lens-content-panel">
-            <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => {
-                if (quantityOD > 0 && quantityOS > 0) setStep(2);
-                else setStep(1);
-              }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 3 de 4</span>
+              <button className="contact-lens-step-indicator" onClick={() => changeStep(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
+              <span className="contact-lens-step-indicator">Paso 2 de 3</span>
             </div>
             
             <h2 className="contact-lens-title">Ingresa tu receta</h2>
             
-            <div style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+            <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
               <button 
                 onClick={() => setShowRxGuide(!showRxGuide)}
                 style={{ 
@@ -350,8 +328,20 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 </motion.div>
               )}
             </AnimatePresence>
+
+            <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 600, color: '#0f172a' }}>
+                <input 
+                  type="checkbox" 
+                  checked={samePrescription}
+                  onChange={(e) => setSamePrescription(e.target.checked)}
+                  style={{ width: '18px', height: '18px', accentColor: '#1a4cd2' }}
+                />
+                Tengo la misma graduación en ambos ojos
+              </label>
+            </div>
             
-            <div className="cl-prescription-container" style={{ marginTop: '2rem' }}>
+            <div className="cl-prescription-container">
               <div className="cl-prescription-columns">
                 {samePrescription ? (
                   renderPrescriptionForm('OD', 'Ambos ojos')
@@ -367,7 +357,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 <button 
                   className="cl-btn-primary" 
                   disabled={!isPrescriptionComplete()}
-                  onClick={() => setStep(4)}
+                  onClick={() => changeStep(3)}
                   style={{ flex: 1 }}
                 >
                   Continuar
@@ -378,7 +368,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                     setPrescriptionOD({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
                     setPrescriptionOS({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
                     setPrescriptionPending(true);
-                    setStep(4);
+                    changeStep(3);
                   }}
                   style={{ flex: 1 }}
                 >
@@ -390,12 +380,15 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </div>
         );
 
-      case 4:
+      case 3:
         return (
           <div className="contact-lens-content-panel">
             <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => setStep(3)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 4 de 4</span>
+              <button className="contact-lens-step-indicator" onClick={() => {
+                  setPrescriptionPending(false);
+                  changeStep(2);
+                }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
+              <span className="contact-lens-step-indicator">Paso 3 de 3</span>
             </div>
             
             <h2 className="contact-lens-title">Resumen y Verificación</h2>
@@ -436,12 +429,20 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 </p>
               </div>
               
-              <button 
-                className="cl-btn-primary" 
-                onClick={handleComplete}
-              >
-                Agregar al carrito
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <button 
+                  className="cl-btn-primary" 
+                  onClick={() => handleComplete(true)}
+                >
+                  Comprar ahora
+                </button>
+                <button 
+                  className="cl-btn-secondary" 
+                  onClick={() => handleComplete(false)}
+                >
+                  Agregar y seguir comprando
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -516,18 +517,9 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            style={{ flex: 1, display: 'flex' }}
-          >
-            {renderStepContent()}
-          </motion.div>
-        </AnimatePresence>
+        <div style={{ flex: 1, display: 'flex', overflowY: 'auto' }}>
+          {renderStepContent()}
+        </div>
 
       </motion.div>
     </div>

@@ -1126,7 +1126,11 @@ function App() {
         const slug = window.location.pathname.replace(/^\/producto\//, '').replace(/\/$/, '');
         const product = findProductBySlug(catalog, slug);
         if (product) {
-          window.history.pushState(null, '', '/armazones');
+          if (window.history.state && window.history.state.productId) {
+            window.history.back();
+          } else {
+             // Do nothing to avoid jumping randomly to /armazones
+          }
         }
       }
       document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
@@ -1449,7 +1453,7 @@ function App() {
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
                 <h2 className="product-detail-name" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
                   <span>{getInventedName(selectedProductDetail.name, selectedProductDetail.category)}</span>
-                  <span style={{ color: '#16a34a', whiteSpace: 'nowrap' }}>${(selectedProductDetail.price_incl_tax || 0).toLocaleString('en-US')}</span>
+                  <span style={{ color: '#16a34a', whiteSpace: 'nowrap' }}>${(selectedProductDetail.price_incl_tax || 0).toLocaleString('en-US')}{String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? ' / caja' : ''}</span>
                 </h2>
                 <p className="product-detail-desc">
                   {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') 
@@ -1562,8 +1566,10 @@ function App() {
         <ContactLensConfiguratorModal
           product={contactConfiguratorProduct}
           onClose={() => setContactConfiguratorProduct(null)}
-          onComplete={(config) => {
+          onComplete={(config, checkoutNow) => {
             setContactConfiguratorProduct(null);
+            setSelectedProductDetail(null); // Close product detail
+
             
             const brandText = contactConfiguratorProduct.brand ? ` ${contactConfiguratorProduct.brand}` : '';
             let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name}${brandText}.\n\nEsta es mi receta:\n`;
@@ -1615,7 +1621,10 @@ function App() {
               receta_origen: clConfig.prescriptionOD.sph !== 'NA' ? 'EXTERNA' : undefined,
               rxText: configText
             });
-            setContactConfiguratorProduct(null);
+            if (checkoutNow) {
+               setIsCartOpen(true);
+            }
+
           }}
         />
       )}

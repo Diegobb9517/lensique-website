@@ -479,3 +479,7 @@
     flex-direction: column;
   }
 }
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spinner-animation { animation: spin 1s linear infinite; }
+

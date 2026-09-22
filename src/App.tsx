@@ -1652,6 +1652,7 @@ function App() {
           onClose={() => setConfiguratorProduct(null)}
           onComplete={(config) => {
             setConfiguratorProduct(null);
+            setSelectedProductDetail(null);
             
             const product = config.originalProduct || configuratorProduct;
             const safeBrand = (product.brand && product.brand !== 'null') ? product.brand : '';

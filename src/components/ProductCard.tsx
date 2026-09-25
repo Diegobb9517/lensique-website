@@ -4,7 +4,6 @@ import { getInventedName, getProductSlug } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 import { BASE_LENS_PRICE } from '../lib/constants';
-import { calculateDeliveryTime } from '../lib/delivery';
 
 interface ProductCardProps {
   product: any;
@@ -37,6 +36,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const href = `/producto/${slug}`;
 
   const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
+  const isContactLens = String(product.category || '').toLowerCase().includes('contacto');
   const displayPrice = (product.price_incl_tax || 0) + (isFrame ? BASE_LENS_PRICE : 0);
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -59,7 +59,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
         >
           <div className="product-img-area" style={{ position: 'relative' }}>
-            {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
+            {isFrame ? (
+              <div className="out-of-stock-badge" style={{ background: isOutOfStock ? '#fef2f2' : '#f8fafc', color: isOutOfStock ? '#dc2626' : '#475569', border: `1px solid ${isOutOfStock ? '#fecaca' : '#e2e8f0'}`, fontWeight: 700, letterSpacing: '0.5px' }}>
+                {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
+              </div>
+            ) : (
+              isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>
+            )}
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
               alt={product.name} 
@@ -75,16 +81,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             />
           </div>
 
-          <div className="product-info-editorial">
-            <div className="product-name-row">
-              <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-              <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}</span>
-            </div>
-            <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
+          <div className="product-info-editorial" style={{ textAlign: 'center' }}>
+            <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginBottom: '4px' }}>
               {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
             </p>
+            <h3 className="product-name-serif" style={{ marginBottom: '8px', justifyContent: 'center' }}><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
+            <div style={{ textAlign: 'center' }}>
+              <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
+            </div>
             {isFrame && (
-              <p style={{ fontSize: '11px', color: '#059669', marginTop: '2px', fontWeight: 500 }}>
+              <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
                 micas antirreflejantes incluidas
               </p>
             )}
@@ -119,7 +125,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
       >
         <div className="wp-card-img-area">
-          {isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>}
+          {isFrame ? (
+            <div className="out-of-stock-badge" style={{ background: isOutOfStock ? '#fef2f2' : '#f8fafc', color: isOutOfStock ? '#dc2626' : '#475569', border: `1px solid ${isOutOfStock ? '#fecaca' : '#e2e8f0'}`, fontWeight: 700, letterSpacing: '0.5px' }}>
+              {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
+            </div>
+          ) : (
+            isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>
+          )}
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 
             alt={product.name} 
@@ -135,8 +147,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           />
         </div>
 
-        <div className="wp-card-info">
-                    <p className="wp-card-category">
+        <div className="wp-card-info" style={{ textAlign: 'center' }}>
+          <p className="wp-card-category" style={{ marginBottom: '4px' }}>
             {product.brand || (
               String(product.category || '').toLowerCase().includes('contacto') 
                 ? (product.name.toLowerCase().includes('acuvue') ? 'Acuvue' :
@@ -147,15 +159,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 : 'Lensique'
             )}
           </p>
-          <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}</span>
-            <span style={{ fontSize: '11px', color: '#16a34a', background: '#f0fdf4', padding: '3px 6px', borderRadius: '4px', fontWeight: 600, border: '1px solid #bbf7d0', flexShrink: 0, marginTop: '2px' }}>
-              {calculateDeliveryTime(product).labelShort}
-            </span>
+          <h3 className="wp-product-name" style={{ justifyContent: 'center' }}><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
+          <div style={{ textAlign: 'center', marginTop: '6px' }}>
+            <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
           </div>
           {isFrame && (
-            <p style={{ fontSize: '11px', color: '#059669', marginTop: '2px', fontWeight: 500 }}>
+            <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
               micas antirreflejantes incluidas
             </p>
           )}

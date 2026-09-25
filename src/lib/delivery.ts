@@ -35,6 +35,34 @@ function formatDate(date: Date): string {
   return `${date.getDate()} de ${MONTHS[date.getMonth()]}`;
 }
 
+// -----------------------------------------------------------------------------
+// TABLA DE TIEMPOS DE ENTREGA (DÍAS HÁBILES)
+// Diego: Puedes editar estos números directamente. 
+// Cada paso suma días al tiempo total.
+// -----------------------------------------------------------------------------
+export const DELIVERY_DAYS = {
+  frame: {
+    instock: { min: 2, max: 3 },
+    preorder: { min: 7, max: 14 },
+    contact_spherical: { min: 3, max: 5 },
+    contact_toric: { min: 7, max: 14 }
+  },
+  lens: {
+    none: { min: 0, max: 0 },
+    mono_basic: { min: 1, max: 2 },
+    mono_complex: { min: 2, max: 3 },
+    progressive_bifocal: { min: 4, max: 7 },
+    photochromic: { min: 4, max: 7 },
+    special: { min: 4, max: 7 }
+  },
+  shipping: {
+    pickup: { min: 0, max: 0 },
+    zmg: { min: 1, max: 2 },
+    national: { min: 3, max: 5 }
+  }
+};
+// -----------------------------------------------------------------------------
+
 export function getDeliveryEstimate(
   frameAvailability: FrameAvailability,
   lensType: LensType = 'none',
@@ -44,60 +72,19 @@ export function getDeliveryEstimate(
   let maxDays = 0;
 
   // 1. Frame / Contacts time
-  switch (frameAvailability) {
-    case 'instock':
-      minDays += 2;
-      maxDays += 3;
-      break;
-    case 'preorder':
-      minDays += 7;
-      maxDays += 14;
-      break;
-    case 'contact_spherical':
-      minDays += 3;
-      maxDays += 5;
-      break;
-    case 'contact_toric':
-      minDays += 7;
-      maxDays += 14;
-      break;
-  }
+  const fTime = DELIVERY_DAYS.frame[frameAvailability] || { min: 0, max: 0 };
+  minDays += fTime.min;
+  maxDays += fTime.max;
 
   // 2. Lens manufacturing time
-  switch (lensType) {
-    case 'mono_basic':
-      minDays += 1;
-      maxDays += 2;
-      break;
-    case 'mono_complex':
-      minDays += 2;
-      maxDays += 3;
-      break;
-    case 'progressive_bifocal':
-    case 'photochromic':
-    case 'special':
-      minDays += 4;
-      maxDays += 7; // User specified up to 7 days
-      break;
-    case 'none':
-    default:
-      break;
-  }
+  const lTime = DELIVERY_DAYS.lens[lensType] || { min: 0, max: 0 };
+  minDays += lTime.min;
+  maxDays += lTime.max;
 
   // 3. Shipping time
-  switch (shippingMethod) {
-    case 'zmg':
-      minDays += 1;
-      maxDays += 2;
-      break;
-    case 'national':
-      minDays += 3;
-      maxDays += 5;
-      break;
-    case 'pickup':
-    default:
-      break;
-  }
+  const sTime = DELIVERY_DAYS.shipping[shippingMethod] || { min: 0, max: 0 };
+  minDays += sTime.min;
+  maxDays += sTime.max;
 
   const today = new Date();
   const minDate = addBusinessDays(today, minDays);
@@ -139,7 +126,7 @@ export function calculateDeliveryTime(product: any, lensConfig?: any, fulfillmen
     frameAvailability = isOutOfStock ? 'preorder' : 'instock';
   }
 
-  let lensType: LensType = 'none';
+  let lensType: LensType = isContactLens ? 'none' : 'mono_basic';
   if (lensConfig) {
     const isProgressive = lensConfig.tipo?.toLowerCase().includes('progresivo') || lensConfig.tipo?.toLowerCase().includes('bifocal') || lensConfig.tipo?.toLowerCase().includes('ocupacional');
     const isPhotochromic = lensConfig.etiqueta?.toLowerCase().includes('fotocromático');

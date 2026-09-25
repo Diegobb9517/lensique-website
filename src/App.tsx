@@ -31,7 +31,7 @@ import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
 import { ProductCard } from './components/ProductCard';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
-import { calculateDeliveryTime } from './lib/delivery';
+import { calculateDeliveryTime, getDeliveryEstimate } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';

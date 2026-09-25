@@ -12,6 +12,7 @@ export interface CartItem {
   estimatedDeliveryStr?: string;
   estimatedDeliverySubtitle?: string;
   maxDeliveryDays?: number;
+  minDeliveryDays?: number;
 }
 
 interface CartContextType {

@@ -143,3 +143,5 @@ a {
   background-color: var(--accent);
   color: #fff;
 }
+
+.tabular-nums { font-variant-numeric: lining-nums tabular-nums !important; }

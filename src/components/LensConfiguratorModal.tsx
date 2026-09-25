@@ -104,7 +104,7 @@ export default function LensConfiguratorModal({
           </div>
 
           <iframe 
-            src={`/asesor_zeiss.html?v=1.0.4&framePrice=${product?.price_incl_tax || product?.price || 0}`}
+            src={`/asesor_zeiss.html?v=1.0.4&framePrice=${product?.price_incl_tax || product?.price || 0}&modelName=${encodeURIComponent(product?.name || '')}&brand=${encodeURIComponent(product?.brand || '')}`}
             title="Asesor Visual ZEISS"
             style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit', position: 'relative', zIndex: 2, opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
             onLoad={() => setIframeLoaded(true)}

@@ -3,6 +3,7 @@ import { ImageWithSkeleton } from './ImageWithSkeleton';
 import { getInventedName, getProductSlug } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
+import { BASE_LENS_PRICE } from '../lib/constants';
 
 interface ProductCardProps {
   product: any;
@@ -73,7 +74,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="product-info-editorial">
             <div className="product-name-row">
               <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-              <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+            </div>
+            <div className="product-price-badge">
+              <span className="product-price-label">${(product.category === 1 ? (product.price_incl_tax || 0) + BASE_LENS_PRICE : (product.price_incl_tax || 0)).toLocaleString('es-MX')}</span>
             </div>
             <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
               {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
@@ -138,7 +141,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </p>
           <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-          <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+          <div className="wp-product-price-row">
+            <span className="wp-product-price">${(product.category === 1 ? (product.price_incl_tax || 0) + BASE_LENS_PRICE : (product.price_incl_tax || 0)).toLocaleString('es-MX')}</span>
+          </div>  
           
           {onSelectAction && (
             <span className="wp-card-cta-hover">

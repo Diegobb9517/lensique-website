@@ -3,6 +3,7 @@ import { ImageWithSkeleton } from './ImageWithSkeleton';
 import { getInventedName, getProductSlug } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
+import { BASE_LENS_PRICE } from '../lib/constants';
 
 interface ProductCardProps {
   product: any;
@@ -33,6 +34,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const imageUrl = resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
   const slug = getProductSlug(product);
   const href = `/producto/${slug}`;
+
+  const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
+  const displayPrice = (product.price_incl_tax || 0) + (isFrame ? BASE_LENS_PRICE : 0);
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -73,11 +77,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="product-info-editorial">
             <div className="product-name-row">
               <h3 className="product-name-serif"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-              <span className="product-price-label">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+              <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}</span>
             </div>
             <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
               {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
             </p>
+            {isFrame && (
+              <p style={{ fontSize: '11px', color: '#059669', marginTop: '2px', fontWeight: 500 }}>
+                micas antirreflejantes incluidas
+              </p>
+            )}
             
             {onSelectAction && (
               <button 
@@ -138,7 +147,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </p>
           <h3 className="wp-product-name"><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
-          <span className="wp-product-price">${product.price_incl_tax ? product.price_incl_tax.toLocaleString('es-MX') : '1,200'}</span>
+          <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}</span>
+          {isFrame && (
+            <p style={{ fontSize: '11px', color: '#059669', marginTop: '2px', fontWeight: 500 }}>
+              micas antirreflejantes incluidas
+            </p>
+          )}
           
           {onSelectAction && (
             <span className="wp-card-cta-hover">

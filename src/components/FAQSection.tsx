@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     question: "¿Hacen envíos?",
-    answer: "¡Claro! Puedes recoger en tienda sin costo, el envío local (ZMG) tiene un costo de $150 MXN, y el envío nacional $250 MXN. En pedidos mayores a $2,500 MXN el envío no tiene costo."
+    answer: "¡Claro! Puedes recoger gratis en tienda, el envío local (ZMG) tiene un costo de $150 MXN, y el envío nacional $250 MXN. En pedidos mayores a $2,500 MXN el envío es gratis."
   },
   {
     question: "¿Tienen garantía?",

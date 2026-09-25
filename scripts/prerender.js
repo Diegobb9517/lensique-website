@@ -6,11 +6,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
-
-const constantsContent = fs.readFileSync(path.join(rootDir, 'src', 'lib', 'constants.ts'), 'utf8');
-const baseLensPriceMatch = constantsContent.match(/export\s+const\s+BASE_LENS_PRICE\s*=\s*(\d+)/);
-const BASE_LENS_PRICE = baseLensPriceMatch ? parseInt(baseLensPriceMatch[1], 10) : 1200;
-
 const distDir = path.join(rootDir, 'dist');
 const templatePath = path.join(distDir, 'index.html');
 const dbPath = path.resolve(rootDir, '../lensique-pos/database.sqlite');
@@ -119,11 +114,8 @@ products.forEach(p => {
   const availabilitySchema = isOutOfStock ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock';
   const availabilityText = isOutOfStock ? 'Sobre pedido' : 'En existencia';
 
-  const isArmazon = p.category === 1;
-  const finalPrice = isArmazon ? (Number(p.price_incl_tax) || 0) + BASE_LENS_PRICE : (Number(p.price_incl_tax) || 0);
-
-  const numericPrice = finalPrice.toFixed(2);
-  const formattedPriceMxn = `${formatPrice(finalPrice)} MXN`;
+  const numericPrice = (Number(p.price_incl_tax) || 0).toFixed(2);
+  const formattedPriceMxn = `${formatPrice(p.price_incl_tax)} MXN`;
   const absImg = resolveAbsImage(p.image_url);
   const pageTitle = `${brand ? brand + ' ' : ''}${model} | ${categoryLabel} | Óptica Lensique`;
   const pageDesc = p.description || `Compra ${brand ? brand + ' ' : ''}${model} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;

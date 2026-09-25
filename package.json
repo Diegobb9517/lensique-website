@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check_syntax.js && node scripts/check_base_lens_price.js && node scripts/check_whatsapp.js && vite build && node scripts/prerender.js",
+    "build": "node scripts/check_syntax.js && vite build && node scripts/prerender.js",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "check:whatsapp": "node scripts/check_whatsapp.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",

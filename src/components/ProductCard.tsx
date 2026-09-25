@@ -60,7 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <div className="product-img-area" style={{ position: 'relative' }}>
             {isFrame ? (
-              <div className="out-of-stock-badge" style={{ background: isOutOfStock ? '#fef2f2' : '#f8fafc', color: isOutOfStock ? '#dc2626' : '#475569', border: `1px solid ${isOutOfStock ? '#fecaca' : '#e2e8f0'}`, fontWeight: 700, letterSpacing: '0.5px' }}>
+              <div className="out-of-stock-badge">
                 {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
               </div>
             ) : (
@@ -126,7 +126,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       >
         <div className="wp-card-img-area">
           {isFrame ? (
-            <div className="out-of-stock-badge" style={{ background: isOutOfStock ? '#fef2f2' : '#f8fafc', color: isOutOfStock ? '#dc2626' : '#475569', border: `1px solid ${isOutOfStock ? '#fecaca' : '#e2e8f0'}`, fontWeight: 700, letterSpacing: '0.5px' }}>
+            <div className="out-of-stock-badge">
               {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
             </div>
           ) : (

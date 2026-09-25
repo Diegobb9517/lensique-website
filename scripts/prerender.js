@@ -78,7 +78,7 @@ const resolveAbsImage = (imgUrl) => {
 // Try fetching from API with retries
 const apiProducts = await fetchProductsFromAPI();
 if (apiProducts && apiProducts.length) {
-  products = apiProducts.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
+  products = apiProducts.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH' && String(p.published) !== '0' && String(p.published) !== 'false' && p.published !== false && p.published !== 0);
   console.log(`[API] Loaded ${products.length} products from API.`);
 }
 
@@ -91,7 +91,7 @@ if (products.length === 0) {
       const fullCat = typeof content.full_catalog_data === 'string'
         ? JSON.parse(content.full_catalog_data)
         : (content.full_catalog_data || []);
-      products = fullCat.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
+      products = fullCat.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH' && String(p.published) !== '0' && String(p.published) !== 'false' && p.published !== false && p.published !== 0);
       console.log(`[content2.json] Loaded ${products.length} products.`);
     } catch (e) {
       console.warn('Failed to load fallback content2.json:', e.message);
@@ -245,6 +245,35 @@ const catalogDir = path.join(distDir, 'catalogo');
 if (!fs.existsSync(catalogDir)) { fs.mkdirSync(catalogDir, { recursive: true }); }
 fs.writeFileSync(path.join(catalogDir, 'index.html'), catalogHtml, 'utf8');
 console.log('✅ Pre-rendered /catalogo/index.html');
+
+// ----------------------------------------------------------
+// Generate /armazones prerender (static armazones page)
+// ----------------------------------------------------------
+const armazonesTitle = "Armazones de diseño en Zapopan | Óptica Lensique";
+const armazonesDesc = "Armazones de diseño y lentes oftálmicos en Zapopan (zona Guadalajara), con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
+const armazonesCanonical = "https://www.lensique.com.mx/armazones";
+
+const armazonesHeadInjection = `
+    <title>${armazonesTitle}</title>
+    <meta name="description" content="${armazonesDesc}" />
+    <link rel="canonical" href="${armazonesCanonical}" />
+    <meta property="og:title" content="${armazonesTitle}" />
+    <meta property="og:description" content="${armazonesDesc}" />
+    <meta property="og:url" content="${armazonesCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+
+let armazonesHtml = indexTemplate;
+if (armazonesHtml.includes('<title>')) {
+  armazonesHtml = armazonesHtml.replace(/<title>.*?<\/title>/s, `<title>${armazonesTitle}</title>`);
+}
+armazonesHtml = armazonesHtml.replace('</head>', `<head>\n${armazonesHeadInjection}`);
+armazonesHtml = armazonesHtml.replace('<div id="root"></div>', `<div id="root">${catalogBodyInjection}</div>`);
+
+const armazonesDir = path.join(distDir, 'armazones');
+if (!fs.existsSync(armazonesDir)) { fs.mkdirSync(armazonesDir, { recursive: true }); }
+fs.writeFileSync(path.join(armazonesDir, 'index.html'), armazonesHtml, 'utf8');
+console.log('✅ Pre-rendered /armazones/index.html');
 
 console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /dist/producto/[slug]/index.html`);
 

@@ -871,7 +871,11 @@ function App() {
   }, [currentPath]);
 
   useEffect(() => {
-    const handlePopState = () => setCurrentPath(window.location.pathname);
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      setCurrentPath(path);
+      setIsCatalogOpen(path === '/catalogo' || path === '/armazones' || path.startsWith('/marca/'));
+    };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
@@ -953,13 +957,21 @@ function App() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedInfoPage, setSelectedInfoPage] = useState<InfoPageData | null>(null);
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
-  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [isCatalogOpen, setIsCatalogOpen] = useState(
+    window.location.pathname === '/catalogo' ||
+    window.location.pathname === '/armazones' ||
+    window.location.pathname.startsWith('/marca/')
+  );
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
   const [isContactQuizOpen, setIsContactQuizOpen] = useState(false);
   const { addItem, items, setIsCartOpen } = useCart();
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
-  const [catalogInitialFilter, setCatalogInitialFilter] = useState('Todas');
+  const [catalogInitialFilter, setCatalogInitialFilter] = useState(() => {
+    if (window.location.pathname === '/armazones') return 'Armazones';
+    if (window.location.pathname === '/lentes-de-contacto') return 'Lentes de Contacto';
+    return 'Todas';
+  });
   const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
@@ -1176,7 +1188,7 @@ function App() {
 
     useEffect(() => {
     if (isCatalogOpen) {
-      if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/')) {
+      if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones') {
         window.history.pushState({ catalog: true }, '', '/catalogo');
         document.title = "Catálogo | Óptica Lensique";
       }
@@ -1221,7 +1233,7 @@ function App() {
           const data = await res.json();
           setSettings((prev: any) => {
             // Option B: No merge. API is the source of truth.
-            const filterCH = (arr: any[]) => arr.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH');
+            const filterCH = (arr: any[]) => arr.filter(p => (p.brand || '').toUpperCase().trim() !== 'CH' && String(p.published) !== '0' && String(p.published) !== 'false' && p.published !== false && p.published !== 0);
             
             const featuredProducts = filterCH(safeJsonParse(data.featured_products));
             const featuredContact = filterCH(safeJsonParse(data.featured_contact_lenses));

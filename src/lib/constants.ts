@@ -1,2 +1,0 @@
-export const BASE_LENS_PRICE = 1200;
-export const WHATSAPP_NUMBER = '523316929111';

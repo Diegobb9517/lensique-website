@@ -9,19 +9,18 @@ import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
 import LensConfiguratorModal from './components/LensConfiguratorModal';
 import { StyleQuiz } from './components/StyleQuiz';
-
 import { ContactLensQuiz } from './components/ContactLensQuiz';
 import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
 import ServiceDetailsPage from './components/ServiceDetailsPage';
 import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
 import ServiceInfoModal from './components/ServiceInfoModal';
-import { BASE_LENS_PRICE } from './lib/constants';
-import { finalWhatsapp } from './lib/whatsapp';
 import { FAQSection } from './components/FAQSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import LensExplainer from './components/LensExplainer';
 import BlogList from './components/BlogList';
+import BlogPost from './components/BlogPost';
+
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
@@ -1305,8 +1304,8 @@ function App() {
     }
 
     const message = formatWhatsAppMessage();
-    const phone = settings.contact_whatsapp || WHATSAPP_NUMBER;
-    const url = `https://wa.me/${finalWhatsapp(settings.contact_whatsapp)}?text=${encodeURIComponent(message)}`;
+    const phone = settings.contact_whatsapp || '523316929111';
+    const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
     import('./lib/analytics').then(({ trackLead }) => trackLead());
     window.open(url, '_blank');
     setIsBookingOpen(false);
@@ -1648,8 +1647,8 @@ function App() {
             
             configText += `\n*Precio estimado de micas:* $${Math.round(config.price).toLocaleString('es-MX')}\n\n¿Me pueden confirmar precio y tiempo de entrega?`;
             
-            const phone = settings.contact_whatsapp || WHATSAPP_NUMBER;
-            const url = `https://wa.me/${finalWhatsapp(settings.contact_whatsapp)}?text=${encodeURIComponent(configText)}`;
+            const phone = settings.contact_whatsapp || '523316929111';
+            const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;
             import('./lib/analytics').then(({ trackLead }) => trackLead());
             window.open(url, '_blank');
           }}
@@ -1706,7 +1705,7 @@ function App() {
 
             configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
-            const phone = settings.contact_whatsapp || WHATSAPP_NUMBER;
+            const phone = settings.contact_whatsapp || '523316929111';
             const delTime = calculateDeliveryTime(product, config);
             addItem({
               type: 'frame_with_lenses',
@@ -2030,7 +2029,7 @@ function App() {
                 if (config.tratamientos && config.tratamientos.length > 0) configText += `- Tratamientos: ${config.tratamientos.join(', ')}\n`;
                 if (config.material) configText += `- Material sugerido: ${config.material}\n`;
                 if (config.precioCalculado) configText += `\nPrecio estimado: ${config.precioCalculado}\n`;
-                const phone = settings.contact_whatsapp || WHATSAPP_NUMBER;
+                const phone = settings.contact_whatsapp || '523316929111';
                 const url = `https://api.whatsapp.com/send?phone=${phone.replace(/\D/g, '')}&text=${encodeURIComponent(configText)}`;
                 window.open(url, '_blank');
               }}
@@ -2049,7 +2048,7 @@ function App() {
                   Los lentes de contacto requieren adaptación, no solo graduación. La adaptación la realiza un oftalmólogo y el examen es realizado por un oftalmólogo certificado.
                 </p>
                 <a 
-                  href={`https://wa.me/${(settings.contact_whatsapp || WHATSAPP_NUMBER).replace(/\D/g, '')}?text=${encodeURIComponent('Hola, tengo dudas sobre lentes de contacto')}`}
+                  href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, tengo dudas sobre lentes de contacto')}`}
                   target="_blank" rel="noopener noreferrer"
                   className="btn btn-wp-primary" 
                   style={{ backgroundColor: '#16a34a', borderColor: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
@@ -2831,7 +2830,7 @@ function App() {
 </main>
 
       <a 
-        href={`https://wa.me/${finalWhatsapp(settings.contact_whatsapp)}?text=${encodeURIComponent('Hola, me interesa agendar una cita.')}`} 
+        href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me interesa agendar una cita.')}`} 
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
@@ -2881,7 +2880,7 @@ function App() {
                 <h4>Soporte</h4>
                 <a href="#garantia" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(warrantyData); }}>Garantías</a>
                 <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }}>Preguntas Frecuentes</a>
-                <a href="#facturacion" onClick={(e) => { e.preventDefault(); import('./lib/analytics').then(({ trackLead }) => trackLead()); alert('Para solicitar tu factura, envíanos tu Constancia de Situación Fiscal (CSF) por WhatsApp.'); window.open(`https://wa.me/${(settings.contact_whatsapp || WHATSAPP_NUMBER).replace(/\D/g, '')}?text=Hola,%20me%20gustar%C3%ADa%20solicitar%20mi%20factura.%20Aqu%C3%AD%20env%C3%ADo%20mi%20Constancia%20de%20Situaci%C3%B3n%20Fiscal.`, '_blank'); }}>Facturación</a>
+                <a href="#facturacion" onClick={(e) => { e.preventDefault(); import('./lib/analytics').then(({ trackLead }) => trackLead()); alert('Para solicitar tu factura, envíanos tu Constancia de Situación Fiscal (CSF) por WhatsApp.'); window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=Hola,%20me%20gustar%C3%ADa%20solicitar%20mi%20factura.%20Aqu%C3%AD%20env%C3%ADo%20mi%20Constancia%20de%20Situaci%C3%B3n%20Fiscal.`, '_blank'); }}>Facturación</a>
               </div>
             </div>
 
@@ -2897,7 +2896,7 @@ function App() {
                   </div>
                   <span>FAQ</span>
                 </a>
-                <a href={`https://wa.me/${(settings.contact_whatsapp || WHATSAPP_NUMBER).replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item" onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}>
+                <a href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item" onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}>
                   <div className="support-icon-circle">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                   </div>

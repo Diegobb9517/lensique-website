@@ -5,7 +5,6 @@ import { toTitleCase } from '../lib/format';
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
 import { WPSelect } from './WPSelect';
-import { finalWhatsapp } from '../lib/whatsapp';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 const resolveImageUrl = (url: any, fallback?: any) => {
@@ -518,11 +517,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </div>
           
           <div style={{ marginTop: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '12.5px', color: '#334155', lineHeight: 1.4 }}>
-            <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
+            <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
           </div>
 
           <div style={{ marginTop: '12px' }}>
-            <a href={`https://wa.me/${finalWhatsapp(settings.contact_whatsapp)}?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto.`} target="_blank" rel="noopener noreferrer" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '10px 16px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
+            <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '10px 16px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
               ¿Dudas? Escríbenos por WhatsApp
             </a>

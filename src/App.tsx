@@ -16,7 +16,7 @@ import ServiceDetailsPage from './components/ServiceDetailsPage';
 import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
 import ServiceInfoModal from './components/ServiceInfoModal';
-import { BASE_LENS_PRICE, WHATSAPP_NUMBER } from './lib/constants';
+import { BASE_LENS_PRICE } from './lib/constants';
 import { finalWhatsapp } from './lib/whatsapp';
 import { FAQSection } from './components/FAQSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';

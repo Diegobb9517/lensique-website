@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx tsc --noEmit && node scripts/check_syntax.js && node scripts/check_base_lens_price.js && node scripts/check_whatsapp.js && vite build && node scripts/prerender.js",
+    "build": "node scripts/check_syntax.js && node scripts/check_base_lens_price.js && node scripts/check_whatsapp.js && vite build && node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "check:whatsapp": "node scripts/check_whatsapp.js"

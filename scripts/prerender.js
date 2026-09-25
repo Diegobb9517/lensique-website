@@ -114,11 +114,22 @@ products.forEach(p => {
   const availabilitySchema = isOutOfStock ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock';
   const availabilityText = isOutOfStock ? 'Sobre pedido' : 'En existencia';
 
-  const numericPrice = (Number(p.price_incl_tax) || 0).toFixed(2);
-  const formattedPriceMxn = `${formatPrice(p.price_incl_tax)} MXN`;
+  const isFrame = !String(p.category || '').toLowerCase().includes('sol') && !String(p.category || '').toLowerCase().includes('contacto');
+  const basePrice = Number(p.price_incl_tax) || 0;
+  const constantsPath = path.join(__dirname, '..', 'src', 'lib', 'constants.ts');
+  const constantsContent = fs.readFileSync(constantsPath, 'utf8');
+  const match = constantsContent.match(/export const BASE_LENS_PRICE\s*=\s*(\d+);/);
+  const baseLensPrice = match ? parseInt(match[1], 10) : 1200;
+  const finalPrice = basePrice + (isFrame ? baseLensPrice : 0);
+
+  const numericPrice = finalPrice.toFixed(2);
+  const formattedPriceMxn = `${formatPrice(finalPrice)} MXN`;
   const absImg = resolveAbsImage(p.image_url);
   const pageTitle = `${brand ? brand + ' ' : ''}${model} | ${categoryLabel} | Óptica Lensique`;
-  const pageDesc = p.description || `Compra ${brand ? brand + ' ' : ''}${model} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;
+  let pageDesc = p.description || `Compra ${brand ? brand + ' ' : ''}${model} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;
+  if (isFrame) {
+    pageDesc += ' Con micas antirreflejantes incluidas.';
+  }
 
   const jsonLd = {
     "@context": "https://schema.org/",

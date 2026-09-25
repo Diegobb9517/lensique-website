@@ -1102,14 +1102,17 @@ function App() {
 
       // Dynamic JSON-LD schema
       const isOutOfStock = selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0;
-      const numericPrice = (Number(selectedProductDetail.price_incl_tax) || 0).toFixed(2);
+      const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
+      const basePrice = Number(selectedProductDetail.price_incl_tax) || 0;
+      const displayPrice = basePrice + (isFrame ? BASE_LENS_PRICE : 0);
+      const numericPrice = displayPrice.toFixed(2);
       
       const productSchema = {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": `${brand}${model} - ${categoryLabel}`,
         "image": [absImage],
-        "description": descText,
+        "description": descText + (isFrame ? ' con micas antirreflejantes incluidas' : ''),
         "sku": selectedProductDetail.sku || slug,
         "mpn": selectedProductDetail.sku || slug,
         "brand": { "@type": "Brand", "name": selectedProductDetail.brand || "Lensique" },

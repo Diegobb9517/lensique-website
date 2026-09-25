@@ -973,7 +973,8 @@ function renderTopBar() {
   var micas = q && q.disponible ? q.pvp : 0;
   var total = framePrice + micas;
   if (framePrice > 0) {
-    topBar.innerHTML = "Armazón " + money(framePrice) + " + Micas " + money(micas) + " = Total " + money(total);
+    var lbl = micas > 1200 ? (q.etiqueta||'micas').toLowerCase() : "micas incluidas";
+    topBar.innerHTML = "Total " + money(total) + " &middot; " + lbl;
   } else {
     topBar.style.display = 'none';
   }
@@ -1036,7 +1037,7 @@ function render(){
  if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
  else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
  updateSideTh();
- var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;var _bTxt="Agregar al carrito";if(_tot>0){var lbl=_micas>1200?(_q.etiqueta||'micas').toLowerCase():"micas incluidas";_bTxt="Total $"+_tot.toLocaleString("en-US")+" · "+lbl;}_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">'+_bTxt+'</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;var _bTxt="Agregar al carrito";if(_tot>0){_bTxt="Comprar ahora — $"+_tot.toLocaleString("en-US");}_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">'+_bTxt+'</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
  $("restart").style.display="block";
  ["od","oi"].forEach(function(t){
   if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});

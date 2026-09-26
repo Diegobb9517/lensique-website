@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
-import { getInventedName, getProductSlug } from '../lib/format';
+import { getInventedName, getProductSlug, isInStock } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 import { BASE_LENS_PRICE } from '../lib/constants';
@@ -31,7 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isEditorial = false,
   onSelectAction
 }) => {
-  const isOutOfStock = product.stock != null && product.stock !== '' && Number(product.stock) <= 0;
+  const outOfStock = !isInStock(product);
   
   const imageUrl = resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
   const slug = getProductSlug(product);
@@ -62,11 +62,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <div className="product-img-area" style={{ position: 'relative' }}>
             {isFrame ? (
-              <div className="out-of-stock-badge" style={isOutOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
-                {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
+              <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
+                {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
               </div>
             ) : (
-              isOutOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
+              outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
             )}
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
@@ -128,12 +128,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
       >
         <div className="wp-card-img-area">
-          {isFrame ? (
-            <div className="out-of-stock-badge" style={isOutOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
-              {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
+          {isFrame && (
+            <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
+              {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
             </div>
-          ) : (
-            isOutOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
           )}
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 

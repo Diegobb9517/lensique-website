@@ -270,8 +270,8 @@ function FullCatalog({
     );
     
     const isContactLens = String(p.category || 'vista').toLowerCase().includes('contacto');
-    const isOutOfStock = p.stock != null && p.stock !== '' && Number(p.stock) <= 0;
-    const matchesAvailability = availabilityFilter === 'Todos' || isContactLens || !isOutOfStock;
+    const outOfStock = !isInStock(p);
+    const matchesAvailability = availabilityFilter === 'Todos' || isContactLens || !outOfStock;
     
     return matchesSearch && matchesBrand && matchesCategory && matchesAvailability;
   }).sort((a, b) => {
@@ -279,8 +279,8 @@ function FullCatalog({
     const bIsContact = String(b.category || 'vista').toLowerCase().includes('contacto');
     
     if (!aIsContact && !bIsContact) {
-      const aOutOfStock = a.stock != null && a.stock !== '' && Number(a.stock) <= 0;
-      const bOutOfStock = b.stock != null && b.stock !== '' && Number(b.stock) <= 0;
+      const aOutOfStock = !isInStock(a);
+      const bOutOfStock = !isInStock(b);
       if (!aOutOfStock && bOutOfStock) return -1;
       if (aOutOfStock && !bOutOfStock) return 1;
     }

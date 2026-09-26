@@ -88,3 +88,8 @@ export const findProductBySlug = (catalog: any[], slug: string): any | null => {
     return false;
   }) || null;
 };
+
+export const isInStock = (product: any): boolean => {
+  if (!product) return false;
+  return product.stock != null && product.stock !== '' && Number(String(product.stock).trim()) > 0;
+};

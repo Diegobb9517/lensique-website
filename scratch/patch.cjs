@@ -1,6 +1,9 @@
 const fs = require('fs');
 let code = fs.readFileSync('src/App.tsx', 'utf8');
 
+// Normalize line endings for replacement
+code = code.replace(/\r\n/g, '\n');
+
 const target1 = `    return matchesSearch && matchesBrand && matchesCategory;
   });`;
 
@@ -58,21 +61,6 @@ const replace2 = `            {filter === 'Armazones' && (
             )}`;
 
 code = code.replace(target2, replace2);
-
-const target3 = `  const [catalogInitialFilter, setCatalogInitialFilter] = useState(() => {
-    if (window.location.pathname === '/armazones') return 'Armazones';
-    if (window.location.pathname === '/lentes-de-contacto') return 'Lentes de Contacto';
-    return 'Todas';
-  });`;
-
-const replace3 = `  const [catalogInitialFilter, setCatalogInitialFilter] = useState(() => {
-    if (window.location.pathname === '/armazones') return 'Armazones';
-    if (window.location.pathname === '/lentes-de-contacto') return 'Lentes de Contacto';
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('disponibilidad') === 'existencia') return 'Armazones';
-    return 'Todas';
-  });`;
-
-code = code.replace(target3, replace3);
 
 fs.writeFileSync('src/App.tsx', code, 'utf8');
 console.log('App.tsx patched.');

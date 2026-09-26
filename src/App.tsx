@@ -352,10 +352,20 @@ function FullCatalog({
                 />
               </div>
 
+            {filter === 'Armazones' && (
               <div className="filter-group" style={{ margin: 0 }}>
                 <CustomSelect
                   value={availabilityFilter}
-                  onChange={(val) => setAvailabilityFilter(val)}
+                  onChange={(val) => {
+                    setAvailabilityFilter(val);
+                    const url = new URL(window.location.href);
+                    if (val === 'En existencia') {
+                      url.searchParams.set('disponibilidad', 'existencia');
+                    } else {
+                      url.searchParams.delete('disponibilidad');
+                    }
+                    window.history.pushState({}, '', url);
+                  }}
                   options={[
                     { label: 'Disponibilidad', value: 'Todos' },
                     { label: 'En existencia', value: 'En existencia' },
@@ -363,6 +373,7 @@ function FullCatalog({
                   ]}
                 />
               </div>
+            )}
 
               {filter === 'Lentes de Contacto' && (
                 <div className="filter-group" style={{ margin: 0 }}>
@@ -990,6 +1001,7 @@ function App() {
   const [catalogInitialFilter, setCatalogInitialFilter] = useState(() => {
     if (window.location.pathname === '/armazones') return 'Armazones';
     if (window.location.pathname === '/lentes-de-contacto') return 'Lentes de Contacto';
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('disponibilidad') === 'existencia') return 'Armazones';
     return 'Todas';
   });
   const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');

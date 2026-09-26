@@ -1,3 +1,5 @@
+import { BASE_LENS_PRICE } from './constants';
+
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
@@ -14,12 +16,16 @@ export const trackPageView = () => {
 
 export const trackViewItem = (product: any) => {
   if (typeof window === 'undefined') return;
+  const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
+  const basePrice = product.price_incl_tax || 0;
+  const viewPrice = basePrice + (isFrame ? BASE_LENS_PRICE : 0);
+
   const itemData = {
     item_id: product.id,
     item_name: product.name,
     item_brand: product.brand || 'Lensique',
     item_category: product.category || 'Armazón de vista',
-    price: product.price_incl_tax || 1200
+    price: viewPrice
   };
 
   // GA4
@@ -43,7 +49,7 @@ export const trackViewItem = (product: any) => {
   }
 };
 
-export const trackAddToCart = (product: any, value: number = 1200) => {
+export const trackAddToCart = (product: any, value: number) => {
   if (typeof window === 'undefined') return;
   
   const itemData = {
@@ -128,7 +134,7 @@ export const trackPurchase = (transactionId: string, value: number, items: any[]
       currency: 'MXN',
       content_ids: mappedItems.map(i => i.item_id),
       content_type: 'product'
-    });
+    }, { eventID: transactionId });
   }
 };
 

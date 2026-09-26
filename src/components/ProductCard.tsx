@@ -5,6 +5,8 @@ import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 import { BASE_LENS_PRICE } from '../lib/constants';
 
+const SVG_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.06 13a2.97 2.97 0 0 1 2.8-2.06h3.58a2 2 0 0 1 1.95 1.57l.82 3.43a2 2 0 0 0 1.95 1.57h1.68a2 2 0 0 0 1.95-1.57l.82-3.43a2 2 0 0 1 1.95-1.57h3.58a2.97 2.97 0 0 1 2.8 2.06'/%3E%3Cpath d='M17.5 10.5V8a5.5 5.5 0 0 0-11 0v2.5'/%3E%3C/svg%3E";
+
 interface ProductCardProps {
   product: any;
   onClick: (product: any) => void;
@@ -60,11 +62,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <div className="product-img-area" style={{ position: 'relative' }}>
             {isFrame ? (
-              <div className="out-of-stock-badge">
+              <div className="out-of-stock-badge" style={isOutOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
                 {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
               </div>
             ) : (
-              isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>
+              isOutOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
             )}
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
@@ -73,10 +75,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               loading="lazy"
               decoding="async"
               onError={(e: any) => {
-                if (fallbackImage) {
-                  e.target.onerror = null;
-                  e.target.src = fallbackImage;
-                }
+                e.target.onerror = null;
+                e.target.src = SVG_PLACEHOLDER;
+                e.target.style.padding = '20%';
+                e.target.style.objectFit = 'contain';
+                e.target.style.background = '#f9fafb';
               }}
             />
           </div>
@@ -126,11 +129,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       >
         <div className="wp-card-img-area">
           {isFrame ? (
-            <div className="out-of-stock-badge">
+            <div className="out-of-stock-badge" style={isOutOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
               {isOutOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
             </div>
           ) : (
-            isOutOfStock && <div className="out-of-stock-badge">Sobre pedido</div>
+            isOutOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
           )}
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 
@@ -139,10 +142,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             loading="lazy"
             decoding="async" 
             onError={(e: any) => {
-              if (fallbackImage) {
-                e.target.onerror = null;
-                e.target.src = fallbackImage;
-              }
+              e.target.onerror = null;
+              e.target.src = SVG_PLACEHOLDER;
+              e.target.style.padding = '20%';
+              e.target.style.objectFit = 'contain';
+              e.target.style.background = '#f9fafb';
             }}
           />
         </div>

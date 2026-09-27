@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
-import { getDisplayName, getProductSlug, isInStock } from '../lib/format';
+import { getInventedName, getProductSlug, isInStock } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 import { BASE_LENS_PRICE } from '../lib/constants';
@@ -17,8 +17,8 @@ interface ProductCardProps {
   onSelectAction?: (product: any) => void;
 }
 
-export const FormatProductName = ({ product }: { product: any }) => {
-  const cleanName = getDisplayName(product);
+export const FormatProductName = ({ name, brand, category }: { name: string, brand?: string, category?: string }) => {
+  const cleanName = getInventedName(name, category);
   return <span className="fpn-main">{cleanName}</span>;
 };
 
@@ -88,7 +88,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginBottom: '4px' }}>
               {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
             </p>
-            <h3 className="product-name-serif" style={{ marginBottom: '8px', justifyContent: 'center' }}><FormatProductName product={product} /></h3>
+            <h3 className="product-name-serif" style={{ marginBottom: '8px', justifyContent: 'center' }}><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
             <div style={{ textAlign: 'center' }}>
               <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
             </div>
@@ -161,7 +161,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 : 'Lensique'
             )}
           </p>
-          <h3 className="wp-product-name" style={{ justifyContent: 'center' }}><FormatProductName product={product} /></h3>
+          <h3 className="wp-product-name" style={{ justifyContent: 'center' }}><FormatProductName name={product.name} brand={product.brand} category={product.category} /></h3>
           <div style={{ textAlign: 'center', marginTop: '6px' }}>
             <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
           </div>

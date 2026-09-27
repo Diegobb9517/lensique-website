@@ -25,7 +25,7 @@ import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.jpg';
-import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify } from './lib/format';
+import { getInventedName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
 import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
 import { ProductCard } from './components/ProductCard';
@@ -1097,13 +1097,11 @@ function App() {
       }
 
       // Dynamic Title & Description
+      const brand = (selectedProductDetail.brand && selectedProductDetail.brand !== 'null') ? `${selectedProductDetail.brand.trim()} ` : '';
+      const model = (selectedProductDetail.model || selectedProductDetail.name || '').trim();
       const isContact = String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
       const categoryLabel = isContact ? 'Lentes de Contacto' : 'Armazón oftálmico';
-      const displayName = getDisplayName(selectedProductDetail);
-      const pageTitle = `${displayName} | ${categoryLabel} | Óptica Lensique`;
-      
-      const brand = (selectedProductDetail.brand && selectedProductDetail.brand !== 'null') ? `${selectedProductDetail.brand.trim()} ` : '';
-      const model = displayName; // Used later for JSON-LD description fallback
+      const pageTitle = `${brand}${model} | ${categoryLabel} | Óptica Lensique`;
       document.title = pageTitle;
 
       // Dynamic Canonical link

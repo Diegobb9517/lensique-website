@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Check } from 'lucide-react';
 import { ProductCard } from './ProductCard';
-import { getInventedName } from '../lib/format';
+import { getDisplayName } from '../lib/format';
 
 interface StyleQuizProps {
   catalogData: any[];
@@ -256,7 +256,7 @@ export const StyleQuiz: React.FC<StyleQuizProps> = ({ catalogData, onClose, onVi
                 <button 
                   className="sq-cta-btn primary"
                   onClick={() => {
-                    const modelNames = results.map(r => getInventedName(r.name, r.category)).join(', ');
+                    const modelNames = results.map(r => getDisplayName(r.name, r.category)).join(', ');
                     onBookAppointment(`Hola, hice el Quiz de Estilo y me interesan probarme estos modelos: ${modelNames}. ¿Tienen citas disponibles?`);
                   }}
                 >

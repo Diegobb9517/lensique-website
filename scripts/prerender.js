@@ -102,10 +102,33 @@ if (products.length === 0) {
 // Process each product
 let generatedCount = 0;
 products.forEach(p => {
-  const brand = (p.brand && p.brand !== 'null') ? p.brand.trim() : '';
-  const model = (p.model || p.name || '').trim();
+    const brand = (p.brand && p.brand !== 'null') ? p.brand.trim() : '';
+  let model = (p.model || p.name || '').trim();
+  
+  if (brand) {
+    const brandUpper = brand.toUpperCase().trim();
+    let cleaned = false;
+    do {
+      cleaned = false;
+      if (model.toUpperCase().startsWith(brandUpper)) {
+        model = model.substring(brandUpper.length).trim();
+        cleaned = true;
+      }
+    } while (cleaned);
+  }
+  
   const isContact = String(p.category || '').toLowerCase().includes('contacto');
   const categoryLabel = isContact ? 'Lentes de Contacto' : 'Armazón oftálmico';
+  
+  const isFrame = !String(p.category || '').toLowerCase().includes('sol') && !isContact;
+  if (isFrame) {
+    model = model.replace(/^VISTA\s+/i, '').trim();
+  }
+  
+  model = model.replace(/^0(?=[A-Za-z]{2})/i, '');
+  
+  const displayName = p.display_name ? p.display_name.trim() : (brand ? brand + ' ' + model : model).trim();
+  
   const slug = getProductSlug(p);
   const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}`;
   sitemapUrls.push(canonicalUrl);
@@ -114,7 +137,6 @@ products.forEach(p => {
   const availabilitySchema = isOutOfStock ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock';
   const availabilityText = isOutOfStock ? 'Sobre pedido' : 'En existencia';
 
-  const isFrame = !String(p.category || '').toLowerCase().includes('sol') && !String(p.category || '').toLowerCase().includes('contacto');
   const basePrice = Number(p.price_incl_tax) || 0;
   const constantsPath = path.join(__dirname, '..', 'src', 'lib', 'constants.ts');
   const constantsContent = fs.readFileSync(constantsPath, 'utf8');
@@ -125,8 +147,8 @@ products.forEach(p => {
   const numericPrice = finalPrice.toFixed(2);
   const formattedPriceMxn = `${formatPrice(finalPrice)} MXN`;
   const absImg = resolveAbsImage(p.image_url);
-  const pageTitle = `${brand ? brand + ' ' : ''}${model} | ${categoryLabel} | Óptica Lensique`;
-  let pageDesc = p.description || `Compra ${brand ? brand + ' ' : ''}${model} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;
+  const pageTitle = `${displayName} | ${categoryLabel} | Óptica Lensique`;
+  let pageDesc = p.description || `Compra ${displayName} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;
   if (isFrame) {
     pageDesc += ' Con micas antirreflejantes incluidas.';
   }
@@ -134,7 +156,7 @@ products.forEach(p => {
   const jsonLd = {
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": `${brand ? brand + ' ' : ''}${model} - ${categoryLabel}`,
+    "name": `${displayName} - ${categoryLabel}`,
     "image": [absImg],
     "description": pageDesc,
     "sku": p.sku || slug,

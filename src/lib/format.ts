@@ -1,33 +1,41 @@
-const WP_NAMES = [
-  "Esme", "Franny", "Melva", "Aldous", "Percey", "Winston", "Felix", "Durand", 
-  "Wilkie", "Haskell", "Louise", "Maren", "Whiting", "Laurel", "Simon", "Oliver",
-  "Daisy", "Arthur", "Amelia", "Fiona", "Jasper", "Cora", "Stella", "Miles",
-  "Chloe", "Theo", "Hazel", "Finn", "Ruby", "Leo", "Iris", "Silas", "Clara",
-  "Ezra", "Luna", "Milo", "Ivy", "Asher", "Lily", "Jude", "Nora", "Rowan",
-  "Sadie", "Levi", "Eva", "Eli", "Rose", "Owen", "Lucy", "Caleb", "Grace",
-  "Gideon", "Anna", "Micah", "Ella", "Luke", "Mia", "Adam", "Aria", "Noah",
-  "Cleo", "Hugh", "Faye", "Dane", "Hope", "Zane", "Dawn", "Seth", "Eve",
-  "Tate", "Blythe", "Reid", "Mae", "Gage", "June", "Cole", "Tess", "Lane",
-  "Gwen", "Jace", "Ruth", "Nash", "Jane", "Knox", "Pearl", "Beau", "Maia",
-  "Vance", "Wren", "Flynn", "Skye", "Hayes", "Fawn", "Rhys", "Lark", "Jett",
-  "Sage", "Elm", "Brooks", "Plum", "Beck", "Fern", "Penn", "Ash"
-];
-
 export const toTitleCase = (str: string) => {
   return str.toLowerCase().replace(/(?:^|\s|-)\S/g, s => s.toUpperCase());
 };
 
-export const getInventedName = (productName: string, category: string = '') => {
-  if (!productName) return '';
-  const isContact = String(category).toLowerCase().includes('contacto');
-  if (isContact) return toTitleCase(productName);
+export const formatModelName = (modelRaw: string): string => {
+  if (!modelRaw) return '';
+  let cleaned = modelRaw.trim();
+  cleaned = cleaned.replace(/^0(?=[A-Za-z]{2})/i, '');
+  return cleaned;
+};
+
+export const getDisplayName = (product: any): string => {
+  if (!product) return '';
+  if (product.display_name) return product.display_name.trim();
   
-  let hash = 0;
-  for (let i = 0; i < productName.length; i++) {
-    hash = productName.charCodeAt(i) + ((hash << 5) - hash);
+  const brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
+  let model = (product.model || product.name || '').trim();
+  
+  if (brand) {
+    const brandUpper = brand.toUpperCase().trim();
+    let cleaned = false;
+    do {
+      cleaned = false;
+      if (model.toUpperCase().startsWith(brandUpper)) {
+        model = model.substring(brandUpper.length).trim();
+        cleaned = true;
+      }
+    } while (cleaned);
   }
-  hash = Math.abs(hash);
-  return WP_NAMES[hash % WP_NAMES.length];
+  
+  const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
+  if (isFrame) {
+    model = model.replace(/^VISTA\s+/i, '').trim();
+  }
+  
+  model = formatModelName(model);
+  
+  return (brand ? brand + ' ' + model : model).trim();
 };
 
 export const formatProductTitle = (product: any, prefix: string = 'Lentes') => {

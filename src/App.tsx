@@ -297,12 +297,12 @@ function FullCatalog({
           className={isStandalone ? "full-catalog-view standalone" : "full-catalog-view"} style={isStandalone ? {position:"relative", zIndex:1, height:"auto", minHeight:"100vh"} : {}}
         >
           {/* Combined Top bar: Volver, Logo, Cart */}
-          <div className="catalog-topbar" style={{ display: isStandalone ? "none" : "flex",  justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: '64px', borderBottom: 'none' }}>
+          <div className="catalog-topbar" style={{ display: isStandalone ? "none" : "flex",  justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: '80px', borderBottom: 'none' }}>
             <button className="catalog-back" onClick={onClose} style={{ flex: 1, justifyContent: 'flex-start' }}>
               <ChevronLeft size={20} /> <span className="d-none-mobile">Volver</span>
             </button>
             
-            <img src={logo} alt="Lensique" className="catalog-header-logo" style={{ height: '56px', maxHeight: '56px', flexShrink: 0 }} />
+            <img src={logo} alt="Lensique" className="catalog-header-logo" style={{ height: '72px', maxHeight: '72px', flexShrink: 0 }} />
             
             <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
               <button 

@@ -1,5 +1,5 @@
 import img1 from '../assets/eye_exam_2.jpg';
-import img2 from '../assets/hero_glasses.jpg';
+import img2 from '../assets/blue_light_laptop.jpg';
 
 export interface BlogPost {
   slug: string;

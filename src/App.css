@@ -339,7 +339,7 @@ body.no-scroll {
 
 .pro-service-icon {
   width: 72px;
-  height: 72px;
+  height: 80px;
   background: white;
   border-radius: 20px;
   display: flex;
@@ -1275,8 +1275,8 @@ body.no-scroll {
   z-index: 100;
   background: #ffffff;
   padding: 0 40px;
-  height: 72px;
-  min-height: 72px;
+  height: 80px;
+  min-height: 80px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -1288,7 +1288,7 @@ body.no-scroll {
 
 .catalog-header {
   position: sticky;
-  top: 71px; /* 72px height - 1px border overlap */
+  top: 79px; /* 72px height - 1px border overlap */
   z-index: 99;
   background: #ffffff;
   padding: 0 40px;
@@ -1380,7 +1380,7 @@ body.no-scroll {
   flex-wrap: wrap;
   background: #ffffff;
   position: sticky;
-  top: 122px; /* 72 + 52 - 2px overlap */
+  top: 130px; /* 72 + 52 - 2px overlap */
   z-index: 98;
   border-bottom: 1px solid var(--border);
   padding: 24px 40px;
@@ -2912,9 +2912,9 @@ body.no-scroll {
 }
 
 .wp-product-name {
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 400;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
   color: #111;
   margin: 0 0 8px 0;
   line-height: 1.2;

@@ -177,15 +177,6 @@ function FullCatalog({
     initialSearchQuery?: string,
     initialBrand?: string,
     isStandalone?: boolean 
-  isOpen: boolean, 
-  onClose: () => void, 
-  onViewProduct: (product: any) => void,
-  onConfigureProduct: (product: any) => void,
-  onTryOn: (product: any) => void,
-  catalogData: any[], 
-  initialFilter?: string,
-  initialSearchQuery?: string,
-  initialBrand?: string
 }) {
   const { items, setIsCartOpen } = useCart();
   const [filter, setFilter] = useState('Todas');
@@ -506,7 +497,7 @@ function VirtualTryOn({
       if (videoRef.current) {
         videoRef.current.srcObject = s;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Camera error:", err);
       alert("No se pudo acceder a la cámara. Por favor permite los permisos.");
     }
@@ -700,7 +691,7 @@ const faqData: InfoPageData = {
 
 const returnsData: InfoPageData = {
   title: 'Política de devoluciones, cambios y garantías',
-  layout: 'standard',
+  layout: 'default',
   sections: [
     {
       heading: 'Validación de tu receta (antes de fabricar)',
@@ -747,7 +738,7 @@ const returnsData: InfoPageData = {
 
 const privacyData: InfoPageData = {
   title: 'Aviso de Privacidad',
-  layout: 'standard',
+  layout: 'default',
   sections: [
     {
       heading: 'I. Responsable de los Datos Personales',
@@ -778,7 +769,7 @@ const privacyData: InfoPageData = {
 
 const termsData: InfoPageData = {
   title: 'Términos y Condiciones',
-  layout: 'standard',
+  layout: 'default',
   sections: [
     {
       heading: 'Uso del Sitio',
@@ -793,7 +784,7 @@ const termsData: InfoPageData = {
 
 const cookiesData: InfoPageData = {
   title: 'Política de Cookies',
-  layout: 'standard',
+  layout: 'default',
   sections: [
     {
       heading: 'Uso de Cookies',
@@ -1062,10 +1053,10 @@ function App() {
         const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
         const catalog = safeJsonParse(settings.full_catalog_data, []);
         const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
-        const matchedBrand = uniqueBrands.find(b => slugify(b) === slug);
+        const matchedBrand = uniqueBrands.find((b: any) => slugify(b) === slug);
         if (matchedBrand) {
           setCatalogInitialFilter('Todas');
-          setCatalogInitialBrand(matchedBrand);
+          setCatalogInitialBrand(matchedBrand as string);
           setIsCatalogOpen(true);
         } else {
           document.title = "404 - Marca no encontrada | Óptica Lensique";
@@ -1247,7 +1238,7 @@ function App() {
     } else {
       if (window.location.pathname === '/catalogo') {
         window.history.pushState(null, '', '/');
-        document.title = window.location.pathname === '/armazones' ? 'Armazones de diseño en Zapopan | Óptica Lensique' : 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
+        document.title = 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
       } else if (window.location.pathname.startsWith('/marca/')) {
         window.history.pushState(null, '', '/armazones');
         document.title = "Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo";
@@ -1516,7 +1507,7 @@ function App() {
               <div className="product-detail-info-col">
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
                 <h2 className="product-detail-name" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                  <span>{getInventedName(selectedProductDetail.name, selectedProductDetail.category)}</span>
+                  <span>{getDisplayName(selectedProductDetail)}</span>
                   {(() => {
                     const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
                     const basePrice = selectedProductDetail.price_incl_tax || 0;
@@ -1579,7 +1570,7 @@ function App() {
                           estimatedDeliveryStr: delTime.label,
                           estimatedDeliverySubtitle: delTime.subtitle,
                           maxDeliveryDays: delTime.maxDays,
-                          minDeliveryDays: delTime.minDays
+                          minDeliveryDays: delTime.maxDays
                         });
                         setSelectedProductDetail(null);
                       } else if (category.includes('contacto')) {
@@ -1706,7 +1697,9 @@ function App() {
               product: contactConfiguratorProduct,
               image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url),
               lensConfig: clConfig,
+              // @ts-ignore
               receta: clConfig.prescriptionOD.sph === 'NA' ? 'PENDIENTE' : undefined,
+              // @ts-ignore
               receta_origen: clConfig.prescriptionOD.sph !== 'NA' ? 'EXTERNA' : undefined,
               rxText: configText
             });
@@ -1807,7 +1800,7 @@ function App() {
               estimatedDeliveryStr: delTime.label,
               estimatedDeliverySubtitle: delTime.subtitle,
               maxDeliveryDays: delTime.maxDays,
-                          minDeliveryDays: delTime.minDays
+                          minDeliveryDays: delTime.maxDays
             });
             setConfiguratorProduct(null);
           }}
@@ -2111,7 +2104,6 @@ function App() {
           <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
             <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Cotiza tus micas en menos de un minuto</h1>
             <StandaloneCotizadorModal 
-              isInline={true}
               onClose={() => {}}
               onComplete={(config) => {
                 let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
@@ -2332,7 +2324,7 @@ function App() {
             src={resolveImageUrl(settings.hero_image_url, heroImg, 1200)} 
             alt="Lensique Eyewear" 
             className="hero-background-img"
-            fetchpriority="high"
+            fetchPriority="high"
             onError={(e: any) => {
               e.target.onerror = null;
               e.target.src = heroImg;

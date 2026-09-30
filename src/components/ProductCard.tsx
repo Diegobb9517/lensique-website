@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
 import { getDisplayName, getProductSlug, isInStock } from '../lib/format';

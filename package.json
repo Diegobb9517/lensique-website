@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/compile_delivery.js && cross-env ESLINT_USE_FLAT_CONFIG=false npx eslint \"src/**/*.{ts,tsx}\" --no-eslintrc --parser @typescript-eslint/parser --parser-options \"{\\\"ecmaVersion\\\":2022,\\\"sourceType\\\":\\\"module\\\",\\\"ecmaFeatures\\\":{\\\"jsx\\\":true}}\" --env browser,es2022 --global JSX --rule \"no-undef:error\" --rule \"no-unused-vars:off\" && node scripts/check_syntax.js && node scripts/check_base_lens_price.js && vite build && node scripts/prerender.js",
+    "build": "node scripts/compile_delivery.js && node scripts/check_syntax.js && node scripts/check_base_lens_price.js && vite build && node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "check:types": "tsc -p tsconfig.ci.json --noEmit"

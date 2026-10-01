@@ -1492,7 +1492,7 @@ function App() {
                     <ImageWithSkeleton
                       src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || (String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg)}
                       alt={selectedProductDetail.name}
-                      className="product-detail-img smooth-img"
+                      className={`product-detail-img smooth-img ${String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? 'contact-lens-modal-img' : ''}`}
                       onError={(e: any) => { 
                         const target = e.currentTarget;
                         const fallback = String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg;

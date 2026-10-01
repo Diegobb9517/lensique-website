@@ -3310,12 +3310,13 @@ body.no-scroll {
 }
 
 .product-detail-name {
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  font-size: 48px;
-  font-weight: 400;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
   color: #1d1d1f;
   margin: 0 0 12px;
-  line-height: 1.05;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
 }
 
 .product-detail-code {
@@ -3419,7 +3420,7 @@ body.no-scroll {
     padding: 24px 20px 30px;
   }
   .product-detail-name {
-    font-size: 28px;
+    font-size: 26px;
   }
 }
 
@@ -4097,3 +4098,14 @@ body.no-scroll .whatsapp-float {
 .nav-left { flex: 1; justify-content: flex-start; }
 .nav-right { flex: 1; justify-content: flex-end; }
 
+
+/* Contact Lens Specific Modal Adjustments */
+.product-detail-img.contact-lens-modal-img {
+  transform: scale(1.35);
+  max-width: 80%;
+}
+@media (max-width: 768px) {
+  .product-detail-img.contact-lens-modal-img {
+    transform: scale(1.15);
+  }
+}

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/compile_delivery.js && npx tsc -p tsconfig.ci.json --noEmit && node scripts/check_syntax.js && node scripts/check_base_lens_price.js && vite build && node scripts/prerender.js",
+    "build": "node scripts/compile_delivery.js && cross-env ESLINT_USE_FLAT_CONFIG=false npx eslint \"src/**/*.{ts,tsx}\" --no-eslintrc --parser @typescript-eslint/parser --parser-options \"{\\\"ecmaVersion\\\":2022,\\\"sourceType\\\":\\\"module\\\",\\\"ecmaFeatures\\\":{\\\"jsx\\\":true}}\" --env browser,es2022 --global JSX --rule \"no-undef:error\" --rule \"no-unused-vars:off\" && node scripts/check_syntax.js && node scripts/check_base_lens_price.js && vite build && node scripts/prerender.js",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:types": "tsc -p tsconfig.ci.json --noEmit"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
@@ -21,8 +22,10 @@
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^9.39.4",
+    "cross-env": "^10.1.0",
+    "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",

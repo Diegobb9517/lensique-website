@@ -3310,13 +3310,13 @@ body.no-scroll {
 }
 
 .product-detail-name {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 32px;
-  font-weight: 700;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 38px;
+  font-weight: 500;
   color: #1d1d1f;
-  margin: 0 0 12px;
-  line-height: 1.1;
-  letter-spacing: -0.5px;
+  margin: 0 0 16px;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
 }
 
 .product-detail-code {

@@ -25,7 +25,7 @@ import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 import heroImg from './assets/hero_glasses.jpg';
-import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock } from './lib/format';
+import { getDisplayName, toTitleCase, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
 import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
 import { ProductCard } from './components/ProductCard';
@@ -1508,7 +1508,7 @@ function App() {
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
                   <h2 className="product-detail-name" style={{ margin: 0, width: '100%', lineHeight: '1.2' }}>
-                    {getDisplayName(selectedProductDetail)}
+                    {toTitleCase(getDisplayName(selectedProductDetail))}
                   </h2>
                   {(() => {
                     const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');

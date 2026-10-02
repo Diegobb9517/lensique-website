@@ -1506,26 +1506,28 @@ function App() {
               {/* Right: Info */}
               <div className="product-detail-info-col">
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
-                <h2 className="product-detail-name" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                  <span>{getDisplayName(selectedProductDetail)}</span>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
+                  <h2 className="product-detail-name" style={{ margin: 0, width: '100%', lineHeight: '1.2' }}>
+                    {getDisplayName(selectedProductDetail)}
+                  </h2>
                   {(() => {
                     const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
                     const basePrice = selectedProductDetail.price_incl_tax || 0;
                     const finalPrice = isFrame ? basePrice + BASE_LENS_PRICE : basePrice;
                     
                     return (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <span style={{ color: '#16a34a', whiteSpace: 'nowrap' }} className="tabular-nums">${finalPrice.toLocaleString('en-US')}{String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? ' / caja' : ''}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <span style={{ color: '#16a34a', fontSize: '32px', fontWeight: 700, whiteSpace: 'nowrap' }} className="tabular-nums">${finalPrice.toLocaleString('en-US')}{String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? ' / caja' : ''}</span>
                         {isFrame && (
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                            <span style={{ fontSize: '12px', color: '#059669', fontWeight: 500, marginTop: '4px', textAlign: 'right' }}>Incluye micas antirreflejantes,<br/>examen de la vista y armado</span>
-                            <span style={{ fontSize: '11px', color: '#6b7280', fontWeight: 400, marginTop: '2px' }}>Armazón ${basePrice.toLocaleString('en-US')} · Micas $1,200</span>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                            <span style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>Incluye micas antirreflejantes, examen de la vista y armado</span>
+                            <span style={{ fontSize: '12px', color: '#6b7280', fontWeight: 400, marginTop: '2px' }}>Armazón ${basePrice.toLocaleString('en-US')} + Micas \$1,200</span>
                           </div>
                         )}
                       </div>
                     );
                   })()}
-                </h2>
+                </div>
                 <p className="product-detail-desc">
                   {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') 
                     ? `Lentes de Contacto${getContactLensUsage(selectedProductDetail.name) !== 'Todos' ? ` - ${getContactLensUsage(selectedProductDetail.name)}` : ''}` 

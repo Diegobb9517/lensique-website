@@ -2175,100 +2175,71 @@ function App() {
 
         
         {currentPath === '/micas' && (
-          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '0' }}>
-        <section id="micas" className="wp-micas-lifestyle-section">
-          <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
-            <h1 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Tecnologías de visión</h1>
-            <p style={{ margin: '8px 0 0', color: '#6e6e73', fontSize: '16px', textAlign: 'center' }}>Elige el tipo de mica y los tratamientos que necesitas.</p>
-          </div>
-          
-          <div style={{ maxWidth: 'var(--max-width)', margin: '0 auto', width: '100%' }}>
-            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', margin: '0 0 24px', textAlign: 'left', color: '#1d1d1f' }}>Tipos de mica</h2>
-            <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
-              {[
-                { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: premiumMonofocal },
-                { id: 'm2', title: 'Bifocales', description: 'Visión de cerca y de lejos en un solo lente.', image: premiumBifocal },
-                { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: premiumProgressive },
-                { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: premiumPhotochromic }
-              ].map((brick: any, idx: number) => (
-                <div key={`mica-ls-${idx}-${brick.id}`} className="wp-mica-wrapper">
-                  <motion.div 
-                    className="wp-mica-lifestyle-card"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: idx * 0.1 }}
-                    viewport={{ once: true }}
-                    onClick={() => setSelectedTech(brick)}
-                  >
-                    <div 
-                      className="wp-mica-bg" 
-                      style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
-                    />
-                    <div className="wp-mica-action-pill">{brick.title}</div>
-                  </motion.div>
-                  <p className="wp-mica-desc-outside">{brick.description}</p>
+          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
+            <section id="micas" className="wp-micas-lifestyle-section" style={{ padding: '80px 40px 80px', backgroundColor: '#f8fafc', minHeight: 'calc(100vh - 160px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
+                <h1 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Tecnologías de visión</h1>
+                <p style={{ margin: '8px 0 0', color: '#6e6e73', fontSize: '16px', textAlign: 'center' }}>Elige el tipo de mica; los tratamientos los decides al configurar.</p>
+              </div>
+              
+              <div style={{ maxWidth: 'var(--max-width)', margin: '0 auto', width: '100%' }}>
+                <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
+                  {[
+                    { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: premiumMonofocal },
+                    { id: 'm2', title: 'Bifocales', description: 'Visión de cerca y de lejos en un solo lente.', image: premiumBifocal },
+                    { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: premiumProgressive },
+                    { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: premiumPhotochromic }
+                  ].map((brick: any, idx: number) => (
+                    <div key={`mica-ls-${idx}-${brick.id}`} className="wp-mica-wrapper">
+                      <motion.div 
+                        className="wp-mica-lifestyle-card"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: idx * 0.1 }}
+                        viewport={{ once: true }}
+                        onClick={(e: any) => { 
+                          e.preventDefault(); 
+                          setIsCotizadorGeneralOpen(true); 
+                          window.history.pushState({}, '', '/cotizador'); 
+                        }}
+                      >
+                        <div 
+                          className="wp-mica-bg" 
+                          style={{ backgroundImage: `url(${brick.image})` }}
+                        />
+                        <div className="wp-mica-action-pill">{brick.title}</div>
+                      </motion.div>
+                      <p className="wp-mica-desc-outside">{brick.description}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            
-            <div style={{ height: '64px' }}></div>
-            
-            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', margin: '0 0 24px', textAlign: 'left', color: '#1d1d1f' }}>Tratamientos y materiales</h2>
-            <div className="wp-treatments-grid">
-              {[
-                { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.', image: premiumAntireflective },
-                { id: 'm9', title: 'Polarizado', description: 'Protección superior contra reflejos.', image: premiumPolarized },
-                { id: 'm6', title: 'Luz azul', description: 'Protección para pantallas digitales.', image: premiumBluelight }
-              ].map((brick: any, idx: number) => (
-                <div key={`mica-ls-treat-${idx}-${brick.id}`} className="wp-mica-wrapper">
-                  <motion.div 
-                    className="wp-mica-lifestyle-card"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: idx * 0.1 }}
-                    viewport={{ once: true }}
-                    onClick={() => setSelectedTech(brick)}
+                
+                <div style={{ marginTop: '48px', textAlign: 'center' }}>
+                  <p style={{ fontSize: '15px', color: '#6e6e73', margin: '0 0 32px' }}>Antirreflejante, filtro de luz azul, polarizado y adelgazado se eligen al configurar tus micas, con su precio a la vista.</p>
+                  <a 
+                    href="/cotizador" 
+                    onClick={(e) => { 
+                      e.preventDefault(); 
+                      setIsCotizadorGeneralOpen(true); 
+                      window.history.pushState({}, '', '/cotizador'); 
+                    }}
+                    style={{
+                      display: 'inline-block',
+                      background: '#1d1d1f',
+                      color: '#ffffff',
+                      padding: '16px 40px',
+                      borderRadius: '980px',
+                      fontSize: '17px',
+                      fontWeight: 600,
+                      textDecoration: 'none',
+                      transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                    }}
                   >
-                    <div 
-                      className="wp-mica-bg" 
-                      style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
-                    />
-                    <div className="wp-mica-action-pill">{brick.title}</div>
-                  </motion.div>
-                  <p className="wp-mica-desc-outside">{brick.description}</p>
+                    Cotizar mis micas
+                  </a>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="contact-cta-section" style={{ padding: '60px 20px', background: 'linear-gradient(135deg, #f7f9fc 0%, #eef2f6 100%)', color: '#1d1d1f', textAlign: 'center' }}>
-          <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 600 }}>¿Quieres saber el costo de tus micas?</h2>
-            <p style={{ fontSize: '18px', color: '#6e6e73', marginBottom: '32px' }}>
-              Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un minuto.
-            </p>
-            <a 
-              href="/cotizador" 
-              onClick={(e) => { e.preventDefault(); setIsCotizadorGeneralOpen(true); }}
-              style={{
-                display: 'inline-block',
-                background: '#1d1d1f',
-                color: '#ffffff',
-                padding: '16px 40px',
-                borderRadius: '980px',
-                fontSize: '17px',
-                fontWeight: 600,
-                textDecoration: 'none',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-              }}
-            >
-              Abrir cotizador de micas
-            </a>
-          </div>
-        </section>
-        <LensExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
-        <ProgressiveExplainer onOpenCotizador={() => setIsCotizadorGeneralOpen(true)} />
+              </div>
+            </section>
           </div>
         )}
 

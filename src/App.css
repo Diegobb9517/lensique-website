@@ -3094,113 +3094,97 @@ body.no-scroll {
   display: none;
 }
 
-.wp-mica-lifestyle-card {
-  min-width: 280px;
-  width: 280px;
-  height: 380px;
-  height: 400px;
-  border-radius: 24px;
-  background: #ffffff;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 36px 28px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  cursor: pointer;
-  overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.06);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+.wp-micas-lifestyle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+@media (max-width: 1023px) {
+  .wp-micas-lifestyle-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding-bottom: 16px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .wp-micas-lifestyle-grid::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-.wp-mica-lifestyle-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+.wp-mica-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+@media (max-width: 1023px) {
+  .wp-mica-wrapper {
+    min-width: 260px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
+
+.wp-mica-lifestyle-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f8fafc;
+  display: block;
 }
 
 .wp-mica-bg {
   position: absolute;
-  top: 40%; left: 0; right: 0; bottom: 0;
-  background-size: 110%;
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  z-index: 0;
-  mix-blend-mode: multiply;
-  transition: filter 0.8s ease, transform 0.4s ease;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wp-mica-lifestyle-card:hover .wp-mica-bg {
-  transform: scale(1.05) translateY(-5px);
-}
-
-.wp-mica-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 25%, rgba(255,255,255,0) 50%);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.photochromic-anim {
-  animation: photochromic-darken 8s infinite alternate;
-}
-
-@keyframes photochromic-darken {
-  0%, 20% { filter: brightness(1) sepia(0) hue-rotate(0deg) contrast(1); }
-  80%, 100% { filter: brightness(0.25) sepia(0.2) hue-rotate(180deg) contrast(1.2); }
-}
-
-.wp-mica-text-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.wp-mica-title {
-  font-size: 26px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-.wp-mica-desc {
-  font-size: 15px;
-  color: #515154;
-  margin: 0;
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-.wp-mica-action {
-  position: relative;
-  z-index: 2;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent, #0066cc);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.wp-mica-action::after {
-  content: '→';
-  transition: transform 0.3s ease;
-}
-
-.wp-mica-lifestyle-card:hover .wp-mica-action::after {
-  transform: translateX(4px);
-}
-
-.wp-mica-lifestyle-card:hover .wp-service-pill {
   transform: scale(1.05);
+}
+
+.wp-mica-action-pill {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  color: #1d1d1f;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  white-space: nowrap;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
+}
+
+.wp-mica-lifestyle-card:hover .wp-mica-action-pill {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.wp-mica-desc-outside {
+  font-size: 14px;
+  color: #64748b;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+  padding: 0 8px;
 }
 
 .slider-arrow-btn {

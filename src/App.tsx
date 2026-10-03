@@ -2176,38 +2176,29 @@ function App() {
         {currentPath === '/micas' && (
           <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '0' }}>
         <section id="micas" className="wp-micas-lifestyle-section">
-          <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-              <h2 className="wp-section-title" style={{ margin: 0 }}>Tecnologías de visión</h2>
-            </div>
-            <div className="wp-slider-nav" style={{ display: 'flex', gap: '10px' }}>
-              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollMicas('left')}><ChevronLeft size={24} /></button>
-              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollMicas('right')}><ChevronRight size={24} /></button>
-            </div>
+          <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>
+            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Tecnologías de visión</h2>
           </div>
           
           <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
             {safeJsonParse(settings.category_bricks).map((brick: any, idx: number) => (
-              <motion.div 
-                key={`mica-ls-${idx}-${brick.id}`}
-                className="wp-mica-lifestyle-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                onClick={() => setSelectedTech(brick)}
-              >
-                <div 
-                  className="wp-mica-bg" 
-                  style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
-                />
-                <div className="wp-mica-overlay" />
-                <div className="wp-mica-text-content">
-                  <h3 className="wp-mica-title">{brick.title}</h3>
-                  <p className="wp-mica-desc">{brick.description}</p>
-                </div>
-                <div className="wp-mica-action">CONOCER MÁS</div>
-              </motion.div>
+              <div key={`mica-ls-${idx}-${brick.id}`} className="wp-mica-wrapper">
+                <motion.div 
+                  className="wp-mica-lifestyle-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  onClick={() => setSelectedTech(brick)}
+                >
+                  <div 
+                    className="wp-mica-bg" 
+                    style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, brick.image)})` }}
+                  />
+                  <div className="wp-mica-action-pill">{brick.title}</div>
+                </motion.div>
+                <p className="wp-mica-desc-outside">{brick.description}</p>
+              </div>
             ))}
           </div>
         </section>
@@ -2419,15 +2410,11 @@ function App() {
           </section> 
 )}
 
-        <section id="servicios" className="wp-services-section">
-          <div className="wp-section-header">
-            <h2 className="wp-section-title">Nuestros servicios visuales</h2>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollServicios('left')}><ChevronLeft size={24} /></button>
-              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollServicios('right')}><ChevronRight size={24} /></button>
-            </div>
+        <section id="servicios" className="wp-services-section" style={{ padding: '80px 40px', backgroundColor: '#fff' }}>
+          <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>
+            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Nuestros servicios visuales</h2>
           </div>
-          <div className="wp-services-grid" ref={servicesSliderRef}>
+          <div className="wp-micas-lifestyle-grid" ref={servicesSliderRef}>
             {[
               { 
                 id: 's1', 
@@ -2474,19 +2461,23 @@ function App() {
               },
               { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => setIsContactQuizOpen(true) },
               { id: 's5', title: 'Armazones', img: armazonesServiceImg, action: () => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
-            ].map((service) => (
-              <motion.div 
-                key={service.id}
-                className="wp-service-card"
-                style={{ backgroundImage: `url(${service.img})` }}
-                onClick={service.action}
-                whileHover={{ y: -5 }}
-              >
-                <div className="wp-service-card-overlay"></div>
-                <button className="wp-service-pill">
-                  {service.title}
-                </button>
-              </motion.div>
+            ].map((service, idx) => (
+              <div key={service.id} className="wp-mica-wrapper">
+                <motion.div 
+                  className="wp-mica-lifestyle-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  onClick={service.action}
+                >
+                  <div 
+                    className="wp-mica-bg" 
+                    style={{ backgroundImage: `url(${service.img})` }}
+                  />
+                  <div className="wp-mica-action-pill">{service.title}</div>
+                </motion.div>
+              </div>
             ))}
           </div>
         </section>

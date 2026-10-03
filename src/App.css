@@ -3079,39 +3079,32 @@ body.no-scroll {
 }
 
 .wp-micas-lifestyle-grid {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 30px;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.wp-micas-lifestyle-grid::-webkit-scrollbar {
-  display: none;
-}
-
-.wp-micas-lifestyle-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   width: 100%;
 }
+.wp-treatments-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+.wp-treatments-grid .wp-mica-lifestyle-card {
+  aspect-ratio: 4 / 3;
+}
+
 @media (max-width: 1023px) {
   .wp-micas-lifestyle-grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 16px;
-    padding-bottom: 16px;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    grid-template-columns: repeat(2, 1fr);
   }
-  .wp-micas-lifestyle-grid::-webkit-scrollbar {
-    display: none;
+}
+
+@media (max-width: 768px) {
+  .wp-micas-lifestyle-grid,
+  .wp-treatments-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
 }
 
@@ -3122,14 +3115,6 @@ body.no-scroll {
   gap: 12px;
   width: 100%;
 }
-@media (max-width: 1023px) {
-  .wp-mica-wrapper {
-    min-width: 260px;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-  }
-}
-
 .wp-mica-lifestyle-card {
   position: relative;
   width: 100%;

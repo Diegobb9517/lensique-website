@@ -1,0 +1,14 @@
+@media (max-width: 1023px) {
+  .mica-modal-override {
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    overflow-y: auto !important;
+  }
+  .mica-modal-override .product-detail-img-col {
+    min-height: 300px;
+    height: 300px;
+  }
+}

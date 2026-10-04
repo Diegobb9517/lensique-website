@@ -28,6 +28,7 @@ import heroImg from './assets/hero_glasses.jpg';
 import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
 import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
+import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard } from './components/ProductCard';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
@@ -962,6 +963,7 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedTech, setSelectedTech] = useState<any>(null);
+  const [selectedMicaCard, setSelectedMicaCard] = useState<any>(null);
   const [settings, setSettings] = useState<any>({
     hero_title: 'La perfección en tu mirada.',
     hero_subtitle: 'Diseño minimalista y tecnología óptica de vanguardia.',
@@ -1712,6 +1714,19 @@ function App() {
         />
       )}
 
+      <AnimatePresence>
+        {selectedMicaCard && (
+          <MicaDetailModal
+            mica={selectedMicaCard}
+            onClose={() => setSelectedMicaCard(null)}
+            onOpenCotizador={() => {
+              setIsCotizadorGeneralOpen(true);
+              window.history.pushState({}, '', '/cotizador');
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {isCotizadorGeneralOpen && (
         <StandaloneCotizadorModal
           onClose={() => setIsCotizadorGeneralOpen(false)}
@@ -2199,8 +2214,7 @@ function App() {
                         viewport={{ once: true }}
                         onClick={(e: any) => { 
                           e.preventDefault(); 
-                          setIsCotizadorGeneralOpen(true); 
-                          window.history.pushState({}, '', '/cotizador'); 
+                          setSelectedMicaCard(brick);
                         }}
                       >
                         <div 

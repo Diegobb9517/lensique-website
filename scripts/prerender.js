@@ -67,7 +67,7 @@ const formatPrice = (amount) => {
 
 const resolveAbsImage = (imgUrl) => {
   if (!imgUrl || imgUrl === 'null' || imgUrl === 'undefined') {
-    return 'https://www.lensique.com.mx/hero_glasses.jpg';
+    return 'https://www.lensique.com.mx/hero-desktop.jpg';
   }
   let url = String(imgUrl).trim();
   if (url.startsWith('http')) return url;
@@ -364,7 +364,7 @@ const agendarHeadInjection = `
     <link rel="canonical" href="${agendarCanonical}" />
     <meta property="og:title" content="${agendarTitle}" />
     <meta property="og:description" content="${agendarDesc}" />
-    <meta property="og:image" content="https://www.lensique.com.mx/hero_glasses.jpg" />
+    <meta property="og:image" content="https://www.lensique.com.mx/hero-desktop.jpg" />
     <meta property="og:url" content="${agendarCanonical}" />
     <meta property="og:type" content="website" />
 `;
@@ -580,7 +580,7 @@ Cuidar tu vista es más barato y más fácil cuando lo haces a tiempo. Si ya te 
     slug: 'filtro-luz-azul-sirve',
     title: 'Lentes con filtro de luz azul: ¿de verdad sirven? | Óptica Lensique',
     metaDescription: '¿Los lentes con filtro de luz azul reducen la fatiga o protegen tus ojos? Esto es lo que dice la ciencia, explicado con honestidad por Óptica Lensique en Zapopan.',
-    image: 'https://www.lensique.com.mx/assets/hero_glasses.jpg',
+    image: 'https://www.lensique.com.mx/hero-desktop.jpg',
     author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
     datePublished: '2024-03-21T10:00:00Z',
     excerpt: 'Vas a encontrar el "filtro de luz azul" en casi cualquier anuncio de lentes. Aquí te explicamos qué es real, qué es marketing, y si de verdad vale la pena.',

@@ -24,7 +24,7 @@ import BlogPost from './components/BlogPost';
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
-import heroImg from './assets/hero_glasses.jpg';
+const heroImg = '/hero-desktop.jpg';
 import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
 import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
@@ -2335,16 +2335,19 @@ function App() {
           <div>
 
         <section className="hero">
-          <img 
-            src={resolveImageUrl(settings.hero_image_url, heroImg, 1200)} 
-            alt="Lensique Eyewear" 
-            className="hero-background-img"
-            fetchPriority="high"
-            onError={(e: any) => {
-              e.target.onerror = null;
-              e.target.src = heroImg;
-            }}
-          />
+          <picture style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+            <source srcSet="/hero-mobile.webp" media="(max-width: 768px)" width="1080" height="1350" />
+            <img 
+              src="/hero-desktop.webp" 
+              alt="Persona probándose lentes en una óptica" 
+              className="hero-background-img"
+              loading="eager"
+              fetchPriority="high"
+              width="1920"
+              height="1080"
+              style={{ position: 'relative' }}
+            />
+          </picture>
           <div className="hero-content">
             <span className="hero-eyebrow">{settings.hero_eyebrow}</span>
             <h1 className="hero-title">{settings.hero_title}</h1>

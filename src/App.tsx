@@ -2372,7 +2372,7 @@ function App() {
         <section className="perks-bar">
           <div className="perk-item">Examen de vista<br/>profesional</div>
           <div className="perk-separator"></div>
-          <div className="perk-item">Servicios de ajuste<br/>y mantenimiento</div>
+          <div className="perk-item">Micas de la más<br/>alta calidad</div>
           <div className="perk-separator"></div>
           <div className="perk-item">Asesoría de imagen<br/>personalizada</div>
           <div className="perk-separator"></div>
@@ -2436,7 +2436,7 @@ function App() {
 
         <section id="servicios" className="wp-services-section" style={{ padding: '80px 40px', backgroundColor: '#fff' }}>
           <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>
-            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Nuestros servicios visuales</h2>
+            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Lo que encuentras en Lensique</h2>
           </div>
           <div className="wp-micas-lifestyle-grid" ref={servicesSliderRef}>
             {[
@@ -2469,6 +2469,12 @@ function App() {
                 }) 
               },
               { 
+                id: 's3_arm', 
+                title: 'Armazones', 
+                img: armazonesServiceImg, 
+                action: () => { window.location.href = '/catalogo?tipo=armazones'; }
+              },
+              { 
                 id: 's4', 
                 title: 'Lentes de contacto', 
                 img: contactLensesImg, 
@@ -2480,20 +2486,6 @@ function App() {
                   image: contactLensesImg,
                   actionText: 'Ver lentes de contacto',
                   onAction: () => { setSelectedServiceInfo(null); setIsContactQuizOpen(true); }
-                })
-              },
-              { 
-                id: 's5', 
-                title: 'Ajuste y mantenimiento', 
-                img: armazonesServiceImg, 
-                action: () => setSelectedServiceInfo({
-                  id: 's5',
-                  title: 'Ajuste y mantenimiento',
-                  subtitle: 'Tus lentes siempre como nuevos',
-                  description: '<p>Tráenos tus lentes. Nos encargamos de enderezarlos, ajustarlos a tu rostro y darles mantenimiento general para alargar su vida útil y mantener tu comodidad.</p>',
-                  image: armazonesServiceImg,
-                  actionText: 'Escríbenos por WhatsApp',
-                  onAction: () => window.open('https://wa.me/5213329244036', '_blank')
                 })
               }
             ].map((service, idx) => (

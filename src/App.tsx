@@ -958,6 +958,9 @@ function App() {
     } else {
       import('./lib/analytics').then(({ trackPageView }) => trackPageView());
     }
+    if (currentPath !== '/micas') {
+      setSelectedMicaCard(null);
+    }
   }, [currentPath]);
 
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(() => window.location.pathname.includes('/pago/exito'));
@@ -1020,6 +1023,7 @@ function App() {
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
   const [isCotizadorGeneralOpen, setIsCotizadorGeneralOpen] = useState(false);
+  const [cotizadorInitialType, setCotizadorInitialType] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingName, setBookingName] = useState<string>('');
@@ -1716,15 +1720,19 @@ function App() {
       )}
 
       <AnimatePresence>
-        {selectedMicaCard && (
+        {selectedMicaCard && currentPath === '/micas' && (
           <MicaDetailModal
             mica={selectedMicaCard}
             onClose={() => setSelectedMicaCard(null)}
             onOpenCotizador={() => {
+              const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' } as any;
+              setCotizadorInitialType(micaContent[selectedMicaCard.id] || null);
               setSelectedMicaCard(null);
-              setIsCotizadorGeneralOpen(true);
-              window.history.pushState({}, '', '/cotizador');
-              window.dispatchEvent(new PopStateEvent('popstate'));
+              setTimeout(() => {
+                setIsCotizadorGeneralOpen(true);
+                window.history.pushState({}, '', '/cotizador');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }, 300);
             }}
           />
         )}
@@ -1732,9 +1740,14 @@ function App() {
 
       {isCotizadorGeneralOpen && (
         <StandaloneCotizadorModal
-          onClose={() => setIsCotizadorGeneralOpen(false)}
+          initialType={cotizadorInitialType}
+          onClose={() => {
+            setIsCotizadorGeneralOpen(false);
+            setCotizadorInitialType(null);
+          }}
           onComplete={(config) => {
             setIsCotizadorGeneralOpen(false);
+            setCotizadorInitialType(null);
             
             let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
             
@@ -2122,8 +2135,9 @@ function App() {
         {currentPath === '/cotizador' && (
           <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
             <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Cotiza tus micas en menos de un minuto</h1>
-            <StandaloneCotizadorModal 
-              onClose={() => {}}
+            <StandaloneCotizadorModal
+              initialType={cotizadorInitialType}
+              onClose={() => setCotizadorInitialType(null)}
               onComplete={(config) => {
                 let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
                 if (config.etiqueta) configText += `- ${config.etiqueta} (Índice ${config.indice})\n`;

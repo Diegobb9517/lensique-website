@@ -6,11 +6,13 @@ import './LensConfiguratorModal.css';
 interface StandaloneCotizadorModalProps {
   onClose: () => void;
   onComplete: (config: any) => void;
+  initialType?: string | null;
 }
 
 export default function StandaloneCotizadorModal({
   onClose,
-  onComplete
+  onComplete,
+  initialType
 }: StandaloneCotizadorModalProps) {
   const hasProcessed = React.useRef(false);
 
@@ -79,7 +81,7 @@ export default function StandaloneCotizadorModal({
           </button>
           
           <iframe 
-            src="/asesor_zeiss.html?v=1.0.2"
+            src={`/asesor_zeiss.html?v=1.0.2${initialType ? `&initialType=${encodeURIComponent(initialType)}` : ''}`}
             title="Asesor Visual ZEISS"
             style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit' }}
           />

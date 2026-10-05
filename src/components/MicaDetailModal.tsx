@@ -46,6 +46,10 @@ const micaContent: Record<string, any> = {
 };
 
 export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: MicaDetailModalProps) {
+  React.useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'auto'; };
+  }, []);
   const content = micaContent[mica.id];
   if (!content) return null;
 
@@ -56,7 +60,7 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      style={{ zIndex: 1000, position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+      style={{ zIndex: 10000 }}
     >
       <motion.div
         className="product-detail-modal mica-modal-override"
@@ -65,7 +69,7 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
         exit={{ opacity: 0, y: 40 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
         onClick={(e) => e.stopPropagation()}
-        style={{ display: 'grid', gridTemplateColumns: '1.25fr 1fr', background: '#fff', borderRadius: '24px', overflow: 'hidden', width: '100%', maxWidth: '1100px', maxHeight: '90vh', position: 'relative' }}
+        
       >
         <button className="product-detail-close" onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.8)', border: 'none', cursor: 'pointer', zIndex: 10, width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
           <X size={20} />

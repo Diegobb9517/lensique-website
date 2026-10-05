@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Reveal from './components/Reveal';
 import { 
   Search, Menu, X, MapPin, MessageCircle,
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
@@ -2289,13 +2290,7 @@ function App() {
           </div>
 
           {/* Part 2: Lifestyle Banner */}
-          <motion.div
-            className="lifestyle-banner"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <Reveal className="lifestyle-banner">
             <div className="lifestyle-banner-text">
               <h2 className="lifestyle-banner-title">Compra junto a quien más quieres</h2>
               <p className="lifestyle-banner-desc">
@@ -2322,7 +2317,7 @@ function App() {
                 decoding="async"
               />
             </div>
-          </motion.div>
+          </Reveal>
         </section>
           </div>
         )}

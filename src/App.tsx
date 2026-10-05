@@ -1721,8 +1721,10 @@ function App() {
             mica={selectedMicaCard}
             onClose={() => setSelectedMicaCard(null)}
             onOpenCotizador={() => {
+              setSelectedMicaCard(null);
               setIsCotizadorGeneralOpen(true);
               window.history.pushState({}, '', '/cotizador');
+              window.dispatchEvent(new PopStateEvent('popstate'));
             }}
           />
         )}
@@ -2207,12 +2209,9 @@ function App() {
                     { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: premiumPhotochromic }
                   ].map((brick: any, idx: number) => (
                     <div key={`mica-ls-${idx}-${brick.id}`} className="wp-mica-wrapper">
-                      <motion.div 
+                      <Reveal 
                         className="wp-mica-lifestyle-card"
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: idx * 0.1 }}
-                        viewport={{ once: true }}
+                        delay={idx * 0.1}
                         onClick={(e: any) => { 
                           e.preventDefault(); 
                           setSelectedMicaCard(brick);
@@ -2223,7 +2222,7 @@ function App() {
                           style={{ backgroundImage: `url(${brick.image})` }}
                         />
                         <div className="wp-mica-action-pill">{brick.title}</div>
-                      </motion.div>
+                      </Reveal>
                       <p className="wp-mica-desc-outside">{brick.description}</p>
                     </div>
                   ))}
@@ -2488,12 +2487,9 @@ function App() {
               }
             ].map((service, idx) => (
               <div key={service.id} className="wp-mica-wrapper">
-                <motion.div 
+                <Reveal 
                   className="wp-mica-lifestyle-card"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: idx * 0.1 }}
-                  viewport={{ once: true }}
+                  delay={idx * 0.1}
                   onClick={service.action}
                 >
                   <div 
@@ -2501,7 +2497,7 @@ function App() {
                     style={{ backgroundImage: `url(${service.img})` }}
                   />
                   <div className="wp-mica-action-pill">{service.title}</div>
-                </motion.div>
+                </Reveal>
               </div>
             ))}
           </div>

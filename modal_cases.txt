@@ -1,0 +1,89 @@
+﻿
+> src\components\ContactLensConfiguratorModal.tsx:248:      case 1:
+  src\components\ContactLensConfiguratorModal.tsx:249:        return (
+  src\components\ContactLensConfiguratorModal.tsx:250:          <div className="contact-lens-content-panel">
+  src\components\ContactLensConfiguratorModal.tsx:251:            <div className="contact-lens-step-header">
+  src\components\ContactLensConfiguratorModal.tsx:252:              <span className="contact-lens-step-indicator">Paso 
+1 de 3</span>
+  src\components\ContactLensConfiguratorModal.tsx:253:            </div>
+  src\components\ContactLensConfiguratorModal.tsx:254:            
+  src\components\ContactLensConfiguratorModal.tsx:255:            <h2 className="contact-lens-title">Selecciona la 
+cantidad</h2>
+  src\components\ContactLensConfiguratorModal.tsx:256:            <p style={{ color: '#64748b', marginBottom: '2rem' 
+}}>Elige cuántas cajas deseas para cada ojo.</p>
+  src\components\ContactLensConfiguratorModal.tsx:257:            
+  src\components\ContactLensConfiguratorModal.tsx:258:            <div className="cl-qty-container">
+  src\components\ContactLensConfiguratorModal.tsx:259:              <div className="cl-qty-label">
+  src\components\ContactLensConfiguratorModal.tsx:260:                <input type="checkbox" checked readOnly style={{ 
+width: '18px', height: '18px', accentColor: '#1a4cd2' }} />
+  src\components\ContactLensConfiguratorModal.tsx:261:                <span>Ojo Derecho (OD)</span>
+  src\components\ContactLensConfiguratorModal.tsx:262:              </div>
+  src\components\ContactLensConfiguratorModal.tsx:263:              <div className="cl-qty-controls">
+  src\components\ContactLensConfiguratorModal.tsx:264:                <span style={{ fontSize: '0.875rem', color: 
+'#64748b' }}>{quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'}</span>
+  src\components\ContactLensConfiguratorModal.tsx:265:                <button className="cl-qty-btn" onClick={() => 
+setQuantityOD(Math.max(0, quantityOD - 1))} disabled={quantityOD <= 0}>-</button>
+  src\components\ContactLensConfiguratorModal.tsx:266:                <button className="cl-qty-btn" onClick={() => 
+setQuantityOD(quantityOD + 1)}>+</button>
+  src\components\ContactLensConfiguratorModal.tsx:267:              </div>
+  src\components\ContactLensConfiguratorModal.tsx:268:            </div>
+> src\components\ContactLensConfiguratorModal.tsx:310:      case 2:
+  src\components\ContactLensConfiguratorModal.tsx:311:        return (
+  src\components\ContactLensConfiguratorModal.tsx:312:          <div className="contact-lens-content-panel">
+  src\components\ContactLensConfiguratorModal.tsx:313:            <div className="contact-lens-step-header">
+  src\components\ContactLensConfiguratorModal.tsx:314:              <button className="contact-lens-step-indicator" 
+onClick={() => changeStep(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← 
+Volver</button>
+  src\components\ContactLensConfiguratorModal.tsx:315:              <span className="contact-lens-step-indicator">Paso 
+2 de 3</span>
+  src\components\ContactLensConfiguratorModal.tsx:316:            </div>
+  src\components\ContactLensConfiguratorModal.tsx:317:            
+  src\components\ContactLensConfiguratorModal.tsx:318:            <h2 className="contact-lens-title">Ingresa tu 
+receta</h2>
+  src\components\ContactLensConfiguratorModal.tsx:319:            
+  src\components\ContactLensConfiguratorModal.tsx:320:            <div style={{ marginTop: '0.5rem', marginBottom: 
+'1.5rem' }}>
+  src\components\ContactLensConfiguratorModal.tsx:321:              <button 
+  src\components\ContactLensConfiguratorModal.tsx:322:                onClick={() => setShowRxGuide(!showRxGuide)}
+  src\components\ContactLensConfiguratorModal.tsx:323:                style={{ 
+  src\components\ContactLensConfiguratorModal.tsx:324:                  background: 'none', border: 'none', padding: 
+0, 
+  src\components\ContactLensConfiguratorModal.tsx:325:                  color: '#b48c36', fontSize: '12.5px', 
+fontWeight: 600, 
+  src\components\ContactLensConfiguratorModal.tsx:326:                  cursor: 'pointer', display: 'flex', 
+alignItems: 'center', gap: '4px' 
+  src\components\ContactLensConfiguratorModal.tsx:327:                }}
+  src\components\ContactLensConfiguratorModal.tsx:328:              >
+  src\components\ContactLensConfiguratorModal.tsx:329:                {showRxGuide ? '▼' : '▶'} ¿Cómo leer mi receta?
+  src\components\ContactLensConfiguratorModal.tsx:330:              </button>
+> src\components\ContactLensConfiguratorModal.tsx:398:      case 3:
+  src\components\ContactLensConfiguratorModal.tsx:399:        return (
+  src\components\ContactLensConfiguratorModal.tsx:400:          <div className="contact-lens-content-panel">
+  src\components\ContactLensConfiguratorModal.tsx:401:            <div className="contact-lens-step-header">
+  src\components\ContactLensConfiguratorModal.tsx:402:              <button className="contact-lens-step-indicator" 
+onClick={() => {
+  src\components\ContactLensConfiguratorModal.tsx:403:                  setPrescriptionPending(false);
+  src\components\ContactLensConfiguratorModal.tsx:404:                  changeStep(2);
+  src\components\ContactLensConfiguratorModal.tsx:405:                }} style={{ background: 'none', border: 'none', 
+cursor: 'pointer', padding: 0 }}>← Volver</button>
+  src\components\ContactLensConfiguratorModal.tsx:406:              <span className="contact-lens-step-indicator">Paso 
+3 de 3</span>
+  src\components\ContactLensConfiguratorModal.tsx:407:            </div>
+  src\components\ContactLensConfiguratorModal.tsx:408:            
+  src\components\ContactLensConfiguratorModal.tsx:409:            <h2 className="contact-lens-title">Resumen y 
+Verificación</h2>
+  src\components\ContactLensConfiguratorModal.tsx:410:            <p style={{ color: '#64748b', marginBottom: '2rem' 
+}}>Por último, si gustas puedes adjuntar una foto de tu receta para que nuestro equipo la valide.</p>
+  src\components\ContactLensConfiguratorModal.tsx:411:
+  src\components\ContactLensConfiguratorModal.tsx:412:            {prescriptionPending && (
+  src\components\ContactLensConfiguratorModal.tsx:413:              <div style={{ backgroundColor: '#fff7ed', border: 
+'1px solid #fdba74', borderRadius: '8px', padding: '12px', marginBottom: '1.5rem', display: 'flex', alignItems: 
+'center', gap: '8px', color: '#c2410c' }}>
+  src\components\ContactLensConfiguratorModal.tsx:414:                <span style={{ fontSize: '1.25rem' }}>📋</span>
+  src\components\ContactLensConfiguratorModal.tsx:415:                <span style={{ fontWeight: '600' }}>Receta 
+pendiente — la enviarás por WhatsApp</span>
+  src\components\ContactLensConfiguratorModal.tsx:416:              </div>
+  src\components\ContactLensConfiguratorModal.tsx:417:            )}
+  src\components\ContactLensConfiguratorModal.tsx:418:
+
+

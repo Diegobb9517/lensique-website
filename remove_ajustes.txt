@@ -1,0 +1,15 @@
+﻿
+> src\App.tsx:2375:          <div className="perk-item">Servicios de ajuste<br/>y mantenimiento</div>
+  src\App.tsx:2376:          <div className="perk-separator"></div>
+  src\App.tsx:2377:          <div className="perk-item">Asesoría de imagen<br/>personalizada</div>
+> src\App.tsx:2487:                title: 'Ajuste y mantenimiento', 
+  src\App.tsx:2488:                img: armazonesServiceImg, 
+  src\App.tsx:2489:                action: () => setSelectedServiceInfo({
+> src\App.tsx:2491:                  title: 'Ajuste y mantenimiento',
+  src\App.tsx:2492:                  subtitle: 'Tus lentes siempre como nuevos',
+> src\App.tsx:2493:                  description: '<p>Tráenos tus lentes. Nos encargamos de enderezarlos, ajustarlos a 
+tu rostro y darles mantenimiento general para alargar su vida útil y mantener tu comodidad.</p>',
+  src\App.tsx:2494:                  image: armazonesServiceImg,
+  src\App.tsx:2495:                  actionText: 'Escríbenos por WhatsApp',
+
+

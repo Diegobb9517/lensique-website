@@ -1,0 +1,45 @@
+﻿
+> src\App.css:3208:.product-detail-modal {
+  src\App.css:3209:  background: #fff;
+  src\App.css:3210:  border-radius: 24px;
+  src\App.css:3211:  width: 100%;
+  src\App.css:3212:  max-width: 1100px;
+  src\App.css:3213:  max-height: 90vh;
+  src\App.css:3214:  overflow: hidden;
+  src\App.css:3215:  display: grid;
+  src\App.css:3216:  grid-template-columns: 1.25fr 1fr;
+  src\App.css:3217:  position: relative;
+  src\App.css:3218:  box-shadow: 0 40px 100px rgba(0,0,0,0.15);
+  src\App.css:3219:}
+  src\App.css:3220:
+  src\App.css:3221:.product-detail-close {
+  src\App.css:3222:  position: absolute;
+  src\App.css:3223:  top: 20px;
+  src\App.css:3224:  right: 20px;
+  src\App.css:3225:  background: transparent;
+  src\App.css:3226:  border: none;
+  src\App.css:3227:  cursor: pointer;
+  src\App.css:3228:  color: #666;
+> src\App.css:3367:  .product-detail-modal {
+  src\App.css:3368:    grid-template-columns: 1fr;
+  src\App.css:3369:    max-width: 100%;
+  src\App.css:3370:    max-height: 95vh;
+  src\App.css:3371:    border-radius: 16px;
+  src\App.css:3372:    overflow-y: auto;
+  src\App.css:3373:  }
+  src\App.css:3374:  .product-detail-close {
+  src\App.css:3375:    width: 44px;
+  src\App.css:3376:    height: 44px;
+  src\App.css:3377:    top: 12px;
+  src\App.css:3378:    right: 12px;
+  src\App.css:3379:    background: rgba(255, 255, 255, 0.8);
+  src\App.css:3380:    backdrop-filter: blur(4px);
+  src\App.css:3381:  }
+  src\App.css:3382:  .product-detail-img-col {
+  src\App.css:3383:    border-radius: 16px 16px 0 0;
+  src\App.css:3384:    min-height: 180px;
+  src\App.css:3385:    padding: 24px 24px 0 24px;
+  src\App.css:3386:  }
+  src\App.css:3387:  .product-detail-info-col {
+
+

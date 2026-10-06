@@ -1,0 +1,61 @@
+﻿
+> src\App.css:3081:.wp-micas-lifestyle-grid {
+  src\App.css:3082:  display: flex;
+  src\App.css:3083:  gap: 24px;
+  src\App.css:3084:  overflow-x: auto;
+  src\App.css:3085:  scroll-snap-type: x mandatory;
+  src\App.css:3086:  padding-bottom: 30px;
+  src\App.css:3087:  max-width: var(--max-width);
+  src\App.css:3088:  margin: 0 auto;
+  src\App.css:3089:  scrollbar-width: none;
+  src\App.css:3090:  -ms-overflow-style: none;
+  src\App.css:3091:}
+  src\App.css:3092:
+> src\App.css:3093:.wp-micas-lifestyle-grid::-webkit-scrollbar {
+  src\App.css:3094:  display: none;
+  src\App.css:3095:}
+  src\App.css:3096:
+> src\App.css:3097:.wp-micas-lifestyle-grid {
+  src\App.css:3098:  display: grid;
+  src\App.css:3099:  grid-template-columns: repeat(4, 1fr);
+  src\App.css:3100:  gap: 24px;
+  src\App.css:3101:  width: 100%;
+  src\App.css:3102:}
+  src\App.css:3103:@media (max-width: 1023px) {
+> src\App.css:3104:  .wp-micas-lifestyle-grid {
+  src\App.css:3105:    display: flex;
+  src\App.css:3106:    overflow-x: auto;
+  src\App.css:3107:    scroll-snap-type: x mandatory;
+  src\App.css:3108:    gap: 16px;
+  src\App.css:3109:    padding-bottom: 16px;
+  src\App.css:3110:    -ms-overflow-style: none;
+  src\App.css:3111:    scrollbar-width: none;
+  src\App.css:3112:  }
+> src\App.css:3113:  .wp-micas-lifestyle-grid::-webkit-scrollbar {
+  src\App.css:3114:    display: none;
+  src\App.css:3115:  }
+  src\App.css:3116:}
+  src\App.css:3117:
+  src\App.css:3118:.wp-mica-wrapper {
+  src\App.css:3119:  display: flex;
+  src\App.css:3120:  flex-direction: column;
+  src\App.css:3121:  align-items: center;
+  src\App.css:3122:  gap: 12px;
+  src\App.css:3123:  width: 100%;
+  src\App.css:3124:}
+  src\App.css:3125:@media (max-width: 1023px) {
+  src\App.css:3126:  .wp-mica-wrapper {
+  src\App.css:3127:    min-width: 260px;
+  src\App.css:3128:    flex-shrink: 0;
+  src\App.css:3129:    scroll-snap-align: start;
+  src\App.css:3130:  }
+  src\App.css:3131:}
+  src\App.css:3132:
+  src\App.css:3133:.wp-mica-lifestyle-card {
+  src\App.css:3134:  position: relative;
+  src\App.css:3135:  width: 100%;
+  src\App.css:3136:  aspect-ratio: 4 / 5;
+  src\App.css:3137:  border-radius: 12px;
+  src\App.css:3138:  overflow: hidden;
+
+

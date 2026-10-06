@@ -1,0 +1,24 @@
+
+> lensique-web@0.0.0 build
+> node scripts/compile_delivery.js && node scripts/check_syntax.js && node scripts/check_base_lens_price.js && tsc -p tsconfig.ci.json --noEmit && vite build && node scripts/prerender.js
+
+Compiling delivery.ts for iframe...
+Successfully generated public/delivery.js
+Syntax check passed.
+EXEC ERROR TypeError: document.createElement is not a function
+    at renderTopBar (evalmachine.<anonymous>:840:23)
+    at render (evalmachine.<anonymous>:908:2)
+    at evalmachine.<anonymous>:1024:1
+    at Script.runInContext (node:vm:149:12)
+    at Object.runInContext (node:vm:301:6)
+    at file:///C:/Users/bauti/.gemini/antigravity/scratch/lensique-web/scripts/check_base_lens_price.js:44:6
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async node:internal/modules/esm/loader:639:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+Calculated Base PVP from motor: $1200
+✅ BASE_LENS_PRICE ($1200) validado correctamente con el motor de ZEISS.
+src/App.tsx(1717,10): error TS2304: Cannot find name 'selectedMicaCard'.
+src/App.tsx(1719,19): error TS2304: Cannot find name 'selectedMicaCard'.
+src/App.tsx(1720,28): error TS2304: Cannot find name 'setSelectedMicaCard'.
+src/App.tsx(2216,27): error TS2304: Cannot find name 'setSelectedMicaCard'.
+src/components/MicaDetailModal.tsx(4,33): error TS2307: Cannot find module '../lib/utils' or its corresponding type declarations.

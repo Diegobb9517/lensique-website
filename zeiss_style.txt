@@ -1,0 +1,10 @@
+﻿
+  public\asesor_zeiss.html:111:@keyframes 
+sunPulse{0%{opacity:.14}12%{opacity:.14}46%{opacity:1}74%{opacity:1}100%{opacity:.14}}
+  public\asesor_zeiss.html:112:::-webkit-scrollbar{width:7px;height:7px}
+  public\asesor_zeiss.html:113:::-webkit-scrollbar-track{background:transparent}
+  public\asesor_zeiss.html:114:::-webkit-scrollbar-thumb{background:rgba(118,114,107,.3);border-radius:4px}
+  public\asesor_zeiss.html:115:::-webkit-scrollbar-thumb:hover{background:rgba(118,114,107,.5)}
+> public\asesor_zeiss.html:116:</style></head><body>
+
+

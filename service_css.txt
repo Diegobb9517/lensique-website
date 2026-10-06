@@ -1,0 +1,83 @@
+﻿
+> src\App.css:3014:.wp-service-card {
+  src\App.css:3015:  min-width: 300px;
+  src\App.css:3016:  width: 300px;
+  src\App.css:3017:  height: 420px;
+  src\App.css:3018:  border-radius: 16px;
+  src\App.css:3019:  background-size: cover;
+  src\App.css:3020:  background-position: center;
+  src\App.css:3021:  position: relative;
+  src\App.css:3022:  display: flex;
+  src\App.css:3023:  align-items: flex-end;
+  src\App.css:3024:  justify-content: center;
+  src\App.css:3025:  padding: 24px;
+  src\App.css:3026:  flex-shrink: 0;
+  src\App.css:3027:  cursor: pointer;
+  src\App.css:3028:  overflow: hidden;
+  src\App.css:3029:  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  src\App.css:3030:  transition: transform 0.4s;
+  src\App.css:3031:}
+  src\App.css:3032:
+> src\App.css:3033:.wp-service-card:hover {
+  src\App.css:3034:  transform: translateY(-8px);
+  src\App.css:3035:}
+  src\App.css:3036:
+> src\App.css:3037:.wp-service-card-overlay {
+  src\App.css:3038:  position: absolute;
+  src\App.css:3039:  top: 0;
+  src\App.css:3040:  left: 0;
+  src\App.css:3041:  width: 100%;
+  src\App.css:3042:  height: 100%;
+  src\App.css:3043:  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.0) 40%);
+  src\App.css:3044:  z-index: 1;
+  src\App.css:3045:}
+  src\App.css:3046:
+  src\App.css:3047:.wp-service-pill {
+  src\App.css:3048:  position: relative;
+  src\App.css:3049:  z-index: 2;
+  src\App.css:3050:  background: white;
+  src\App.css:3051:  border: none;
+  src\App.css:3052:  padding: 14px 28px;
+  src\App.css:3053:  border-radius: 980px;
+  src\App.css:3054:  font-family: inherit;
+  src\App.css:3055:  font-size: 15px;
+  src\App.css:3056:  font-weight: 600;
+  src\App.css:3057:  color: #1d1d1f;
+  src\App.css:3058:  cursor: pointer;
+  src\App.css:3059:  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  src\App.css:3060:  transition: transform 0.3s;
+  src\App.css:3061:  width: auto;
+  src\App.css:3062:}
+> src\App.css:3064:.wp-service-card:hover .wp-service-pill {
+  src\App.css:3065:  transform: scale(1.04);
+  src\App.css:3066:}
+  src\App.css:3067:
+  src\App.css:3068:@media (max-width: 768px) {
+> src\App.css:3069:  .wp-service-card {
+  src\App.css:3070:    min-width: 240px;
+  src\App.css:3071:    width: 240px;
+  src\App.css:3072:  }
+  src\App.css:3073:}
+  src\App.css:3074:
+  src\App.css:3075:/* WP Micas Lifestyle Section */
+  src\App.css:3076:.wp-micas-lifestyle-section {
+  src\App.css:3077:  padding: 80px 40px;
+  src\App.css:3078:  background-color: #fff;
+  src\App.css:3079:}
+  src\App.css:3080:
+  src\App.css:3081:.wp-micas-lifestyle-grid {
+  src\App.css:3082:  display: flex;
+  src\App.css:3083:  gap: 24px;
+  src\App.css:3084:  overflow-x: auto;
+  src\App.css:3085:  scroll-snap-type: x mandatory;
+  src\App.css:3086:  padding-bottom: 30px;
+  src\App.css:3087:  max-width: var(--max-width);
+  src\App.css:3088:  margin: 0 auto;
+  src\App.css:3089:  scrollbar-width: none;
+  src\App.css:3090:  -ms-overflow-style: none;
+  src\App.css:3091:}
+  src\App.css:3092:
+  src\App.css:3093:.wp-micas-lifestyle-grid::-webkit-scrollbar {
+  src\App.css:3094:  display: none;
+
+

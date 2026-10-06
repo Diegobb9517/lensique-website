@@ -1,0 +1,49 @@
+﻿
+> src\App.tsx:635:function AppWrapper() {
+  src\App.tsx:636:  return (
+  src\App.tsx:637:    <ErrorBoundary>
+  src\App.tsx:638:      <App />
+  src\App.tsx:639:    </ErrorBoundary>
+  src\App.tsx:640:  );
+  src\App.tsx:641:}
+  src\App.tsx:642:
+  src\App.tsx:643:const warrantyData: InfoPageData = {
+  src\App.tsx:644:  title: 'Garantías',
+  src\App.tsx:645:  layout: 'grid',
+  src\App.tsx:646:  sections: [
+  src\App.tsx:647:    {
+  src\App.tsx:648:      heading: 'Garantía de Armazones',
+  src\App.tsx:649:      icon: ShieldCheck,
+  src\App.tsx:650:      content: <p>Nuestros armazones cuentan con 1 año de garantía contra defectos de fabricación. 
+Esto incluye problemas en bisagras, soldaduras y recubrimientos (siempre que no sea por mal uso, caídas o productos 
+químicos).</p>
+  src\App.tsx:651:    },
+  src\App.tsx:652:    {
+  src\App.tsx:653:      heading: 'Garantía de Adaptación',
+  src\App.tsx:654:      icon: Glasses,
+  src\App.tsx:655:      content: <p>Entendemos que adaptarse a una nueva graduación puede tomar tiempo. Si después de 
+15 días sientes molestias o no logras adaptarte a tus nuevas micas, te ofrecemos una revisión con nuestro oftalmólogo 
+y, de ser necesario, un cambio de graduación respaldado por nuestra garantía.</p>
+> src\App.tsx:892:function App() {
+  src\App.tsx:893:  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  src\App.tsx:894:
+  src\App.tsx:895:  useEffect(() => {
+  src\App.tsx:896:    if (window.location.hash && currentPath === '/') {
+  src\App.tsx:897:      const id = window.location.hash.substring(1);
+  src\App.tsx:898:      const scroll = () => {
+  src\App.tsx:899:        const el = document.getElementById(id);
+  src\App.tsx:900:        if (el) {
+  src\App.tsx:901:          el.scrollIntoView({ behavior: 'smooth' });
+  src\App.tsx:902:        }
+  src\App.tsx:903:      };
+  src\App.tsx:904:      setTimeout(scroll, 100);
+  src\App.tsx:905:      setTimeout(scroll, 500);
+  src\App.tsx:906:      setTimeout(scroll, 1000);
+  src\App.tsx:907:    }
+  src\App.tsx:908:  }, [currentPath]);
+  src\App.tsx:909:
+  src\App.tsx:910:  useEffect(() => {
+  src\App.tsx:911:    const handlePopState = () => {
+  src\App.tsx:912:      const path = window.location.pathname;
+
+

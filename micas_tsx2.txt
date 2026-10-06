@@ -1,0 +1,60 @@
+﻿
+> src\App.tsx:2176:        {currentPath === '/micas' && (
+  src\App.tsx:2177:          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '0' }}>
+  src\App.tsx:2178:        <section id="micas" className="wp-micas-lifestyle-section">
+  src\App.tsx:2179:          <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', 
+flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>
+  src\App.tsx:2180:            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: 
+'"Playfair Display", serif' }}>Tecnologías de visión</h2>
+  src\App.tsx:2181:          </div>
+  src\App.tsx:2182:          
+  src\App.tsx:2183:          <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
+  src\App.tsx:2184:            {safeJsonParse(settings.category_bricks).map((brick: any, idx: number) => (
+  src\App.tsx:2185:              <div key={`mica-ls-${idx}-${brick.id}`} className="wp-mica-wrapper">
+  src\App.tsx:2186:                <motion.div 
+  src\App.tsx:2187:                  className="wp-mica-lifestyle-card"
+  src\App.tsx:2188:                  initial={{ opacity: 0, y: 30 }}
+  src\App.tsx:2189:                  whileInView={{ opacity: 1, y: 0 }}
+  src\App.tsx:2190:                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+  src\App.tsx:2191:                  viewport={{ once: true }}
+  src\App.tsx:2192:                  onClick={() => setSelectedTech(brick)}
+  src\App.tsx:2193:                >
+  src\App.tsx:2194:                  <div 
+  src\App.tsx:2195:                    className="wp-mica-bg" 
+  src\App.tsx:2196:                    style={{ backgroundImage: `url(${resolveImageUrl(brick.image_url, 
+brick.image)})` }}
+  src\App.tsx:2197:                  />
+  src\App.tsx:2198:                  <div className="wp-mica-action-pill">{brick.title}</div>
+  src\App.tsx:2199:                </motion.div>
+  src\App.tsx:2200:                <p className="wp-mica-desc-outside">{brick.description}</p>
+  src\App.tsx:2201:              </div>
+  src\App.tsx:2202:            ))}
+  src\App.tsx:2203:          </div>
+  src\App.tsx:2204:        </section>
+  src\App.tsx:2205:
+  src\App.tsx:2206:        <section className="contact-cta-section" style={{ padding: '60px 20px', background: 
+'linear-gradient(135deg, #f7f9fc 0%, #eef2f6 100%)', color: '#1d1d1f', textAlign: 'center' }}>
+  src\App.tsx:2207:          <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
+  src\App.tsx:2208:            <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 600 }}>¿Quieres saber 
+el costo de tus micas?</h2>
+  src\App.tsx:2209:            <p style={{ fontSize: '18px', color: '#6e6e73', marginBottom: '32px' }}>
+  src\App.tsx:2210:              Usa nuestro cotizador interactivo para obtener un presupuesto exacto en menos de un 
+minuto.
+  src\App.tsx:2211:            </p>
+  src\App.tsx:2212:            <a 
+  src\App.tsx:2213:              href="/cotizador" 
+  src\App.tsx:2214:              onClick={(e) => { e.preventDefault(); setIsCotizadorGeneralOpen(true); }}
+  src\App.tsx:2215:              style={{
+  src\App.tsx:2216:                display: 'inline-block',
+  src\App.tsx:2217:                background: '#1d1d1f',
+  src\App.tsx:2218:                color: '#ffffff',
+  src\App.tsx:2219:                padding: '16px 40px',
+  src\App.tsx:2220:                borderRadius: '980px',
+  src\App.tsx:2221:                fontSize: '17px',
+  src\App.tsx:2222:                fontWeight: 600,
+  src\App.tsx:2223:                textDecoration: 'none',
+  src\App.tsx:2224:                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+  src\App.tsx:2225:              }}
+  src\App.tsx:2226:            >
+
+

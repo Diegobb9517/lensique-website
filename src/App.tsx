@@ -28,7 +28,6 @@ import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
 import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
-import StandaloneCotizadorModal from './components/StandaloneCotizadorModal';
 import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard } from './components/ProductCard';
 import { CustomSelect } from './components/CustomSelect';
@@ -952,6 +951,29 @@ function App() {
   }, [currentPath]);
 
   const isInitialRender = useRef(true);
+
+  useEffect(() => {
+    if (currentPath !== '/cotizador') return;
+    
+    const handleMessage = (event) => {
+      if (event.data?.type === 'lensique-mica') {
+        const config = event.data.payload;
+        if (config) {
+          let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
+          if (config.etiqueta) configText += `- ${config.etiqueta} (índice ${config.indice})\n`;
+          if (config.tratamientos && config.tratamientos.length > 0) configText += `- Tratamientos: ${config.tratamientos.join(', ')}\n`;
+          if (config.material) configText += `- Material sugerido: ${config.material}\n`;
+          if (config.precioCalculado) configText += `\nPrecio estimado: ${config.precioCalculado}\n`;
+          const phone = '523316929111';
+          const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(configText)}`;
+          window.open(url, '_blank');
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [currentPath]);
+
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
@@ -1022,8 +1044,7 @@ function App() {
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
-  const [isCotizadorGeneralOpen, setIsCotizadorGeneralOpen] = useState(false);
-  const [cotizadorInitialType, setCotizadorInitialType] = useState<string | null>(null);
+    const [cotizadorInitialType, setCotizadorInitialType] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingName, setBookingName] = useState<string>('');
@@ -1223,19 +1244,7 @@ function App() {
     }
   }, [isBookingOpen]);
 
-  useEffect(() => {
-    if (isCotizadorGeneralOpen) {
-      if (window.location.pathname !== '/cotizador') {
-        window.history.pushState({ cotizador: true }, '', '/cotizador');
-      }
-      document.title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
-    } else {
-      if (window.location.pathname === '/cotizador') {
-        window.history.pushState(null, '', '/');
-        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
-      }
-    }
-  }, [isCotizadorGeneralOpen]);
+  
 
     useEffect(() => {
     if (isCatalogOpen) {
@@ -1725,49 +1734,17 @@ function App() {
             mica={selectedMicaCard}
             onClose={() => setSelectedMicaCard(null)}
             onOpenCotizador={() => {
-              const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' } as any;
-              setCotizadorInitialType(micaContent[selectedMicaCard.id] || null);
+              const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' };
+              const initialType = micaContent[selectedMicaCard.id];
               setSelectedMicaCard(null);
-              setTimeout(() => {
-                setIsCotizadorGeneralOpen(true);
-                window.history.pushState({}, '', '/cotizador');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }, 300);
+              window.history.pushState({}, '', '/cotizador' + (initialType ? '?tipo=' + encodeURIComponent(initialType) : ''));
+              window.dispatchEvent(new PopStateEvent('popstate'));
             }}
           />
         )}
       </AnimatePresence>
 
-      {isCotizadorGeneralOpen && (
-        <StandaloneCotizadorModal
-          initialType={cotizadorInitialType}
-          onClose={() => {
-            setIsCotizadorGeneralOpen(false);
-            setCotizadorInitialType(null);
-          }}
-          onComplete={(config) => {
-            setIsCotizadorGeneralOpen(false);
-            setCotizadorInitialType(null);
-            
-            let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
-            
-            if (config.etiqueta) {
-              configText += `- ${config.etiqueta} (Índice ${config.indice})\n`;
-            }
-            if (config.ar) configText += `- Antirreflejante: ${config.ar}\n`;
-            if (config.photochromic) configText += `- Fotocromático: ${config.photochromic}\n`;
-            if (config.tint) configText += `- Entintado: ${config.tint}\n`;
-            if (config.material) configText += `- Material: ${config.material}\n`;
-            
-            configText += `\n*Precio estimado de micas:* $${Math.round(config.price).toLocaleString('es-MX')}\n\n¿Me pueden confirmar precio y tiempo de entrega?`;
-            
-            const phone = settings.contact_whatsapp || '523316929111';
-            const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(configText)}`;
-            import('./lib/analytics').then(({ trackLead }) => trackLead());
-            window.open(url, '_blank');
-          }}
-        />
-      )}
+      
 
       {configuratorProduct && (
         <LensConfiguratorModal
@@ -2135,20 +2112,13 @@ function App() {
         {currentPath === '/cotizador' && (
           <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
             <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Cotiza tus micas en menos de un minuto</h1>
-            <StandaloneCotizadorModal
-              initialType={cotizadorInitialType}
-              onClose={() => setCotizadorInitialType(null)}
-              onComplete={(config) => {
-                let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
-                if (config.etiqueta) configText += `- ${config.etiqueta} (Índice ${config.indice})\n`;
-                if (config.tratamientos && config.tratamientos.length > 0) configText += `- Tratamientos: ${config.tratamientos.join(', ')}\n`;
-                if (config.material) configText += `- Material sugerido: ${config.material}\n`;
-                if (config.precioCalculado) configText += `\nPrecio estimado: ${config.precioCalculado}\n`;
-                const phone = settings.contact_whatsapp || '523316929111';
-                const url = `https://api.whatsapp.com/send?phone=${phone.replace(/\D/g, '')}&text=${encodeURIComponent(configText)}`;
-                window.open(url, '_blank');
-              }}
-            />
+            <div style={{ maxWidth: '1100px', margin: '0 auto', background: 'var(--bg, #f1ede5)', height: '90vh', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.15)' }}>
+              <iframe 
+                src={`/asesor_zeiss.html?v=1.0.2${new URLSearchParams(window.location.search).get('tipo') ? `&initialType=${encodeURIComponent(new URLSearchParams(window.location.search).get('tipo')!)}` : ''}`}
+                title="Asesor Visual ZEISS"
+                style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit' }}
+              />
+            </div>
           </div>
         )}
 
@@ -2248,8 +2218,7 @@ function App() {
                     href="/cotizador" 
                     onClick={(e) => { 
                       e.preventDefault(); 
-                      setIsCotizadorGeneralOpen(true); 
-                      window.history.pushState({}, '', '/cotizador'); 
+                      window.history.pushState({}, '', '/cotizador'); window.dispatchEvent(new PopStateEvent('popstate')); 
                     }}
                     style={{
                       display: 'inline-block',

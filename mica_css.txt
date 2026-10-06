@@ -1,0 +1,87 @@
+﻿
+> src\App.css:3097:.wp-mica-lifestyle-card {
+  src\App.css:3098:  min-width: 280px;
+  src\App.css:3099:  width: 280px;
+  src\App.css:3100:  height: 380px;
+  src\App.css:3101:  height: 400px;
+  src\App.css:3102:  border-radius: 24px;
+  src\App.css:3103:  background: #ffffff;
+  src\App.css:3104:  position: relative;
+  src\App.css:3105:  display: flex;
+  src\App.css:3106:  flex-direction: column;
+  src\App.css:3107:  justify-content: space-between;
+  src\App.css:3108:  padding: 36px 28px;
+  src\App.css:3109:  flex-shrink: 0;
+  src\App.css:3110:  scroll-snap-align: start;
+  src\App.css:3111:  cursor: pointer;
+  src\App.css:3112:  overflow: hidden;
+  src\App.css:3113:  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  src\App.css:3114:  border: 1px solid rgba(0,0,0,0.06);
+  src\App.css:3115:  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  src\App.css:3116:}
+  src\App.css:3117:
+> src\App.css:3118:.wp-mica-lifestyle-card:hover {
+  src\App.css:3119:  transform: translateY(-8px);
+  src\App.css:3120:  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  src\App.css:3121:}
+  src\App.css:3122:
+  src\App.css:3123:.wp-mica-bg {
+  src\App.css:3124:  position: absolute;
+  src\App.css:3125:  top: 40%; left: 0; right: 0; bottom: 0;
+  src\App.css:3126:  background-size: 110%;
+  src\App.css:3127:  background-position: center bottom;
+  src\App.css:3128:  background-repeat: no-repeat;
+  src\App.css:3129:  z-index: 0;
+  src\App.css:3130:  mix-blend-mode: multiply;
+  src\App.css:3131:  transition: filter 0.8s ease, transform 0.4s ease;
+  src\App.css:3132:}
+  src\App.css:3133:
+> src\App.css:3134:.wp-mica-lifestyle-card:hover .wp-mica-bg {
+  src\App.css:3135:  transform: scale(1.05) translateY(-5px);
+  src\App.css:3136:}
+  src\App.css:3137:
+  src\App.css:3138:.wp-mica-overlay {
+  src\App.css:3139:  position: absolute;
+  src\App.css:3140:  inset: 0;
+  src\App.css:3141:  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 25%, 
+rgba(255,255,255,0) 50%);
+  src\App.css:3142:  z-index: 1;
+  src\App.css:3143:  pointer-events: none;
+  src\App.css:3144:}
+  src\App.css:3145:
+  src\App.css:3146:.photochromic-anim {
+  src\App.css:3147:  animation: photochromic-darken 8s infinite alternate;
+  src\App.css:3148:}
+  src\App.css:3149:
+  src\App.css:3150:@keyframes photochromic-darken {
+  src\App.css:3151:  0%, 20% { filter: brightness(1) sepia(0) hue-rotate(0deg) contrast(1); }
+  src\App.css:3152:  80%, 100% { filter: brightness(0.25) sepia(0.2) hue-rotate(180deg) contrast(1.2); }
+  src\App.css:3153:}
+  src\App.css:3154:
+> src\App.css:3198:.wp-mica-lifestyle-card:hover .wp-mica-action::after {
+  src\App.css:3199:  transform: translateX(4px);
+  src\App.css:3200:}
+  src\App.css:3201:
+> src\App.css:3202:.wp-mica-lifestyle-card:hover .wp-service-pill {
+  src\App.css:3203:  transform: scale(1.05);
+  src\App.css:3204:}
+  src\App.css:3205:
+  src\App.css:3206:.slider-arrow-btn {
+  src\App.css:3207:  background: white;
+  src\App.css:3208:  border: 1px solid #eee;
+  src\App.css:3209:  border-radius: 50%;
+  src\App.css:3210:  width: 44px;
+  src\App.css:3211:  height: 44px;
+  src\App.css:3212:  display: flex;
+  src\App.css:3213:  justify-content: center;
+  src\App.css:3214:  align-items: center;
+  src\App.css:3215:  cursor: pointer;
+  src\App.css:3216:  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  src\App.css:3217:  transition: all 0.3s ease;
+  src\App.css:3218:  color: #1d1d1f;
+  src\App.css:3219:}
+  src\App.css:3220:.slider-arrow-btn:hover {
+  src\App.css:3221:  background: #f5f5f7;
+  src\App.css:3222:  transform: scale(1.05);
+
+

@@ -1,0 +1,88 @@
+﻿
+> src\App.tsx:2439:            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: 
+'"Playfair Display", serif' }}>Nuestros servicios visuales</h2>
+  src\App.tsx:2440:          </div>
+  src\App.tsx:2441:          <div className="wp-micas-lifestyle-grid" ref={servicesSliderRef}>
+  src\App.tsx:2442:            {[
+  src\App.tsx:2443:              { 
+  src\App.tsx:2444:                id: 's1', 
+  src\App.tsx:2445:                title: 'Examen de la vista', 
+  src\App.tsx:2446:                img: cv7600Img, 
+  src\App.tsx:2447:                action: () => setSelectedServiceInfo({
+  src\App.tsx:2448:                  id: 's1',
+  src\App.tsx:2449:                  title: 'Examen de la vista',
+  src\App.tsx:2450:                  subtitle: 'Diagnóstico visual de alta precisión',
+  src\App.tsx:2451:                  description: '<p>Tu salud visual en manos de expertos. Nuestro <strong>examen de 
+vista profesional</strong> es realizado directamente por un <strong>oftalmólogo certificado</strong>, garantizando un 
+diagnóstico clínico sumamente preciso y confiable.</p><p>Utilizamos <strong>equipos automatizados de alta gama y 
+última generación</strong> que nos permiten medir tu agudeza visual con exactitud milimétrica. Todo esto en 
+instalaciones modernas diseñadas para ofrecerte la mayor comodidad.</p><ul><li>Evaluación por oftalmólogo 
+certificado</li><li>Tecnología automatizada de precisión</li><li>Diagnóstico clínico y refractivo 100% 
+personalizado</li></ul>',
+  src\App.tsx:2452:                  image: cv7600Img,
+  src\App.tsx:2453:                  gallery: [eyeExamImg1, eyeExamImg2],
+  src\App.tsx:2454:                  actionText: 'Agendar cita ahora',
+  src\App.tsx:2455:                  onAction: () => { setSelectedServiceInfo(null); handleOpenBooking('Examen de la 
+Vista'); }
+  src\App.tsx:2456:                }) 
+  src\App.tsx:2457:              },
+  src\App.tsx:2458:              { 
+  src\App.tsx:2459:                id: 's2', 
+  src\App.tsx:2460:                title: 'Consulta Médica', 
+  src\App.tsx:2461:                img: clinicRoomImg, 
+  src\App.tsx:2462:                action: () => setSelectedServiceInfo({
+  src\App.tsx:2463:                  id: 's2',
+  src\App.tsx:2464:                  title: 'Consulta Médica',
+  src\App.tsx:2465:                  subtitle: 'Atención Oftalmológica Especializada',
+  src\App.tsx:2466:                  description: '<p>Trabajamos de la mano con la clínica <strong>CIOVA</strong> para 
+ofrecerte consultas oftalmológicas de la más alta calidad.</p><p>Nuestro equipo aliado se encargará de realizar un 
+diagnóstico médico profundo de tu salud visual y ocular.</p>',
+  src\App.tsx:2467:                  image: clinicRoomImg,
+  src\App.tsx:2468:                  actionText: 'Visitar sitio de CIOVA',
+  src\App.tsx:2469:                  onAction: () => window.open('https://ciova.mx/', '_blank')
+  src\App.tsx:2470:                }) 
+  src\App.tsx:2471:              },
+  src\App.tsx:2472:              { 
+  src\App.tsx:2473:                id: 's3', 
+  src\App.tsx:2474:                title: 'Actualización de micas', 
+  src\App.tsx:2475:                img: micasImg, 
+  src\App.tsx:2476:                action: () => setSelectedServiceInfo({
+  src\App.tsx:2477:                  id: 's3',
+  src\App.tsx:2478:                  title: 'Actualización de micas',
+  src\App.tsx:2479:                  subtitle: 'Renueva tus lentes conservando tu armazón',
+  src\App.tsx:2480:                  description: '<p>Si ya tienes un armazón que te encanta, nosotros nos encargamos 
+de cambiarle las micas con tu nueva graduación o el tratamiento que necesites.</p><p>Es un proceso rápido y seguro 
+para darle una nueva vida a tus lentes favoritos.</p>',
+  src\App.tsx:2481:                  image: micasImg,
+  src\App.tsx:2482:                  actionText: 'Ver opciones de micas',
+  src\App.tsx:2483:                  onAction: () => { setSelectedServiceInfo(null); window.location.href = '/micas'; }
+  src\App.tsx:2484:                }) 
+  src\App.tsx:2485:              },
+  src\App.tsx:2486:              { id: 's4', title: 'Lentes de contacto', img: contactLensesImg, action: () => 
+setIsContactQuizOpen(true) },
+  src\App.tsx:2487:              { id: 's5', title: 'Armazones', img: armazonesServiceImg, action: () => { 
+setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); } }
+  src\App.tsx:2488:            ].map((service, idx) => (
+  src\App.tsx:2489:              <div key={service.id} className="wp-mica-wrapper">
+  src\App.tsx:2490:                <motion.div 
+  src\App.tsx:2491:                  className="wp-mica-lifestyle-card"
+  src\App.tsx:2492:                  initial={{ opacity: 0, y: 30 }}
+  src\App.tsx:2493:                  whileInView={{ opacity: 1, y: 0 }}
+  src\App.tsx:2494:                  transition={{ duration: 0.8, delay: idx * 0.1 }}
+  src\App.tsx:2495:                  viewport={{ once: true }}
+  src\App.tsx:2496:                  onClick={service.action}
+  src\App.tsx:2497:                >
+  src\App.tsx:2498:                  <div 
+  src\App.tsx:2499:                    className="wp-mica-bg" 
+  src\App.tsx:2500:                    style={{ backgroundImage: `url(${service.img})` }}
+  src\App.tsx:2501:                  />
+  src\App.tsx:2502:                  <div className="wp-mica-action-pill">{service.title}</div>
+  src\App.tsx:2503:                </motion.div>
+  src\App.tsx:2504:              </div>
+  src\App.tsx:2505:            ))}
+  src\App.tsx:2506:          </div>
+  src\App.tsx:2507:        </section>
+  src\App.tsx:2508:
+  src\App.tsx:2509:        {/* Editorial Cards Section - Warby Parker Style */}
+
+

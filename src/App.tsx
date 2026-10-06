@@ -1728,21 +1728,19 @@ function App() {
         />
       )}
 
-      <AnimatePresence>
-        {selectedMicaCard && currentPath === '/micas' && (
-          <MicaDetailModal
-            mica={selectedMicaCard}
-            onClose={() => setSelectedMicaCard(null)}
-            onOpenCotizador={() => {
-              const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' };
-              const initialType = micaContent[selectedMicaCard.id];
-              setSelectedMicaCard(null);
-              window.history.pushState({}, '', '/cotizador' + (initialType ? '?tipo=' + encodeURIComponent(initialType) : ''));
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {selectedMicaCard && currentPath === '/micas' && (
+        <MicaDetailModal
+          mica={selectedMicaCard}
+          onClose={() => setSelectedMicaCard(null)}
+          onOpenCotizador={() => {
+            const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' };
+            const initialType = micaContent[selectedMicaCard.id];
+            setSelectedMicaCard(null);
+            window.history.pushState({}, '', '/cotizador' + (initialType ? '?tipo=' + encodeURIComponent(initialType) : ''));
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}
+        />
+      )}
 
       
 

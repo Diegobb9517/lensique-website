@@ -57,7 +57,6 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
       onClick={onClose}
       style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 10000 }}
     >
@@ -65,7 +64,6 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
         className="product-detail-modal mica-modal-override"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 40 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
         onClick={(e) => e.stopPropagation()}
         style={{ background: '#fff', width: '100%', maxWidth: '1100px', maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}

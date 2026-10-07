@@ -35,6 +35,7 @@ import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
 import { calculateDeliveryTime, getDeliveryEstimate } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';
+import { TriageModal } from './components/TriageModal';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
   const clean = waStr.replace(/\D/g, '');
@@ -1043,6 +1044,8 @@ function App() {
 
   
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isBookingFromTriage, setIsBookingFromTriage] = useState(false);
+  const [bookingReasons, setBookingReasons] = useState<string | null>(null);
   const [selectedInfoPage, setSelectedInfoPage] = useState<InfoPageData | null>(null);
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<ServiceInfoData | null>(null);
   const [isCatalogOpen, setIsCatalogOpen] = useState(
@@ -1055,6 +1058,7 @@ function App() {
   const { addItem, items, setIsCartOpen } = useCart();
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
+  const [isTriageOpen, setIsTriageOpen] = useState(false);
   const [catalogInitialFilter, setCatalogInitialFilter] = useState(() => {
     if (window.location.pathname === '/armazones') return 'Armazones';
     if (window.location.pathname === '/lentes-de-contacto') return 'Lentes de Contacto';
@@ -1351,7 +1355,7 @@ function App() {
 
   // UseEffect for body scroll lock when any overlay is open
   useEffect(() => {
-    if (isBookingOpen || isCatalogOpen || selectedProductDetail || configuratorProduct || contactConfiguratorProduct || isMobileMenuOpen || isTryOnOpen || selectedTech) {
+    if (isBookingOpen || isCatalogOpen || selectedProductDetail || configuratorProduct || contactConfiguratorProduct || isMobileMenuOpen || isTryOnOpen || selectedTech || isTriageOpen) {
       document.body.classList.add('no-scroll');
     } else {
       document.body.classList.remove('no-scroll');
@@ -1360,7 +1364,7 @@ function App() {
     return () => {
       document.body.classList.remove('no-scroll');
     };
-  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, configuratorProduct, contactConfiguratorProduct, isMobileMenuOpen, isTryOnOpen, selectedTech]);
+  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, configuratorProduct, contactConfiguratorProduct, isMobileMenuOpen, isTryOnOpen, selectedTech, isTriageOpen]);
 
   // Calendar Logic
   const getDaysInMonth = (date: Date) => {
@@ -1373,12 +1377,25 @@ function App() {
   const formatWhatsAppMessage = () => {
     if (!selectedDate || !selectedTime) return '';
     const dateStr = selectedDate.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
-    const productMention = selectedProduct ? ` por el modelo ${selectedProduct}` : '';
+    let productMention = '';
+    if (selectedProduct) {
+      if (selectedProduct === 'Examen de la Vista' || selectedProduct === 'Consulta Médica') {
+        productMention = ` para ${selectedProduct.toLowerCase()}`;
+      } else {
+        productMention = ` por el modelo ${selectedProduct}`;
+      }
+    }
     const nameIntro = bookingName.trim() ? `Soy ${bookingName.trim()}, me` : 'Me';
-    return `Hola Lensique! ${nameIntro} gustaría agendar una cita${productMention} para el ${dateStr} a las ${selectedTime}.`;
+    let baseMsg = `Hola Lensique! ${nameIntro} gustaría agendar una cita${productMention} para el ${dateStr} a las ${selectedTime}.`;
+    if (bookingReasons) {
+      baseMsg += `\nMotivos indicados: ${bookingReasons}.`;
+    }
+    return baseMsg;
   };
 
-  const handleOpenBooking = (productName?: string) => {
+  const handleOpenBooking = (productName?: string, isFromTriage = false, reasons?: string) => {
+      setBookingReasons(reasons || null);
+      setIsBookingFromTriage(isFromTriage);
     if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
       window.gtag('event', 'agendar_cita', {
         pagina: window.location.pathname
@@ -1840,8 +1857,12 @@ function App() {
 
       <CartDrawer />
 
-      {/* Booking Modal */}
-      <AnimatePresence>
+        {isTriageOpen && (
+          <TriageModal onClose={() => setIsTriageOpen(false)} onSelectService={handleOpenBooking} />
+        )}
+
+        {/* Booking Modal */}
+        <AnimatePresence>
         {isBookingOpen && (
           <div className="modal-overlay" onClick={() => setIsBookingOpen(false)}>
             <motion.div 
@@ -1858,18 +1879,49 @@ function App() {
               <div className="modal-header">
                 <Calendar className="modal-icon" style={{ stroke: 'var(--accent)' }} />
                 <h2>{isEyeExam ? 'Agendar examen de vista' : 'Agendar tu cita'}</h2>
+                  {selectedProduct && <p style={{ fontSize: '1rem', color: '#4b5563', margin: '4px 0 16px 0', fontWeight: 500 }}>Servicio: {selectedProduct}</p>}
                 {isEyeExam && (
                   <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '12px 16px', borderRadius: '8px', fontSize: '14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', textAlign: 'left', lineHeight: 1.4 }}>
                     <div style={{ flex: '0 0 auto' }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                      </div>
+                      <div>
+                        Tu examen es realizado con equipo de vanguardia por un <strong>oftalmólogo certificado</strong>.
+                      </div>
                     </div>
-                    <div>
-                      Tu examen es realizado con equipo de vanguardia por un <strong>oftalmólogo certificado</strong>.
+                  )}
+
+                  {window.location.pathname === '/agendar-cita' && !isBookingFromTriage && (
+                    <div style={{
+                      backgroundColor: '#fef3c7',
+                      border: '1px solid #fde68a',
+                      borderRadius: '8px',
+                      padding: '12px',
+                      marginBottom: '20px',
+                      textAlign: 'left'
+                    }}>
+                      <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: '#92400e' }}>
+                        ¿No sabe si requiere examen de la vista o consulta médica?
+                      </p>
+                      <button 
+                        onClick={(e) => { e.preventDefault(); setIsBookingOpen(false); setIsTriageOpen(true); }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          color: '#b45309',
+                          fontWeight: 600,
+                          fontSize: '0.9rem',
+                          textDecoration: 'underline',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Responda una pregunta
+                      </button>
                     </div>
-                  </div>
-                )}
-                
-                <p style={{ lineHeight: 1.5, margin: 0 }}>
+                  )}
+
+                  <p style={{ lineHeight: 1.5, margin: 0 }}>
                   {isEyeExam ? 'Selecciona el día y hora a continuación para reservar tu lugar.' : 'Selecciona el día y hora que mejor te acomode.'}
                 </p>
               </div>
@@ -2463,30 +2515,22 @@ function App() {
                 id: 's1', 
                 title: 'Examen de la vista', 
                 img: cv7600Img, 
-                action: () => setSelectedServiceInfo({
-                  id: 's1',
-                  title: 'Examen de la vista',
+                action: () => setIsTriageOpen(true), /* setSelectedServiceInfo({ id: 's1', title: 'Examen de la vista',
                   subtitle: 'Diagnóstico visual de alta precisión',
                   description: '<p>Tu salud visual en manos de expertos. Nuestro <strong>examen de vista profesional</strong> es realizado directamente por un <strong>oftalmólogo certificado</strong>, garantizando un diagnóstico clínico sumamente preciso y confiable.</p><p>Utilizamos <strong>equipos automatizados de alta gama y última generación</strong> que nos permiten medir tu agudeza visual con exactitud milimétrica. Todo esto en instalaciones modernas diseñadas para ofrecerte la mayor comodidad.</p><ul><li>Evaluación por oftalmólogo certificado</li><li>Tecnología automatizada de precisión</li><li>Diagnóstico clínico y refractivo 100% personalizado</li></ul><p><strong>Actualización de micas:</strong> Si ya tienes un armazón que te encanta, nosotros nos encargamos de cambiarle las micas con tu nueva graduación o el tratamiento que necesites. Es un proceso rápido y seguro para darle una nueva vida a tus lentes favoritos.</p>',
                   image: cv7600Img,
                   actionText: 'Agendar examen',
-                  onAction: () => { setSelectedServiceInfo(null); handleOpenBooking('Examen de la Vista'); }
-                }) 
-              },
+                  onAction: () => { setSelectedServiceInfo(null); setIsTriageOpen(true); } }) */ },
               { 
                 id: 's2', 
                 title: 'Consulta Médica', 
                 img: clinicRoomImg, 
-                action: () => setSelectedServiceInfo({
-                  id: 's2',
-                  title: 'Consulta Médica',
+                action: () => setIsTriageOpen(true), /* setSelectedServiceInfo({ id: 's2', title: 'Consulta Médica',
                   subtitle: 'Atención Oftalmológica Especializada',
                   description: '<p>Trabajamos de la mano con la clínica <strong>CIOVA</strong> para ofrecerte consultas oftalmológicas de la más alta calidad.</p><p>Nuestro equipo aliado se encargará de realizar un diagnóstico médico profundo de tu salud visual y ocular.</p>',
                   image: clinicRoomImg,
                   actionText: 'Agendar consulta',
-                  onAction: () => window.open('https://ciova.mx/', '_blank')
-                }) 
-              },
+                  onAction: () => { setSelectedServiceInfo(null); setIsTriageOpen(true); } }) */ },
               { 
                 id: 's3_arm', 
                 title: 'Armazones', 

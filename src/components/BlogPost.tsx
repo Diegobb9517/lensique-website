@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { blogPosts } from '../data/blogPosts';
 import { ArrowLeft } from 'lucide-react';
 import { marked } from 'marked';
@@ -9,7 +9,7 @@ export default function BlogPost({ slug }: { slug: string }) {
   if (!post) {
     return (
       <div style={{ paddingTop: '120px', textAlign: 'center', minHeight: '60vh' }}>
-        <h2>ArtÃ­culo no encontrado</h2>
+        <h2>Artículo no encontrado</h2>
         <a href="/blog" style={{ color: '#0066cc', textDecoration: 'none' }}>Volver al blog</a>
       </div>
     );
@@ -22,7 +22,7 @@ export default function BlogPost({ slug }: { slug: string }) {
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '100px 20px 80px' }}>
         <a href="/blog" style={{ display: 'inline-flex', alignItems: 'center', color: '#64748b', textDecoration: 'none', marginBottom: '32px', fontSize: '14px', fontWeight: 500 }}>
           <ArrowLeft size={16} style={{ marginRight: '6px' }} />
-          Todos los artÃ­culos
+          Todos los artículos
         </a>
         
         <div style={{ width: '100%', height: 'auto', maxHeight: '450px', overflow: 'hidden', borderRadius: '16px', marginBottom: '40px' }}>
@@ -93,6 +93,23 @@ export default function BlogPost({ slug }: { slug: string }) {
             .blog-content-wrapper h1 { font-size: 32px; }
             .blog-content-wrapper h2 { font-size: 24px; }
             .blog-content-wrapper p, .blog-content-wrapper li, .blog-content-wrapper blockquote { font-size: 16px; }
+          }
+          .blog-content-wrapper table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 15px;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+          }
+          .blog-content-wrapper th, .blog-content-wrapper td {
+            border: 1px solid #e5e5e5;
+            padding: 10px 12px;
+            text-align: left;
+          }
+          .blog-content-wrapper th {
+            background: #f7f7f7;
           }
         `}} />
       </div>

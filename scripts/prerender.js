@@ -523,7 +523,7 @@ const blogPostsData = [
     slug: 'monofocal-bifocal-o-progresivo',
     title: 'Monofocales, bifocales o progresivos: ¿cuál necesitas? | Óptica Lensique',
     metaDescription: 'Diferencias claras entre micas monofocales, bifocales y progresivas: para quién es cada una, ventajas, adaptación y precio. Explicado por Óptica Lensique, Zapopan.',
-    image: 'https://www.lensique.com.mx/assets/lentes_progresivos.jpg',
+    image: 'https://www.lensique.com.mx/blog/monofocal-bifocal-o-progresivo.jpg',
     author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
     datePublished: new Date().toISOString(),
     excerpt: '¿Te dijeron que necesitas ver de lejos y de cerca? Conoce las diferencias reales entre monofocal, bifocal y progresivo para tomar la mejor decisión.',
@@ -948,3 +948,4 @@ const fourOhFourHtml = `<!doctype html>
 fs.writeFileSync(path.join(distDir, '404.html'), fourOhFourHtml, 'utf8');
 fs.writeFileSync(path.join(rootDir, 'public', '404.html'), fourOhFourHtml, 'utf8');
 console.log('✅ Generated /404.html page.');
+

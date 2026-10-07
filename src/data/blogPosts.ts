@@ -20,7 +20,7 @@ export const blogPosts: BlogPost[] = [
     metaDescription: 'Diferencias claras entre micas monofocales, bifocales y progresivas: para quién es cada una, ventajas, adaptación y precio. Explicado por Óptica Lensique, Zapopan.',
     author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
     datePublished: new Date().toISOString(),
-    image: img3,
+    image: 'https://www.lensique.com.mx/blog/monofocal-bifocal-o-progresivo.jpg',
     excerpt: '¿Te dijeron que necesitas ver de lejos y de cerca? Conoce las diferencias reales entre monofocal, bifocal y progresivo para tomar la mejor decisión.',
     body: `# Monofocales, bifocales o progresivos: ¿cuál necesitas?
 
@@ -228,7 +228,7 @@ En Óptica Lensique preferimos que gastes tu dinero en lo que de verdad funciona
     metaDescription: 'Diferencias claras entre micas monofocales, bifocales y progresivas: para quién es cada una, ventajas, adaptación y precio. Explicado por Óptica Lensique, Zapopan.',
     author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
     datePublished: '2024-03-22T10:00:00Z',
-    image: img3,
+    image: 'https://www.lensique.com.mx/blog/monofocal-bifocal-o-progresivo.jpg',
     excerpt: 'Si te acaban de decir que necesitas "ver de lejos y de cerca", tarde o temprano vas a escuchar estas tres palabras. Aquí te explicamos cada una sin tecnicismos.',
     body: `# Monofocales, bifocales o progresivos: ¿cuál necesitas?
 
@@ -317,3 +317,4 @@ La mejor forma de decidir es con tu graduación actual y una valoración. En **�
 *Artículo informativo del equipo de Óptica Lensique (Zapopan, Guadalajara), revisado por oftalmólogo. No sustituye una consulta profesional.*`
   }
 ];
+

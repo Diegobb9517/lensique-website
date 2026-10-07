@@ -21,6 +21,7 @@ import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import LensExplainer from './components/LensExplainer';
 import BlogList from './components/BlogList';
 import BlogPost from './components/BlogPost';
+import { blogPosts } from './data/blogPosts';
 
 import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
@@ -928,6 +929,13 @@ function App() {
     if (currentPath === '/armazones') {
       title = "Armazones de diseño en Zapopan | Óptica Lensique";
       desc = "Armazones de diseño y lentes oftálmicos en Zapopan (zona Guadalajara), con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
+    } else if (currentPath.startsWith('/blog/')) {
+      const slug = currentPath.replace('/blog/', '');
+      const post = blogPosts.find(p => p.slug === slug);
+      if (post) {
+        title = post.title;
+        desc = post.metaDescription;
+      }
     } else if (currentPath === '/cotizador') {
       title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
       desc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";
@@ -936,7 +944,7 @@ function App() {
       desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
     }
 
-    if (['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath)) {
+    if (['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath) || currentPath.startsWith('/blog/')) {
         document.title = title;
         let descEl = document.querySelector('meta[name="description"]');
         if (descEl) descEl.setAttribute('content', desc);

@@ -120,7 +120,7 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
             </div>
 
             <div style={{ marginTop: '32px', textAlign: 'center' }}>
-              <a href="/blog/monofocales-bifocales-o-progresivos" style={{ color: '#0066cc', fontSize: '15px', textDecoration: 'none' }}>Leer la guía completa</a>
+              <a href="/blog/monofocal-bifocal-o-progresivo" style={{ color: '#0066cc', fontSize: '15px', textDecoration: 'none' }}>Leer la guía completa</a>
             </div>
           </div>
         </div>
@@ -128,3 +128,4 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
     </motion.div>
   );
 }
+

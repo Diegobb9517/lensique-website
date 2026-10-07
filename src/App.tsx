@@ -1063,7 +1063,7 @@ function App() {
           if (product) {
             setSelectedProductDetail(product);
           } else {
-            document.title = "404 - Producto no encontrado | Óptica Lensique";
+            document.title = "404 - Página no encontrada | Óptica Lensique";
             let robotsEl = document.querySelector('meta[name="robots"]');
             if (!robotsEl) {
               robotsEl = document.createElement('meta');
@@ -2308,8 +2308,17 @@ function App() {
 
         {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros'].some(p => currentPath === p || currentPath.startsWith('/blog/')) && (
           <div>
-
-        <section className="hero">
+            {currentPath !== '/' && (
+              <div style={{ paddingTop: '160px', paddingBottom: '160px', textAlign: 'center', backgroundColor: '#f8f6f2', minHeight: '80vh' }}>
+                <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '0 0 12px', color: '#1b2436' }}>Página no encontrada</h1>
+                <p style={{ fontSize: '16px', color: '#666', margin: '0 0 28px' }}>El enlace no existe o cambió.</p>
+                <a href="/catalogo" className="btn btn-primary" style={{ marginRight: '10px' }}>Ir al catálogo</a>
+                <a href="/blog" className="btn btn-primary">Ir al blog</a>
+              </div>
+            )}
+            {currentPath === '/' && (
+              <>
+          <section className="hero">
           <picture style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
             <source srcSet="/hero-mobile.webp" media="(max-width: 768px)" width="1080" height="1350" />
             <img 
@@ -2900,9 +2909,12 @@ function App() {
             data={selectedInfoPage}
           />
 
-      </div>
-)}
-</main>
+                  </>
+            )}
+          </div>
+        )}
+
+      </main>
 
       <a 
         href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, me interesa agendar una cita.')}`} 

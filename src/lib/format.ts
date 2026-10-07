@@ -9,6 +9,13 @@ export const formatModelName = (modelRaw: string): string => {
   return cleaned;
 };
 
+export const isProvisionalName = (product: any): boolean => {
+  const isContact = String(product.category || '').toLowerCase().includes('contacto');
+  if (!isContact) return false;
+  let model = (product.model || product.name || '').trim();
+  return (!product.description && (/^LC-/i.test(model) || model === product.sku));
+};
+
 export const getDisplayName = (product: any): string => {
   if (!product) return '';
   if (product.display_name) return product.display_name.trim();
@@ -21,15 +28,11 @@ export const getDisplayName = (product: any): string => {
     let descText = '';
     if (product.description) {
       descText = toTitleCase(product.description.split(/\s+/).slice(0, 6).join(' '));
+      return (brand ? brand + ' ' + descText : descText).trim();
     } else {
       let skuRaw = product.sku || model;
-      skuRaw = skuRaw.replace(/^LC-/i, '');
-      skuRaw = skuRaw.replace(/BAUSCHLOMB/i, 'Bausch + Lomb ').replace(/AIROPTIX/i, 'Air Optix ').replace(/ACUVUE/i, 'Acuvue ').replace(/BIOTRUE/i, 'Biotrue ').replace(/CLARITI/i, 'Clariti ').replace(/BIOFINITY/i, 'Biofinity ');
-      skuRaw = skuRaw.replace(/([a-zA-Z])([0-9])/g, '$1 $2').replace(/([0-9])([a-zA-Z])/g, '$1 $2');
-      descText = toTitleCase(skuRaw.trim());
-      descText = descText.replace(/Bausch \+ Lomb/ig, 'Bausch + Lomb').replace(/Air Optix/ig, 'Air Optix');
+      return skuRaw.replace(/^LC-/i, '');
     }
-    return (brand ? brand + ' ' + descText : descText).trim();
   }
   
   if (brand) {

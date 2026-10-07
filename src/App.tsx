@@ -27,7 +27,7 @@ import ProgressiveExplainer from './components/ProgressiveExplainer';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
-import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock } from './lib/format';
+import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard } from './components/ProductCard';
@@ -1547,7 +1547,7 @@ function App() {
               <div className="product-detail-info-col">
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
                 <h2 className="product-detail-name" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                  <span>{getDisplayName(selectedProductDetail)}</span>
+                  <span style={isProvisionalName(selectedProductDetail) ? { color: '#888', fontSize: '0.8em', fontWeight: 'normal', textTransform: 'uppercase' } : {}}>{getDisplayName(selectedProductDetail)}</span>
                   {(() => {
                     const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
                     const basePrice = selectedProductDetail.price_incl_tax || 0;

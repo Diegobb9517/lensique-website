@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
-import { getDisplayName, getProductSlug, isInStock } from '../lib/format';
+import { getDisplayName, getProductSlug, isInStock, isProvisionalName } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 import { BASE_LENS_PRICE } from '../lib/constants';
@@ -20,6 +20,10 @@ interface ProductCardProps {
 
 export const FormatProductName = ({ product }: { product: any }) => {
   const cleanName = getDisplayName(product);
+  const isProv = isProvisionalName(product);
+  if (isProv) {
+    return <span className="fpn-main provisional-name" style={{ color: '#888', fontSize: '0.9em', fontWeight: 'normal', textTransform: 'uppercase' }}>{cleanName}</span>;
+  }
   return <span className="fpn-main">{cleanName}</span>;
 };
 

@@ -469,7 +469,7 @@ export function CartDrawer() {
                               <input type="radio" name="deliveryMethodStep1" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
                               <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 700 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#0f172a' }}>Recoger en tienda</div>
-                                <div style={{ fontSize: '13px', color: deliveryMethod === 'STORE_PICKUP' ? '#2563eb' : '#64748b', marginTop: '2px' }}>Gratis</div>
+                                <div style={{ fontSize: '13px', color: deliveryMethod === 'STORE_PICKUP' ? '#2563eb' : '#64748b', marginTop: '2px' }}>Sin costo</div>
                               </div>
                               <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'STORE_PICKUP' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 {deliveryMethod === 'STORE_PICKUP' && <Check size={14} color="#fff" />}
@@ -549,7 +549,7 @@ export function CartDrawer() {
                     {shippingQuoteLoading ? (
                       <span style={{ fontSize: '13px', color: '#94a3b8' }}>Calculando...</span>
                     ) : shippingQuote?.cost === 0 ? (
-                      <span style={{ color: '#16a34a', fontWeight: 600 }}>Gratis</span>
+                      <span style={{ color: '#16a34a', fontWeight: 600 }}>Sin costo</span>
                     ) : (
                       <span>${Math.round(shippingQuote?.cost ?? 150).toLocaleString('es-MX')}</span>
                     )}

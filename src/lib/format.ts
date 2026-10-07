@@ -16,6 +16,11 @@ export const getDisplayName = (product: any): string => {
   const brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
   let model = (product.model || product.name || '').trim();
   
+  if (model.toUpperCase().startsWith('LC-') || model === product.sku) {
+    const desc = (product.short_description || 'Lentes').trim();
+    return (brand ? brand + ' ' + desc : desc).trim();
+  }
+  
   if (brand) {
     const brandUpper = brand.toUpperCase().trim();
     let cleaned = false;

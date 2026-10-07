@@ -348,10 +348,10 @@ function FullCatalog({
                     setSelectedBrand(val);
                     if (val === 'Todas') {
                       window.history.pushState(null, '', '/armazones');
-                      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
+                      window.dispatchEvent(new PopStateEvent('popstate'));
                     } else {
                       window.history.pushState(null, '', `/marca/${slugify(val)}`);
-                      document.title = `Armazones ${val} en Zapopan | Óptica Lensique`;
+                      window.dispatchEvent(new PopStateEvent('popstate'));
                     }
                   }}
                   options={[
@@ -726,7 +726,7 @@ const returnsData: InfoPageData = {
     },
     {
       heading: 'Envíos de devolución',
-      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>gratis si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
+      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>sin costo si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
     },
     {
       heading: 'No aplica devolución',
@@ -942,9 +942,19 @@ function App() {
     } else if (currentPath === '/lentes-de-contacto') {
       title = "Lentes de Contacto en Zapopan | Óptica Lensique";
       desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
+    } else if (currentPath === '/catalogo') {
+      title = "Catálogo | Óptica Lensique";
+    } else if (currentPath === '/agendar-cita') {
+      title = "Agenda tu Examen de Vista con Oftalmólogo | Óptica Lensique Zapopan";
+    } else if (currentPath === '/micas') {
+      title = "Micas y Lentes Graduados en Zapopan | Óptica Lensique";
+    } else if (currentPath.startsWith('/marca/')) {
+      const slug = currentPath.replace('/marca/', '');
+      const brandStr = slug.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      title = `Armazones ${brandStr} en Zapopan | Óptica Lensique`;
     }
 
-    if (['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath) || currentPath.startsWith('/blog/')) {
+    if (!currentPath.startsWith('/producto/') && currentPath !== '/') {
         document.title = title;
         let descEl = document.querySelector('meta[name="description"]');
         if (descEl) descEl.setAttribute('content', desc);
@@ -1225,7 +1235,7 @@ function App() {
           }
         }
       }
-      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
+      setCurrentPath(window.location.pathname);
       
       const scriptEl = document.getElementById('product-jsonld');
       if (scriptEl) scriptEl.remove();
@@ -1236,8 +1246,8 @@ function App() {
     if (isBookingOpen) {
       if (window.location.pathname !== '/agendar-cita') {
         window.history.pushState({ booking: true }, '', '/agendar-cita');
+        setCurrentPath('/agendar-cita');
       }
-      document.title = "Agenda tu Examen de Vista con Oftalmólogo | Óptica Lensique Zapopan";
       
       if (!selectedDate) {
         const today = new Date();
@@ -1247,7 +1257,7 @@ function App() {
     } else {
       if (window.location.pathname === '/agendar-cita') {
         window.history.pushState(null, '', '/');
-        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
+        setCurrentPath('/');
       }
     }
   }, [isBookingOpen]);
@@ -1258,15 +1268,15 @@ function App() {
     if (isCatalogOpen) {
       if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones') {
         window.history.pushState({ catalog: true }, '', '/catalogo');
-        document.title = "Catálogo | Óptica Lensique";
+        setCurrentPath('/catalogo');
       }
     } else {
       if (window.location.pathname === '/catalogo') {
         window.history.pushState(null, '', '/');
-        document.title = 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
+        setCurrentPath('/');
       } else if (window.location.pathname.startsWith('/marca/')) {
         window.history.pushState(null, '', '/armazones');
-        document.title = "Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo";
+        setCurrentPath('/armazones');
       }
     }
   }, [isCatalogOpen]);

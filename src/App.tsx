@@ -348,10 +348,10 @@ function FullCatalog({
                     setSelectedBrand(val);
                     if (val === 'Todas') {
                       window.history.pushState(null, '', '/armazones');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
                     } else {
                       window.history.pushState(null, '', `/marca/${slugify(val)}`);
-                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      document.title = `Armazones ${val} en Zapopan | Óptica Lensique`;
                     }
                   }}
                   options={[
@@ -726,7 +726,7 @@ const returnsData: InfoPageData = {
     },
     {
       heading: 'Envíos de devolución',
-      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>sin costo si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
+      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>gratis si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
     },
     {
       heading: 'No aplica devolución',
@@ -942,19 +942,9 @@ function App() {
     } else if (currentPath === '/lentes-de-contacto') {
       title = "Lentes de Contacto en Zapopan | Óptica Lensique";
       desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
-    } else if (currentPath === '/catalogo') {
-      title = "Catálogo | Óptica Lensique";
-    } else if (currentPath === '/agendar-cita') {
-      title = "Agenda tu Examen de Vista con Oftalmólogo | Óptica Lensique Zapopan";
-    } else if (currentPath === '/micas') {
-      title = "Micas y Lentes Graduados en Zapopan | Óptica Lensique";
-    } else if (currentPath.startsWith('/marca/')) {
-      const slug = currentPath.replace('/marca/', '');
-      const brandStr = slug.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      title = `Armazones ${brandStr} en Zapopan | Óptica Lensique`;
     }
 
-    if (!currentPath.startsWith('/producto/') && currentPath !== '/') {
+    if (['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath) || currentPath.startsWith('/blog/')) {
         document.title = title;
         let descEl = document.querySelector('meta[name="description"]');
         if (descEl) descEl.setAttribute('content', desc);
@@ -1235,7 +1225,7 @@ function App() {
           }
         }
       }
-      setCurrentPath(window.location.pathname);
+      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       
       const scriptEl = document.getElementById('product-jsonld');
       if (scriptEl) scriptEl.remove();
@@ -1246,8 +1236,8 @@ function App() {
     if (isBookingOpen) {
       if (window.location.pathname !== '/agendar-cita') {
         window.history.pushState({ booking: true }, '', '/agendar-cita');
-        setCurrentPath('/agendar-cita');
       }
+      document.title = "Agenda tu Examen de Vista con Oftalmólogo | Óptica Lensique Zapopan";
       
       if (!selectedDate) {
         const today = new Date();
@@ -1257,7 +1247,7 @@ function App() {
     } else {
       if (window.location.pathname === '/agendar-cita') {
         window.history.pushState(null, '', '/');
-        setCurrentPath('/');
+        document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       }
     }
   }, [isBookingOpen]);
@@ -1268,15 +1258,15 @@ function App() {
     if (isCatalogOpen) {
       if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones') {
         window.history.pushState({ catalog: true }, '', '/catalogo');
-        setCurrentPath('/catalogo');
+        document.title = "Catálogo | Óptica Lensique";
       }
     } else {
       if (window.location.pathname === '/catalogo') {
         window.history.pushState(null, '', '/');
-        setCurrentPath('/');
+        document.title = 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
       } else if (window.location.pathname.startsWith('/marca/')) {
         window.history.pushState(null, '', '/armazones');
-        setCurrentPath('/armazones');
+        document.title = "Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo";
       }
     }
   }, [isCatalogOpen]);
@@ -2326,15 +2316,23 @@ function App() {
 
         {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros'].some(p => currentPath === p || currentPath.startsWith('/blog/')) && (
           <div>
-            {currentPath !== '/' && (
-              <div style={{ paddingTop: '160px', paddingBottom: '160px', textAlign: 'center', backgroundColor: '#f8f6f2', minHeight: '80vh' }}>
-                <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '0 0 12px', color: '#1b2436' }}>Página no encontrada</h1>
-                <p style={{ fontSize: '16px', color: '#666', margin: '0 0 28px' }}>El enlace no existe o cambió.</p>
-                <a href="/catalogo" className="btn btn-primary" style={{ marginRight: '10px' }}>Ir al catálogo</a>
-                <a href="/blog" className="btn btn-primary">Ir al blog</a>
-              </div>
-            )}
-            {currentPath === '/' && (
+            {(() => {
+              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad'];
+              const isDynamicRoute = currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/blog/');
+              const is404Title = typeof document !== 'undefined' && document.title.includes('404');
+              const is404 = (!validStaticRoutes.includes(currentPath) && !isDynamicRoute) || ((currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/')) && is404Title);
+              
+              return (
+                <>
+                  {is404 && (
+                    <div style={{ paddingTop: '160px', paddingBottom: '160px', textAlign: 'center', backgroundColor: '#f8f6f2', minHeight: '80vh' }}>
+                      <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '0 0 12px', color: '#1b2436' }}>Página no encontrada</h1>
+                      <p style={{ fontSize: '16px', color: '#666', margin: '0 0 28px' }}>El enlace no existe o cambió.</p>
+                      <a href="/catalogo" className="btn btn-primary" style={{ marginRight: '10px' }}>Ir al catálogo</a>
+                      <a href="/blog" className="btn btn-primary">Ir al blog</a>
+                    </div>
+                  )}
+                  {!is404 && (
               <>
           <section className="hero">
           <picture style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
@@ -2929,6 +2927,9 @@ function App() {
 
                   </>
             )}
+                </>
+              );
+            })()}
           </div>
         )}
 

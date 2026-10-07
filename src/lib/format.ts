@@ -16,9 +16,15 @@ export const getDisplayName = (product: any): string => {
   const brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
   let model = (product.model || product.name || '').trim();
   
-  if (model.toUpperCase().startsWith('LC-') || model === product.sku) {
-    const desc = (product.short_description || 'Lentes').trim();
-    return (brand ? brand + ' ' + desc : desc).trim();
+  const isContact = String(product.category || '').toLowerCase().includes('contacto');
+  if (isContact && (/^LC-/i.test(model) || model === product.sku)) {
+    let descText = '';
+    if (product.description) {
+      descText = toTitleCase(product.description.split(/\s+/).slice(0, 6).join(' '));
+    } else {
+      descText = 'lentes de contacto';
+    }
+    return (brand ? brand + ' ' + descText : descText).trim();
   }
   
   if (brand) {

@@ -726,7 +726,7 @@ const returnsData: InfoPageData = {
     },
     {
       heading: 'Envíos de devolución',
-      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>gratis si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
+      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>sin costo si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
     },
     {
       heading: 'No aplica devolución',
@@ -929,6 +929,20 @@ function App() {
     if (currentPath === '/armazones') {
       title = "Armazones de diseño en Zapopan | Óptica Lensique";
       desc = "Armazones de diseño y lentes oftálmicos en Zapopan (zona Guadalajara), con respaldo de oftalmólogo. Compra en línea o agenda tu cita.";
+    } else if (currentPath.startsWith('/marca/')) {
+      const slug = currentPath.replace(/^\/marca\//, '').replace(/\/$/, '');
+      const catalog = safeJsonParse(settings.full_catalog_data, []);
+      if (catalog.length > 0) {
+        const uniqueBrands = Array.from(new Set(catalog.map((p: any) => p.brand || 'Varios')));
+        const matchedBrand = uniqueBrands.find((b: any) => slugify(b) === slug);
+        if (matchedBrand) {
+          title = `Armazones ${matchedBrand} en Zapopan | Óptica Lensique`;
+        }
+      } else {
+        title = typeof document !== 'undefined' ? document.title : title;
+      }
+    } else if (currentPath === '/catalogo' || currentPath === '/') {
+      title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
     } else if (currentPath.startsWith('/blog/')) {
       const slug = currentPath.replace('/blog/', '');
       const post = blogPosts.find(p => p.slug === slug);
@@ -944,7 +958,7 @@ function App() {
       desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
     }
 
-    if (['/armazones', '/cotizador', '/lentes-de-contacto'].includes(currentPath) || currentPath.startsWith('/blog/')) {
+    if (['/armazones', '/cotizador', '/lentes-de-contacto', '/', '/catalogo'].includes(currentPath) || currentPath.startsWith('/blog/') || currentPath.startsWith('/marca/')) {
         document.title = title;
         let descEl = document.querySelector('meta[name="description"]');
         if (descEl) descEl.setAttribute('content', desc);
@@ -1086,24 +1100,26 @@ function App() {
         } else if (path === '/agendar-cita') {
         setSelectedProduct('Examen de la Vista');
         setIsBookingOpen(true);
-      }  else if (path.startsWith('/marca/')) {
+      } else if (path.startsWith('/marca/')) {
         const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
         const catalog = safeJsonParse(settings.full_catalog_data, []);
-        const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
-        const matchedBrand = uniqueBrands.find((b: any) => slugify(b) === slug);
-        if (matchedBrand) {
-          setCatalogInitialFilter('Todas');
-          setCatalogInitialBrand(matchedBrand as string);
-          setIsCatalogOpen(true);
-        } else {
-          document.title = "404 - Marca no encontrada | Óptica Lensique";
-          let robotsEl = document.querySelector('meta[name="robots"]');
-          if (!robotsEl) {
-            robotsEl = document.createElement('meta');
-            robotsEl.setAttribute('name', 'robots');
-            document.head.appendChild(robotsEl);
+        if (catalog.length > 0) {
+          const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
+          const matchedBrand = uniqueBrands.find((b: any) => slugify(b) === slug);
+          if (matchedBrand) {
+            setCatalogInitialFilter('Todas');
+            setCatalogInitialBrand(matchedBrand as string);
+            setIsCatalogOpen(true);
+          } else {
+            document.title = "404 - Marca no encontrada | Óptica Lensique";
+            let robotsEl = document.querySelector('meta[name="robots"]');
+            if (!robotsEl) {
+              robotsEl = document.createElement('meta');
+              robotsEl.setAttribute('name', 'robots');
+              document.head.appendChild(robotsEl);
+            }
+            robotsEl.setAttribute('content', 'noindex, follow');
           }
-          robotsEl.setAttribute('content', 'noindex, follow');
         }
       }
     };
@@ -1225,7 +1241,6 @@ function App() {
           }
         }
       }
-      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
       
       const scriptEl = document.getElementById('product-jsonld');
       if (scriptEl) scriptEl.remove();

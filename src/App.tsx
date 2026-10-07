@@ -1664,6 +1664,7 @@ function App() {
         catalogData={safeJsonParse(settings.full_catalog_data)}
         initialFilter={catalogInitialFilter}
         initialSearchQuery={catalogInitialSearchQuery}
+        initialBrand={catalogInitialBrand}
         onViewProduct={(prod) => {
           setSelectedProductDetail(prod);
         }}

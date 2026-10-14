@@ -22,14 +22,59 @@ if (!scriptContent) {
   process.exit(1);
 }
 
+const createStubElement = () => {
+  const el = {
+    style: {},
+    setAttribute: () => {},
+    getAttribute: () => null,
+    removeAttribute: () => {},
+    appendChild: (child) => child,
+    removeChild: (child) => child,
+    insertBefore: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    classList: {
+      add: () => {},
+      remove: () => {},
+      toggle: () => {},
+      contains: () => false
+    },
+    querySelector: () => el,
+    querySelectorAll: () => [],
+    innerHTML: '',
+    innerText: '',
+    textContent: ''
+  };
+  return el;
+};
+
+const stubEl = createStubElement();
+
+const stubDoc = {
+  getElementById: () => stubEl,
+  querySelector: () => stubEl,
+  querySelectorAll: () => [],
+  createElement: () => createStubElement(),
+  createElementNS: () => createStubElement(),
+  createTextNode: () => stubEl,
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  body: stubEl,
+  head: stubEl,
+  documentElement: stubEl
+};
+
+const loc = { search: '', hash: '', pathname: '', href: '', hostname: '', protocol: 'https:' };
+
 const sandbox = {
+  location: loc,
   window: {
-    location: { search: '' }
+    location: loc,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    scrollTo: () => {}
   },
-  document: {
-    getElementById: () => null,
-    querySelector: () => null,
-  },
+  document: stubDoc,
   console: console,
   setTimeout: () => {},
   requestAnimationFrame: () => {},
@@ -37,6 +82,10 @@ const sandbox = {
   global: {}
 };
 sandbox.global = sandbox;
+sandbox.window.document = stubDoc;
+sandbox.window.window = sandbox.window;
+sandbox.window.self = sandbox.window;
+sandbox.window.top = sandbox.window;
 
 const context = vm.createContext(sandbox);
 

@@ -1454,85 +1454,52 @@ function App() {
     const fallbackFeatured: any[] = safeJsonParse(settings.featured_products, []);
 
     // Deduplicate by id, filter out unpublished
-    const uniqueMap = new Map<number | string, any>();
-    rawCatalog.forEach((p: any) => {
-      if (p && p.id != null && p.published !== 0 && p.published !== false) {
-        if (!uniqueMap.has(p.id)) {
-          uniqueMap.set(p.id, p);
+    const dedupePublished = (list: any[]) => {
+      const uniqueMap = new Map<number | string, any>();
+      list.forEach((p: any) => {
+        if (p && p.id != null && p.published !== 0 && p.published !== false) {
+          if (!uniqueMap.has(p.id)) {
+            uniqueMap.set(p.id, p);
+          }
         }
-      }
-    });
-    const catalogList = Array.from(uniqueMap.values());
+      });
+      return Array.from(uniqueMap.values());
+    };
 
-    // 1. Novedades (latest added frames, sorted by id desc)
-    let novedadesItems = catalogList
-      .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
-      .sort((a: any, b: any) => (Number(b.id) || 0) - (Number(a.id) || 0))
-      .slice(0, 12);
+    const catalogList = dedupePublished(rawCatalog);
+    const sourceList = catalogList.length > 0 ? catalogList : dedupePublished(fallbackFeatured);
 
-    if (novedadesItems.length < 4 && fallbackFeatured.length >= 4) {
-      novedadesItems = fallbackFeatured.slice(0, 12);
-    }
+    const isContact = (p: any) => String(p.category || 'vista').toLowerCase().includes('contacto');
 
-    // 2. Ray-Ban (brand === 'RAY-BAN')
-    const rayBanItems = catalogList
-      .filter((p: any) => (p.brand || '').toUpperCase() === 'RAY-BAN')
-      .slice(0, 20);
+    // 1. Armazones: categoría NO contiene "contacto"
+    const armazonesItems = sourceList.filter((p: any) => !isContact(p)).slice(0, 12);
 
-    // 3. Carrera (brand with good stock, >= 4 products)
-    const carreraItems = catalogList
-      .filter((p: any) => (p.brand || '').toUpperCase() === 'CARRERA')
-      .slice(0, 20);
-
-    // 4. Lentes de contacto diarios (category contacto + uso diario via getContactLensUsage)
-    const dailyContactItems = catalogList
-      .filter((p: any) => 
-        String(p.category || '').toLowerCase().includes('contacto') && 
-        getContactLensUsage(p.name) === 'Uso Diario'
-      )
-      .slice(0, 20);
+    // 2. Lentes de contacto: categoría contiene "contacto"
+    const contactItems = sourceList.filter((p: any) => isContact(p)).slice(0, 12);
 
     const rows = [
       {
-        id: 'novedades',
-        title: 'Novedades',
+        id: 'armazones',
+        title: 'Armazones',
         href: '/armazones',
         targetFilter: 'Armazones',
         targetBrand: 'Todas',
         fallbackImage: heroImg,
-        items: novedadesItems
+        items: armazonesItems
       },
       {
-        id: 'ray-ban',
-        title: 'Ray-Ban',
-        href: '/marca/ray-ban',
-        targetFilter: 'Todas',
-        targetBrand: 'RAY-BAN',
-        fallbackImage: heroImg,
-        items: rayBanItems
-      },
-      {
-        id: 'carrera',
-        title: 'Carrera',
-        href: '/marca/carrera',
-        targetFilter: 'Todas',
-        targetBrand: 'CARRERA',
-        fallbackImage: heroImg,
-        items: carreraItems
-      },
-      {
-        id: 'lentes-contacto-diarios',
-        title: 'Lentes de contacto diarios',
+        id: 'lentes-contacto',
+        title: 'Lentes de contacto',
         href: '/lentes-de-contacto',
         targetFilter: 'Lentes de Contacto',
         targetBrand: 'Todas',
         fallbackImage: contactLensesImg,
-        items: dailyContactItems
+        items: contactItems
       }
     ];
 
-    // Only show rows with >= 4 products
-    return rows.filter(r => r.items.length >= 4);
+    // Categorías principales: se muestran aunque tengan menos de 4 productos (pero no vacías)
+    return rows.filter(r => r.items.length > 0);
   }, [settings.full_catalog_data, settings.featured_products]);
 
   const handleSeeAllCollection = (col: { href: string; targetFilter?: string; targetBrand?: string }) => {
@@ -2607,10 +2574,11 @@ function App() {
           {homeCollections.map((col) => (
             <CollectionRow
               key={col.id}
-              id={col.id === 'lentes-contacto-diarios' ? 'lentes-contacto' : undefined}
+              id={col.id}
               title={col.title}
               href={col.href}
               products={col.items}
+              minItems={1}
               fallbackImage={col.fallbackImage}
               onSeeAll={() => handleSeeAllCollection(col)}
               onSelectProduct={(prod) => setSelectedProductDetail(prod)}

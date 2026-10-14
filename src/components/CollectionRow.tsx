@@ -10,6 +10,8 @@ export interface CollectionRowProps {
   fallbackImage: string;
   onSeeAll: () => void;
   onSelectProduct: (product: any) => void;
+  /** Mínimo de productos para mostrar la fila (por defecto 4). */
+  minItems?: number;
 }
 
 export const CollectionRow: React.FC<CollectionRowProps> = ({
@@ -19,7 +21,8 @@ export const CollectionRow: React.FC<CollectionRowProps> = ({
   products,
   fallbackImage,
   onSeeAll,
-  onSelectProduct
+  onSelectProduct,
+  minItems = 4
 }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +33,7 @@ export const CollectionRow: React.FC<CollectionRowProps> = ({
     }
   };
 
-  if (!products || products.length < 4) {
+  if (!products || products.length < minItems) {
     return null;
   }
 

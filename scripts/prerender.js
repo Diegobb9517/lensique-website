@@ -450,6 +450,36 @@ if (!fs.existsSync(cotizadorDir)) {
 fs.writeFileSync(path.join(cotizadorDir, 'index.html'), cotizadorHtml, 'utf8');
 console.log('✅ Pre-rendered /cotizador/index.html');
 
+// Generate /seguimiento prerender (noindex, do NOT add to sitemap)
+const trackingTitle = 'Seguimiento de tu pedido | Lensique';
+const trackingDesc = 'Consulta el estado de tu pedido en Óptica Lensique con tu número de folio o enlace directo.';
+const trackingHeadInjection = `
+  <title>${trackingTitle}</title>
+  <meta name="description" content="${trackingDesc}" />
+  <meta name="robots" content="noindex, follow" />
+`;
+
+const trackingBodyInjection = `
+  <div style="max-width: 600px; margin: 40px auto; padding: 24px; font-family: sans-serif;">
+    <h1 style="font-size: 28px; font-weight: 700; color: #111827;">Seguimiento de tu pedido</h1>
+    <p style="font-size: 16px; color: #4b5563;">Consulta el estado de tu pedido en Óptica Lensique.</p>
+  </div>
+`;
+
+let trackingHtml = indexTemplate;
+if (trackingHtml.includes('<title>')) {
+  trackingHtml = trackingHtml.replace(/<title>.*?<\/title>/s, `<title>${trackingTitle}</title>`);
+}
+trackingHtml = trackingHtml.replace('</head>', `${trackingHeadInjection}\n</head>`);
+trackingHtml = trackingHtml.replace('<div id="root"></div>', `<div id="root">${trackingBodyInjection}</div>`);
+
+const trackingDir = path.join(distDir, 'seguimiento');
+if (!fs.existsSync(trackingDir)) {
+  fs.mkdirSync(trackingDir, { recursive: true });
+}
+fs.writeFileSync(path.join(trackingDir, 'index.html'), trackingHtml, 'utf8');
+console.log('✅ Pre-rendered /seguimiento/index.html (noindex)');
+
 // Generate /marca/[slug] prerender
 const uniqueBrandsMap = new Map();
 products.forEach(p => {

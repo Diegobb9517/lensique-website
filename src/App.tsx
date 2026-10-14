@@ -37,6 +37,7 @@ import { useCart } from './context/CartContext';
 import { calculateDeliveryTime, getDeliveryEstimate } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';
 import { TriageModal } from './components/TriageModal';
+import OrderTracking from './components/OrderTracking';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
   const clean = waStr.replace(/\D/g, '');
@@ -962,9 +963,12 @@ function App() {
     } else if (currentPath === '/lentes-de-contacto') {
       title = "Lentes de Contacto en Zapopan | Óptica Lensique";
       desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
+    } else if (currentPath === '/seguimiento' || currentPath.startsWith('/p/')) {
+      title = "Seguimiento de Pedido | Óptica Lensique";
+      desc = "Consulta el estado en tiempo real de tu pedido en Óptica Lensique.";
     }
 
-    if (['/armazones', '/cotizador', '/lentes-de-contacto', '/', '/catalogo'].includes(currentPath) || currentPath.startsWith('/blog/') || currentPath.startsWith('/marca/')) {
+    if (['/armazones', '/cotizador', '/lentes-de-contacto', '/', '/catalogo', '/seguimiento'].includes(currentPath) || currentPath.startsWith('/blog/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/p/')) {
         document.title = title;
         let descEl = document.querySelector('meta[name="description"]');
         if (descEl) descEl.setAttribute('content', desc);
@@ -2520,11 +2524,22 @@ function App() {
           <BlogPost slug={currentPath.replace('/blog/', '')} />
         )}
 
-        {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros'].some(p => currentPath === p || currentPath.startsWith('/blog/')) && (
+        {(currentPath === '/seguimiento' || currentPath.startsWith('/p/')) && (
+          <OrderTracking
+            currentPath={currentPath}
+            contactWhatsapp={settings.contact_whatsapp}
+            onNavigate={(path) => {
+              setCurrentPath(path);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
+
+        {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/')) && (
           <div>
             {(() => {
-              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad'];
-              const isDynamicRoute = currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/blog/');
+              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/seguimiento'];
+              const isDynamicRoute = currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/');
               const is404Title = typeof document !== 'undefined' && document.title.includes('404');
               const is404 = (!validStaticRoutes.includes(currentPath) && !isDynamicRoute) || ((currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/')) && is404Title);
               
@@ -3143,6 +3158,17 @@ function App() {
 
               <div className="footer-col">
                 <h4>Soporte</h4>
+                <a 
+                  href="/seguimiento" 
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    setCurrentPath('/seguimiento'); 
+                    window.history.pushState({}, '', '/seguimiento'); 
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                  }}
+                >
+                  Rastrea tu pedido
+                </a>
                 <a href="#garantia" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(warrantyData); }}>Garantías</a>
                 <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }}>Preguntas Frecuentes</a>
                 <a href="#facturacion" onClick={(e) => { e.preventDefault(); import('./lib/analytics').then(({ trackLead }) => trackLead()); alert('Para solicitar tu factura, envíanos tu Constancia de Situación Fiscal (CSF) por WhatsApp.'); window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=Hola,%20me%20gustar%C3%ADa%20solicitar%20mi%20factura.%20Aqu%C3%AD%20env%C3%ADo%20mi%20Constancia%20de%20Situaci%C3%B3n%20Fiscal.`, '_blank'); }}>Facturación</a>

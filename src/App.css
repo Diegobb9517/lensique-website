@@ -4201,3 +4201,299 @@ body.no-scroll .whatsapp-float {
     padding-bottom: 90px !important;
   }
 }
+
+/* -------------------------------------------------------------------------
+   HOME COLLECTION ROWS (WARBY PARKER + NETFLIX SLIDERS)
+------------------------------------------------------------------------- */
+.home-collections-section {
+  padding: 40px 0 56px;
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.home-collection-row {
+  margin-bottom: 32px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-collection-row:last-child {
+  margin-bottom: 0;
+}
+
+.home-collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--max-width);
+  margin: 0 auto 12px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.home-collection-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+  letter-spacing: -0.01em;
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.home-collection-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.home-collection-see-all {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0047BB;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.home-collection-see-all:hover {
+  opacity: 0.8;
+  transform: translateX(2px);
+}
+
+.home-collection-nav-btn {
+  display: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.home-collection-nav-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.home-collection-slider {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 20px 16px 20px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.home-collection-slider::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.home-collection-card-item {
+  flex: 0 0 200px;
+  min-width: 200px;
+  max-width: 200px;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+/* Card inner aesthetics: clean, light, no overlapping pills */
+.home-collection-card-item .wp-product-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  padding: 12px 10px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  box-sizing: border-box !important;
+}
+
+.home-collection-card-item .wp-product-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+.home-collection-card-item .wp-card-img-area {
+  width: 100% !important;
+  height: 125px !important;
+  aspect-ratio: 1 / 1 !important;
+  margin-bottom: 10px !important;
+  background-color: #fafafa !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.home-collection-card-item .wp-card-img {
+  max-height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  mix-blend-mode: multiply !important;
+}
+
+.home-collection-card-item .out-of-stock-badge {
+  display: none !important;
+}
+
+.home-collection-card-item .wp-card-cta-hover {
+  display: none !important;
+}
+
+.home-collection-card-item .wp-card-category {
+  font-size: 11px !important;
+  color: #888888 !important;
+  margin: 0 0 3px 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 500 !important;
+}
+
+.home-collection-card-item .wp-product-name {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  font-weight: 500 !important;
+  color: #111827 !important;
+  margin: 0 0 4px 0 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-height: 32px !important;
+}
+
+.home-collection-card-item .wp-product-price {
+  font-size: 13px !important;
+  color: #374151 !important;
+  font-weight: 400 !important;
+  line-height: 1.1 !important;
+}
+
+.home-collection-card-item p[style*="micas antirreflejantes"] {
+  font-size: 10.5px !important;
+  color: #9ca3af !important;
+  margin-top: 3px !important;
+  line-height: 1.2 !important;
+}
+
+/* Contact quiz banner */
+.home-contact-quiz-banner {
+  margin: 36px 20px 0;
+  background: linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%);
+  border-radius: 20px;
+  padding: 36px 20px;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.home-contact-quiz-banner h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.home-contact-quiz-banner p {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 540px;
+  margin: 0 auto 24px;
+}
+
+.home-contact-quiz-banner .glow-btn {
+  padding: 14px 28px;
+  width: auto;
+  font-size: 15px;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .home-collections-section {
+    padding: 56px 0 72px;
+  }
+
+  .home-collection-row {
+    margin-bottom: 40px;
+  }
+
+  .home-collection-header {
+    margin-bottom: 16px;
+    padding: 0 40px;
+  }
+
+  .home-collection-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .home-collection-see-all {
+    font-size: 14px;
+  }
+
+  .home-collection-nav-btn {
+    display: inline-flex;
+  }
+
+  .home-collection-slider {
+    gap: 16px;
+    padding: 6px 40px 20px 40px;
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .home-collection-card-item {
+    flex: 0 0 230px;
+    min-width: 230px;
+    max-width: 230px;
+  }
+
+  .home-collection-card-item .wp-product-card {
+    padding: 16px !important;
+  }
+
+  .home-collection-card-item .wp-card-img-area {
+    height: 155px !important;
+  }
+
+  .home-collection-card-item .wp-product-name {
+    font-size: 14px !important;
+  }
+
+  .home-contact-quiz-banner {
+    margin: 48px auto 0;
+    max-width: var(--max-width);
+    padding: 48px 32px;
+    border-radius: 24px;
+  }
+}
+

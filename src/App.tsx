@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal from './components/Reveal';
 import { 
@@ -31,6 +31,7 @@ import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard } from './components/ProductCard';
+import { CollectionRow } from './components/CollectionRow';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
 import { calculateDeliveryTime, getDeliveryEstimate } from './lib/delivery';
@@ -1444,6 +1445,111 @@ function App() {
     }
   };
 
+  const homeCollections = useMemo(() => {
+    const rawCatalog: any[] = safeJsonParse(settings.full_catalog_data, []);
+    const fallbackFeatured: any[] = safeJsonParse(settings.featured_products, []);
+
+    // Deduplicate by id, filter out unpublished
+    const uniqueMap = new Map<number | string, any>();
+    rawCatalog.forEach((p: any) => {
+      if (p && p.id != null && p.published !== 0 && p.published !== false) {
+        if (!uniqueMap.has(p.id)) {
+          uniqueMap.set(p.id, p);
+        }
+      }
+    });
+    const catalogList = Array.from(uniqueMap.values());
+
+    // 1. Novedades (latest added frames, sorted by id desc)
+    let novedadesItems = catalogList
+      .filter((p: any) => !String(p.category || '').toLowerCase().includes('contacto'))
+      .sort((a: any, b: any) => (Number(b.id) || 0) - (Number(a.id) || 0))
+      .slice(0, 12);
+
+    if (novedadesItems.length < 4 && fallbackFeatured.length >= 4) {
+      novedadesItems = fallbackFeatured.slice(0, 12);
+    }
+
+    // 2. Ray-Ban (brand === 'RAY-BAN')
+    const rayBanItems = catalogList
+      .filter((p: any) => (p.brand || '').toUpperCase() === 'RAY-BAN')
+      .slice(0, 20);
+
+    // 3. Carrera (brand with good stock, >= 4 products)
+    const carreraItems = catalogList
+      .filter((p: any) => (p.brand || '').toUpperCase() === 'CARRERA')
+      .slice(0, 20);
+
+    // 4. Lentes de contacto diarios (category contacto + uso diario via getContactLensUsage)
+    const dailyContactItems = catalogList
+      .filter((p: any) => 
+        String(p.category || '').toLowerCase().includes('contacto') && 
+        getContactLensUsage(p.name) === 'Uso Diario'
+      )
+      .slice(0, 20);
+
+    const rows = [
+      {
+        id: 'novedades',
+        title: 'Novedades',
+        href: '/armazones',
+        targetFilter: 'Armazones',
+        targetBrand: 'Todas',
+        fallbackImage: heroImg,
+        items: novedadesItems
+      },
+      {
+        id: 'ray-ban',
+        title: 'Ray-Ban',
+        href: '/marca/ray-ban',
+        targetFilter: 'Todas',
+        targetBrand: 'RAY-BAN',
+        fallbackImage: heroImg,
+        items: rayBanItems
+      },
+      {
+        id: 'carrera',
+        title: 'Carrera',
+        href: '/marca/carrera',
+        targetFilter: 'Todas',
+        targetBrand: 'CARRERA',
+        fallbackImage: heroImg,
+        items: carreraItems
+      },
+      {
+        id: 'lentes-contacto-diarios',
+        title: 'Lentes de contacto diarios',
+        href: '/lentes-de-contacto',
+        targetFilter: 'Lentes de Contacto',
+        targetBrand: 'Todas',
+        fallbackImage: contactLensesImg,
+        items: dailyContactItems
+      }
+    ];
+
+    // Only show rows with >= 4 products
+    return rows.filter(r => r.items.length >= 4);
+  }, [settings.full_catalog_data, settings.featured_products]);
+
+  const handleSeeAllCollection = (col: { href: string; targetFilter?: string; targetBrand?: string }) => {
+    if (col.targetBrand && col.targetBrand !== 'Todas') {
+      setCatalogInitialFilter('Todas');
+      setCatalogInitialBrand(col.targetBrand);
+      setIsCatalogOpen(true);
+      window.history.pushState(null, '', col.href);
+    } else if (col.targetFilter && col.targetFilter !== 'Todas') {
+      setCatalogInitialFilter(col.targetFilter);
+      setCatalogInitialBrand('Todas');
+      setIsCatalogOpen(true);
+      window.history.pushState(null, '', col.href);
+    } else {
+      setCatalogInitialFilter('Todas');
+      setCatalogInitialBrand('Todas');
+      setIsCatalogOpen(true);
+      window.history.pushState(null, '', col.href || '/catalogo');
+    }
+  };
+
   const scrollPopulares = (direction: 'left' | 'right') => {
     if (sliderRef.current) {
       const scrollAmount = direction === 'left' ? -284 : 284;
@@ -2482,60 +2588,28 @@ function App() {
           <div className="perk-item">Garantías de<br/>adaptación</div>
         </section>
 
-        <section id="populares" className="wp-carousel-section">
-          <div className="wp-section-header">
-            <h2 className="wp-section-title">Colección destacada</h2>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollPopulares('left')}><ChevronLeft size={24} /></button>
-              <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollPopulares('right')}><ChevronRight size={24} /></button>
-            </div>
-          </div>
-          
-          <div className="wp-slider" ref={sliderRef}>
-            {safeJsonParse(settings.featured_products).slice(0, 20).map((product: any) => (
-              <ProductCard 
-                key={product.id}
-                product={product}
-                fallbackImage={heroImg}
-                onClick={() => setSelectedProductDetail(product)}
-              />
-            ))}
+        <section id="populares" className="home-collections-section">
+          {homeCollections.map((col) => (
+            <CollectionRow
+              key={col.id}
+              id={col.id === 'lentes-contacto-diarios' ? 'lentes-contacto' : undefined}
+              title={col.title}
+              href={col.href}
+              products={col.items}
+              fallbackImage={col.fallbackImage}
+              onSeeAll={() => handleSeeAllCollection(col)}
+              onSelectProduct={(prod) => setSelectedProductDetail(prod)}
+            />
+          ))}
+
+          <div className="home-contact-quiz-banner">
+            <h3>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
+            <p>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
+            <button className="glow-btn" onClick={() => { setIsContactQuizOpen(true); }}>
+              Iniciar guía interactiva
+            </button>
           </div>
         </section>
-
-          {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
-<section id="lentes-contacto" className="wp-carousel-section">
-            <div className="wp-section-header">
-              <h2 className="wp-section-title">Claridad sin límites</h2>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
-                <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
-              </div>
-            </div>
-            
-            <div className="wp-slider" ref={contactSliderRef}>
-              {safeJsonParse(settings.full_catalog_data)
-                .filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))
-                .slice(0, 6)
-                .map((product: any) => (
-                  <ProductCard 
-                    key={product.id}
-                    product={product}
-                    fallbackImage={contactLensesImg}
-                    onClick={() => { setSelectedProductDetail(product); }}
-                  />
-              ))}
-            </div>
-
-            <div style={{ marginTop: '48px', background: 'linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%)', borderRadius: '24px', padding: '48px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
-              <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#1d1d1f', marginBottom: '12px' }}>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
-              <p style={{ color: '#86868b', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
-              <button className="glow-btn" style={{ padding: '16px 32px', width: 'auto', fontSize: '16px' }} onClick={() => { setIsContactQuizOpen(true); }}>
-                Iniciar guía interactiva
-              </button>
-            </div>
-          </section> 
-)}
 
         <section id="servicios" className="wp-services-section" style={{ padding: '80px 40px', backgroundColor: '#fff' }}>
           <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>

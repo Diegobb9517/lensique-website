@@ -72,7 +72,7 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
           <X size={20} />
         </button>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.25fr 1fr', overflowY: 'auto', flex: 1 }} className="mica-modal-grid-inner">
+        <div className="mica-modal-grid-inner">
           {/* Left Column: Image */}
           <div className="product-detail-img-col" style={{ background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0' }}>
             <img src={mica.image} alt={content.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -80,7 +80,7 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
 
           {/* Right Column: Info */}
           <div className="product-detail-info-col" style={{ padding: '40px' }}>
-            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', margin: '0 0 8px', color: '#1d1d1f' }}>{content.title}</h2>
+            <h2 className="mica-modal-title" style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', margin: '0 0 8px', color: '#1d1d1f' }}>{content.title}</h2>
             <p style={{ fontSize: '18px', color: '#6e6e73', margin: '0 0 32px' }}>{content.summary}</p>
 
             <h3 style={{ fontSize: '16px', fontWeight: 600, margin: '0 0 16px', color: '#1d1d1f' }}>Para quién es</h3>

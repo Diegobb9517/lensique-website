@@ -188,9 +188,10 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
         }
 
         @media (max-width: 768px) {
-          .lsq-carousel-root { flex-direction: column !important; height: auto !important; }
-          .lsq-thumbs-col { flex-direction: row !important; width: 100% !important; height: 84px !important; order: 2 !important; }
-          .lsq-main-viewport { height: 350px !important; order: 1 !important; flex: none !important; }
+          .lsq-carousel-root { flex-direction: column !important; height: auto !important; max-width: 100% !important; }
+          .lsq-thumbs-col { flex-direction: row !important; width: 100% !important; height: 72px !important; order: 2 !important; }
+          .lsq-thumb-btn { width: 60px !important; height: 60px !important; }
+          .lsq-main-viewport { height: 240px !important; order: 1 !important; flex: none !important; max-width: 100% !important; }
         }
       `}</style>
 

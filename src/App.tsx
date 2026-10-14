@@ -331,13 +331,17 @@ function FullCatalog({
           <div className="catalog-filters-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid #eaeaea', paddingBottom: '16px', marginBottom: '32px' }}>
             <div style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
               <div className="filter-pills">
-                {['Todas', 'Armazones', 'Lentes de Contacto'].map(f => (
+                {[
+                  { id: 'Todas', label: 'Todas' },
+                  { id: 'Armazones', label: 'Armazones' },
+                  { id: 'Lentes de Contacto', label: 'Contacto' }
+                ].map(item => (
                   <button 
-                    key={f} 
-                    className={`filter-pill ${filter === f ? 'active' : ''}`}
-                    onClick={() => setFilter(f)}
+                    key={item.id} 
+                    className={`filter-pill ${filter === item.id ? 'active' : ''}`}
+                    onClick={() => setFilter(item.id)}
                   >
-                    {f}
+                    {item.label}
                   </button>
                 ))}
               </div>
@@ -1563,53 +1567,62 @@ function App() {
               {/* Right: Info */}
               <div className="product-detail-info-col">
                 <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
-                <h2 className="product-detail-name" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                
+                <h2 className="product-detail-name">
                   <span style={isProvisionalName(selectedProductDetail) ? { color: '#888', fontSize: '0.8em', fontWeight: 'normal', textTransform: 'uppercase' } : {}}>{getDisplayName(selectedProductDetail)}</span>
-                  {(() => {
-                    const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
-                    const basePrice = selectedProductDetail.price_incl_tax || 0;
-                    const finalPrice = isFrame ? basePrice + BASE_LENS_PRICE : basePrice;
-                    
-                    return (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <span style={{ color: '#16a34a', whiteSpace: 'nowrap' }} className="tabular-nums">${finalPrice.toLocaleString('en-US')}{String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? ' / caja' : ''}</span>
-                        {isFrame && (
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                            <span style={{ fontSize: '12px', color: '#059669', fontWeight: 500, marginTop: '4px', textAlign: 'right' }}>Incluye micas antirreflejantes,<br/>examen de la vista y armado</span>
-                            <span style={{ fontSize: '11px', color: '#6b7280', fontWeight: 400, marginTop: '2px' }}>Armazón ${basePrice.toLocaleString('en-US')} · Micas $1,200</span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
                 </h2>
+
+                {(() => {
+                  const isContact = String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
+                  const isSun = String(selectedProductDetail.category || '').toLowerCase().includes('sol');
+                  const isFrame = !isSun && !isContact;
+                  const basePrice = selectedProductDetail.price_incl_tax || 0;
+                  const finalPrice = isFrame ? basePrice + BASE_LENS_PRICE : basePrice;
+
+                  return (
+                    <div className="product-detail-price-row" style={{ margin: '6px 0 14px' }}>
+                      {isFrame ? (
+                        <div>
+                          <div style={{ fontSize: '18px', fontWeight: 600, color: '#1d1d1f' }} className="tabular-nums">
+                            ${finalPrice.toLocaleString('es-MX')} · micas incluidas
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 400, marginTop: '2px' }}>
+                            Armazón ${basePrice.toLocaleString('es-MX')} · Micas $1,200
+                          </div>
+                        </div>
+                      ) : isContact ? (
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#1d1d1f' }} className="tabular-nums">
+                          ${basePrice.toLocaleString('es-MX')} / caja
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#1d1d1f' }} className="tabular-nums">
+                          ${basePrice.toLocaleString('es-MX')}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 <p className="product-detail-desc">
                   {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') 
                     ? `Lentes de Contacto${getContactLensUsage(selectedProductDetail.name) !== 'Todos' ? ` - ${getContactLensUsage(selectedProductDetail.name)}` : ''}` 
                     : (selectedProductDetail.category || 'Armazón Premium')}
                 </p>
-                {selectedProductDetail.sku && (
-                  <p className="product-detail-sku" style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>
-                    SKU: {selectedProductDetail.sku}
-                  </p>
-                )}
                 
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginTop: '12px', color: '#16a34a', fontSize: '14px', fontWeight: 500, background: '#f0fdf4', padding: '10px 14px', borderRadius: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginTop: '14px', color: '#16a34a', fontSize: '13px', fontWeight: 500, background: '#f0fdf4', padding: '10px 14px', borderRadius: '10px', maxWidth: '100%', boxSizing: 'border-box' }}>
                   <Clock size={16} style={{ marginTop: '2px', flexShrink: 0 }} />
-                  <div>
-                    <div style={{ marginBottom: '2px', color: '#15803d' }}>{calculateDeliveryTime(selectedProductDetail).label}</div>
-                    <div style={{ fontSize: '12px', color: '#16a34a', fontWeight: 400 }}>{calculateDeliveryTime(selectedProductDetail).subtitle}</div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ marginBottom: '2px', color: '#15803d', wordBreak: 'break-word' }}>{calculateDeliveryTime(selectedProductDetail).label}</div>
+                    <div style={{ fontSize: '12px', color: '#16a34a', fontWeight: 400, wordBreak: 'break-word' }}>{calculateDeliveryTime(selectedProductDetail).subtitle}</div>
                     {(selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0) && (
                       <div style={{ marginTop: '6px' }}>
-                        <a href="/catalogo?disponibilidad=existencia" style={{ fontSize: '12px', color: '#15803d', textDecoration: 'underline', fontWeight: 500 }}>¿Lo necesitas antes? Ver modelos en existencia →</a>
+                        <a href="/catalogo?disponibilidad=existencia" style={{ fontSize: '12px', color: '#15803d', textDecoration: 'underline', fontWeight: 500, display: 'inline-block', wordBreak: 'break-word' }}>¿Lo necesitas antes? Ver modelos en existencia →</a>
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="product-detail-divider" />
-
-                <p className="product-detail-note">¿Te interesa este modelo? Agenda una cita con nosotros y te asesoramos en persona.</p>
 
                 <button 
                     className="btn btn-primary full-width product-detail-btn"
@@ -1644,6 +1657,25 @@ function App() {
                   <span>✓ Asesoría personalizada</span>
                   <span>✓ Examen de vista incluido</span>
                 </div>
+
+                {!String(selectedProductDetail.category || '').toLowerCase().includes('contacto') && (
+                  <a 
+                    href="#agendar" 
+                    onClick={(e) => { 
+                      e.preventDefault(); 
+                      handleOpenBooking(selectedProductDetail.name); 
+                    }} 
+                    style={{ fontSize: '12px', color: '#6b7280', textDecoration: 'underline', textAlign: 'center', display: 'block', marginTop: '14px', lineHeight: 1.4 }}
+                  >
+                    ¿Te interesa este modelo? Agenda una cita con nosotros y te asesoramos en persona
+                  </a>
+                )}
+
+                {selectedProductDetail.sku && (
+                  <p className="product-detail-sku" style={{ fontSize: '11px', color: '#9ca3af', textAlign: 'center', marginTop: '12px', marginBottom: 0 }}>
+                    SKU: {selectedProductDetail.sku}
+                  </p>
+                )}
               </div>
             </motion.div>
           </motion.div>
@@ -2509,28 +2541,20 @@ function App() {
           <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>
             <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Lo que encuentras en Lensique</h2>
           </div>
-          <div className="wp-micas-lifestyle-grid" ref={servicesSliderRef}>
+          <div className="wp-services-grid" ref={servicesSliderRef}>
             {[
               { 
                 id: 's1', 
                 title: 'Examen de la vista', 
                 img: cv7600Img, 
-                action: () => setIsTriageOpen(true), /* setSelectedServiceInfo({ id: 's1', title: 'Examen de la vista',
-                  subtitle: 'Diagnóstico visual de alta precisión',
-                  description: '<p>Tu salud visual en manos de expertos. Nuestro <strong>examen de vista profesional</strong> es realizado directamente por un <strong>oftalmólogo certificado</strong>, garantizando un diagnóstico clínico sumamente preciso y confiable.</p><p>Utilizamos <strong>equipos automatizados de alta gama y última generación</strong> que nos permiten medir tu agudeza visual con exactitud milimétrica. Todo esto en instalaciones modernas diseñadas para ofrecerte la mayor comodidad.</p><ul><li>Evaluación por oftalmólogo certificado</li><li>Tecnología automatizada de precisión</li><li>Diagnóstico clínico y refractivo 100% personalizado</li></ul><p><strong>Actualización de micas:</strong> Si ya tienes un armazón que te encanta, nosotros nos encargamos de cambiarle las micas con tu nueva graduación o el tratamiento que necesites. Es un proceso rápido y seguro para darle una nueva vida a tus lentes favoritos.</p>',
-                  image: cv7600Img,
-                  actionText: 'Agendar examen',
-                  onAction: () => { setSelectedServiceInfo(null); setIsTriageOpen(true); } }) */ },
+                action: () => setIsTriageOpen(true)
+              },
               { 
                 id: 's2', 
                 title: 'Consulta Médica', 
                 img: clinicRoomImg, 
-                action: () => setIsTriageOpen(true), /* setSelectedServiceInfo({ id: 's2', title: 'Consulta Médica',
-                  subtitle: 'Atención Oftalmológica Especializada',
-                  description: '<p>Trabajamos de la mano con la clínica <strong>CIOVA</strong> para ofrecerte consultas oftalmológicas de la más alta calidad.</p><p>Nuestro equipo aliado se encargará de realizar un diagnóstico médico profundo de tu salud visual y ocular.</p>',
-                  image: clinicRoomImg,
-                  actionText: 'Agendar consulta',
-                  onAction: () => { setSelectedServiceInfo(null); setIsTriageOpen(true); } }) */ },
+                action: () => setIsTriageOpen(true)
+              },
               { 
                 id: 's3_arm', 
                 title: 'Armazones', 
@@ -2552,17 +2576,18 @@ function App() {
                 })
               }
             ].map((service, idx) => (
-              <div key={service.id} className="wp-mica-wrapper">
+              <div key={service.id} className="wp-service-wrapper">
                 <Reveal 
-                  className="wp-mica-lifestyle-card"
+                  className="wp-service-card"
                   delay={idx * 0.1}
                   onClick={service.action}
                 >
-                  <div 
-                    className="wp-mica-bg" 
-                    style={{ backgroundImage: `url(${service.img})` }}
-                  />
-                  <div className="wp-mica-action-pill">{service.title}</div>
+                  <div className="wp-service-img-area">
+                    <img src={service.img} alt={service.title} className="wp-service-img" />
+                  </div>
+                  <div className="wp-service-name-strip">
+                    <span className="wp-service-name">{service.title}</span>
+                  </div>
                 </Reveal>
               </div>
             ))}

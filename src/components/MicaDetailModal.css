@@ -1,14 +1,38 @@
+.mica-modal-grid-inner {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  overflow-y: auto;
+  flex: 1;
+}
+
 @media (max-width: 1023px) {
   .mica-modal-override {
-    grid-template-columns: 1fr !important;
     max-width: 100% !important;
-    max-height: 100vh !important;
-    height: 100vh !important;
-    border-radius: 0 !important;
+    max-height: 94vh !important;
+    height: auto !important;
+    border-radius: 16px !important;
+    margin: 12px !important;
     overflow-y: auto !important;
   }
+  .mica-modal-grid-inner {
+    grid-template-columns: 1fr !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
   .mica-modal-override .product-detail-img-col {
-    min-height: 300px;
-    height: 300px;
+    min-height: 180px !important;
+    height: 180px !important;
+    width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  .mica-modal-override .product-detail-info-col {
+    padding: 24px 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .mica-modal-override .mica-modal-title {
+    padding-right: 48px !important;
+    font-size: 26px !important;
+    line-height: 1.2 !important;
   }
 }

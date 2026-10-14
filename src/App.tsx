@@ -1085,6 +1085,21 @@ function App() {
   const [bookingName, setBookingName] = useState<string>('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [catalogInitialBrand, setCatalogInitialBrand] = useState('Todas');
+  const [isMobileViewport, setIsMobileViewport] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileViewport(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 1. Inspect URL on load and handle popstate for /producto/[slug]
   useEffect(() => {
@@ -1284,12 +1299,12 @@ function App() {
 
     useEffect(() => {
     if (isCatalogOpen) {
-      if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones') {
+      if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones' && window.location.pathname !== '/lentes-de-contacto') {
         window.history.pushState({ catalog: true }, '', '/catalogo');
         document.title = "Catálogo | Óptica Lensique";
       }
     } else {
-      if (window.location.pathname === '/catalogo') {
+      if (window.location.pathname === '/catalogo' || window.location.pathname === '/lentes-de-contacto') {
         window.history.pushState(null, '', '/');
         document.title = 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
       } else if (window.location.pathname.startsWith('/marca/')) {
@@ -2570,29 +2585,92 @@ function App() {
           <div className="perk-item">Garantías de<br/>adaptación</div>
         </section>
 
-        <section id="populares" className="home-collections-section">
-          {homeCollections.map((col) => (
-            <CollectionRow
-              key={col.id}
-              id={col.id}
-              title={col.title}
-              href={col.href}
-              products={col.items}
-              minItems={1}
-              fallbackImage={col.fallbackImage}
-              onSeeAll={() => handleSeeAllCollection(col)}
-              onSelectProduct={(prod) => setSelectedProductDetail(prod)}
-            />
-          ))}
+        {/* En ESCRITORIO / TABLET (≥ 768px): Home idéntico a 8b60fbe */}
+        {!isMobileViewport && (
+          <>
+            <section id="populares" className="wp-carousel-section">
+              <div className="wp-section-header">
+                <h2 className="wp-section-title">Colección destacada</h2>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollPopulares('left')}><ChevronLeft size={24} /></button>
+                  <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollPopulares('right')}><ChevronRight size={24} /></button>
+                </div>
+              </div>
+              
+              <div className="wp-slider" ref={sliderRef}>
+                {safeJsonParse(settings.featured_products).slice(0, 20).map((product: any) => (
+                  <ProductCard 
+                    key={product.id}
+                    product={product}
+                    fallbackImage={heroImg}
+                    onClick={() => setSelectedProductDetail(product)}
+                  />
+                ))}
+              </div>
+            </section>
 
-          <div className="home-contact-quiz-banner">
-            <h3>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
-            <p>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
-            <button className="glow-btn" onClick={() => { setIsContactQuizOpen(true); }}>
-              Iniciar guía interactiva
-            </button>
-          </div>
-        </section>
+            {safeJsonParse(settings.featured_contact_lenses).length > 0 && (
+              <section id="lentes-contacto" className="wp-carousel-section">
+                <div className="wp-section-header">
+                  <h2 className="wp-section-title">Claridad sin límites</h2>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollContact('left')}><ChevronLeft size={24} /></button>
+                    <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollContact('right')}><ChevronRight size={24} /></button>
+                  </div>
+                </div>
+                
+                <div className="wp-slider" ref={contactSliderRef}>
+                  {safeJsonParse(settings.full_catalog_data)
+                    .filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))
+                    .slice(0, 6)
+                    .map((product: any) => (
+                      <ProductCard 
+                        key={product.id}
+                        product={product}
+                        fallbackImage={contactLensesImg}
+                        onClick={() => { setSelectedProductDetail(product); }}
+                      />
+                  ))}
+                </div>
+
+                <div style={{ marginTop: '48px', background: 'linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%)', borderRadius: '24px', padding: '48px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
+                  <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#1d1d1f', marginBottom: '12px' }}>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
+                  <p style={{ color: '#86868b', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
+                  <button className="glow-btn" style={{ padding: '16px 32px', width: 'auto', fontSize: '16px' }} onClick={() => { setIsContactQuizOpen(true); }}>
+                    Iniciar guía interactiva
+                  </button>
+                </div>
+              </section> 
+            )}
+          </>
+        )}
+
+        {/* En MÓVIL (< 768px): Exactamente 2 filas deslizables (Armazones y Lentes de contacto) */}
+        {isMobileViewport && (
+          <section id="populares" className="home-collections-section">
+            {homeCollections.map((col) => (
+              <CollectionRow
+                key={col.id}
+                id={col.id}
+                title={col.title}
+                href={col.href}
+                products={col.items}
+                minItems={1}
+                fallbackImage={col.fallbackImage}
+                onSeeAll={() => handleSeeAllCollection(col)}
+                onSelectProduct={(prod) => setSelectedProductDetail(prod)}
+              />
+            ))}
+
+            <div className="home-contact-quiz-banner">
+              <h3>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
+              <p>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
+              <button className="glow-btn" onClick={() => { setIsContactQuizOpen(true); }}>
+                Iniciar guía interactiva
+              </button>
+            </div>
+          </section>
+        )}
 
         <section id="servicios" className="wp-services-section" style={{ padding: '80px 40px', backgroundColor: '#fff' }}>
           <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>

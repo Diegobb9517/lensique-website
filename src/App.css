@@ -4436,64 +4436,16 @@ body.no-scroll .whatsapp-float {
   font-size: 15px;
 }
 
-/* Desktop styles */
-@media (min-width: 769px) {
+/* Home Collection Rows: strictly for mobile (< 768px) */
+@media (min-width: 768px) {
   .home-collections-section {
-    padding: 56px 0 72px;
+    display: none !important;
   }
+}
 
-  .home-collection-row {
-    margin-bottom: 40px;
-  }
-
-  .home-collection-header {
-    margin-bottom: 16px;
-    padding: 0 40px;
-  }
-
-  .home-collection-title {
-    font-size: 20px;
-    font-weight: 600;
-  }
-
-  .home-collection-see-all {
-    font-size: 14px;
-  }
-
-  .home-collection-nav-btn {
-    display: inline-flex;
-  }
-
-  .home-collection-slider {
-    gap: 16px;
-    padding: 6px 40px 20px 40px;
-    max-width: var(--max-width);
-    margin: 0 auto;
-  }
-
-  .home-collection-card-item {
-    flex: 0 0 230px;
-    min-width: 230px;
-    max-width: 230px;
-  }
-
-  .home-collection-card-item .wp-product-card {
-    padding: 16px !important;
-  }
-
-  .home-collection-card-item .wp-card-img-area {
-    height: 155px !important;
-  }
-
-  .home-collection-card-item .wp-product-name {
-    font-size: 14px !important;
-  }
-
-  .home-contact-quiz-banner {
-    margin: 48px auto 0;
-    max-width: var(--max-width);
-    padding: 48px 32px;
-    border-radius: 24px;
+@media (max-width: 767px) {
+  .wp-carousel-section {
+    display: none !important;
   }
 }
 

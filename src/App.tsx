@@ -294,22 +294,29 @@ function FullCatalog({
           className={isStandalone ? "full-catalog-view standalone" : "full-catalog-view"} style={isStandalone ? {position:"relative", zIndex:1, height:"auto", minHeight:"100vh"} : {}}
         >
           {/* Combined Top bar: Volver, Logo, Cart */}
-          <div className="catalog-topbar" style={{ display: isStandalone ? "none" : "flex",  justifyContent: 'space-between', alignItems: 'center', padding: '0 20px', height: '80px', borderBottom: 'none' }}>
-            <button className="catalog-back" onClick={onClose} style={{ flex: 1, justifyContent: 'flex-start' }}>
-              <ChevronLeft size={20} /> <span className="d-none-mobile">Volver</span>
-            </button>
+          <div className="catalog-topbar" style={{ display: isStandalone ? "none" : "flex" }}>
+            <div className="catalog-topbar-left">
+              <button className="catalog-back" onClick={onClose} aria-label="Volver">
+                <ChevronLeft size={18} /> <span>Volver</span>
+              </button>
+            </div>
             
-            <img src={logo} alt="Lensique" className="catalog-header-logo" style={{ height: '72px', maxHeight: '72px', flexShrink: 0 }} />
+            <div className="catalog-topbar-center">
+              <img src={logo} alt="Lensique" className="catalog-header-logo" />
+            </div>
             
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <div className="catalog-topbar-right">
+              <span className="catalog-topbar-count">
+                {filteredProducts.length} modelo{filteredProducts.length !== 1 ? 's' : ''}
+              </span>
               <button 
-                className="nav-icon-btn" 
+                className="nav-icon-btn catalog-cart-btn" 
                 onClick={() => setIsCartOpen(true)} 
-                style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                aria-label="Carrito de compras"
               >
-                <ShoppingBag size={24} color="#0f172a" />
+                <ShoppingBag size={20} color="#0f172a" />
                 {items.length > 0 && (
-                  <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span className="catalog-cart-badge">
                     {items.length}
                   </span>
                 )}
@@ -317,21 +324,9 @@ function FullCatalog({
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="catalog-header" style={{ padding: '0 20px 16px', height: 'auto', minHeight: 'auto', borderBottom: '1px solid #eaeaea' }}>
-            <div className="catalog-search" style={{ width: '100%' }}>
-              <Search size={16} className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Buscar modelo..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="catalog-filters-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid #eaeaea', paddingBottom: '16px', marginBottom: '32px' }}>
-            <div style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
+          {/* Unified Toolbar: Pestañas + Dropdowns a la izquierda, Buscador compacto a la derecha */}
+          <div className="catalog-toolbar">
+            <div className="catalog-toolbar-left">
               <div className="filter-pills">
                 {[
                   { id: 'Todas', label: 'Todas' },
@@ -348,7 +343,7 @@ function FullCatalog({
                 ))}
               </div>
               
-              <div className="filter-group" style={{ margin: 0 }}>
+              <div className="filter-group">
                 <CustomSelect
                   value={selectedBrand}
                   onChange={(val) => {
@@ -368,31 +363,31 @@ function FullCatalog({
                 />
               </div>
 
-            {filter === 'Armazones' && (
-              <div className="filter-group" style={{ margin: 0 }}>
-                <CustomSelect
-                  value={availabilityFilter}
-                  onChange={(val) => {
-                    setAvailabilityFilter(val);
-                    const url = new URL(window.location.href);
-                    if (val === 'En existencia') {
-                      url.searchParams.set('disponibilidad', 'existencia');
-                    } else {
-                      url.searchParams.delete('disponibilidad');
-                    }
-                    window.history.pushState({}, '', url);
-                  }}
-                  options={[
-                    { label: 'Disponibilidad', value: 'Todos' },
-                    { label: 'En existencia', value: 'En existencia' },
-                    { label: 'Sobre pedido', value: 'Sobre pedido' }
-                  ]}
-                />
-              </div>
-            )}
+              {filter === 'Armazones' && (
+                <div className="filter-group">
+                  <CustomSelect
+                    value={availabilityFilter}
+                    onChange={(val) => {
+                      setAvailabilityFilter(val);
+                      const url = new URL(window.location.href);
+                      if (val === 'En existencia') {
+                        url.searchParams.set('disponibilidad', 'existencia');
+                      } else {
+                        url.searchParams.delete('disponibilidad');
+                      }
+                      window.history.pushState({}, '', url);
+                    }}
+                    options={[
+                      { label: 'Disponibilidad', value: 'Todos' },
+                      { label: 'En existencia', value: 'En existencia' },
+                      { label: 'Sobre pedido', value: 'Sobre pedido' }
+                    ]}
+                  />
+                </div>
+              )}
 
               {filter === 'Lentes de Contacto' && (
-                <div className="filter-group" style={{ margin: 0 }}>
+                <div className="filter-group">
                   <CustomSelect
                     value={contactUsageFilter}
                     onChange={(val) => setContactUsageFilter(val)}
@@ -404,9 +399,34 @@ function FullCatalog({
                 </div>
               )}
             </div>
-            
-            <div className="catalog-count" style={{ fontSize: '13px', color: '#888', fontWeight: 400, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-              {filteredProducts.length} modelo{filteredProducts.length !== 1 ? 's' : ''}
+
+            <div className="catalog-toolbar-right">
+              {isStandalone && (
+                <span className="catalog-topbar-count catalog-standalone-count">
+                  {filteredProducts.length} modelo{filteredProducts.length !== 1 ? 's' : ''}
+                </span>
+              )}
+              <div className="catalog-search-compact">
+                <Search size={15} className="catalog-search-icon" />
+                <input 
+                  type="text" 
+                  placeholder="Buscar modelo…" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="catalog-search-input"
+                  aria-label="Buscar modelo"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button" 
+                    className="catalog-search-clear" 
+                    onClick={() => setSearchQuery('')}
+                    aria-label="Limpiar búsqueda"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 

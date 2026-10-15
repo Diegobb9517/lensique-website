@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
-import { getDisplayName, getProductSlug, isInStock, isProvisionalName } from '../lib/format';
+import { getDisplayName, getProductSlug, isInStock, isProvisionalName, getCardDisplayName } from '../lib/format';
 import { resolveImageUrl } from '../App';
 import { motion } from 'framer-motion';
 import { BASE_LENS_PRICE } from '../lib/constants';
@@ -19,7 +19,7 @@ interface ProductCardProps {
 }
 
 export const FormatProductName = ({ product }: { product: any }) => {
-  const cleanName = getDisplayName(product);
+  const cleanName = getCardDisplayName(product);
   const isProv = isProvisionalName(product);
   if (isProv) {
     return <span className="fpn-main provisional-name" style={{ color: '#888', fontSize: '0.9em', fontWeight: 'normal', textTransform: 'uppercase' }}>{cleanName}</span>;
@@ -67,7 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <div className="product-img-area" style={{ position: 'relative' }}>
             {isFrame ? (
-              <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
+              <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>
                 {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
               </div>
             ) : (
@@ -133,10 +133,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
       >
         <div className="wp-card-img-area">
-          {isFrame && (
-            <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : {}}>
+          {isFrame ? (
+            <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>
               {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
             </div>
+          ) : (
+            outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
           )}
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 

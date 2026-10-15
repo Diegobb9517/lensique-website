@@ -1794,6 +1794,10 @@ body.no-scroll {
   margin: 0;
   color: #1d1d1f;
   font-weight: 500;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-price-label {
@@ -2867,22 +2871,26 @@ body.no-scroll {
 }
 
 .out-of-stock-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #6b7280;
   background: transparent;
   padding: 0;
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 12px;
+  left: 12px;
   z-index: 10;
+  line-height: 1.2;
 }
 .out-of-stock-badge::before {
   content: '•';
-  color: #9ca3af;
+  color: #16a34a;
   margin-right: 4px;
+}
+.out-of-stock-badge[style*="d97706"]::before {
+  color: #d97706;
 }
 
 .wp-card-img-area {
@@ -2928,8 +2936,13 @@ body.no-scroll {
   font-size: 16px;
   font-weight: 600;
   color: #111;
-  margin: 0 0 8px 0;
-  line-height: 1.2;
+  margin: 0 0 6px 0;
+  line-height: 1.25;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 
 .wp-product-price {
@@ -3919,7 +3932,7 @@ body.no-scroll {
 }
 
 .fpn-wrapper { display: flex; flex-direction: column; gap: 4px; }
-.fpn-main { display: block; }
+.fpn-main { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fpn-sub { font-family: 'Inter', sans-serif; font-size: 0.75em; font-weight: 400; color: #86868b; letter-spacing: 0; line-height: 1.2; text-transform: none; }
 .product-name-serif .fpn-sub { font-family: 'Inter', sans-serif; }
 
@@ -4162,6 +4175,11 @@ body.no-scroll .whatsapp-float {
   .catalog-products .products-grid .wp-product-name {
     font-size: 13px !important;
     line-height: 1.25 !important;
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
   }
   .catalog-products .products-grid .wp-card-category {
     font-size: 11px !important;
@@ -4345,7 +4363,7 @@ body.no-scroll .whatsapp-float {
   width: 100% !important;
   height: 125px !important;
   aspect-ratio: 1 / 1 !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 12px !important;
   background-color: #fafafa !important;
   border-radius: 8px !important;
   display: flex !important;
@@ -4365,7 +4383,16 @@ body.no-scroll .whatsapp-float {
 }
 
 .home-collection-card-item .out-of-stock-badge {
-  display: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  top: 8px !important;
+  left: 8px !important;
+  z-index: 5 !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
 }
 
 .home-collection-card-item .wp-card-cta-hover {
@@ -4375,7 +4402,7 @@ body.no-scroll .whatsapp-float {
 .home-collection-card-item .wp-card-category {
   font-size: 11px !important;
   color: #888888 !important;
-  margin: 0 0 3px 0 !important;
+  margin: 0 0 4px 0 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   font-weight: 500 !important;
@@ -4387,13 +4414,13 @@ body.no-scroll .whatsapp-float {
   line-height: 1.25 !important;
   font-weight: 500 !important;
   color: #111827 !important;
-  margin: 0 0 4px 0 !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
+  margin: 0 0 6px 0 !important;
+  display: block !important;
+  white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  min-height: 32px !important;
+  text-align: center !important;
+  min-height: auto !important;
 }
 
 .home-collection-card-item .wp-product-price {
@@ -4406,7 +4433,7 @@ body.no-scroll .whatsapp-float {
 .home-collection-card-item p[style*="micas antirreflejantes"] {
   font-size: 10.5px !important;
   color: #9ca3af !important;
-  margin-top: 3px !important;
+  margin-top: 4px !important;
   line-height: 1.2 !important;
 }
 

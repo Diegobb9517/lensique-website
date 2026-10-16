@@ -4,7 +4,11 @@ import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock, Check } from 'lucide
 import { useCart } from '../context/CartContext';
 import { resolveImageUrl } from '../App';
 
-export function CartDrawer() {
+interface CartDrawerProps {
+  onOpenConfigurator?: (product: any, section?: string) => void;
+}
+
+export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, total, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
@@ -128,6 +132,12 @@ export function CartDrawer() {
     setPaymentError('');
     setZipError('');
     if (items.length === 0) return;
+
+    const missingRxItem = items.find(i => i.type === 'frame_with_lenses' && (!i.lensConfig || !i.lensConfig.rxMethod));
+    if (missingRxItem) {
+      setPaymentError(`El producto "${missingRxItem.title}" requiere que selecciones un método de graduación.`);
+      return;
+    }
     
     if (!showCheckoutForm) {
       if (deliveryMethod === 'HOME_DELIVERY') {
@@ -415,6 +425,34 @@ export function CartDrawer() {
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0', lineHeight: 1.3 }}>{item.title}</div>
                         
+                        {item.type === 'frame_with_lenses' && (!item.lensConfig || !item.lensConfig.rxMethod) && (
+                          <div 
+                            onClick={() => {
+                              if (onOpenConfigurator && item.product) {
+                                setIsCartOpen(false);
+                                onOpenConfigurator(item.product, '3');
+                              }
+                            }}
+                            style={{ 
+                              fontSize: '12px', 
+                              color: '#b91c1c', 
+                              margin: '0 0 8px 0', 
+                              lineHeight: 1.4, 
+                              background: '#fef2f2', 
+                              padding: '6px 8px', 
+                              borderRadius: '6px', 
+                              border: '1px solid #fecaca', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between',
+                              cursor: 'pointer' 
+                            }}
+                          >
+                            <span>⚠️ Falta elegir graduación</span>
+                            <span style={{ textDecoration: 'underline', fontWeight: 600 }}>Elegir ahora &rarr;</span>
+                          </div>
+                        )}
+
                         {item.lensConfig && item.lensConfig.prescriptionPending && (
                           <div style={{ fontSize: '12px', color: '#c2410c', margin: '0 0 8px 0', lineHeight: 1.4, background: '#fff7ed', padding: '6px 8px', borderRadius: '6px', border: '1px solid #fdba74', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <span style={{fontSize: '14px'}}>📋</span> Receta pendiente — la enviarás por WhatsApp
@@ -570,9 +608,56 @@ export function CartDrawer() {
                   </p>
                 )}
                 
+                {/* Bloque de asistencia WhatsApp */}
+                <div style={{ margin: '0 0 14px 0', padding: '12px 14px', borderRadius: '12px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                  <div>
+                    <div style={{ fontWeight: 600, color: '#1e3a8a', fontSize: '13px', lineHeight: 1.3 }}>¿Dudas con tu graduación o tu talla? Escríbenos</div>
+                    <div style={{ fontSize: '12px', color: '#3b82f6', marginTop: '2px' }}>Te asesoramos paso a paso</div>
+                  </div>
+                  <a 
+                    href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20con%20mi%20graduaci%C3%B3n%20para%20los%20lentes." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ background: '#25d366', color: '#fff', padding: '8px 14px', borderRadius: '20px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    WhatsApp
+                  </a>
+                </div>
+
                 {paymentError && (
-                  <div style={{ padding: '12px', background: '#fef2f2', color: '#ef4444', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: '1px solid #fecaca', marginBottom: '12px' }}>
-                    {paymentError}
+                  <div 
+                    onClick={() => {
+                      const itemWithIssue = items.find(i => i.type === 'frame_with_lenses' && (!i.lensConfig || !i.lensConfig.rxMethod)) || items.find(i => i.type === 'frame_with_lenses');
+                      if (itemWithIssue && onOpenConfigurator) {
+                        setIsCartOpen(false);
+                        onOpenConfigurator(itemWithIssue.product, '3');
+                      }
+                    }}
+                    style={{ 
+                      padding: '12px 14px', 
+                      background: '#fef2f2', 
+                      color: '#b91c1c', 
+                      borderRadius: '8px', 
+                      fontSize: '13px', 
+                      fontWeight: 500, 
+                      border: '1px solid #fecaca', 
+                      marginBottom: '14px',
+                      cursor: items.some(i => i.type === 'frame_with_lenses') ? 'pointer' : 'default',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                        <span style={{ fontSize: '15px' }}>⚠️</span>
+                        <span style={{ flex: 1, lineHeight: 1.4 }}>{paymentError}</span>
+                      </div>
+                      {items.some(i => i.type === 'frame_with_lenses') && (
+                        <div style={{ alignSelf: 'flex-end', color: '#b91c1c', fontWeight: 700, textDecoration: 'underline', fontSize: '12.5px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          Ir a Sección 03 para elegir graduación &rarr;
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
                 

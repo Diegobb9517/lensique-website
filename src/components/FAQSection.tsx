@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react';
 const faqs = [
   {
     question: "¿Cómo es el examen de la vista?",
-    answer: "Nuestro examen visual es realizado por un oftalmólogo certificado, garantizando tu salud visual. Toma en cuenta que la receta con tu graduación es de uso interno y se entrega impresa únicamente al adquirir tus lentes o micas con nosotros."
+    answer: "Nuestro examen visual es realizado por un oftalmólogo certificado, cuidando tu salud visual. Toma en cuenta que la receta con tu graduación es de uso interno y se entrega impresa únicamente al adquirir tus lentes o micas con nosotros."
   },
   {
     question: "¿Cuánto tarda mi pedido?",

@@ -426,6 +426,12 @@ if (initialType) {
   }
 }
 var framePrice = parseInt(urlParams.get('framePrice') || '0', 10);var _pfPrev=null;var _thF=null;
+var frameImageParam = urlParams.get('frameImage');
+var hasCustomFrame = false;
+if (frameImageParam && frameImageParam !== 'null' && frameImageParam !== 'undefined') {
+  IMG_ARM = frameImageParam;
+  hasCustomFrame = true;
+}
 var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 var IC={
  mono:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M8.5 8.6a4.3 4.3 0 0 0-1.3 3.4" stroke-opacity=".45"/></svg>',
@@ -692,13 +698,15 @@ function heroSVG(){
    +'<text x="'+(xr+len/2)+'" y="'+(cy+Math.max(hFront,hTip)+42)+'" text-anchor="middle" font-size="23" font-weight="600" fill="#46638f" '+ff+'>Índice '+_idxv+(_red>0?' · −'+_red+'% más delgado que 1.50':'')+'</text>'
    +'</svg>';
  }
- var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" src="'+(ST.perfora?IMG_AIRE:IMG_ARM)+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+'<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
+ var frameStyle = hasCustomFrame ? 'style="object-fit:contain;max-height:280px;margin:0 auto;"' : '';
+ var overlayHtml = hasCustomFrame ? '' : ('<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
   +'<mask id="lensMask"><image href="'+IMG_MASK+'" x="0" y="0" width="2816" height="1536"/></mask>'
   +'<radialGradient id="sunGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f8cf57" stop-opacity=".5"/><stop offset=".45" stop-color="#f2b63f" stop-opacity=".2"/><stop offset="1" stop-color="#f2b63f" stop-opacity="0"/></radialGradient>'
   +'<radialGradient id="sunDisk" cx=".42" cy=".4" r=".62"><stop offset="0" stop-color="#fff3cf"/><stop offset=".55" stop-color="#f6c44e"/><stop offset="1" stop-color="#e89a2a"/></radialGradient>'
   +'<linearGradient id="fMir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd0e6"/><stop offset=".4" stop-color="#b89cf0"/><stop offset=".7" stop-color="#f0a6c8"/><stop offset="1" stop-color="#f3d9a0"/></linearGradient>'
   +'<filter id="pblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="42"/></filter>'
-  +'</defs><g mask="url(#lensMask)">'+fx(LENS[0])+fx(LENS[1])+'</g>'+sun+'</svg></div>'+heroSideHTML()+'</div>';
+  +'</defs><g mask="url(#lensMask)">'+fx(LENS[0])+fx(LENS[1])+'</g>'+sun+'</svg>');
+ var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" '+frameStyle+' src="'+(ST.perfora?IMG_AIRE:IMG_ARM)+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" '+frameStyle+' src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+overlayHtml+'</div>'+heroSideHTML()+'</div>';
  var parts=[],trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[t]||"";
  if(trn)parts.push(trn);
  if(t==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");
@@ -799,7 +807,7 @@ function arUpgradeBlock(){
  if(!chromeOK)return '';
  function pv(op){var r=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:op,indice:"1.5"});return r.disponible?Math.round(r.costoLista*1.16*multFor(r.costoLista)/50)*50:0;}
  var d=pv("verde")-pv("chrome"),on=ST.arPremium;
- return '<div class="toggle'+(on?' on':'')+'" style="margin-top:10px" onclick="ST.arPremium=!ST.arPremium;render()"><span class="sw"></span><div style="flex:1"><div class="tt">Mejorar a AR premium</div><div class="td">Repele agua y grasa · más resistente a rayas · se limpia más fácil</div></div>'+(d>0?'<div style="margin-left:auto"><span class="priceTag" style="font-size:12px;color:#16a34a;font-weight:700;background:#f0fdf4;padding:3px 8px;border-radius:12px;display:inline-block;white-space:nowrap">+$'+money(d)+'</span></div>':'')+'</div>';
+ return '<div class="toggle'+(on?' on':'')+'" style="margin-top:10px" onclick="ST.arPremium=!ST.arPremium;render()"><span class="sw"></span><div style="flex:1"><div class="tt">Mejorar a AR premium</div><div class="td">Repele agua y grasa · más resistente a rayas · se limpia más fácil</div></div>'+(d>0?'<div style="margin-left:auto"><span class="priceTag" style="font-size:12px;color:#16a34a;font-weight:700;background:#f0fdf4;padding:3px 8px;border-radius:12px;display:inline-block;white-space:nowrap">+'+money(d)+'</span></div>':'')+'</div>';
 }
 function waText(){
  var q=zeissQuote();if(!q||!q.disponible)return '';
@@ -941,27 +949,71 @@ function toggleRxGuide(e) {
 }
 
 
+function scrollToRx() {
+  ST.step = 3;
+  render();
+  setTimeout(function() {
+    var el = document.getElementById("sec-03");
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.style.transition = 'background 0.5s ease';
+      var oldBg = el.style.background || '';
+      el.style.background = '#fef3c7';
+      setTimeout(function() { el.style.background = oldBg; }, 1800);
+    }
+  }, 100);
+}
+
+function buyFrameOnly() {
+  var payload = {
+    onlyFrame: true,
+    pvp: 0,
+    etiqueta: 'Solo armazón'
+  };
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: "lensique-mica", payload: payload }, "*");
+      window.parent.postMessage({ source: "lensique-asesor", type: "add-to-cart", payload: payload }, "*");
+    }
+  } catch(e) {}
+}
+
 function stepWrap(stepNum, content) {
   var isMobile = window.innerWidth <= 560;
   if(!isMobile) return content;
   var on = ST.step === stepNum ? ' m-active' : '';
-  var btns = '<div class="m-nav">';
-  if(stepNum > 1) btns += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
+  var btns = '<div class="m-nav" style="flex-direction:column;gap:8px;">';
+  var row = '<div style="display:flex;gap:12px;width:100%;">';
+  if(stepNum > 1) row += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
   
   var disabledNext = false;
   if(stepNum === 3 && !ST.rxMethod) disabledNext = true;
   
   if(stepNum < 5) {
-    btns += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:#fff;" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
+    row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>' + (stepNum === 3 && !ST.rxMethod ? 'Falta elegir tu graduación' : 'Continuar') + '</button>';
   } else {
     var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}
+    var hasRx = !!ST.rxMethod;
+    var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
+    var _bTxt = hasRx ? (_tot > 0 ? "Comprar ahora — $" + _tot.toLocaleString("en-US") : "Agregar al carrito") : "Falta elegir tu graduación";
+    var _bg = hasRx ? "#16a34a" : "#cbd5e1";
+    var _col = hasRx ? "#fff" : "#475569";
     if(_frame){
-      btns += '<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#16a34a;color:#fff;">Agregar al carrito</button>';
+      row += '<button class="btn next" id="cartBtn" onclick="' + (hasRx ? 'addToCart()' : 'scrollToRx()') + '" ' + (!hasRx ? 'disabled' : '') + ' style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:' + _bg + ';color:' + _col + ';cursor:' + (hasRx ? 'pointer' : 'not-allowed') + ';">' + _bTxt + '</button>';
     } else if(isOptica()){
-      btns += '<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar orden por WhatsApp</button>';
+      row += '<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar orden por WhatsApp</button>';
     } else {
-      btns += '<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar mi cotización por WhatsApp</button>';
+      row += '<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar mi cotización por WhatsApp</button>';
     }
+  }
+  row += '</div>';
+  btns += row;
+  
+  if (!ST.rxMethod && stepNum === 5) {
+    btns += '<div onclick="scrollToRx()" style="cursor:pointer;text-align:center;padding:8px 12px;background:#fef3c7;color:#92400e;border-radius:16px;font-size:12.5px;font-weight:600;border:1px solid #fde68a;">⚠️ Paso 3 de 3: Falta elegir tu graduación <span style="text-decoration:underline;">(Ir a paso 3)</span></div>';
+  }
+  if (window.framePrice > 0) {
+    btns += '<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px;text-align:center;">Comprar solo armazón sin micas (' + money(window.framePrice||0) + ')</button>';
   }
   btns += '</div>';
   return '<div class="m-step m-step-' + stepNum + on + '">' + content + btns + '</div>';
@@ -1053,7 +1105,7 @@ function render(){
  var o3=rxBlock();
  if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"',pt('level',l.k));});o3+='</div>';}
  o3+=materialSimple();
- R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
+ R+=stepWrap(3, '<section class="sec" id="sec-03">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
  // 04 Beneficios
  var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
  o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
@@ -1064,7 +1116,32 @@ function render(){
  if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
  else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
  updateSideTh();
- var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;if(_frame){var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;var _bTxt="Agregar al carrito";if(_tot>0){_bTxt="Comprar ahora — $"+_tot.toLocaleString("en-US");}_btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:#fff;color:var(--navy);font-weight:700;">'+_bTxt+'</button>';}else if(isOptica()){_btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';}else{_btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';}$("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
+ var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;
+ if(_frame){
+  var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
+  var hasRx=!!ST.rxMethod;
+  var _bTxt=hasRx?(_tot>0?"Comprar ahora — $"+_tot.toLocaleString("en-US"):"Agregar al carrito"):"Falta elegir tu graduación";
+  var _bg=hasRx?"#16a34a":"#cbd5e1";
+  var _col=hasRx?"#fff":"#475569";
+  var _cursor=hasRx?"pointer":"not-allowed";
+  var _btnAction=hasRx?'addToCart()':'scrollToRx()';
+  var _btnDis=hasRx?'':'disabled';
+  
+  var noticeHtml=!hasRx
+    ?'<div onclick="scrollToRx()" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#fef3c7;color:#92400e;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #fde68a;transition:all 0.2s;"><span style="font-size:14px">⚠️</span> Paso 3 de 3: Falta elegir tu graduación <span style="text-decoration:underline;margin-left:4px">Ir a sección 03 &darr;</span></div>'
+    :'<div style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f0fdf4;color:#166534;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #bbf7d0;">✓ Graduación elegida</div>';
+
+  var frameOnlyHtml=(window.framePrice>0)
+    ?'<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:12px;text-decoration:underline;cursor:pointer;margin-top:6px;display:block;width:100%;text-align:right;">Comprar solo armazón sin micas ('+money(window.framePrice||0)+')</button>'
+    :'';
+
+  _btn=noticeHtml+'<div style="display:flex;flex-direction:column;align-items:flex-end;"><button class="btn next" id="cartBtn" onclick="'+_btnAction+'" '+_btnDis+' style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:'+_bg+';color:'+_col+';font-weight:700;border:none;border-radius:30px;cursor:'+_cursor+';">'+_bTxt+'</button>'+frameOnlyHtml+'</div>';
+ }else if(isOptica()){
+  _btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';
+ }else{
+  _btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:280px;padding:14px 28px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Enviar mi cotización por WhatsApp</button>';
+ }
+ $("nav").innerHTML='<div class="navBar" style="justify-content:flex-end">'+_btn+'</div>';
  $("restart").style.display="block";
  ["od","oi"].forEach(function(t){
   if($(t+"E"))$(t+"E").addEventListener("change",function(){ST[t+"E"]=parseFloat(this.value)||0;syncRx();render();});
@@ -1149,6 +1226,10 @@ function go(dir){
 function reset(){ST=fresh();render();}
 function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
 function addToCart(){
+ if(!ST.rxMethod){
+  scrollToRx();
+  return;
+ }
  var q=zeissQuote();
  var b=$("cartBtn");
  if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
@@ -1157,5 +1238,9 @@ function addToCart(){
  if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
 }
 render();
+var initialSection = urlParams.get('section');
+if(initialSection === '3' || initialSection === '03'){
+ setTimeout(scrollToRx, 250);
+}
 try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
 </script></body></html>

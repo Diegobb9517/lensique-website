@@ -2,16 +2,19 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import './LensConfiguratorModal.css';
+import { resolveImageUrl } from '../App';
 
 interface LensConfiguratorModalProps {
   product: any;
   catalogData?: any[];
+  initialSection?: string | null;
   onClose: () => void;
   onComplete: (config: any) => void;
 }
 
 export default function LensConfiguratorModal({
   product,
+  initialSection,
   onClose,
   onComplete
 }: LensConfiguratorModalProps) {
@@ -51,6 +54,23 @@ export default function LensConfiguratorModal({
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [onComplete, product]);
+
+  const frameImg = resolveImageUrl(
+    (product?.images && product.images.length > 0) ? product.images[0].image_url : product?.image_url,
+    product?.image
+  );
+  const queryParams = new URLSearchParams({
+    v: '1.0.6',
+    framePrice: String(product?.price_incl_tax || product?.price || 0),
+    isPreorder: (product?.stock != null && product.stock !== '' && Number(product.stock) <= 0) ? 'true' : 'false'
+  });
+  if (frameImg) {
+    queryParams.set('frameImage', frameImg);
+  }
+  if (initialSection) {
+    queryParams.set('section', initialSection);
+  }
+  const iframeSrc = `/asesor_zeiss.html?${queryParams.toString()}`;
 
   return (
     <AnimatePresence>
@@ -104,8 +124,7 @@ export default function LensConfiguratorModal({
           </div>
 
           <iframe 
-            
-            src={`/asesor_zeiss.html?v=1.0.5&framePrice=${product?.price_incl_tax || product?.price || 0}&isPreorder=${(product?.stock != null && product.stock !== '' && Number(product.stock) <= 0) ? 'true' : 'false'}`}
+            src={iframeSrc}
             title="Asesor Visual ZEISS"
             style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit', position: 'relative', zIndex: 2, opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
             onLoad={() => setIframeLoaded(true)}

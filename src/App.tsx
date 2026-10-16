@@ -1084,7 +1084,7 @@ function App() {
   );
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
   const [isContactQuizOpen, setIsContactQuizOpen] = useState(false);
-  const { addItem, items, setIsCartOpen } = useCart();
+  const { addItem, items, setIsCartOpen, removeItem } = useCart();
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [isTriageOpen, setIsTriageOpen] = useState(false);
@@ -1098,6 +1098,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
+  const [configuratorInitialSection, setConfiguratorInitialSection] = useState<string | null>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
     const [cotizadorInitialType, setCotizadorInitialType] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -1765,6 +1766,41 @@ function App() {
                     {String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? 'Comprar Lentes de Contacto' : (String(selectedProductDetail.category || '').toLowerCase().includes('sol') ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar')}
                   </button>
 
+                {!String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const delTime = calculateDeliveryTime(selectedProductDetail);
+                      addItem({
+                        type: 'product',
+                        title: formatProductTitle(selectedProductDetail, 'Armazón'),
+                        quantity: 1,
+                        unit_price: selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0,
+                        product: selectedProductDetail,
+                        image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url),
+                        estimatedDeliveryStr: delTime.label,
+                        estimatedDeliverySubtitle: delTime.subtitle,
+                        maxDeliveryDays: delTime.maxDays,
+                        minDeliveryDays: delTime.maxDays
+                      });
+                      setSelectedProductDetail(null);
+                    }}
+                    style={{
+                      marginTop: '10px',
+                      background: 'none',
+                      border: 'none',
+                      color: '#64748b',
+                      fontSize: '13px',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      width: '100%'
+                    }}
+                  >
+                    Comprar solo armazón sin micas (${Math.round(selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0).toLocaleString('es-MX')})
+                  </button>
+                )}
+
                 <div className="product-detail-perks">
                   <span>✓ Asesoría personalizada</span>
                   <span>✓ Examen de vista incluido</span>
@@ -1932,12 +1968,42 @@ function App() {
       {configuratorProduct && (
         <LensConfiguratorModal
           product={configuratorProduct}
-          onClose={() => setConfiguratorProduct(null)}
+          initialSection={configuratorInitialSection}
+          onClose={() => {
+            setConfiguratorProduct(null);
+            setConfiguratorInitialSection(null);
+          }}
           onComplete={(config) => {
             setConfiguratorProduct(null);
+            setConfiguratorInitialSection(null);
             setSelectedProductDetail(null);
             
             const product = config.originalProduct || configuratorProduct;
+            const productPrice = product.price_incl_tax || product.price || 0;
+
+            if (config.onlyFrame) {
+              const delTime = calculateDeliveryTime(product, undefined);
+              addItem({
+                type: 'product',
+                title: formatProductTitle(product, 'Armazón'),
+                quantity: 1,
+                unit_price: productPrice,
+                product: product,
+                image: product.image || (product.images && product.images[0]?.image_url),
+                estimatedDeliveryStr: delTime.label,
+                estimatedDeliverySubtitle: delTime.subtitle,
+                maxDeliveryDays: delTime.maxDays,
+                minDeliveryDays: delTime.maxDays
+              });
+              return;
+            }
+
+            // Remove any previously added broken item for this product if replacing
+            const existingBrokenIndex = items.findIndex(it => it.type === 'frame_with_lenses' && (!it.lensConfig || !it.lensConfig.rxMethod) && it.product?.id === product.id);
+            if (existingBrokenIndex >= 0) {
+              removeItem(items[existingBrokenIndex].id);
+            }
+
             const safeBrand = (product.brand && product.brand !== 'null') ? product.brand : '';
             let configText = `¡Hola! Me interesa comprar el armazón ${product.name}${safeBrand ? ' ' + safeBrand : ''}.\n\nEsta es mi configuración de micas ZEISS:\n`;
             
@@ -1946,7 +2012,6 @@ function App() {
             }
             
             const pvp = config.pvp || 0;
-            const productPrice = product.price_incl_tax || 0;
             const total = pvp + productPrice;
 
             configText += `• Precio micas (el par): $${Math.round(pvp).toLocaleString('es-MX')}\n`;
@@ -1979,7 +2044,6 @@ function App() {
 
             configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
-            const phone = settings.contact_whatsapp || '523316929111';
             const delTime = calculateDeliveryTime(product, config);
             addItem({
               type: 'frame_with_lenses',
@@ -1992,14 +2056,18 @@ function App() {
               estimatedDeliveryStr: delTime.label,
               estimatedDeliverySubtitle: delTime.subtitle,
               maxDeliveryDays: delTime.maxDays,
-                          minDeliveryDays: delTime.maxDays
+              minDeliveryDays: delTime.maxDays
             });
-            setConfiguratorProduct(null);
           }}
         />
       )}
 
-      <CartDrawer />
+      <CartDrawer 
+        onOpenConfigurator={(productToOpen, section) => {
+          setConfiguratorInitialSection(section || '3');
+          setConfiguratorProduct(productToOpen);
+        }}
+      />
 
         {isTriageOpen && (
           <TriageModal onClose={() => setIsTriageOpen(false)} onSelectService={handleOpenBooking} />

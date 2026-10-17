@@ -90,11 +90,11 @@ body.no-scroll {
 }
 
 .logo-img {
-  height: 96px;
+  height: 24px;
+  max-height: 24px;
   width: auto;
   object-fit: contain;
-  transform: scale(1.2);
-  transform-origin: center;
+  display: block;
 }
 
 .nav-links {
@@ -1348,8 +1348,8 @@ body.no-scroll {
 }
 
 .catalog-header-logo {
-  height: 28px;
-  max-height: 28px;
+  height: 22px;
+  max-height: 22px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -1484,8 +1484,8 @@ body.no-scroll {
   }
 
   .catalog-header-logo {
-    height: 24px;
-    max-height: 24px;
+    height: 19px;
+    max-height: 19px;
   }
 
   .catalog-topbar-count {

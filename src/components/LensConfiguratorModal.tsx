@@ -93,7 +93,7 @@ export default function LensConfiguratorModal({
             flexDirection: 'column',
             overflow: 'hidden',
             position: 'relative',
-            background: 'var(--bg, #f1ede5)',
+            background: '#ffffff',
             padding: 0
           }}
         >

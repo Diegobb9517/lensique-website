@@ -4699,3 +4699,359 @@ body.no-scroll .whatsapp-float {
   }
 }
 
+/* ==========================================================================
+   Sección: Calidad de Micas / Tecnología ZEISS (Home y Página de Micas)
+   ========================================================================== */
+
+/* Franja Home */
+.wp-zeiss-quality-strip {
+  padding: 80px 24px;
+  background-color: #f8fafc;
+  border-top: 1px solid #eef2f6;
+  border-bottom: 1px solid #eef2f6;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.wp-zeiss-quality-container {
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.wp-zeiss-eyebrow {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #9c8056;
+  margin-bottom: 12px;
+}
+
+.wp-zeiss-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(26px, 3.2vw, 38px);
+  font-weight: 600;
+  color: #15223e;
+  line-height: 1.2;
+  margin: 0 auto 16px;
+  max-width: 720px;
+}
+
+.wp-zeiss-desc {
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: #475569;
+  max-width: 680px;
+  margin: 0 auto 12px;
+  line-height: 1.6;
+}
+
+.wp-zeiss-backing {
+  font-size: 14.5px;
+  color: #64748b;
+  max-width: 620px;
+  margin: 0 auto 40px;
+  line-height: 1.55;
+}
+
+.wp-zeiss-backing strong {
+  color: #15223e;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.wp-zeiss-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.wp-zeiss-benefit-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+  box-sizing: border-box;
+}
+
+.wp-zeiss-benefit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.07);
+  border-color: #cbd5e1;
+}
+
+.wp-zeiss-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1b2436;
+  margin-bottom: 4px;
+}
+
+.wp-zeiss-benefit-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #15223e;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.wp-zeiss-benefit-text {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.wp-zeiss-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #1d1d1f;
+  color: #ffffff;
+  padding: 15px 36px;
+  border-radius: 980px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.wp-zeiss-cta-btn:hover {
+  background: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 960px) {
+  .wp-zeiss-benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .wp-zeiss-quality-strip {
+    padding: 48px 16px;
+  }
+  .wp-zeiss-benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .wp-zeiss-benefit-card {
+    padding: 20px 18px;
+  }
+  .wp-zeiss-cta-btn {
+    width: 100%;
+    padding: 14px 20px;
+  }
+}
+
+/* Detalle en página /micas */
+.micas-zeiss-detail-section {
+  padding: 80px 24px;
+  background-color: #ffffff;
+  border-top: 1px solid #eef2f6;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.micas-zeiss-container {
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+}
+
+.micas-zeiss-intro-block {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 56px;
+}
+
+.micas-zeiss-eyebrow {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #9c8056;
+  margin-bottom: 12px;
+}
+
+.micas-zeiss-headline {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(28px, 3.4vw, 42px);
+  font-weight: 600;
+  color: #15223e;
+  line-height: 1.2;
+  margin: 0 0 20px;
+}
+
+.micas-zeiss-lead {
+  font-size: clamp(16px, 1.8vw, 18px);
+  color: #334155;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.micas-zeiss-backing-text {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.micas-zeiss-backing-text strong {
+  color: #15223e;
+  font-weight: 700;
+}
+
+.micas-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+.micas-pillar-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.micas-pillar-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.micas-pillar-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1b2436;
+  flex-shrink: 0;
+}
+
+.micas-pillar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #15223e;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.micas-pillar-desc {
+  font-size: 14.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.micas-treatments-overview {
+  background: #fbfaf8;
+  border: 1px solid #efebe3;
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 48px;
+  box-sizing: border-box;
+}
+
+.micas-treatments-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #15223e;
+  text-align: center;
+  margin: 0 0 10px;
+}
+
+.micas-treatments-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  text-align: center;
+  margin: 0 auto 32px;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.micas-treatments-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.micas-treatment-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 22px 20px;
+  box-sizing: border-box;
+}
+
+.micas-treatment-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #9c8056;
+  margin-bottom: 6px;
+}
+
+.micas-treatment-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #15223e;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.micas-treatment-desc {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 880px) {
+  .micas-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .micas-treatments-list {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .micas-treatments-overview {
+    padding: 28px 20px;
+  }
+  .micas-zeiss-detail-section {
+    padding: 56px 16px;
+  }
+}
+

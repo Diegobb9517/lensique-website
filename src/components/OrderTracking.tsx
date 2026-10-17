@@ -210,7 +210,7 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
   ];
 
   return (
-    <div style={{ paddingTop: '100px', paddingBottom: '100px', backgroundColor: '#f8fafc', minHeight: '90vh' }}>
+    <div className="order-tracking-container">
       <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 20px' }}>
 
         {/* Back Link if viewing an order */}
@@ -230,7 +230,8 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
               gap: '6px',
               background: 'none',
               border: 'none',
-              padding: '0 0 16px 0',
+              padding: '0',
+              marginBottom: '20px',
               color: '#64748b',
               fontSize: '14px',
               fontWeight: 500,

@@ -171,7 +171,8 @@ function FullCatalog({
     initialSearchQuery = '',
     initialBrand = 'Todas',
     onConfigureProduct,
-    isStandalone = false
+    isStandalone = false,
+    isPage = false
   }: { 
     isOpen: boolean, 
     onClose: () => void, 
@@ -182,7 +183,8 @@ function FullCatalog({
     initialFilter?: string,
     initialSearchQuery?: string,
     initialBrand?: string,
-    isStandalone?: boolean 
+    isStandalone?: boolean,
+    isPage?: boolean
 }) {
   const { items, setIsCartOpen } = useCart();
   const [filter, setFilter] = useState('Todas');
@@ -208,11 +210,16 @@ function FullCatalog({
 
   useEffect(() => {
     if (isOpen) {
-      setFilter(initialFilter || 'Todas');
+      const searchParams = new URLSearchParams(window.location.search);
+      const tipo = searchParams.get('tipo');
+      let effectiveFilter = initialFilter || 'Todas';
+      if (tipo === 'armazones') effectiveFilter = 'Armazones';
+      else if (tipo === 'contacto' || tipo === 'lentes-de-contacto') effectiveFilter = 'Lentes de Contacto';
+
+      setFilter(effectiveFilter);
       setSearchQuery(initialSearchQuery || '');
       setSelectedBrand(initialBrand || 'Todas');
       setContactUsageFilter('Todos');
-      const searchParams = new URLSearchParams(window.location.search);
       if (searchParams.get('disponibilidad') === 'existencia') {
         setAvailabilityFilter('En existencia');
       } else {
@@ -288,10 +295,12 @@ function FullCatalog({
     <AnimatePresence>
       {isOpen && (
         <motion.div 
-          initial={{ opacity: 0, x: '100%' }}
+          initial={isPage ? false : { opacity: 0, x: '100%' }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: '100%' }}
-          className={isStandalone ? "full-catalog-view standalone" : "full-catalog-view"} style={isStandalone ? {position:"relative", zIndex:1, height:"auto", minHeight:"100vh"} : {}}
+          exit={isPage ? undefined : { opacity: 0, x: '100%' }}
+          transition={{ duration: isPage ? 0 : 0.3 }}
+          className={isStandalone ? "full-catalog-view standalone" : (isPage ? "full-catalog-view is-page" : "full-catalog-view")} 
+          style={isStandalone ? {position:"relative", zIndex:1, height:"auto", minHeight:"100vh"} : (isPage ? {position: "relative", zIndex: 1, height: "auto", minHeight: "100vh", top: "auto", left: "auto", overflowY: "visible"} : {})}
         >
           {/* Combined Top bar: Volver, Logo, Cart */}
           <div className="catalog-topbar" style={{ display: isStandalone ? "none" : "flex" }}>
@@ -302,7 +311,17 @@ function FullCatalog({
             </div>
             
             <div className="catalog-topbar-center">
-              <img src={logo} alt="Lensique" className="catalog-header-logo" />
+              <img 
+                src={logo} 
+                alt="Lensique" 
+                className="catalog-header-logo" 
+                onClick={onClose}
+                style={{ cursor: 'pointer' }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
+                aria-label="Ir al inicio"
+              />
             </div>
             
             <div className="catalog-topbar-right">
@@ -336,7 +355,16 @@ function FullCatalog({
                   <button 
                     key={item.id} 
                     className={`filter-pill ${filter === item.id ? 'active' : ''}`}
-                    onClick={() => setFilter(item.id)}
+                    onClick={() => {
+                      setFilter(item.id);
+                      if (typeof window !== 'undefined' && window.location.pathname === '/catalogo') {
+                        const url = new URL(window.location.href);
+                        if (item.id === 'Armazones') url.searchParams.set('tipo', 'armazones');
+                        else if (item.id === 'Lentes de Contacto') url.searchParams.set('tipo', 'contacto');
+                        else url.searchParams.delete('tipo');
+                        window.history.replaceState({}, '', url.toString());
+                      }
+                    }}
                   >
                     {item.label}
                   </button>
@@ -349,8 +377,8 @@ function FullCatalog({
                   onChange={(val) => {
                     setSelectedBrand(val);
                     if (val === 'Todas') {
-                      window.history.pushState(null, '', '/armazones');
-                      document.title = "Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo";
+                      window.history.pushState(null, '', '/catalogo');
+                      document.title = "Catálogo | Óptica Lensique";
                     } else {
                       window.history.pushState(null, '', `/marca/${slugify(val)}`);
                       document.title = `Armazones ${val} en Zapopan | Óptica Lensique`;
@@ -919,6 +947,17 @@ function PaymentSuccessView() {
   );
 }
 
+function getInitialCatalogFilter(): string {
+  if (typeof window === 'undefined') return 'Todas';
+  const path = window.location.pathname;
+  const searchParams = new URLSearchParams(window.location.search);
+  const tipo = searchParams.get('tipo');
+  if (tipo === 'armazones' || path === '/armazones') return 'Armazones';
+  if (tipo === 'contacto' || tipo === 'lentes-de-contacto' || path === '/lentes-de-contacto') return 'Lentes de Contacto';
+  if (searchParams.get('disponibilidad') === 'existencia') return 'Armazones';
+  return 'Todas';
+}
+
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
@@ -942,6 +981,7 @@ function App() {
       const path = window.location.pathname;
       setCurrentPath(path);
       setIsCatalogOpen(path === '/catalogo' || path === '/armazones' || path.startsWith('/marca/'));
+      setCatalogInitialFilter(getInitialCatalogFilter());
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -1088,12 +1128,7 @@ function App() {
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [isTriageOpen, setIsTriageOpen] = useState(false);
-  const [catalogInitialFilter, setCatalogInitialFilter] = useState(() => {
-    if (window.location.pathname === '/armazones') return 'Armazones';
-    if (window.location.pathname === '/lentes-de-contacto') return 'Lentes de Contacto';
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('disponibilidad') === 'existencia') return 'Armazones';
-    return 'Todas';
-  });
+  const [catalogInitialFilter, setCatalogInitialFilter] = useState(getInitialCatalogFilter);
   const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
@@ -1149,6 +1184,10 @@ function App() {
         } else if (path === '/agendar-cita') {
         setSelectedProduct('Examen de la Vista');
         setIsBookingOpen(true);
+      } else if (path === '/catalogo') {
+        setCatalogInitialFilter(getInitialCatalogFilter());
+        setIsCatalogOpen(true);
+        setCurrentPath('/catalogo');
       } else if (path.startsWith('/marca/')) {
         const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
         const catalog = safeJsonParse(settings.full_catalog_data, []);
@@ -1159,6 +1198,7 @@ function App() {
             setCatalogInitialFilter('Todas');
             setCatalogInitialBrand(matchedBrand as string);
             setIsCatalogOpen(true);
+            setCurrentPath('/catalogo');
           } else {
             document.title = "404 - Marca no encontrada | Óptica Lensique";
             let robotsEl = document.querySelector('meta[name="robots"]');
@@ -1321,16 +1361,15 @@ function App() {
     useEffect(() => {
     if (isCatalogOpen) {
       if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones' && window.location.pathname !== '/lentes-de-contacto') {
+        setCurrentPath('/catalogo');
         window.history.pushState({ catalog: true }, '', '/catalogo');
         document.title = "Catálogo | Óptica Lensique";
       }
     } else {
-      if (window.location.pathname === '/catalogo' || window.location.pathname === '/lentes-de-contacto') {
+      if (window.location.pathname === '/catalogo' || window.location.pathname === '/lentes-de-contacto' || window.location.pathname.startsWith('/marca/')) {
+        setCurrentPath('/');
         window.history.pushState(null, '', '/');
         document.title = 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
-      } else if (window.location.pathname.startsWith('/marca/')) {
-        window.history.pushState(null, '', '/armazones');
-        document.title = "Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo";
       }
     }
   }, [isCatalogOpen]);
@@ -1539,16 +1578,20 @@ function App() {
   }, [settings.full_catalog_data, settings.featured_products]);
 
   const handleSeeAllCollection = (col: { href: string; targetFilter?: string; targetBrand?: string }) => {
+    setCurrentPath('/catalogo');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (col.targetBrand && col.targetBrand !== 'Todas') {
       setCatalogInitialFilter('Todas');
       setCatalogInitialBrand(col.targetBrand);
       setIsCatalogOpen(true);
-      window.history.pushState(null, '', col.href);
+      window.history.pushState(null, '', col.href || `/marca/${slugify(col.targetBrand)}`);
     } else if (col.targetFilter && col.targetFilter !== 'Todas') {
       setCatalogInitialFilter(col.targetFilter);
       setCatalogInitialBrand('Todas');
       setIsCatalogOpen(true);
-      window.history.pushState(null, '', col.href);
+      const tipoParam = col.targetFilter === 'Armazones' ? 'armazones' : (col.targetFilter === 'Lentes de Contacto' ? 'contacto' : '');
+      const targetUrl = tipoParam ? `/catalogo?tipo=${tipoParam}` : (col.href || '/catalogo');
+      window.history.pushState(null, '', targetUrl);
     } else {
       setCatalogInitialFilter('Todas');
       setCatalogInitialBrand('Todas');
@@ -1855,24 +1898,26 @@ function App() {
         />
       )}
 
-      <FullCatalog 
-        isOpen={isCatalogOpen} 
-        onClose={() => setIsCatalogOpen(false)} 
-        catalogData={safeJsonParse(settings.full_catalog_data)}
-        initialFilter={catalogInitialFilter}
-        initialSearchQuery={catalogInitialSearchQuery}
-        initialBrand={catalogInitialBrand}
-        onViewProduct={(prod) => {
-          setSelectedProductDetail(prod);
-        }}
-        onConfigureProduct={(prod) => {
-          setConfiguratorProduct(prod);
-        }}
-        onTryOn={(prod) => {
-          setTryOnProduct(prod);
-          setIsTryOnOpen(true);
-        }}
-      />
+      {isCatalogOpen && currentPath !== '/catalogo' && currentPath !== '/armazones' && !currentPath.startsWith('/marca/') && (
+        <FullCatalog 
+          isOpen={isCatalogOpen} 
+          onClose={() => setIsCatalogOpen(false)} 
+          catalogData={safeJsonParse(settings.full_catalog_data)}
+          initialFilter={catalogInitialFilter}
+          initialSearchQuery={catalogInitialSearchQuery}
+          initialBrand={catalogInitialBrand}
+          onViewProduct={(prod) => {
+            setSelectedProductDetail(prod);
+          }}
+          onConfigureProduct={(prod) => {
+            setConfiguratorProduct(prod);
+          }}
+          onTryOn={(prod) => {
+            setTryOnProduct(prod);
+            setIsTryOnOpen(true);
+          }}
+        />
+      )}
 
       <VirtualTryOn 
         isOpen={isTryOnOpen}
@@ -2274,87 +2319,126 @@ function App() {
         )}
       </AnimatePresence>
 
-      <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="announcement-bar">
-        Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong>
-      </div>
-        <div className="nav-content">
-          <div className="nav-left">
-            <a href="/" className="logo">
-              <img src={logo} alt="Lensique" className="logo-img" />
-            </a>
-          </div>
-
-          <div className="nav-links d-none-mobile">
-            {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
-              <a 
-                key={`nav-${i}-${link.name}`} 
-                href={link.href} 
-                className="nav-link"
-                onClick={(e) => {
-                  if (link.name === 'Catálogo') {
-                    e.preventDefault();
-                    setIsCatalogOpen(true);
-                  } else if (link.name === 'Examen') {
-                    e.preventDefault();
-                    handleOpenBooking('Examen de la Vista');
-                  }
-                }}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-
-          <div className="nav-right">
-            <button className="nav-icon-btn" onClick={() => setIsCartOpen(true)} style={{ position: 'relative' }}>
-              <ShoppingBag size={24} />
-              {items.length > 0 && (
-                <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {items.length}
-                </span>
-              )}
-            </button>
-
-            <button className="nav-icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+      {currentPath !== '/catalogo' && !currentPath.startsWith('/marca/') && (
+        <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="announcement-bar">
+          Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong>
         </div>
-      </nav>
-
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mobile-menu"
-          >
-            {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
-              <a 
-                key={`mob-${i}-${link.name}`} 
-                href={link.href} 
-                className="mobile-link" 
-                onClick={(e) => {
-                  if (link.name === 'Catálogo') {
-                    e.preventDefault();
-                    setIsCatalogOpen(true);
-                  } else if (link.name === 'Examen') {
-                    e.preventDefault();
-                    handleOpenBooking('Examen de la Vista');
-                  }
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                {link.name}
+          <div className="nav-content">
+            <div className="nav-left">
+              <a href="/" className="logo">
+                <img src={logo} alt="Lensique" className="logo-img" />
               </a>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+
+            <div className="nav-links d-none-mobile">
+              {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
+                <a 
+                  key={`nav-${i}-${link.name}`} 
+                  href={link.href} 
+                  className="nav-link"
+                  onClick={(e) => {
+                    if (link.name === 'Catálogo') {
+                      e.preventDefault();
+                      setCatalogInitialFilter('Todas');
+                      setIsCatalogOpen(true);
+                      setCurrentPath('/catalogo');
+                      window.history.pushState(null, '', '/catalogo');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.name === 'Examen') {
+                      e.preventDefault();
+                      handleOpenBooking('Examen de la Vista');
+                    }
+                  }}
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+
+            <div className="nav-right">
+              <button className="nav-icon-btn" onClick={() => setIsCartOpen(true)} style={{ position: 'relative' }}>
+                <ShoppingBag size={24} />
+                {items.length > 0 && (
+                  <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {items.length}
+                  </span>
+                )}
+              </button>
+
+              <button className="nav-icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          </div>
+        </nav>
+      )}
+
+      {currentPath !== '/catalogo' && !currentPath.startsWith('/marca/') && (
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mobile-menu"
+            >
+              {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
+                <a 
+                  key={`mob-${i}-${link.name}`} 
+                  href={link.href} 
+                  className="mobile-link" 
+                  onClick={(e) => {
+                    if (link.name === 'Catálogo') {
+                      e.preventDefault();
+                      setCatalogInitialFilter('Todas');
+                      setIsCatalogOpen(true);
+                      setCurrentPath('/catalogo');
+                      window.history.pushState(null, '', '/catalogo');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.name === 'Examen') {
+                      e.preventDefault();
+                      handleOpenBooking('Examen de la Vista');
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  {link.name}
+                </a>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
       <main>
+        {(currentPath === '/catalogo' || currentPath.startsWith('/marca/')) && (
+          <FullCatalog 
+            isOpen={true} 
+            isStandalone={false}
+            isPage={true}
+            onClose={() => {
+              setIsCatalogOpen(false);
+              setCurrentPath('/');
+              window.history.pushState(null, '', '/');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            catalogData={safeJsonParse(settings.full_catalog_data)}
+            initialFilter={catalogInitialFilter}
+            initialSearchQuery={catalogInitialSearchQuery}
+            initialBrand={catalogInitialBrand}
+            onViewProduct={(prod) => {
+              setSelectedProductDetail(prod);
+            }}
+            onConfigureProduct={(prod) => {
+              setConfiguratorProduct(prod);
+            }}
+            onTryOn={(prod) => {
+              setTryOnProduct(prod);
+              setIsTryOnOpen(true);
+            }}
+          />
+        )}
         {currentPath === '/armazones' && (
           <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc' }}>
             <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px', textAlign: 'center', marginBottom: '20px' }}>Armazones y lentes graduados en Zapopan</h1>
@@ -2546,7 +2630,13 @@ function App() {
                 examen de vista
               </button>
               , pruébate{' '}
-              <button className="statement-link" onClick={() => { setCatalogInitialFilter('Todas'); setIsCatalogOpen(true); }}>
+              <button className="statement-link" onClick={() => { 
+                setCatalogInitialFilter('Todas'); 
+                setIsCatalogOpen(true); 
+                setCurrentPath('/catalogo'); 
+                window.history.pushState(null, '', '/catalogo'); 
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+              }}>
                 armazones
               </button>
               {' '}y compra{' '}
@@ -2565,10 +2655,22 @@ function App() {
                 Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
               </p>
               <div className="lifestyle-banner-btns">
-                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
+                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { 
+                  setCatalogInitialFilter('Armazones'); 
+                  setIsCatalogOpen(true); 
+                  setCurrentPath('/catalogo'); 
+                  window.history.pushState(null, '', '/catalogo?tipo=armazones'); 
+                  window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                }}>
                   Ver armazones
                 </button>
-                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>
+                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { 
+                  setCatalogInitialFilter('Armazones'); 
+                  setIsCatalogOpen(true); 
+                  setCurrentPath('/catalogo'); 
+                  window.history.pushState(null, '', '/catalogo?tipo=armazones'); 
+                  window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                }}>
                   Ver lentes de sol
                 </button>
               </div>
@@ -2605,7 +2707,7 @@ function App() {
           />
         )}
 
-        {!['/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/')) && (
+        {!['/catalogo', '/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/') || currentPath.startsWith('/marca/')) && (
           <div>
             {(() => {
               const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/seguimiento'];
@@ -2619,7 +2721,14 @@ function App() {
                     <div style={{ paddingTop: '160px', paddingBottom: '160px', textAlign: 'center', backgroundColor: '#f8f6f2', minHeight: '80vh' }}>
                       <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '0 0 12px', color: '#1b2436' }}>Página no encontrada</h1>
                       <p style={{ fontSize: '16px', color: '#666', margin: '0 0 28px' }}>El enlace no existe o cambió.</p>
-                      <a href="/catalogo" className="btn btn-primary" style={{ marginRight: '10px' }}>Ir al catálogo</a>
+                      <a href="/catalogo" className="btn btn-primary" style={{ marginRight: '10px' }} onClick={(e) => {
+                        e.preventDefault();
+                        setCatalogInitialFilter('Todas');
+                        setIsCatalogOpen(true);
+                        setCurrentPath('/catalogo');
+                        window.history.pushState(null, '', '/catalogo');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}>Ir al catálogo</a>
                       <a href="/blog" className="btn btn-primary">Ir al blog</a>
                     </div>
                   )}
@@ -2651,7 +2760,16 @@ function App() {
               >
                 <Sparkles size={18} /> Encuentra tu estilo ideal
               </button>
-              <button className="btn btn-wp-secondary" onClick={() => setIsCatalogOpen(true)}>
+              <button 
+                className="btn btn-wp-secondary" 
+                onClick={() => {
+                  setCatalogInitialFilter('Todas');
+                  setIsCatalogOpen(true);
+                  setCurrentPath('/catalogo');
+                  window.history.pushState(null, '', '/catalogo');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
                 Ver Catálogo
               </button>
             </div>
@@ -2782,7 +2900,13 @@ function App() {
                 id: 's3_arm', 
                 title: 'Armazones', 
                 img: armazonesServiceImg, 
-                action: () => { window.location.href = '/catalogo?tipo=armazones'; }
+                action: () => {
+                  setCatalogInitialFilter('Armazones');
+                  setIsCatalogOpen(true);
+                  setCurrentPath('/catalogo');
+                  window.history.pushState(null, '', '/catalogo?tipo=armazones');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
               },
               { 
                 id: 's4', 
@@ -2795,7 +2919,14 @@ function App() {
                   description: '<p>Descubre una forma cómoda e invisible de corregir tu visión. Ofrecemos adaptaciones personalizadas para asegurar la mejor opción para tus ojos, ya sea para uso diario, mensual o casos especiales.</p>',
                   image: contactLensesImg,
                   actionText: 'Ver lentes de contacto',
-                  onAction: () => { setSelectedServiceInfo(null); setIsContactQuizOpen(true); }
+                  onAction: () => {
+                    setSelectedServiceInfo(null);
+                    setCatalogInitialFilter('Lentes de Contacto');
+                    setIsCatalogOpen(true);
+                    setCurrentPath('/catalogo');
+                    window.history.pushState(null, '', '/catalogo?tipo=contacto');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
                 })
               }
             ].map((service, idx) => (
@@ -3256,103 +3387,112 @@ function App() {
         </svg>
       </a>
 
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-main-grid">
-            <div className="footer-links-wrapper">
-              <div className="footer-col">
-                <h4>Productos</h4>
-                <a href="/catalogo" onClick={(e) => { e.preventDefault(); setCatalogInitialFilter('Armazones'); setIsCatalogOpen(true); }}>Lentes oftálmicos</a>
-                <a href="/micas">Micas monofocales</a>
-                <a href="/micas">Micas progresivas</a>
-                <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>
-              </div>
-              
-              <div className="footer-col">
-                <h4>Servicios</h4>
-                <a href="#examen" onClick={(e) => { e.preventDefault(); handleOpenBooking('Examen de la Vista'); }}>Examen de la vista</a>
-                <a href="#consulta" onClick={(e) => { e.preventDefault(); handleOpenBooking('Consulta Oftalmológica'); }}>Consulta Médica</a>
-                <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Actualización de micas</a>
+      {currentPath !== '/catalogo' && !currentPath.startsWith('/marca/') && (
+        <footer className="footer">
+          <div className="footer-content">
+            <div className="footer-main-grid">
+              <div className="footer-links-wrapper">
+                <div className="footer-col">
+                  <h4>Productos</h4>
+                  <a href="/catalogo" onClick={(e) => { 
+                    e.preventDefault(); 
+                    setCatalogInitialFilter('Armazones'); 
+                    setIsCatalogOpen(true); 
+                    setCurrentPath('/catalogo'); 
+                    window.history.pushState(null, '', '/catalogo?tipo=armazones'); 
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                  }}>Lentes oftálmicos</a>
+                  <a href="/micas">Micas monofocales</a>
+                  <a href="/micas">Micas progresivas</a>
+                  <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>
+                </div>
                 
-                <h4 className="mt-8">Tiendas</h4>
-                <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Encuentra una sucursal</a>
+                <div className="footer-col">
+                  <h4>Servicios</h4>
+                  <a href="#examen" onClick={(e) => { e.preventDefault(); handleOpenBooking('Examen de la Vista'); }}>Examen de la vista</a>
+                  <a href="#consulta" onClick={(e) => { e.preventDefault(); handleOpenBooking('Consulta Oftalmológica'); }}>Consulta Médica</a>
+                  <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Actualización de micas</a>
+                  
+                  <h4 className="mt-8">Tiendas</h4>
+                  <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Encuentra una sucursal</a>
+                </div>
+
+                <div className="footer-col">
+                  <h4>Nosotros</h4>
+                    <a href="/blog">Blog</a>
+                  <a href="/nosotros">Nuestra historia</a>
+                  <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
+                  <h4 className="mt-8">Legal</h4>
+                  <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
+                    <a href="/devoluciones" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(returnsData); window.history.pushState({}, '', '/devoluciones'); }}>Devoluciones y Garantías</a>
+                  <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
+                  <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
+                </div>
+
+                <div className="footer-col">
+                  <h4>Soporte</h4>
+                  <a 
+                    href="/seguimiento" 
+                    onClick={(e) => { 
+                      e.preventDefault(); 
+                      setCurrentPath('/seguimiento'); 
+                      window.history.pushState({}, '', '/seguimiento'); 
+                      window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                    }}
+                  >
+                    Rastrea tu pedido
+                  </a>
+                  <a href="#garantia" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(warrantyData); }}>Garantías</a>
+                  <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }}>Preguntas Frecuentes</a>
+                  <a href="#facturacion" onClick={(e) => { e.preventDefault(); import('./lib/analytics').then(({ trackLead }) => trackLead()); alert('Para solicitar tu factura, envíanos tu Constancia de Situación Fiscal (CSF) por WhatsApp.'); window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=Hola,%20me%20gustar%C3%ADa%20solicitar%20mi%20factura.%20Aqu%C3%AD%20env%C3%ADo%20mi%20Constancia%20de%20Situaci%C3%B3n%20Fiscal.`, '_blank'); }}>Facturación</a>
+                </div>
               </div>
 
-              <div className="footer-col">
-                <h4>Nosotros</h4>
-                  <a href="/blog">Blog</a>
-                <a href="/nosotros">Nuestra historia</a>
-                <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
-                <h4 className="mt-8">Legal</h4>
-                <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
-                  <a href="/devoluciones" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(returnsData); window.history.pushState({}, '', '/devoluciones'); }}>Devoluciones y Garantías</a>
+              <div className="footer-support-block">
+                <h4 className="support-title">¿Necesitas ayuda?</h4>
+                <p className="support-text">
+                  Estamos aquí para ayudarte. Revisa nuestras preguntas frecuentes o contáctanos directamente.
+                </p>
+                <div className="support-actions">
+                  <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }} className="support-action-item">
+                    <div className="support-icon-circle">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <span>FAQ</span>
+                  </a>
+                  <a href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item" onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}>
+                    <div className="support-icon-circle">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    </div>
+                    <span>Chat</span>
+                  </a>
+                </div>
+                
+                <div className="social-icons">
+                  <a href="https://www.instagram.com/thelensique/" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                  </a>
+                  <a href="https://www.facebook.com/profile.php?id=61579352515332" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <div className="footer-bottom">
+              <div className="footer-bottom-left">
+                <span className="footer-region">🇲🇽 México</span>
+                <span>&copy; {new Date().getFullYear()} Óptica Lensique.</span>
+              </div>
+              <div className="footer-bottom-links">
+                <a id="footer-privacy-link" href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
                 <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
                 <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
               </div>
-
-              <div className="footer-col">
-                <h4>Soporte</h4>
-                <a 
-                  href="/seguimiento" 
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    setCurrentPath('/seguimiento'); 
-                    window.history.pushState({}, '', '/seguimiento'); 
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                  }}
-                >
-                  Rastrea tu pedido
-                </a>
-                <a href="#garantia" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(warrantyData); }}>Garantías</a>
-                <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }}>Preguntas Frecuentes</a>
-                <a href="#facturacion" onClick={(e) => { e.preventDefault(); import('./lib/analytics').then(({ trackLead }) => trackLead()); alert('Para solicitar tu factura, envíanos tu Constancia de Situación Fiscal (CSF) por WhatsApp.'); window.open(`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=Hola,%20me%20gustar%C3%ADa%20solicitar%20mi%20factura.%20Aqu%C3%AD%20env%C3%ADo%20mi%20Constancia%20de%20Situaci%C3%B3n%20Fiscal.`, '_blank'); }}>Facturación</a>
-              </div>
-            </div>
-
-            <div className="footer-support-block">
-              <h4 className="support-title">¿Necesitas ayuda?</h4>
-              <p className="support-text">
-                Estamos aquí para ayudarte. Revisa nuestras preguntas frecuentes o contáctanos directamente.
-              </p>
-              <div className="support-actions">
-                <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }} className="support-action-item">
-                  <div className="support-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                  </div>
-                  <span>FAQ</span>
-                </a>
-                <a href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item" onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}>
-                  <div className="support-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                  </div>
-                  <span>Chat</span>
-                </a>
-              </div>
-              
-              <div className="social-icons">
-                <a href="https://www.instagram.com/thelensique/" target="_blank" rel="noopener noreferrer">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </a>
-                <a href="https://www.facebook.com/profile.php?id=61579352515332" target="_blank" rel="noopener noreferrer">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                </a>
-              </div>
             </div>
           </div>
-          
-          <div className="footer-bottom">
-            <div className="footer-bottom-left">
-              <span className="footer-region">🇲🇽 México</span>
-              <span>&copy; {new Date().getFullYear()} Óptica Lensique.</span>
-            </div>
-            <div className="footer-bottom-links">
-              <a id="footer-privacy-link" href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
-              <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
-              <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }

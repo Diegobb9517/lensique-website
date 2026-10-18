@@ -5,18 +5,27 @@ import { toTitleCase } from '../lib/format';
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
 import { WPSelect } from './WPSelect';
+import contactLensesImg from '../assets/contact_lenses.png';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 const resolveImageUrl = (url: any, fallback?: any) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
-  const processUrl = (u: string) => {
-    const targetUrl = String(u).trim();
-    if (targetUrl.startsWith('http') || targetUrl.startsWith('data:')) return targetUrl;
+  if (!isInvalid(url)) {
+    const targetUrl = String(url).trim();
+    if (targetUrl.startsWith('http://') || targetUrl.startsWith('https://') || targetUrl.startsWith('data:') || targetUrl.startsWith('/assets/')) {
+      return targetUrl;
+    }
     const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
     return `${API_BASE}${cleanUrl}`;
-  };
-  if (!isInvalid(url)) return processUrl(url);
-  if (!isInvalid(fallback)) return processUrl(fallback);
+  }
+  if (!isInvalid(fallback)) {
+    const targetFallback = String(fallback).trim();
+    if (targetFallback.startsWith('http://') || targetFallback.startsWith('https://') || targetFallback.startsWith('data:') || targetFallback.startsWith('/assets/')) {
+      return targetFallback;
+    }
+    const cleanUrl = targetFallback.startsWith('/') ? targetFallback : `/${targetFallback}`;
+    return `${API_BASE}${cleanUrl}`;
+  }
   return '';
 };
 
@@ -73,11 +82,42 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   };
 
   const getProductImage = () => {
-    if (product?.displayImage) return resolveImageUrl(product.displayImage);
-    if (product?.images && product.images.length > 0) {
-      return resolveImageUrl(product.images[0].image_url || product.images[0]);
+    if (!product) return contactLensesImg;
+
+    if (product.displayImage) {
+      const resolved = resolveImageUrl(product.displayImage, contactLensesImg);
+      if (resolved) return resolved;
     }
-    return product?.image || 'https://via.placeholder.com/300x200?text=Lente+de+Contacto';
+
+    let images = product.images;
+    if (typeof images === 'string') {
+      try {
+        images = JSON.parse(images);
+      } catch (e) {
+        images = [];
+      }
+    }
+
+    if (Array.isArray(images) && images.length > 0) {
+      const first = images[0];
+      const imgCandidate = typeof first === 'string' ? first : (first?.image_url || first?.url || first?.src || first?.image);
+      if (imgCandidate) {
+        const resolved = resolveImageUrl(imgCandidate, contactLensesImg);
+        if (resolved) return resolved;
+      }
+    }
+
+    if (product.image_url) {
+      const resolved = resolveImageUrl(product.image_url, contactLensesImg);
+      if (resolved) return resolved;
+    }
+
+    if (product.image) {
+      const resolved = resolveImageUrl(product.image, contactLensesImg);
+      if (resolved) return resolved;
+    }
+
+    return contactLensesImg;
   };
 
   // Memoize options to avoid recreating large arrays on every render
@@ -485,11 +525,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           <div className="contact-lens-summary-image-wrapper">
             <img 
               src={getProductImage()} 
-              alt={product?.name} 
+              alt={product?.name || 'Lente de contacto'} 
               className="contact-lens-summary-image" 
               onError={(e) => {
                 const target = e.currentTarget as HTMLImageElement;
-                target.src = 'https://via.placeholder.com/300x200?text=Lente+de+Contacto';
+                if (target.src !== contactLensesImg) {
+                  target.src = contactLensesImg;
+                }
               }}
             />
           </div>
@@ -502,29 +544,31 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </h3>
           <p style={{ fontSize: '0.875rem', color: '#0f172a', fontWeight: 600, marginTop: '0.25rem' }}>{getUsageType()}</p>
           
-          <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
-            <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#0f172a' }}>
-              Cantidad seleccionada:
-            </p>
-            <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>
-              {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
-            </p>
-          </div>
+          <div className="contact-lens-summary-extra">
+            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
+              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#0f172a' }}>
+                Cantidad seleccionada:
+              </p>
+              <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>
+                {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
+              </p>
+            </div>
 
-          <div className="contact-lens-summary-price">
-            <span>Total Estimado</span>
-            <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
-          </div>
-          
-          <div style={{ marginTop: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '12.5px', color: '#334155', lineHeight: 1.4 }}>
-            <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
-          </div>
+            <div className="contact-lens-summary-price">
+              <span>Total Estimado</span>
+              <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
+            </div>
+            
+            <div style={{ marginTop: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '12.5px', color: '#334155', lineHeight: 1.4 }}>
+              <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
+            </div>
 
-          <div style={{ marginTop: '12px' }}>
-            <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '10px 16px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              ¿Dudas? Escríbenos por WhatsApp
-            </a>
+            <div style={{ marginTop: '12px' }}>
+              <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '10px 16px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                ¿Dudas? Escríbenos por WhatsApp
+              </a>
+            </div>
           </div>
         </div>
 

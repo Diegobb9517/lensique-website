@@ -64,21 +64,26 @@
 .contact-lens-summary-image-wrapper {
   margin-top: 1rem;
   margin-bottom: 2rem;
-  background: transparent;
-  padding: 0;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  overflow: visible;
-  height: auto;
+  border: 1px solid #f1f5f9;
+  min-height: 180px;
+  max-height: 240px;
+  overflow: hidden;
 }
 
 .contact-lens-summary-image {
-  width: 100%;
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
   height: auto;
   object-fit: contain;
-  transform: scale(1.1);
+  display: block;
+  margin: 0 auto;
 }
 
 .contact-lens-summary-brand {
@@ -466,12 +471,46 @@
   }
   
   .contact-lens-summary-panel {
+    display: flex;
+    flex: 0 0 auto;
+    padding: 1.25rem 1.5rem;
+    padding-top: 3.5rem;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: center;
+    text-align: center;
+    background: #fafafa;
+  }
+
+  .contact-lens-summary-extra {
     display: none;
+  }
+
+  .contact-lens-summary-image-wrapper {
+    margin: 0 auto 0.75rem;
+    padding: 0.75rem;
+    min-height: auto;
+    max-height: 140px;
+    max-width: 180px;
+    width: 100%;
+    background: #ffffff;
+  }
+
+  .contact-lens-summary-image {
+    max-height: 110px;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .contact-lens-summary-name {
+    font-size: 1.25rem;
   }
   
   .contact-lens-content-panel {
     padding: 1.5rem;
-    padding-top: 4rem;
+    padding-top: 1.5rem;
     overflow-y: visible;
   }
   

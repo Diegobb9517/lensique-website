@@ -98,6 +98,8 @@ export default function LensConfiguratorModal({
           }}
         >
           <button 
+            className="config-modal-close-btn"
+            aria-label="Cerrar modal"
             onClick={onClose} 
             style={{ 
               position: 'absolute', 

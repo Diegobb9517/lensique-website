@@ -234,6 +234,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
       {isCartOpen && (
         <>
           <motion.div 
+            className="cart-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -277,7 +278,12 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                   </div>
                 )}
               </div>
-              <button onClick={() => setIsCartOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+              <button 
+                className="cart-close-btn"
+                aria-label="Cerrar carrito"
+                onClick={() => setIsCartOpen(false)} 
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+              >
                 <X size={24} color="#64748b" />
               </button>
             </div>

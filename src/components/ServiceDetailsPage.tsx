@@ -16,11 +16,11 @@ export default function ServiceDetailsPage({ isOpen, onClose, service }: Service
       window.scrollTo({ top: 0, behavior: 'instant' });
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 

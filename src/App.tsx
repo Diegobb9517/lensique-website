@@ -210,6 +210,15 @@ function FullCatalog({
   }, [filter, searchQuery, selectedBrand, contactUsageFilter]);
 
   useEffect(() => {
+    if (isPage || isStandalone) {
+      document.body.classList.remove('no-scroll');
+      if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = '';
+      }
+    }
+  }, [isPage, isStandalone]);
+
+  useEffect(() => {
     if (isOpen) {
       const searchParams = new URLSearchParams(window.location.search);
       const tipo = searchParams.get('tipo');
@@ -1125,7 +1134,7 @@ function App() {
   );
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
   const [isContactQuizOpen, setIsContactQuizOpen] = useState(false);
-  const { addItem, items, setIsCartOpen, removeItem } = useCart();
+  const { addItem, items, setIsCartOpen, removeItem, isCartOpen } = useCart();
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [isTriageOpen, setIsTriageOpen] = useState(false);
@@ -1438,18 +1447,51 @@ function App() {
     };
   }, []);
 
-  // UseEffect for body scroll lock when any overlay is open
+  // UseEffect for body scroll lock: active ONLY while a modal/overlay is genuinely open
+  const isAnyOverlayOpen = Boolean(
+    isBookingOpen || 
+    selectedProductDetail || 
+    configuratorProduct || 
+    contactConfiguratorProduct || 
+    isMobileMenuOpen || 
+    isTryOnOpen || 
+    selectedTech || 
+    selectedMicaCard ||
+    isTriageOpen || 
+    isStyleQuizOpen || 
+    isContactQuizOpen || 
+    selectedInfoPage || 
+    selectedServiceInfo || 
+    isCartOpen
+  );
+
   useEffect(() => {
-    if (isBookingOpen || isCatalogOpen || selectedProductDetail || configuratorProduct || contactConfiguratorProduct || isMobileMenuOpen || isTryOnOpen || selectedTech || isTriageOpen) {
+    if (isAnyOverlayOpen) {
       document.body.classList.add('no-scroll');
     } else {
       document.body.classList.remove('no-scroll');
+      if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = '';
+      }
     }
     
     return () => {
       document.body.classList.remove('no-scroll');
+      if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = '';
+      }
     };
-  }, [isBookingOpen, isCatalogOpen, selectedProductDetail, configuratorProduct, contactConfiguratorProduct, isMobileMenuOpen, isTryOnOpen, selectedTech, isTriageOpen]);
+  }, [isAnyOverlayOpen]);
+
+  // Ensure scroll is immediately unlocked when navigating to a standalone page
+  useEffect(() => {
+    if (!isAnyOverlayOpen) {
+      document.body.classList.remove('no-scroll');
+      if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = '';
+      }
+    }
+  }, [currentPath, isAnyOverlayOpen]);
 
   // Calendar Logic
   const getDaysInMonth = (date: Date) => {
@@ -1899,26 +1941,6 @@ function App() {
         />
       )}
 
-      {isCatalogOpen && currentPath !== '/catalogo' && currentPath !== '/armazones' && !currentPath.startsWith('/marca/') && (
-        <FullCatalog 
-          isOpen={isCatalogOpen} 
-          onClose={() => setIsCatalogOpen(false)} 
-          catalogData={safeJsonParse(settings.full_catalog_data)}
-          initialFilter={catalogInitialFilter}
-          initialSearchQuery={catalogInitialSearchQuery}
-          initialBrand={catalogInitialBrand}
-          onViewProduct={(prod) => {
-            setSelectedProductDetail(prod);
-          }}
-          onConfigureProduct={(prod) => {
-            setConfiguratorProduct(prod);
-          }}
-          onTryOn={(prod) => {
-            setTryOnProduct(prod);
-            setIsTryOnOpen(true);
-          }}
-        />
-      )}
 
       <VirtualTryOn 
         isOpen={isTryOnOpen}

@@ -160,13 +160,16 @@ export const getCardDisplayName = (product: any): string => {
     clean = clean.substring(formattedBrand.length).trim();
   }
 
-  // Combinar Marca + Modelo
-  let result = (formattedBrand ? `${formattedBrand} ${clean}` : clean).trim();
-
   // Limpiar guiones o espacios huérfanos
-  result = result.replace(/\s*-\s*$/, '').replace(/\s{2,}/g, ' ');
+  clean = clean.replace(/\s*-\s*$/, '').replace(/\s{2,}/g, ' ').trim();
 
-  return result;
+  // Casos a cuidar: si al quitar la marca el nombre quedaría vacío, sin caracteres alfanuméricos,
+  // o solo con la marca, dejar el nombre como está hoy (mejor repetir que dejar en blanco)
+  if (!clean || !/[a-zA-Z0-9]/.test(clean) || (formattedBrand && clean.toUpperCase() === formattedBrand.toUpperCase())) {
+    clean = (formattedBrand || rawName).trim();
+  }
+
+  return clean;
 };
 
 export const formatProductTitle = (product: any, prefix: string = 'Lentes') => {

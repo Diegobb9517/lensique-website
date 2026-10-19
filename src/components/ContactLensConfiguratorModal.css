@@ -6,10 +6,10 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 10000;
-  padding: 2rem 1rem;
+  padding: 1.25rem 1rem;
   overflow-y: auto;
 }
 
@@ -17,14 +17,15 @@
   background: white;
   border-radius: 16px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1060px;
   height: auto;
-  min-height: 80vh;
+  max-height: calc(100vh - 2.5rem);
   display: flex;
   flex-direction: row;
   overflow: hidden;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  margin: auto;
 }
 
 .contact-lens-modal-close {
@@ -52,33 +53,34 @@
 
 /* LEFT PANEL */
 .contact-lens-summary-panel {
-  flex: 0 0 35%;
+  flex: 0 0 340px;
+  max-width: 360px;
   background: white;
   border-right: 1px solid #e2e8f0;
-  padding: 3rem;
+  padding: 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow-y: auto;
 }
 
 .contact-lens-summary-image-wrapper {
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
   background: #f8fafc;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 0.625rem 0.875rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid #f1f5f9;
-  min-height: 180px;
-  max-height: 240px;
+  min-height: 110px;
+  max-height: 135px;
   overflow: hidden;
 }
 
 .contact-lens-summary-image {
   max-width: 100%;
-  max-height: 200px;
+  max-height: 115px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -96,20 +98,20 @@
 
 .contact-lens-summary-name {
   font-family: var(--font-heading, serif);
-  font-size: 1.75rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: #0f172a;
   margin-bottom: 0;
-  margin-top: 0.25rem;
-  line-height: 1.2;
+  margin-top: 0.15rem;
+  line-height: 1.25;
 }
 
 .contact-lens-summary-price {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #0f172a;
-  margin-top: auto;
-  padding-top: 1rem;
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
   border-top: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
@@ -118,7 +120,7 @@
 /* RIGHT PANEL */
 .contact-lens-content-panel {
   flex: 1;
-  padding: 3rem;
+  padding: 1.75rem 2.25rem;
   display: flex;
   flex-direction: column;
   overflow: visible;
@@ -126,7 +128,7 @@
 }
 
 .contact-lens-step-header {
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -142,10 +144,10 @@
 
 .contact-lens-title {
   font-family: var(--font-heading, serif);
-  font-size: 1.75rem;
+  font-size: 1.45rem;
   font-weight: 500;
   color: #0f172a;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 /* OPTIONS LIST */
@@ -350,8 +352,8 @@
   justify-content: space-between;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 0.625rem;
 }
 .cl-qty-label {
   display: flex;
@@ -400,12 +402,12 @@
   color: white;
   border: none;
   border-radius: 30px;
-  padding: 1rem;
-  font-size: 1rem;
+  padding: 0.8125rem 1.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-top: 1rem;
+  margin-top: 0.875rem;
 }
 
 .cl-btn-primary:hover {
@@ -461,25 +463,35 @@
 }
 
 @media (max-width: 768px) {
+  .contact-lens-modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
   .contact-lens-modal {
     flex-direction: column;
     height: 100%;
+    min-height: 100dvh;
     max-height: 100dvh;
     border-radius: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    margin: 0;
+    max-width: 100%;
   }
   
   .contact-lens-summary-panel {
     display: flex;
     flex: 0 0 auto;
-    padding: 1.25rem 1.5rem;
-    padding-top: 3.5rem;
+    max-width: 100%;
+    padding: 1rem 1.25rem;
+    padding-top: 2.75rem;
     border-right: none;
     border-bottom: 1px solid #e2e8f0;
     align-items: center;
     text-align: center;
     background: #fafafa;
+    overflow-y: visible;
   }
 
   .contact-lens-summary-extra {
@@ -487,17 +499,17 @@
   }
 
   .contact-lens-summary-image-wrapper {
-    margin: 0 auto 0.75rem;
-    padding: 0.75rem;
+    margin: 0 auto 0.5rem;
+    padding: 0.5rem;
     min-height: auto;
-    max-height: 140px;
-    max-width: 180px;
+    max-height: 100px;
+    max-width: 140px;
     width: 100%;
     background: #ffffff;
   }
 
   .contact-lens-summary-image {
-    max-height: 110px;
+    max-height: 85px;
     max-width: 100%;
     object-fit: contain;
     margin: 0 auto;
@@ -505,12 +517,12 @@
   }
 
   .contact-lens-summary-name {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
   
   .contact-lens-content-panel {
-    padding: 1.5rem;
-    padding-top: 1.5rem;
+    padding: 1.25rem;
+    padding-top: 1rem;
     overflow-y: visible;
   }
   

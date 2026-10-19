@@ -278,7 +278,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             </div>
             
             <h2 className="contact-lens-title">Selecciona la cantidad</h2>
-            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Elige cuántas cajas deseas para cada ojo.</p>
+            <p style={{ color: '#64748b', marginBottom: '1.25rem', fontSize: '0.875rem' }}>Elige cuántas cajas deseas para cada ojo.</p>
             
             <div className="cl-qty-container">
               <div className="cl-qty-label">
@@ -305,14 +305,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             </div>
 
             {availableColors.length > 0 && (
-              <div style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '0.75rem', backgroundColor: '#f8fafc' }}>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.5rem' }}>
+              <div style={{ marginTop: '0.875rem', padding: '0.625rem 0.875rem', border: '1px solid #e2e8f0', borderRadius: '0.75rem', backgroundColor: '#f8fafc' }}>
+                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.35rem' }}>
                   🎨 Selecciona el color de tus lentes:
                 </label>
                 <select 
                   value={selectedColor} 
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  style={{ width: '100%', padding: '0.625rem', borderRadius: '0.5rem', border: '1px solid #cbd5e1', fontSize: '0.9375rem', fontWeight: 600, color: '#0f172a', backgroundColor: '#ffffff' }}
+                  style={{ width: '100%', padding: '0.45rem 0.625rem', borderRadius: '0.5rem', border: '1px solid #cbd5e1', fontSize: '0.875rem', fontWeight: 600, color: '#0f172a', backgroundColor: '#ffffff' }}
                 >
                   {availableColors.map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -323,7 +323,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
             <button 
               className="cl-btn-primary" 
-              style={{ marginTop: '2rem' }}
+              style={{ marginTop: '1.25rem' }}
               disabled={quantityOD === 0 && quantityOS === 0}
               onClick={() => changeStep(2)}
             >
@@ -542,14 +542,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           <h3 className="contact-lens-summary-name">
             {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
           </h3>
-          <p style={{ fontSize: '0.875rem', color: '#0f172a', fontWeight: 600, marginTop: '0.25rem' }}>{getUsageType()}</p>
+          <p style={{ fontSize: '0.8125rem', color: '#0f172a', fontWeight: 600, marginTop: '0.2rem', marginBottom: 0 }}>{getUsageType()}</p>
           
           <div className="contact-lens-summary-extra">
-            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
-              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#0f172a' }}>
+            <div style={{ marginTop: '0.625rem', paddingTop: '0.625rem', borderTop: '1px solid #f1f5f9' }}>
+              <p style={{ fontSize: '0.8125rem', fontWeight: 500, color: '#0f172a', margin: 0 }}>
                 Cantidad seleccionada:
               </p>
-              <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>
+              <p style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: '0.15rem', marginBottom: 0 }}>
                 {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
               </p>
             </div>
@@ -559,13 +559,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
             </div>
             
-            <div style={{ marginTop: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '12.5px', color: '#334155', lineHeight: 1.4 }}>
+            <div style={{ marginTop: '9px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '8px 10px', fontSize: '11.5px', color: '#334155', lineHeight: 1.35 }}>
               <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
             </div>
 
-            <div style={{ marginTop: '12px' }}>
-              <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '10px 16px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <div style={{ marginTop: '8px' }}>
+              <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                 ¿Dudas? Escríbenos por WhatsApp
               </a>
             </div>

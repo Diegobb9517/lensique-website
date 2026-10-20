@@ -18,7 +18,7 @@
   border-radius: 16px;
   width: 100%;
   max-width: 1040px;
-  height: auto;
+  height: 500px;
   max-height: calc(100vh - 1.5rem);
   display: flex;
   flex-direction: row;
@@ -115,6 +115,10 @@
   border-top: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
+}
+
+.contact-lens-summary-extra {
+  margin-top: auto;
 }
 
 /* RIGHT PANEL */
@@ -466,7 +470,17 @@
   font-weight: 500;
 }
 
+.cl-step3-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
 @media (max-width: 768px) {
+  .cl-step3-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .contact-lens-modal-overlay {
     padding: 0;
     align-items: stretch;

@@ -245,14 +245,16 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             />
           )}
 
-          <div className="cl-wp-input-wrapper is-readonly">
-            <label>Curva Base (BC)</label>
-            <input type="text" value="8.6" readOnly />
-          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', gridColumn: samePrescription ? 'span 2' : 'span 1' }}>
+            <div className="cl-wp-input-wrapper is-readonly" style={{ marginBottom: 0 }}>
+              <label>Curva Base (BC)</label>
+              <input type="text" value="8.6" readOnly />
+            </div>
 
-          <div className="cl-wp-input-wrapper is-readonly">
-            <label>Diámetro (DIA)</label>
-            <input type="text" value="14.5" readOnly />
+            <div className="cl-wp-input-wrapper is-readonly" style={{ marginBottom: 0 }}>
+              <label>Diámetro (DIA)</label>
+              <input type="text" value="14.5" readOnly />
+            </div>
           </div>
         </div>
       </div>
@@ -444,9 +446,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             <div 
               className="cl-file-upload" 
               onClick={() => fileInputRef.current?.click()}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '0.625rem 1rem', marginTop: '0.25rem', borderRadius: '10px' }}
             >
-              <Upload size={22} color="#1a4cd2" style={{ margin: '0 auto' }} />
-              <p>{prescriptionPhotoFile ? prescriptionPhotoFile.name : 'Haz clic para subir foto de tu receta (Opcional)'}</p>
+              <Upload size={18} color="#1a4cd2" />
+              <span style={{ fontSize: '0.8125rem', color: '#475569', fontWeight: 500 }}>
+                {prescriptionPhotoFile ? prescriptionPhotoFile.name : 'Subir foto de tu receta (Opcional)'}
+              </span>
               <input 
                 type="file" 
                 ref={fileInputRef} 
@@ -456,10 +461,10 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             </div>
 
             <div style={{ marginTop: '0.75rem', textAlign: 'center' }}>
-              <div className="config-success-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', marginBottom: '0.35rem' }}>
-                <CheckCircle size={22} />
+              <div className="config-success-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', marginBottom: '0.25rem' }}>
+                <CheckCircle size={20} />
               </div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: '600', marginBottom: '0.2rem' }}>¡Todo listo!</h3>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: '600', marginBottom: '0.15rem' }}>¡Todo listo!</h3>
               <p style={{ color: '#64748b', marginBottom: '0.5rem', fontSize: '0.8125rem' }}>Tu pedido de lentes de contacto será procesado.</p>
               
               <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem 0.75rem', marginBottom: '0.75rem', textAlign: 'left' }}>
@@ -468,16 +473,18 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 </p>
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div className="cl-step3-actions">
                 <button 
                   className="cl-btn-primary" 
                   onClick={() => handleComplete(true)}
+                  style={{ flex: 1 }}
                 >
                   Comprar ahora
                 </button>
                 <button 
                   className="cl-btn-secondary" 
                   onClick={() => handleComplete(false)}
+                  style={{ flex: 1 }}
                 >
                   Agregar y seguir comprando
                 </button>

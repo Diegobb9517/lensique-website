@@ -209,7 +209,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
-        <div style={{ display: 'grid', gridTemplateColumns: samePrescription ? '1fr 1fr' : '1fr', gap: '0 16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: samePrescription ? '1fr 1fr' : '1fr', gap: '0 12px' }}>
           <WPSelect 
             label="Esfera (SPH/PWR)"
             value={values.sph}
@@ -278,15 +278,15 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             </div>
             
             <h2 className="contact-lens-title">Selecciona la cantidad</h2>
-            <p style={{ color: '#64748b', marginBottom: '1.25rem', fontSize: '0.875rem' }}>Elige cuántas cajas deseas para cada ojo.</p>
+            <p style={{ color: '#64748b', marginBottom: '0.75rem', fontSize: '0.85rem' }}>Elige cuántas cajas deseas para cada ojo.</p>
             
             <div className="cl-qty-container">
               <div className="cl-qty-label">
-                <input type="checkbox" checked readOnly style={{ width: '18px', height: '18px', accentColor: '#1a4cd2' }} />
+                <input type="checkbox" checked readOnly style={{ width: '16px', height: '16px', accentColor: '#1a4cd2' }} />
                 <span>Ojo Derecho (OD)</span>
               </div>
               <div className="cl-qty-controls">
-                <span style={{ fontSize: '0.875rem', color: '#64748b' }}>{quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'}</span>
+                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'}</span>
                 <button className="cl-qty-btn" onClick={() => setQuantityOD(Math.max(0, quantityOD - 1))} disabled={quantityOD <= 0}>-</button>
                 <button className="cl-qty-btn" onClick={() => setQuantityOD(quantityOD + 1)}>+</button>
               </div>
@@ -294,25 +294,25 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
             <div className="cl-qty-container">
               <div className="cl-qty-label">
-                <input type="checkbox" checked readOnly style={{ width: '18px', height: '18px', accentColor: '#1a4cd2' }} />
+                <input type="checkbox" checked readOnly style={{ width: '16px', height: '16px', accentColor: '#1a4cd2' }} />
                 <span>Ojo Izquierdo (OS)</span>
               </div>
               <div className="cl-qty-controls">
-                <span style={{ fontSize: '0.875rem', color: '#64748b' }}>{quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'}</span>
+                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'}</span>
                 <button className="cl-qty-btn" onClick={() => setQuantityOS(Math.max(0, quantityOS - 1))} disabled={quantityOS <= 0}>-</button>
                 <button className="cl-qty-btn" onClick={() => setQuantityOS(quantityOS + 1)}>+</button>
               </div>
             </div>
 
             {availableColors.length > 0 && (
-              <div style={{ marginTop: '0.875rem', padding: '0.625rem 0.875rem', border: '1px solid #e2e8f0', borderRadius: '0.75rem', backgroundColor: '#f8fafc' }}>
-                <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.35rem' }}>
+              <div style={{ marginTop: '0.5rem', padding: '0.45rem 0.75rem', border: '1px solid #e2e8f0', borderRadius: '0.625rem', backgroundColor: '#f8fafc' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.25rem' }}>
                   🎨 Selecciona el color de tus lentes:
                 </label>
                 <select 
                   value={selectedColor} 
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem 0.625rem', borderRadius: '0.5rem', border: '1px solid #cbd5e1', fontSize: '0.875rem', fontWeight: 600, color: '#0f172a', backgroundColor: '#ffffff' }}
+                  style={{ width: '100%', padding: '0.35rem 0.5rem', borderRadius: '0.375rem', border: '1px solid #cbd5e1', fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a', backgroundColor: '#ffffff' }}
                 >
                   {availableColors.map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -323,7 +323,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
             <button 
               className="cl-btn-primary" 
-              style={{ marginTop: '1.25rem' }}
+              style={{ marginTop: '0.875rem' }}
               disabled={quantityOD === 0 && quantityOS === 0}
               onClick={() => changeStep(2)}
             >
@@ -342,12 +342,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             
             <h2 className="contact-lens-title">Ingresa tu receta</h2>
             
-            <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ marginTop: '0.2rem', marginBottom: '0.625rem' }}>
               <button 
                 onClick={() => setShowRxGuide(!showRxGuide)}
                 style={{ 
                   background: 'none', border: 'none', padding: 0, 
-                  color: '#b48c36', fontSize: '12.5px', fontWeight: 600, 
+                  color: '#b48c36', fontSize: '12px', fontWeight: 600, 
                   cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' 
                 }}
               >
@@ -369,13 +369,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               )}
             </AnimatePresence>
 
-            <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 600, color: '#0f172a' }}>
+            <div style={{ marginBottom: '0.625rem', padding: '0.45rem 0.75rem', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, color: '#0f172a', fontSize: '0.8125rem' }}>
                 <input 
                   type="checkbox" 
                   checked={samePrescription}
                   onChange={(e) => setSamePrescription(e.target.checked)}
-                  style={{ width: '18px', height: '18px', accentColor: '#1a4cd2' }}
+                  style={{ width: '16px', height: '16px', accentColor: '#1a4cd2' }}
                 />
                 Tengo la misma graduación en ambos ojos
               </label>
@@ -393,7 +393,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 )}
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem' }}>
                 <button 
                   className="cl-btn-primary" 
                   disabled={!isPrescriptionComplete()}
@@ -415,7 +415,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   No la tengo ahora (Enviar después)
                 </button>
               </div>
-              <div style={{ marginTop: '16px', fontSize: '12px', color: '#64748b', textAlign: 'center' }}><em>Fabricamos según la receta que nos proporcionas; su exactitud es responsabilidad de quien la emitió.</em></div>
+              <div style={{ marginTop: '8px', fontSize: '11px', color: '#64748b', textAlign: 'center', lineHeight: 1.35 }}><em>Fabricamos según la receta que nos proporcionas; su exactitud es responsabilidad de quien la emitió.</em></div>
             </div>
           </div>
         );
@@ -432,21 +432,20 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             </div>
             
             <h2 className="contact-lens-title">Resumen y Verificación</h2>
-            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Por último, si gustas puedes adjuntar una foto de tu receta para que nuestro equipo la valide.</p>
+            <p style={{ color: '#64748b', marginBottom: '0.75rem', fontSize: '0.85rem' }}>Por último, si gustas puedes adjuntar una foto de tu receta para que nuestro equipo la valide.</p>
 
             {prescriptionPending && (
-              <div style={{ backgroundColor: '#fff7ed', border: '1px solid #fdba74', borderRadius: '8px', padding: '12px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#c2410c' }}>
-                <span style={{ fontSize: '1.25rem' }}>📋</span>
+              <div style={{ backgroundColor: '#fff7ed', border: '1px solid #fdba74', borderRadius: '8px', padding: '8px 12px', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#c2410c', fontSize: '0.8125rem' }}>
+                <span style={{ fontSize: '1.15rem' }}>📋</span>
                 <span style={{ fontWeight: '600' }}>Receta pendiente — la enviarás por WhatsApp</span>
               </div>
             )}
 
-            
             <div 
               className="cl-file-upload" 
               onClick={() => fileInputRef.current?.click()}
             >
-              <Upload size={32} color="#1a4cd2" style={{ margin: '0 auto' }} />
+              <Upload size={22} color="#1a4cd2" style={{ margin: '0 auto' }} />
               <p>{prescriptionPhotoFile ? prescriptionPhotoFile.name : 'Haz clic para subir foto de tu receta (Opcional)'}</p>
               <input 
                 type="file" 
@@ -456,20 +455,20 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               />
             </div>
 
-            <div style={{ marginTop: '3rem', textAlign: 'center' }}>
-              <div className="config-success-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', marginBottom: '1rem' }}>
-                <CheckCircle size={32} />
+            <div style={{ marginTop: '0.75rem', textAlign: 'center' }}>
+              <div className="config-success-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', marginBottom: '0.35rem' }}>
+                <CheckCircle size={22} />
               </div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>¡Todo listo!</h3>
-              <p style={{ color: '#64748b', marginBottom: '1rem' }}>Tu pedido de lentes de contacto será procesado.</p>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: '600', marginBottom: '0.2rem' }}>¡Todo listo!</h3>
+              <p style={{ color: '#64748b', marginBottom: '0.5rem', fontSize: '0.8125rem' }}>Tu pedido de lentes de contacto será procesado.</p>
               
-              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
-                <p style={{ fontSize: '0.875rem', color: '#334155', margin: 0, lineHeight: 1.5 }}>
+              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem 0.75rem', marginBottom: '0.75rem', textAlign: 'left' }}>
+                <p style={{ fontSize: '0.8125rem', color: '#334155', margin: 0, lineHeight: 1.4 }}>
                   <strong>🔒 Compra segura:</strong> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
                 </p>
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <button 
                   className="cl-btn-primary" 
                   onClick={() => handleComplete(true)}
@@ -545,11 +544,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           <p style={{ fontSize: '0.8125rem', color: '#0f172a', fontWeight: 600, marginTop: '0.2rem', marginBottom: 0 }}>{getUsageType()}</p>
           
           <div className="contact-lens-summary-extra">
-            <div style={{ marginTop: '0.625rem', paddingTop: '0.625rem', borderTop: '1px solid #f1f5f9' }}>
-              <p style={{ fontSize: '0.8125rem', fontWeight: 500, color: '#0f172a', margin: 0 }}>
+            <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #f1f5f9' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 500, color: '#0f172a', margin: 0 }}>
                 Cantidad seleccionada:
               </p>
-              <p style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: '0.15rem', marginBottom: 0 }}>
+              <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.1rem', marginBottom: 0 }}>
                 {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
               </p>
             </div>
@@ -559,13 +558,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
               <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
             </div>
             
-            <div style={{ marginTop: '9px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '8px 10px', fontSize: '11.5px', color: '#334155', lineHeight: 1.35 }}>
+            <div style={{ marginTop: '7px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px 8px', fontSize: '11px', color: '#334155', lineHeight: 1.3 }}>
               <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
             </div>
 
-            <div style={{ marginTop: '8px' }}>
-              <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <div style={{ marginTop: '7px' }}>
+              <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '7px 10px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '11.5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                 ¿Dudas? Escríbenos por WhatsApp
               </a>
             </div>

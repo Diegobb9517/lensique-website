@@ -94,9 +94,13 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 .heroCap{margin-top:16px;font-size:14.5px;color:var(--grey);min-height:20px;line-height:1.6}.heroCap b{color:var(--navy);font-weight:600}
 .sec{padding:26px 0;border-top:1px solid var(--line)}
 .sec:first-child{padding-top:2px;border-top:none}
-.secK{font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.secK{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#fff;background:var(--navy);padding:5px 12px;border-radius:999px;margin-bottom:12px;box-shadow:0 1px 3px rgba(27,36,54,0.12)}
 .secQ{font-family:Georgia,'Times New Roman',serif;font-size:25px;font-weight:600;color:var(--navy);line-height:1.16;margin-bottom:6px;letter-spacing:.3px}
 .secS{font-size:14px;color:var(--grey);margin-bottom:15px;line-height:1.5}
+.recBanner{margin:2px 0 14px;padding:10px 14px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:12.5px;line-height:1.5}
+.progZonesCard{display:flex;align-items:center;gap:18px;margin:12px 0 16px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fbfaf8}
+.modeSw{display:inline-flex;align-self:center;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#fff;margin:8px auto 0}.modeSw button{border:none;background:none;padding:7px 16px;font-size:12px;font-weight:700;color:var(--grey);cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:.15s}.modeSw button.on{background:var(--navy);color:#fff}
+@media(max-width:560px){.progZonesCard{flex-direction:column;text-align:center;gap:12px}}
 .navBar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:100%;margin:0 auto}
 .barPL{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .barPV{font-family:Georgia,'Times New Roman',serif;font-size:27px;font-weight:600;color:var(--navy);line-height:1;margin-top:3px}
@@ -428,9 +432,20 @@ if (initialType) {
 var framePrice = parseInt(urlParams.get('framePrice') || '0', 10);var _pfPrev=null;var _thF=null;
 var frameImageParam = urlParams.get('frameImage');
 var hasCustomFrame = false;
+var BASE_IMG_ARM = IMG_ARM;
 if (frameImageParam && frameImageParam !== 'null' && frameImageParam !== 'undefined') {
   IMG_ARM = frameImageParam;
   hasCustomFrame = true;
+}
+var heroView = 'frame';
+function setHeroView(v){
+  heroView = v;
+  if(v==='side'){
+    showSide();
+  } else {
+    showFrontNow();
+  }
+  render();
 }
 var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 var IC={
@@ -503,17 +518,43 @@ function treatList(){
 }
 var MATS=[["1.50","Delgadez estándar (1.50)"],["1.60","Más delgado (1.60)"],["1.67","Muy delgado (1.67)"],["1.74","Ultra delgado (1.74)"]];
 var LEVELS=[
- {k:"precision",nm:"Precision Classic",ds:"Progresivo de entrada"},
- {k:"pure",nm:"SmartLife Pure",ds:"Progresivo cómodo para todo el día"},
- {k:"plus",nm:"SmartLife Plus",ds:"Progresivo con campos amplios"},
- {k:"superb",nm:"SmartLife Superb",ds:"Progresivo con campos amplios y adaptación rápida"},
- {k:"individual",nm:"SmartLife Individual 3",ds:"Progresivo personalizado a la medida"}
+ {k:"precision",nm:"Estándar · Precision Classic",ds:"Progresivo ZEISS de precisión con antirreflejante. Buena opción para uso diario a precio accesible."},
+ {k:"pure",nm:"Comfort · SmartLife Pure",ds:"Diseño digital optimizado para pantallas. Visión cómoda y natural todo el día."},
+ {k:"plus",nm:"Premium · SmartLife Plus",ds:"Campos visuales más amplios y adaptación inmediata. Máximo confort en movimiento."}
 ];
-var LEVEL_Q={precision:0.30,pure:0.45,plus:0.62,superb:0.80,individual:0.95};
+var LEVEL_Q={precision:0.30,pure:0.55,plus:0.80,superb:0.80,individual:0.95};
 var MULT=2.2;var MSI=3;var MSI_MIN=3000;
 /* Multiplicador decreciente: micas baratas markup alto, micas caras markup menor */
 function multFor(c){c=c||0;return c<600?2.45:c<1500?2.2:c<3000?2.1:2.0;}
-function levelName(k){return ({precision:"Precision Classic",pure:"SmartLife Pure",plus:"SmartLife Plus",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
+function levelName(k){return ({precision:"Estándar (Precision Classic)",pure:"Comfort (SmartLife Pure)",plus:"Premium (SmartLife Plus)",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
+function recLevel(){
+  if(ST.poli||ST.perfora) return {k:'precision', why:['policarbonato resistente']};
+  var add = Math.abs(parseFloat(ST.add)||0);
+  var pv = potVal();
+  if(add >= 2.5 || pv >= 6) return {k:'plus', why:['adición ' + (add?'+'+add.toFixed(2):'alta') + ' — campos más amplios para fácil adaptación']};
+  if(add >= 1.75 || pv >= 3) return {k:'pure', why:['adición ' + (add?'+'+add.toFixed(2):'media') + ' — confort digital en pantallas']};
+  return {k:'precision', why:['graduación accesible para uso diario']};
+}
+function levelRecBlock(){
+  if(ST.type!=='prog') return '';
+  var r=recLevel();
+  var L=(LEVELS.filter(function(l){return l.k===r.k;})[0])||LEVELS[0];
+  var nm=L.nm;
+  var why=r.why.length?' por '+r.why.join(' y '):'';
+  return '<div class="recBanner">★ Para tu graduación te recomendamos el <b>'+nm+'</b>'+why+'.</div>';
+}
+function progZonesBlock(){
+  if(ST.type!=='prog') return '';
+  var qVal = LEVEL_Q[ST.level] || 0.45;
+  var currentL = (LEVELS.filter(function(l){return l.k===ST.level;})[0])||LEVELS[0];
+  return '<div class="progZonesCard">'
+   +'<div style="width:130px;flex-shrink:0;">'+zonesSVG(qVal)+'</div>'
+   +'<div style="flex:1;min-width:0;">'
+   +'<div style="font-size:10.5px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px">Zonas de visión en tu progresivo</div>'
+   +'<div style="font-family:Georgia,serif;font-size:17px;font-weight:600;color:var(--navy);margin:3px 0 5px">Lejos · Intermedio (pantalla) · Cerca (lectura)</div>'
+   +'<div style="font-size:12px;color:var(--grey);line-height:1.45">Nivel actual: <b style="color:var(--navy)">'+currentL.nm+'</b>. Al subir de nivel se amplía el corredor claro y se reducen los desenfoques laterales.</div>'
+   +'</div></div>';
+}
 function engIdx(i){return i==="1.50"?"1.5":(i==="1.60"?"1.6":i);}
 function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polarizado",entintado:"tinte"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polar",entintado:"tinte"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
 function zeissQuote(){var inp={tipo:ST.type,esf:ST.esf||0,cil:ST.cil||0,add:(ST.type!=="mono"?(ST.add||0):0),pd:(ST.pdAsym?"":ST.pd),multiplicador:MULT};inp.opcion=engOpcion();if(ST.type==="mono"){if(ST.poli){inp.poli=true;inp.polyKey="z159";}else{inp.indice=engIdx(ST.idx);if(ST.treat==="ar"&&!ST.arPremium&&engIdx(ST.idx)==="1.5"){var _ch=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"});if(_ch&&_ch.disponible)inp.opcion="chrome";}}if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}else if(ST.type==="prog"){inp.nivel=ST.level;if(ST.poli||ST.perfora){inp.nivel="precision";inp.indice="1.59";}else inp.indice=engIdx(ST.idx);if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}var q=(typeof ZeissEngine!=="undefined"&&ZeissEngine)?ZeissEngine.cotizar(inp):{disponible:false,motivo:"Motor de precios no cargado"};if(q&&q.disponible){var m=multFor(q.costoLista);q.costoIva=Math.round(q.costoLista*1.16);q.pvp=Math.round(q.costoLista*1.16*m/50)*50;q.utilidad=q.pvp-q.costoIva;q.margen=Math.round(q.utilidad/q.pvp*100);q.mult=m; var isPreorder = false; var params = new URLSearchParams(window.location.search); if (params.get('isPreorder') === 'true') { isPreorder = true; } var frameAvail = isPreorder ? 'preorder' : 'instock'; var lType = 'mono_basic'; if (inp.tipo === 'prog' || inp.tipo === 'bif' || inp.tipo === 'ocupacional') { lType = 'progressive_bifocal'; } else if (ST.treat === 'foto') { lType = 'photochromic'; } else if (ST.treat === 'polar' || ST.treat === 'tinte' || ST.poli) { lType = 'special'; } else if (inp.indice === '1.67' || inp.indice === '1.74' || inp.indice === '1.60' || inp.indice === '1.59') { lType = 'mono_complex'; } if (typeof getDeliveryEstimate === 'function') { var est = getDeliveryEstimate(frameAvail, lType, 'pickup'); q.entrega = est.dateRange; } else { q.entrega = "Consultar en tienda"; }if(ST.type==="mono"&&ST.treat==="ar")q.etiqueta=ST.arPremium?"Antirreflejante premium":"Antirreflejante";if(ST.type==="bif"&&q.entrega==="Consultar")q.entrega="Consultar en tienda";}return q;}
@@ -591,7 +632,7 @@ function dataBlock(){
  h+='<div class="muted" style="margin:4px 0 14px;cursor:pointer" onclick="togglePD()"><span style="text-decoration:underline">'+(ST.pdAsym?"Usar un solo PD (simétrico)":"¿PD diferente por ojo? Márcalo")+'</span></div>';
  return h;
 }
-function syncRx(){var odP=Math.max(Math.abs(ST.odE||0),Math.abs((ST.odE||0)+(ST.odC||0)));var oiP=Math.max(Math.abs(ST.oiE||0),Math.abs((ST.oiE||0)+(ST.oiC||0)));if(odP>=oiP){ST.esf=ST.odE||0;ST.cil=ST.odC||0;}else{ST.esf=ST.oiE||0;ST.cil=ST.oiC||0;}ST.add=Math.max(ST.odAdd||0,ST.oiAdd||0);}
+function syncRx(){var odP=Math.max(Math.abs(ST.odE||0),Math.abs((ST.odE||0)+(ST.odC||0)));var oiP=Math.max(Math.abs(ST.oiE||0),Math.abs((ST.oiE||0)+(ST.oiC||0)));if(odP>=oiP){ST.esf=ST.odE||0;ST.cil=ST.odC||0;}else{ST.esf=ST.oiE||0;ST.cil=ST.oiC||0;}ST.add=Math.max(ST.odAdd||0,ST.oiAdd||0);ST.idxManual=false;}
 function togglePD(){ST.pdAsym=!ST.pdAsym;render();}
 function rxText(){var t="Esf "+(ST.esf>=0?"+":"")+(ST.esf||0).toFixed(2)+" · Cil "+(ST.cil||0).toFixed(2);if(ST.type!=="mono"&&ST.add)t+=" · Add +"+Number(ST.add).toFixed(2);if(ST.pdAsym){if(ST.pdR||ST.pdL)t+=" · PD "+(ST.pdR||"?")+"/"+(ST.pdL||"?")+" mm";}else if(ST.pd)t+=" · PD "+ST.pd+" mm";return t;}
 function rxGrid(){var cells=[["Esfera",(ST.esf>=0?"+":"")+(ST.esf||0).toFixed(2)],["Cilindro",(ST.cil||0).toFixed(2)]];if(ST.type!=="mono"&&ST.add)cells.push(["Adición","+"+Number(ST.add).toFixed(2)]);var pd=ST.pdAsym?((ST.pdR||"?")+"/"+(ST.pdL||"?")):(ST.pd||"");if(pd)cells.push(["DIP",pd+" mm"]);var h='<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:13px;padding-top:13px">';cells.forEach(function(c,i){h+='<div style="flex:1;min-width:62px;text-align:center;padding:0 6px;'+(i>0?"border-left:1px solid var(--line)":"")+'"><div style="font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">'+c[0]+'</div><div style="font-family:Georgia,serif;font-size:18px;color:var(--navy);margin-top:5px">'+c[1]+'</div></div>';});h+='</div>';return h;}
@@ -698,15 +739,17 @@ function heroSVG(){
    +'<text x="'+(xr+len/2)+'" y="'+(cy+Math.max(hFront,hTip)+42)+'" text-anchor="middle" font-size="23" font-weight="600" fill="#46638f" '+ff+'>Índice '+_idxv+(_red>0?' · −'+_red+'% más delgado que 1.50':'')+'</text>'
    +'</svg>';
  }
- var frameStyle = hasCustomFrame ? 'style="object-fit:contain;max-height:280px;margin:0 auto;background:#ffffff;border:none;box-shadow:none;"' : '';
- var overlayHtml = hasCustomFrame ? '' : ('<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
+ var showStandardOverlay = !hasCustomFrame || heroView === 'zones';
+ var currentArmImg = (heroView === 'zones') ? BASE_IMG_ARM : (ST.perfora ? IMG_AIRE : IMG_ARM);
+ var frameStyle = (hasCustomFrame && heroView !== 'zones') ? 'style="object-fit:contain;max-height:280px;margin:0 auto;background:#ffffff;border:none;box-shadow:none;"' : '';
+ var overlayHtml = !showStandardOverlay ? '' : ('<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
   +'<mask id="lensMask"><image href="'+IMG_MASK+'" x="0" y="0" width="2816" height="1536"/></mask>'
   +'<radialGradient id="sunGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f8cf57" stop-opacity=".5"/><stop offset=".45" stop-color="#f2b63f" stop-opacity=".2"/><stop offset="1" stop-color="#f2b63f" stop-opacity="0"/></radialGradient>'
   +'<radialGradient id="sunDisk" cx=".42" cy=".4" r=".62"><stop offset="0" stop-color="#fff3cf"/><stop offset=".55" stop-color="#f6c44e"/><stop offset="1" stop-color="#e89a2a"/></radialGradient>'
   +'<linearGradient id="fMir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd0e6"/><stop offset=".4" stop-color="#b89cf0"/><stop offset=".7" stop-color="#f0a6c8"/><stop offset="1" stop-color="#f3d9a0"/></linearGradient>'
   +'<filter id="pblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="42"/></filter>'
   +'</defs><g mask="url(#lensMask)">'+fx(LENS[0])+fx(LENS[1])+'</g>'+sun+'</svg>');
- var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" '+frameStyle+' src="'+(ST.perfora?IMG_AIRE:IMG_ARM)+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" '+frameStyle+' src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+overlayHtml+'</div>'+heroSideHTML()+'</div>';
+ var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" '+frameStyle+' src="'+currentArmImg+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" '+frameStyle+' src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+overlayHtml+'</div>'+heroSideHTML()+'</div>';
  var parts=[],trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[t]||"";
  if(trn)parts.push(trn);
  if(t==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");
@@ -716,7 +759,13 @@ function heroSVG(){
  if(ST.perfora)parts.push("Al aire");
  var cap=!ST.type?"Elige tu tipo de lente para empezar":("<b>"+parts.join("</b> · <b>")+"</b>");
  var tag=TYPES[ST.type]?TYPES[ST.type].nm:"Tu lente";
- return '<div class="heroStage"><div class="heroTag">'+tag+'</div>'+svg+'<div class="heroCap" id="heroCap">'+cap+'</div></div>';
+ var swHtml = '';
+ if (hasCustomFrame) {
+   swHtml = '<div class="modeSw"><button class="'+(heroView==='frame'?'on':'')+'" onclick="setHeroView(\'frame\')">Tu armazón</button><button class="'+(heroView==='zones'?'on':'')+'" onclick="setHeroView(\'zones\')">Zonas en armazón</button><button class="'+(heroView==='side'?'on':'')+'" onclick="setHeroView(\'side\')">Grosor de mica</button></div>';
+ } else {
+   swHtml = '<div class="modeSw"><button class="'+(heroView!=='side'?'on':'')+'" onclick="setHeroView(\'frame\')">'+(ST.type==='prog'?'Zonas en armazón':'Vista frontal')+'</button><button class="'+(heroView==='side'?'on':'')+'" onclick="setHeroView(\'side\')">Grosor de mica</button></div>';
+ }
+ return '<div class="heroStage"><div class="heroTag">'+tag+'</div>'+svg+swHtml+'<div class="heroCap" id="heroCap">'+cap+'</div></div>';
 }
 function thProfile(minus){var cx=60,top=24,bot=136,cyy=80,edge=minus?20:9,ctr=minus?9:20;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
 function thDetailSVG(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfile(minus);return '<div class="thDetail"><svg viewBox="0 0 120 160" width="52" height="69" style="overflow:visible;flex-shrink:0"><defs><linearGradient id="thDg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe0f3"/><stop offset="1" stop-color="#5b7da6"/></linearGradient></defs><path id="thGhost" d="'+P+'" fill="none" stroke="#c2cad6" stroke-width="2.4" stroke-dasharray="3 3"/><g id="thActive" style="transform:scaleX('+ratio+')"><path id="thActPath" d="'+P+'" fill="url(#thDg)" stroke="#27405f" stroke-width="2.4" stroke-opacity=".55"/></g></svg><div style="line-height:1.2;text-align:left;white-space:nowrap"><div class="matlbl" style="margin:0;font-size:10px" id="thLbl">Grosor del borde</div><div style="font-size:21px;font-weight:700;color:var(--navy);font-family:Georgia,serif;margin-top:1px" id="thMm">—</div><div style="font-size:11.5px;color:var(--gold);font-weight:600" id="thPct">—</div></div></div>';}
@@ -751,37 +800,42 @@ function liveOverlay(){var live=document.getElementById("frameOverlay"),cap=docu
 function setTint(f,v){ST[f]=v;var ov=document.getElementById("frameOverlay"),tb=document.getElementById("tintBlock");if(ov&&tb&&ST.treat==="entintado"){var col=TINTS[ST.tintColor][1],op=TINT_A[ST.tintInt];var rects=ov.querySelectorAll(".tintRect");for(var i=0;i<rects.length;i++){rects[i].style.fill=col;rects[i].style.opacity=op;}var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var cap=document.getElementById("heroCap"),nc=tmp.querySelector(".heroCap");if(cap&&nc&&cap.parentNode)cap.parentNode.replaceChild(nc,cap);tb.outerHTML=tintBlock();}else{render();}if(ST.step===TOTAL_STEPS)renderUps();}
 
 /* ===== Render ===== */
-var STEP_LABELS=["Tipo","Tratamiento","Medidas","Resumen"];
+var STEP_LABELS=["Tipo","Receta","Material","Tratamiento","Tu lente"];
 function renderProg(){var h="";for(var i=1;i<=TOTAL_STEPS;i++){var on=i<=ST.step,cur=i===ST.step;h+='<div class="seg'+(on?" on":"")+(cur?" cur":"")+'"><div class="bar"></div><div class="pl">'+STEP_LABELS[i-1]+'</div></div>';}$("prog").innerHTML=h;}
 function bigOpt(sel,ic,nm,ds,attr,pTag){return '<div class="big'+(sel?" sel":"")+'" '+attr+'>'+(ic?'<div class="ic">'+ic+'</div>':'')+'<div style="flex:1"><div class="nm">'+nm+'</div><div class="ds">'+ds+'</div></div>'+(pTag?'<div style="margin-left:auto">'+pTag+'</div>':'')+'<div class="ck" style="margin-left:'+(pTag?'10px':'auto')+'">'+(sel?"✓":"")+'</div></div>';}
 
 function secHead(k,q,sub){return '<div class="secK">'+k+'</div><div class="secQ">'+q+'</div>'+(sub?'<div class="secS">'+sub+'</div>':'');}
 function crossfadeFrame(oldSrc){var hf=document.getElementById("heroFront");if(!hf)return;var ov=hf.querySelector(".frameOverlay");var c=document.createElement("img");c.className="frameImg";c.setAttribute("src",oldSrc);c.style.cssText="position:absolute;left:0;top:0;width:100%;pointer-events:none;animation:fadeOut .75s ease forwards";if(ov)hf.insertBefore(c,ov);else hf.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},820);}
-function updateHeroPieces(){var tmp=document.createElement("div");tmp.innerHTML=heroSVG();[".heroCap",".heroTag"].forEach(function(s){var live=document.querySelector(s),nn=tmp.querySelector(s);if(live&&nn&&live.parentNode)live.parentNode.replaceChild(nn,live);});var liveOv=document.getElementById("frameOverlay"),nOv=tmp.querySelector("#frameOverlay");if(liveOv&&nOv&&liveOv.parentNode){if(liveOv.innerHTML!==nOv.innerHTML){nOv.style.opacity="0";nOv.style.transition="opacity .45s ease";liveOv.removeAttribute("id");nOv.setAttribute("id","frameOverlay");liveOv.style.transition="opacity .45s ease";liveOv.parentNode.appendChild(nOv);requestAnimationFrame(function(){requestAnimationFrame(function(){nOv.style.opacity="1";liveOv.style.opacity="0";});});var dead=liveOv;setTimeout(function(){if(dead.parentNode)dead.parentNode.removeChild(dead);},520);}}var img=document.querySelector("#heroFront .frameImg"),nImg=tmp.querySelector("#heroFront .frameImg");if(img&&nImg&&img.getAttribute("src")!==nImg.getAttribute("src"))img.setAttribute("src",nImg.getAttribute("src"));var oldTh=document.getElementById("thCal");if(oldTh&&oldTh.parentNode)oldTh.parentNode.removeChild(oldTh);var nTh=tmp.querySelector("#thCal"),rotor=document.getElementById("rotor");if(nTh&&rotor)rotor.appendChild(nTh);}
+function updateHeroPieces(){var tmp=document.createElement("div");tmp.innerHTML=heroSVG();[".heroCap",".heroTag",".modeSw"].forEach(function(s){var live=document.querySelector(s),nn=tmp.querySelector(s);if(live&&nn&&live.parentNode)live.parentNode.replaceChild(nn,live);});var liveOv=document.getElementById("frameOverlay"),nOv=tmp.querySelector("#frameOverlay");if(liveOv&&nOv&&liveOv.parentNode){if(liveOv.innerHTML!==nOv.innerHTML){nOv.style.opacity="0";nOv.style.transition="opacity .45s ease";liveOv.removeAttribute("id");nOv.setAttribute("id","frameOverlay");liveOv.style.transition="opacity .45s ease";liveOv.parentNode.appendChild(nOv);requestAnimationFrame(function(){requestAnimationFrame(function(){nOv.style.opacity="1";liveOv.style.opacity="0";});});var dead=liveOv;setTimeout(function(){if(dead.parentNode)dead.parentNode.removeChild(dead);},520);}}var img=document.querySelector("#heroFront .frameImg"),nImg=tmp.querySelector("#heroFront .frameImg");if(img&&nImg&&img.getAttribute("src")!==nImg.getAttribute("src"))img.setAttribute("src",nImg.getAttribute("src"));var oldTh=document.getElementById("thCal");if(oldTh&&oldTh.parentNode)oldTh.parentNode.removeChild(oldTh);var nTh=tmp.querySelector("#thCal"),rotor=document.getElementById("rotor");if(nTh&&rotor)rotor.appendChild(nTh);}
 function thProfileSide(minus){var cx=80,top=22,bot=338,cyy=180,edge=minus?44:13,ctr=minus?13:44;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
 function heroSideHTML(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfileSide(minus);return '<div class="heroSide" id="heroSide"><div class="lensStage"><svg class="lensSvg" viewBox="0 0 160 360" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;overflow:visible"><defs><linearGradient id="thSg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7fbff"/><stop offset=".5" stop-color="#d3e4f3"/><stop offset="1" stop-color="#f7fbff"/></linearGradient><linearGradient id="thEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".7"/><stop offset=".26" stop-color="#ffffff" stop-opacity="0"/><stop offset=".74" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity=".5"/></linearGradient><filter id="lensSoft" x="-40%" y="-15%" width="180%" height="130%"><feGaussianBlur stdDeviation="1.7"/></filter></defs><path id="sideGhost" d="'+P+'" fill="#dbe6f1" opacity=".28"/><g id="sideActive" style="transform:scaleX('+ratio+')"><path id="sideActPath" d="'+P+'" fill="url(#thSg)" fill-opacity=".55" stroke="#7e9cbd" stroke-width="1.1" stroke-opacity=".42"/><path id="sideEdge" d="'+P+'" fill="url(#thEdge)"/><path d="M74 62 Q63 180 74 298" stroke="#ffffff" stroke-width="6.5" fill="none" opacity=".42" stroke-linecap="round" filter="url(#lensSoft)"/><path d="M88 96 Q82 180 88 264" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".3" stroke-linecap="round" filter="url(#lensSoft)"/></g><g id="sideCota" style="opacity:0;transition:opacity .4s ease"><line id="cotaL" stroke="#15223e" stroke-width="1.3"/><line id="cotaT1" stroke="#15223e" stroke-width="1.3"/><line id="cotaT2" stroke="#15223e" stroke-width="1.3"/><text id="cotaTxt" text-anchor="middle" font-size="15" font-weight="700" fill="#15223e" font-family="Georgia,serif">—</text></g></svg></div><div class="lensLabels"><div class="ll1">Grosor de la mica</div><div class="ll2" id="sideMm">—</div><div class="ll3" id="sidePct">—</div></div></div>';}
 function updateSideTh(){var g=document.getElementById("sideActive");if(!g)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);g.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfileSide(minus),gh=document.getElementById("sideGhost"),ap=document.getElementById("sideActPath"),ed=document.getElementById("sideEdge");if(gh)gh.setAttribute("d",d);if(ap)ap.setAttribute("d",d);if(ed)ed.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("sideMm"),pctEl=document.getElementById("sidePct");if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Delgadez estándar · sube para adelgazar");var hw=44*ratio,cy=minus?28:180,ty=minus?17:171,cL=document.getElementById("cotaL"),cT1=document.getElementById("cotaT1"),cT2=document.getElementById("cotaT2"),cTx=document.getElementById("cotaTxt"),cota=document.getElementById("sideCota");if(cL&&cTx){cL.setAttribute("x1",80-hw);cL.setAttribute("x2",80+hw);cL.setAttribute("y1",cy);cL.setAttribute("y2",cy);cT1.setAttribute("x1",80-hw);cT1.setAttribute("x2",80-hw);cT1.setAttribute("y1",cy-4);cT1.setAttribute("y2",cy+4);cT2.setAttribute("x1",80+hw);cT2.setAttribute("x2",80+hw);cT2.setAttribute("y1",cy-4);cT2.setAttribute("y2",cy+4);cTx.setAttribute("x",80);cTx.setAttribute("y",ty);cTx.textContent="≈ "+mm.toFixed(1)+" mm";}if(cota)cota.style.opacity=pot>=0.5?"1":"0";}
-function showSide(){var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(!hf||!hs)return;updateSideTh();hf.style.opacity="0";hf.style.transform="scale(1.4)";hs.style.opacity="1";hs.style.transform="translateY(-50%) scale(1)";}
-function showFrontNow(){if(window._sideT)clearTimeout(window._sideT);var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(hf){hf.style.opacity="1";hf.style.transform="scale(1)";}if(hs){hs.style.opacity="0";hs.style.transform="translateY(-50%) scale(.9)";}}
+function showSide(){heroView='side';var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(!hf||!hs)return;updateSideTh();hf.style.opacity="0";hf.style.transform="scale(1.4)";hs.style.opacity="1";hs.style.transform="translateY(-50%) scale(1)";var swBtns=document.querySelectorAll('.modeSw button');if(swBtns&&swBtns.length){swBtns.forEach(function(b){if(b.textContent.indexOf('Grosor')!==-1)b.classList.add('on');else b.classList.remove('on');});}}
+function showFrontNow(){if(window._sideT)clearTimeout(window._sideT);if(heroView==='side')heroView='frame';var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(hf){hf.style.opacity="1";hf.style.transform="scale(1)";}if(hs){hs.style.opacity="0";hs.style.transform="translateY(-50%) scale(.9)";}var swBtns=document.querySelectorAll('.modeSw button');if(swBtns&&swBtns.length){swBtns.forEach(function(b){if(heroView==='zones'&&b.textContent.indexOf('Zonas')!==-1)b.classList.add('on');else if(heroView!=='zones'&&b.textContent.indexOf('Grosor')===-1)b.classList.add('on');else b.classList.remove('on');});}}
 function updateThickness(){var el=document.getElementById("thActive");if(!el)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);el.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfile(minus),g=document.getElementById("thGhost"),ap=document.getElementById("thActPath");if(g)g.setAttribute("d",d);if(ap)ap.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("thMm"),pctEl=document.getElementById("thPct"),lbl=document.getElementById("thLbl");if(lbl)lbl.textContent=minus?"Grosor del borde":"Grosor del centro";if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Delgadez estándar · sube para adelgazar");}
 function potVal(){var e=ST.esf||0,c=ST.cil||0;return Math.max(Math.abs(e),Math.abs(e+c));}
 function dispIdx(k){return k==="1.5"?"1.50":k==="1.6"?"1.60":k;}
 function normalizeST() {
   var pot=potVal();
-  if(pot<4){
-   if(!ST.poli){
-    if(ST.type==="mono"&&ST.treat==="foto")ST.idx="1.60";
-    else ST.idx="1.50";
-   }
-  } else {
-   var _r=ZeissEngine.recomendarIndice(ST.esf||0,ST.cil||0).recIndex||"1.74",_o=["1.5","1.6","1.67","1.74"];
-   if(!ST.poli&&_o.indexOf(engIdx(ST.idx))<_o.indexOf(_r))ST.idx=dispIdx(_r);
+  if(!ST.idxManual){
+    if(pot<4){
+      if(!ST.poli){
+        if(ST.type==="mono"&&ST.treat==="foto")ST.idx="1.60";
+        else ST.idx="1.50";
+      }
+    } else {
+      var _r=ZeissEngine.recomendarIndice(ST.esf||0,ST.cil||0).recIndex||"1.74",_o=["1.5","1.6","1.67","1.74"];
+      if(!ST.poli&&_o.indexOf(engIdx(ST.idx))<_o.indexOf(_r))ST.idx=dispIdx(_r);
+    }
   }
 }
 function materialSimple(){
  var pot=potVal();
+ if(ST.poli){
+  return '<div style="margin:6px 0 8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Mica en <b style="color:var(--navy)">policarbonato resistente (índice 1.59)</b> — ideal para deporte, niños y armazón al aire.</div>';
+ }
  if(pot<4){
-  return '<div style="margin:6px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación es ligera, así que va en <b style="color:var(--navy)">material estándar'+(ST.idx==="1.60"?" (1.60)":"")+'</b> — ya es delgado y ligero. No necesitas pagar de más por adelgazar.</div>';
+  return '<div class="recBanner">★ Para tu graduación te recomendamos <b>material estándar (1.50)</b> — ya es ligero y cómodo. Puedes seleccionar un índice mayor si buscas máxima delgadez.</div>' + thinOptions();
  }
  return thinOptions();
 }
@@ -789,14 +843,14 @@ function thinOptions(){
  var pot=potVal(),e=ST.esf||0,c=ST.cil||0;
  var recI=ZeissEngine.recomendarIndice(e,c).recIndex||"1.74";
  var NAMES={"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
- var order=["1.5","1.6","1.67","1.74"],recPos=order.indexOf(recI);if(recPos<0)recPos=2;
+ var order=["1.5","1.6","1.67","1.74"];
  var base=mmFor(pot,"1.5");
- var cards=order.filter(function(k,i){return i>=recPos;}).map(function(ix){
+ var cards=order.map(function(ix){
     var sel=(!ST.poli&&engIdx(ST.idx)===ix);
     var mm=mmFor(pot,ix),red=Math.round((1-mm/base)*100);
-    var star=(ix===recI)?' <span style="color:var(--gold)">\u2605</span>':'';
+    var star=(ix===recI)?' <span style="color:var(--gold)">★</span>':'';
     var pTag = '<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">' + getPriceTag('mat', dispIdx(ix)) + '</div>';
-    return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'\u25bc '+red+'% más delgado':'base')+'</div>'+pTag+'</div>';
+    return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--navy);font-weight:600;margin-top:2px">Índice '+dispIdx(ix)+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'▼ '+red+'% más delgado':'base')+'</div>'+pTag+'</div>';
     }).join('');
  return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+cards+'</div>'+thickPreview();
 }
@@ -950,10 +1004,11 @@ function toggleRxGuide(e) {
 
 
 function scrollToRx() {
-  ST.step = 3;
+  ST.step = 2;
   render();
   setTimeout(function() {
-    var el = document.getElementById("sec-03");
+    var el = document.getElementById("sec-02");
+    if (!el) el = document.getElementById("sec-rx");
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       el.style.transition = 'background 0.5s ease';
@@ -987,10 +1042,10 @@ function stepWrap(stepNum, content) {
   if(stepNum > 1) row += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
   
   var disabledNext = false;
-  if(stepNum === 3 && !ST.rxMethod) disabledNext = true;
+  if(stepNum === 2 && !ST.rxMethod) disabledNext = true;
   
   if(stepNum < 5) {
-    row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>' + (stepNum === 3 && !ST.rxMethod ? 'Falta elegir tu graduación' : 'Continuar') + '</button>';
+    row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>' + (stepNum === 2 && !ST.rxMethod ? 'Falta elegir tu graduación' : 'Continuar') + '</button>';
   } else {
     var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}
     var hasRx = !!ST.rxMethod;
@@ -1010,7 +1065,7 @@ function stepWrap(stepNum, content) {
   btns += row;
   
   if (!ST.rxMethod && stepNum === 5) {
-    btns += '<div onclick="scrollToRx()" style="cursor:pointer;text-align:center;padding:8px 12px;background:#fef3c7;color:#92400e;border-radius:16px;font-size:12.5px;font-weight:600;border:1px solid #fde68a;">⚠️ Paso 3 de 3: Falta elegir tu graduación <span style="text-decoration:underline;">(Ir a paso 3)</span></div>';
+    btns += '<div onclick="scrollToRx()" style="cursor:pointer;text-align:center;padding:8px 12px;background:#fef3c7;color:#92400e;border-radius:16px;font-size:12.5px;font-weight:600;border:1px solid #fde68a;">⚠️ Paso 2: Falta elegir tu graduación <span style="text-decoration:underline;">(Ir a paso 2)</span></div>';
   }
   if (window.framePrice > 0) {
     btns += '<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px;text-align:center;">Comprar solo armazón sin micas (' + money(window.framePrice||0) + ')</button>';
@@ -1097,21 +1152,40 @@ function render(){
  var R="";
  // 01 Tipo
  var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"',pt('type',k));});o1+='</div>';
- R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
- // 02 Tratamiento
- var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"',pt('treat',t.k));if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
- R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
- // 03 Medidas y material
- var o3=rxBlock();
- if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"',pt('level',l.k));});o3+='</div>';}
- o3+=materialSimple();
- R+=stepWrap(3, '<section class="sec" id="sec-03">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
- // 04 Beneficios
- var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
- o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
- R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
- // 05 Inversión
- R+=stepWrap(5, priceSection()+labPanel());
+ R+=stepWrap(1, '<section class="sec" id="sec-01">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ 
+ // 02 Receta y graduación
+ var o2r=rxBlock();
+ R+=stepWrap(2, '<section class="sec" id="sec-02">'+secHead("02 — Receta y graduación","¿Tienes tu graduación a la mano?","Indica cómo la obtendremos para fabricar tus lentes según tu prescripción.")+o2r+'</section>');
+
+ // 03 Material y grosor
+ var o3='';
+ if(ST.type==="prog"){
+   o3 += progZonesBlock();
+   o3 += levelRecBlock();
+   o3 += '<div class="matlbl" style="margin-top:10px">Nivel del progresivo</div>';
+   o3 += '<div class="opts" style="margin-bottom:18px;">';
+   var _rlv=recLevel().k;
+   LEVELS.forEach(function(l){
+     var star=(l.k===_rlv)?' <span style="color:var(--gold)">★</span>':'';
+     o3 += bigOpt(ST.level===l.k,"",l.nm+star,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"',pt('level',l.k));
+   });
+   o3 += '</div>';
+ }
+ o3 += materialSimple();
+ o3 += poliPerfBlock();
+ R+=stepWrap(3, '<section class="sec" id="sec-03">'+secHead("03 — Material y grosor","Tu mica: diseño, material y grosor","Elige qué tan delgada y resistente quieres tu mica.")+o3+'</section>');
+
+ // 04 Tratamiento
+ var o4t='<div class="opts">';treatList().forEach(function(t){o4t+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"',pt('treat',t.k));if(t.k==="ar"&&ST.treat==="ar")o4t+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o4t+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o4t+=tintBlock();});o4t+='</div>';
+ R+=stepWrap(4, '<section class="sec" id="sec-04">'+secHead("04 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o4t+'</section>');
+
+ // 05 Tu lente e inversión
+ var o5b="";benefitsList().forEach(function(b){o5b+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o5b+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ var sec05TuLente = '<section class="sec" id="sec-05">'+secHead("05 — Tu lente","Lo que hace por ti","")+o5b+'</section>';
+ R+=stepWrap(5, sec05TuLente + priceSection() + labPanel());
+
  var _sb=document.getElementById("stageBody");
  if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
  else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
@@ -1128,7 +1202,7 @@ function render(){
   var _btnDis=hasRx?'':'disabled';
   
   var noticeHtml=!hasRx
-    ?'<div onclick="scrollToRx()" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#fef3c7;color:#92400e;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #fde68a;transition:all 0.2s;"><span style="font-size:14px">⚠️</span> Paso 3 de 3: Falta elegir tu graduación <span style="text-decoration:underline;margin-left:4px">Ir a sección 03 &darr;</span></div>'
+    ?'<div onclick="scrollToRx()" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#fef3c7;color:#92400e;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #fde68a;transition:all 0.2s;"><span style="font-size:14px">⚠️</span> Paso 2: Falta elegir tu graduación <span style="text-decoration:underline;margin-left:4px">Ir a sección 02 &darr;</span></div>'
     :'<div style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f0fdf4;color:#166534;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #bbf7d0;">✓ Graduación elegida</div>';
 
   var frameOnlyHtml=(window.framePrice>0)
@@ -1207,9 +1281,23 @@ function renderUps(){
  box.innerHTML=h;
 }
 
-function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";if(val==="prog")ST.level="precision";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();if(window.innerWidth<=880&&(ST.step===1||ST.step===2))setTimeout(function(){go(1);},300);}
-function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
-function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+function pick(field,val){
+ ST[field]=val;
+ if(field==="type"){
+  var ok=treatList().some(function(t){return t.k===ST.treat;});
+  if(!ok)ST.treat="ar";
+  if(val==="prog"){
+   var r=recLevel();
+   ST.level=r.k||"precision";
+  }
+ }
+ render();
+ if(ST.step===TOTAL_STEPS)renderUps();
+ showFrontNow();
+ if(window.innerWidth<=880&&ST.step===1)setTimeout(function(){go(1);},300);
+}
+function setMat(idx){ST.idx=idx;ST.idxManual=true;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){ST.poli=!ST.poli;ST.idxManual=true;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
 var _rotAF=null,ROT_N=30;
 function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
 function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
@@ -1217,7 +1305,7 @@ function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render()
 function go(dir){
  if(dir>0){
   if(ST.step===1&&!ST.type)return;
-  if(ST.step===2&&!ST.treat)return;
+  if(ST.step===2&&!ST.rxMethod)return;
   ST.step=Math.min(TOTAL_STEPS,ST.step+1);
  }else ST.step=Math.max(1,ST.step-1);
  render();if(ST.step===TOTAL_STEPS)renderUps();
@@ -1239,7 +1327,7 @@ function addToCart(){
 }
 render();
 var initialSection = urlParams.get('section');
-if(initialSection === '3' || initialSection === '03'){
+if(initialSection === '2' || initialSection === '02' || initialSection === '3' || initialSection === '03'){
  setTimeout(scrollToRx, 250);
 }
 try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}

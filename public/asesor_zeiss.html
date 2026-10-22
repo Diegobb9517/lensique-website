@@ -514,15 +514,15 @@ function treatList(){
 }
 var MATS=[["1.50","Delgadez estándar (1.50)"],["1.60","Más delgado (1.60)"],["1.67","Muy delgado (1.67)"],["1.74","Ultra delgado (1.74)"]];
 var LEVELS=[
- {k:"precision",nm:"Estándar · Precision Classic",ds:"Progresivo ZEISS de precisión con antirreflejante. Buena opción para uso diario a precio accesible."},
- {k:"pure",nm:"Comfort · SmartLife Pure",ds:"Diseño digital optimizado para pantallas. Visión cómoda y natural todo el día."},
- {k:"plus",nm:"Premium · SmartLife Plus",ds:"Campos visuales más amplios y adaptación inmediata. Máximo confort en movimiento."}
+ {k:"precision",nm:"Estándar",ds:"Progresivo ZEISS de precisión con antirreflejante Platinum. Buena opción para uso diario, a precio accesible."},
+ {k:"pure",nm:"Comfort",ds:"Se ajusta a la altura de tu armazón para aprovechar mejor el espacio. Excelente relación calidad-precio. En índice 1.5 y policarbonato 1.59."},
+ {k:"plus",nm:"Premium",ds:"Diseño digital pensado para el uso de pantallas y tu edad. Ideal para vida conectada: celular, compu y calle."}
 ];
 var LEVEL_Q={precision:0.30,pure:0.55,plus:0.80,superb:0.80,individual:0.95};
 var MULT=2.2;var MSI=3;var MSI_MIN=3000;
 /* Multiplicador decreciente: micas baratas markup alto, micas caras markup menor */
 function multFor(c){c=c||0;return c<600?2.45:c<1500?2.2:c<3000?2.1:2.0;}
-function levelName(k){return ({precision:"Estándar (Precision Classic)",pure:"Comfort (SmartLife Pure)",plus:"Premium (SmartLife Plus)",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
+function levelName(k){return ({precision:"Estándar",pure:"Comfort",plus:"Premium",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
 function recLevel(){
   if(ST.poli||ST.perfora) return {k:'precision', why:['policarbonato resistente']};
   var add = Math.abs(parseFloat(ST.add)||0);

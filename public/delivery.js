@@ -1,5 +1,5 @@
 // src/lib/delivery.ts
-// Function to add business days to a date
+// Function to add business days to a date (Mon-Fri)
 function addBusinessDays(startDate, daysToAdd) {
     const date = new Date(startDate.getTime());
     let daysAdded = 0;
@@ -22,23 +22,25 @@ function formatDate(date) {
 }
 // -----------------------------------------------------------------------------
 // TABLA DE TIEMPOS DE ENTREGA (DÍAS HÁBILES)
-// Diego: Puedes editar estos números directamente. 
-// Cada paso suma días al tiempo total.
+// Sincronizada con la tabla maestra de lensique-pos
 // -----------------------------------------------------------------------------
 const DELIVERY_DAYS = {
     frame: {
-        instock: { min: 2, max: 3 },
-        preorder: { min: 7, max: 14 },
-        contact_spherical: { min: 3, max: 5 },
-        contact_toric: { min: 7, max: 14 }
+        instock: { min: 1, max: 1 },
+        preorder: { min: 10, max: 14 },
+        contact_spherical: { min: 3, max: 3 },
+        contact_toric: { min: 8, max: 15 },
+        contact_xr: { min: 40, max: 60 },
+        contact_lumilent: { min: 8, max: 15 }
     },
     lens: {
         none: { min: 0, max: 0 },
-        mono_basic: { min: 1, max: 2 },
-        mono_complex: { min: 2, max: 3 },
-        progressive_bifocal: { min: 4, max: 7 },
-        photochromic: { min: 4, max: 7 },
-        special: { min: 4, max: 7 }
+        mono_basic: { min: 3, max: 4 }, // LENS_LAB_LOW (esfera <= 4, cil <= 2)
+        mono_complex: { min: 5, max: 8 }, // LENS_LAB_HIGH
+        zeiss: { min: 5, max: 7 }, // LENS_ZEISS
+        progressive_bifocal: { min: 5, max: 8 },
+        photochromic: { min: 5, max: 8 },
+        special: { min: 5, max: 8 }
     },
     shipping: {
         pickup: { min: 0, max: 0 },
@@ -65,63 +67,99 @@ function getDeliveryEstimate(frameAvailability, lensType = 'none', shippingMetho
     const today = new Date();
     const minDate = addBusinessDays(today, minDays);
     const maxDate = addBusinessDays(today, maxDays);
+    const isXr = frameAvailability === 'contact_xr';
     let dateRange = '';
-    if (minDate.getMonth() === maxDate.getMonth()) {
+    if (isXr) {
+        dateRange = `Llega entre 8 y 12 semanas (a partir del ${formatDate(today)})`;
+    }
+    else if (minDate.getMonth() === maxDate.getMonth()) {
         dateRange = `Llega entre el ${minDate.getDate()} y el ${maxDate.getDate()} de ${MONTHS[maxDate.getMonth()]}`;
     }
     else {
         dateRange = `Llega entre el ${formatDate(minDate)} y el ${formatDate(maxDate)}`;
     }
     let labelShort = '';
-    if (maxDays <= 5) {
-        labelShort = `${minDays}-${maxDays} días`;
+    if (isXr) {
+        labelShort = '8-12 sem';
     }
-    else if (maxDays <= 14) {
-        labelShort = '1-2 sem';
+    else if (minDays === maxDays) {
+        labelShort = `${maxDays} ${maxDays === 1 ? 'día hábil' : 'días hábiles'}`;
     }
     else {
-        labelShort = '2-3 sem';
+        labelShort = `${minDays}-${maxDays} días hábiles`;
     }
     return {
         minDays,
         maxDays,
         labelShort,
-        dateRange
+        dateRange,
+        isWeeks: isXr
     };
 }
 function calculateDeliveryTime(product, lensConfig, fulfillmentMethod) {
-    var _a, _b, _c, _d, _e, _f;
     const isContactLens = String((product === null || product === void 0 ? void 0 : product.category) || '').toLowerCase().includes('contacto');
     let frameAvailability = 'instock';
     if (isContactLens) {
-        const isToricOrMultifocal = String((product === null || product === void 0 ? void 0 : product.name) || '').toLowerCase().match(/tóric|toric|astigmatism|multifocal|presbicia|presbyopia/);
-        frameAvailability = isToricOrMultifocal ? 'contact_toric' : 'contact_spherical';
+        const textToSearch = [
+            product === null || product === void 0 ? void 0 : product.name,
+            product === null || product === void 0 ? void 0 : product.description,
+            product === null || product === void 0 ? void 0 : product.sku,
+            product === null || product === void 0 ? void 0 : product.brand
+        ].filter(Boolean).join(' ').toLowerCase();
+        if (textToSearch.includes('lumilent') || textToSearch.includes('confiablex')) {
+            frameAvailability = 'contact_lumilent';
+        }
+        else {
+            const hasXr = textToSearch.includes('xr');
+            const hasToric = textToSearch.match(/t[oó]ric|astigmat/);
+            const hasMulti = textToSearch.match(/multifocal|presbicia|presbyopia/);
+            if (hasXr || (hasToric && hasMulti)) {
+                frameAvailability = 'contact_xr';
+            }
+            else if (hasToric || hasMulti) {
+                frameAvailability = 'contact_toric';
+            }
+            else {
+                frameAvailability = 'contact_spherical';
+            }
+        }
     }
     else {
         const isOutOfStock = (product === null || product === void 0 ? void 0 : product.stock) != null && product.stock !== '' && Number(product.stock) <= 0;
         frameAvailability = isOutOfStock ? 'preorder' : 'instock';
     }
     let lensType = isContactLens ? 'none' : 'mono_basic';
-    if (lensConfig) {
-        const isProgressive = ((_a = lensConfig.tipo) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes('progresivo')) || ((_b = lensConfig.tipo) === null || _b === void 0 ? void 0 : _b.toLowerCase().includes('bifocal')) || ((_c = lensConfig.tipo) === null || _c === void 0 ? void 0 : _c.toLowerCase().includes('ocupacional'));
-        const isPhotochromic = (_d = lensConfig.etiqueta) === null || _d === void 0 ? void 0 : _d.toLowerCase().includes('fotocromático');
-        const isSpecial = ((_e = lensConfig.tipo) === null || _e === void 0 ? void 0 : _e.toLowerCase().includes('polar')) || ((_f = lensConfig.etiqueta) === null || _f === void 0 ? void 0 : _f.toLowerCase().includes('tinte'));
-        const isComplex = lensConfig.indice === '1.67' || lensConfig.indice === '1.74' || lensConfig.indice === '1.60';
-        if (isProgressive)
-            lensType = 'progressive_bifocal';
-        else if (isPhotochromic)
-            lensType = 'photochromic';
-        else if (isSpecial)
-            lensType = 'special';
-        else if (isComplex)
-            lensType = 'mono_complex';
-        else
-            lensType = 'mono_basic';
+    if (lensConfig && !isContactLens) {
+        const searchTarget = [
+            lensConfig.tipo,
+            lensConfig.etiqueta,
+            lensConfig.proveedor,
+            lensConfig.ordenZEISS,
+            lensConfig.productoZEISS
+        ].filter(Boolean).join(' ').toLowerCase();
+        const isZeiss = Boolean(lensConfig.proveedor === 'ZEISS' ||
+            lensConfig.isZeiss ||
+            searchTarget.includes('zeiss') ||
+            searchTarget.includes('smartlife') ||
+            searchTarget.includes('clearview'));
+        if (isZeiss) {
+            lensType = 'zeiss';
+        }
+        else {
+            const isProgressive = searchTarget.includes('progresivo') || searchTarget.includes('bifocal') || searchTarget.includes('ocupacional');
+            const isPhotochromic = searchTarget.includes('foto') || searchTarget.includes('transitions');
+            const isSpecial = searchTarget.includes('polar') || searchTarget.includes('tinte');
+            const isComplex = lensConfig.indice === '1.67' || lensConfig.indice === '1.74' || lensConfig.indice === '1.60';
+            if (isProgressive || isPhotochromic || isSpecial || isComplex) {
+                lensType = 'mono_complex';
+            }
+            else {
+                lensType = 'mono_basic';
+            }
+        }
     }
     let shippingMethod = 'pickup';
     if (fulfillmentMethod === 'HOME_DELIVERY') {
-        // We can assume national for safety if we don't know the exact address, 
-        // but in CartDrawer we'll just show 'national' as standard delivery.
         shippingMethod = 'national';
     }
     else if (fulfillmentMethod === 'STORE_PICKUP') {
@@ -131,7 +169,9 @@ function calculateDeliveryTime(product, lensConfig, fulfillmentMethod) {
     return {
         label: est.dateRange,
         subtitle: `Incluye ${lensConfig ? 'fabricación de micas' : 'preparación'}${frameAvailability === 'preorder' ? ' (sobre pedido)' : ''} · Te avisamos por WhatsApp cuando esté listo`,
+        minDays: est.minDays,
         maxDays: est.maxDays,
-        labelShort: est.labelShort
+        labelShort: est.labelShort,
+        isWeeks: est.isWeeks
     };
 }

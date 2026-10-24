@@ -8,7 +8,7 @@ const faqs = [
   },
   {
     question: "¿Cuánto tarda mi pedido?",
-    answer: "Armazones en stock están listos en 2-3 días. Lentes sobre pedido toman de 1-2 semanas más el tiempo de fabricación de las micas. Los lentes de contacto esféricos tardan 3-5 días y los tóricos 1-2 semanas."
+    answer: "Micas de laboratorio nacional: 3 a 8 días hábiles según graduación; micas ZEISS: 5 a 7; armazón sobre pedido: 10 a 14; lentes de contacto: 3 días esféricos, 8 a 15 tóricos o multifocales, 8 a 16 semanas tóricos multifocales."
   },
   {
     question: "¿Puedo pagar en línea?",

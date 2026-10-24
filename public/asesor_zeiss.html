@@ -805,44 +805,70 @@ function showFrontNow(){if(window._sideT)clearTimeout(window._sideT);heroView='f
 function updateThickness(){var el=document.getElementById("thActive");if(!el)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);el.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfile(minus),g=document.getElementById("thGhost"),ap=document.getElementById("thActPath");if(g)g.setAttribute("d",d);if(ap)ap.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("thMm"),pctEl=document.getElementById("thPct"),lbl=document.getElementById("thLbl");if(lbl)lbl.textContent=minus?"Grosor del borde":"Grosor del centro";if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Delgadez estándar · sube para adelgazar");}
 function potVal(){var e=ST.esf||0,c=ST.cil||0;return Math.max(Math.abs(e),Math.abs(e+c));}
 function dispIdx(k){return k==="1.5"?"1.50":k==="1.6"?"1.60":k;}
+
+function getGrad(){
+  if(!ST.rxMethod || ST.rxMethod === 'contact' || ST.rxMethod === 'upload') return 0;
+  var odE = parseFloat(ST.odE) || 0, odC = parseFloat(ST.odC) || 0;
+  var oiE = parseFloat(ST.oiE) || 0, oiC = parseFloat(ST.oiC) || 0;
+  var gradOD = Math.max(Math.abs(odE), Math.abs(odE + odC));
+  var gradOI = Math.max(Math.abs(oiE), Math.abs(oiE + oiC));
+  var g = Math.max(gradOD, gradOI);
+  if(g > 0) return g;
+  var e = parseFloat(ST.esf) || 0, c = parseFloat(ST.cil) || 0;
+  return Math.max(Math.abs(e), Math.abs(e + c));
+}
+
+function recIndexForGrad(g){
+  if(g < 4.00) return "1.6";
+  if(g < 6.00) return "1.67";
+  return "1.74";
+}
+
 function normalizeST() {
-  var pot=potVal();
-  if(!ST.idxManual){
-    if(pot<4){
+  var grad = getGrad();
+  if(grad < 2.00){
+    if(!ST.poli){
+      ST.idx = "1.50";
+    }
+  } else if(!ST.idxManual){
+    if(grad < 4.00){
       if(!ST.poli){
-        if(ST.type==="mono"&&ST.treat==="foto")ST.idx="1.60";
-        else ST.idx="1.50";
+        if(ST.type === "mono" && ST.treat === "foto") ST.idx = "1.60";
+        else ST.idx = "1.50";
       }
     } else {
-      var _r=ZeissEngine.recomendarIndice(ST.esf||0,ST.cil||0).recIndex||"1.74",_o=["1.5","1.6","1.67","1.74"];
-      if(!ST.poli&&_o.indexOf(engIdx(ST.idx))<_o.indexOf(_r))ST.idx=dispIdx(_r);
+      var _r = ZeissEngine.recomendarIndice(ST.esf||0, ST.cil||0).recIndex || "1.74", _o = ["1.5","1.6","1.67","1.74"];
+      if(!ST.poli && _o.indexOf(engIdx(ST.idx)) < _o.indexOf(_r)) ST.idx = dispIdx(_r);
     }
   }
 }
+
 function materialSimple(){
- var pot=potVal();
- if(ST.poli){
-  return '<div style="margin:6px 0 8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Mica en <b style="color:var(--navy)">policarbonato resistente (índice 1.59)</b> — ideal para deporte, niños y armazón al aire.</div>';
- }
- if(pot<4){
-  return '<div class="recBanner">★ Para tu graduación te recomendamos <b>material estándar (1.50)</b> — ya es ligero y cómodo. Puedes seleccionar un índice mayor si buscas máxima delgadez.</div>' + thinOptions();
- }
- return thinOptions();
+  if(ST.poli){
+    return '<div style="margin:6px 0 8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Mica en <b style="color:var(--navy)">policarbonato resistente (índice 1.59)</b> — ideal para deporte, niños y armazón al aire.</div>';
+  }
+  var grad = getGrad();
+  if(grad < 2.00){
+    return '<div style="margin:6px 0 10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación va en <b style="color:var(--navy)">material estándar (1.50)</b>, ya delgado y ligero.</div>';
+  }
+  return thinOptions(grad);
 }
-function thinOptions(){
- var pot=potVal(),e=ST.esf||0,c=ST.cil||0;
- var recI=ZeissEngine.recomendarIndice(e,c).recIndex||"1.74";
- var NAMES={"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
- var order=["1.5","1.6","1.67","1.74"];
- var base=mmFor(pot,"1.5");
- var cards=order.map(function(ix){
-    var sel=(!ST.poli&&engIdx(ST.idx)===ix);
-    var mm=mmFor(pot,ix),red=Math.round((1-mm/base)*100);
-    var star=(ix===recI)?' <span style="color:var(--gold)">★</span>':'';
-    var pTag = '<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">' + getPriceTag('mat', dispIdx(ix)) + '</div>';
-    return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--navy);font-weight:600;margin-top:2px">Índice '+dispIdx(ix)+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'▼ '+red+'% más delgado':'base')+'</div>'+pTag+'</div>';
-    }).join('');
- return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+cards+'</div>'+thickPreview();
+
+function thinOptions(grad){
+  if(typeof grad !== 'number') grad = getGrad();
+  var pot = potVal();
+  var recI = recIndexForGrad(grad);
+  var NAMES = {"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
+  var order = ["1.5","1.6","1.67","1.74"];
+  var base = mmFor(pot, "1.5");
+  var cards = order.map(function(ix){
+     var sel = (!ST.poli && engIdx(ST.idx) === ix);
+     var mm = mmFor(pot, ix), red = Math.round((1 - mm/base) * 100);
+     var star = (ix === recI) ? ' <span style="color:var(--gold)">★</span>' : '';
+     var pTag = '<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">' + getPriceTag('mat', dispIdx(ix)) + '</div>';
+     return '<div onclick="setMat(\'' + dispIdx(ix) + '\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid ' + (sel ? 'var(--navy)' : 'var(--line)') + ';border-radius:11px;background:' + (sel ? '#faf9f6' : '#fff') + '"><div style="font-size:14px;font-weight:700;color:var(--navy)">' + NAMES[ix] + star + '</div><div style="font-size:11px;color:var(--navy);font-weight:600;margin-top:2px">Índice ' + dispIdx(ix) + '</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">' + (red > 0 ? '▼ ' + red + '% más delgado' : 'base') + '</div>' + pTag + '</div>';
+  }).join('');
+  return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">' + cards + '</div>' + thickPreview();
 }
 
 function arUpgradeBlock(){
@@ -1112,6 +1138,7 @@ function getPriceTag(field, val) {
   if (field === 'mat') {
      ST.poli = (val === 'poli');
      ST.idx = val === 'poli' ? '1.59' : val;
+     ST.idxManual = true;
   } else {
      ST[field] = val;
   }

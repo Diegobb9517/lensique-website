@@ -19,29 +19,25 @@ const micaContent: Record<string, any> = {
     title: "Monofocales",
     summary: "Una sola distancia (lejos o cerca).",
     who: ["Una sola distancia (lejos o cerca).", "Menores de 40 sin presbicia."],
-    know: ["Cero adaptación.", "Campo completo.", "La opción más accesible."],
-    priceLine: "Incluido en el precio del armazón"
+    know: ["Cero adaptación.", "Campo completo.", "La opción más accesible."]
   },
   m2: {
     title: "Bifocales",
     summary: "Lejos y cerca con solución práctica, no molesta la línea.",
     who: ["Lejos y cerca con solución práctica.", "No molesta la línea."],
-    know: ["Línea visible.", "Sin distancia intermedia (computadora).", "Adaptación rápida."],
-    priceLine: "desde +$1,090 sobre el precio base"
+    know: ["Línea visible.", "Sin distancia intermedia (computadora).", "Adaptación rápida."]
   },
   m4: {
     title: "Progresivos",
     summary: "Lejos, intermedio y cerca en un solo lente, sin línea.",
     who: ["Lejos, intermedio y cerca sin línea.", "Un solo par."],
-    know: ["Adaptación de días a 2 semanas.", "Mover la cabeza para enfocar.", "Diseños de entrada vs. amplios.", "Garantía de adaptación 30 días."],
-    priceLine: "desde +$1,990 sobre el precio base"
+    know: ["Adaptación de días a 2 semanas.", "Mover la cabeza para enfocar.", "Diseños de entrada vs. amplios.", "Garantía de adaptación 30 días."]
   },
   m5: {
     title: "Fotocromático",
     summary: "Lentes que se adaptan a la luz solar.",
     who: ["Pasas de interior a exterior seguido.", "Quieres sol y vista en uno."],
-    know: ["Se oscurece con luz UV (en el auto oscurece poco por el parabrisas).", "Tarda unos segundos en aclarar.", "Combinable con progresivo/monofocal."],
-    priceLine: "desde +$1,720 sobre el precio base"
+    know: ["Se oscurece con luz UV (en el auto oscurece poco por el parabrisas).", "Tarda unos segundos en aclarar.", "Combinable con progresivo/monofocal."]
   }
 };
 
@@ -96,10 +92,6 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
                 <li key={i} style={{ marginBottom: '8px' }}>{item}</li>
               ))}
             </ul>
-
-            <p style={{ fontSize: '15px', color: '#6e6e73', margin: '0 0 32px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-              {content.priceLine}
-            </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <button 

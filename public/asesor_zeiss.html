@@ -759,7 +759,7 @@ function heroSVG(){
 }
 function thProfile(minus){var cx=60,top=24,bot=136,cyy=80,edge=minus?20:9,ctr=minus?9:20;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
 function thDetailSVG(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfile(minus);return '<div class="thDetail"><svg viewBox="0 0 120 160" width="52" height="69" style="overflow:visible;flex-shrink:0"><defs><linearGradient id="thDg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe0f3"/><stop offset="1" stop-color="#5b7da6"/></linearGradient></defs><path id="thGhost" d="'+P+'" fill="none" stroke="#c2cad6" stroke-width="2.4" stroke-dasharray="3 3"/><g id="thActive" style="transform:scaleX('+ratio+')"><path id="thActPath" d="'+P+'" fill="url(#thDg)" stroke="#27405f" stroke-width="2.4" stroke-opacity=".55"/></g></svg><div style="line-height:1.2;text-align:left;white-space:nowrap"><div class="matlbl" style="margin:0;font-size:10px" id="thLbl">Grosor del borde</div><div style="font-size:21px;font-weight:700;color:var(--navy);font-family:Georgia,serif;margin-top:1px" id="thMm">—</div><div style="font-size:11.5px;color:var(--gold);font-weight:600" id="thPct">—</div></div></div>';}
-function recIdx(){var e=ST.esf||0,c=ST.cil||0,pot=Math.max(Math.abs(e),Math.abs(e+c));return pot<=2?"1.50":pot<=4?"1.60":pot<=6?"1.67":"1.74";}
+function recIdx(){var g=getGrad();return dispIdx(recIndexForGrad(g));}
 function deliveryTime(){var q=zeissQuote();return (q&&q.disponible)?q.entrega:"—";}
 function materialBlock(){
  var rec=recIdx();
@@ -808,37 +808,53 @@ function dispIdx(k){return k==="1.5"?"1.50":k==="1.6"?"1.60":k;}
 
 function getGrad(){
   if(!ST.rxMethod || ST.rxMethod === 'contact' || ST.rxMethod === 'upload') return 0;
-  var odE = parseFloat(ST.odE) || 0, odC = parseFloat(ST.odC) || 0;
-  var oiE = parseFloat(ST.oiE) || 0, oiC = parseFloat(ST.oiC) || 0;
-  var gradOD = Math.max(Math.abs(odE), Math.abs(odE + odC));
-  var gradOI = Math.max(Math.abs(oiE), Math.abs(oiE + oiC));
-  var g = Math.max(gradOD, gradOI);
+  var odE = Math.abs(parseFloat(ST.odE) || 0);
+  var odC = Math.abs(parseFloat(ST.odC) || 0);
+  var oiE = Math.abs(parseFloat(ST.oiE) || 0);
+  var oiC = Math.abs(parseFloat(ST.oiC) || 0);
+  var g = Math.max(odE, odC, oiE, oiC);
   if(g > 0) return g;
-  var e = parseFloat(ST.esf) || 0, c = parseFloat(ST.cil) || 0;
-  return Math.max(Math.abs(e), Math.abs(e + c));
+  var e = Math.abs(parseFloat(ST.esf) || 0);
+  var c = Math.abs(parseFloat(ST.cil) || 0);
+  return Math.max(e, c);
 }
 
 function recIndexForGrad(g){
-  if(g < 4.00) return "1.6";
-  if(g < 6.00) return "1.67";
+  if(g <= 2.00) return "1.5";
+  if(g <= 4.00) return "1.6";
+  if(g <= 6.00) return "1.67";
   return "1.74";
+}
+
+function getThinOrder(g){
+  if(g <= 2.00) return [];
+  if(g <= 4.00) return ["1.5", "1.6"];
+  if(g <= 6.00) return ["1.5", "1.6", "1.67"];
+  return ["1.5", "1.6", "1.67", "1.74"];
 }
 
 function normalizeST() {
   var grad = getGrad();
-  if(grad < 2.00){
+  if(!ST.rxMethod){
+    if(!ST.poli) ST.idx = "1.50";
+    return;
+  }
+  if(grad <= 2.00){
     if(!ST.poli){
       ST.idx = "1.50";
     }
-  } else if(!ST.idxManual){
-    if(grad < 4.00){
-      if(!ST.poli){
-        if(ST.type === "mono" && ST.treat === "foto") ST.idx = "1.60";
-        else ST.idx = "1.50";
-      }
+    return;
+  }
+  var recI = recIndexForGrad(grad);
+  var allowed = getThinOrder(grad);
+  if(!ST.poli){
+    if(!ST.idxManual){
+      ST.idx = dispIdx(recI);
     } else {
-      var _r = ZeissEngine.recomendarIndice(ST.esf||0, ST.cil||0).recIndex || "1.74", _o = ["1.5","1.6","1.67","1.74"];
-      if(!ST.poli && _o.indexOf(engIdx(ST.idx)) < _o.indexOf(_r)) ST.idx = dispIdx(_r);
+      var currentEng = engIdx(ST.idx);
+      if(allowed.indexOf(currentEng) === -1){
+        ST.idx = dispIdx(recI);
+      }
     }
   }
 }
@@ -847,9 +863,12 @@ function materialSimple(){
   if(ST.poli){
     return '<div style="margin:6px 0 8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Mica en <b style="color:var(--navy)">policarbonato resistente (índice 1.59)</b> — ideal para deporte, niños y armazón al aire.</div>';
   }
+  if(!ST.rxMethod){
+    return '<div onclick="scrollToRx()" style="cursor:pointer;margin:6px 0 10px;padding:14px 16px;border:1px solid #fde68a;border-radius:12px;background:#fef3c7;color:#92400e;font-size:13.5px;line-height:1.5"><div style="font-weight:700;display:flex;align-items:center;gap:6px"><span>⚠️</span> Falta elegir tu graduación</div><div style="margin-top:4px;color:#78350f;font-size:13px">Indica tu graduación en el <span style="text-decoration:underline;font-weight:600">Paso 02</span> para recomendarte el grosor ideal de tu mica.</div></div>';
+  }
   var grad = getGrad();
-  if(grad < 2.00){
-    return '<div style="margin:6px 0 10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación va en <b style="color:var(--navy)">material estándar (1.50)</b>, ya delgado y ligero.</div>';
+  if(grad <= 2.00){
+    return '<div style="margin:6px 0 10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Material estándar (1.50), ideal para tu graduación.</div>';
   }
   return thinOptions(grad);
 }
@@ -857,9 +876,10 @@ function materialSimple(){
 function thinOptions(grad){
   if(typeof grad !== 'number') grad = getGrad();
   var pot = potVal();
+  if(pot < grad) pot = grad;
   var recI = recIndexForGrad(grad);
   var NAMES = {"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
-  var order = ["1.5","1.6","1.67","1.74"];
+  var order = getThinOrder(grad);
   var base = mmFor(pot, "1.5");
   var cards = order.map(function(ix){
      var sel = (!ST.poli && engIdx(ST.idx) === ix);

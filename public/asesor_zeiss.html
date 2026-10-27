@@ -418,9 +418,12 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
 var $=function(id){return document.getElementById(id);};
 var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
 var TOTAL_STEPS=5;
-function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.50",poli:false,perfora:false,level:"precision",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
-var ST=fresh();
 var urlParams = new URLSearchParams(window.location.search);
+var montajeParam = (urlParams.get('montaje') || '').toLowerCase().trim();
+var frameMontaje = (montajeParam === 'al_aire' || montajeParam === 'semi_al_aire') ? montajeParam : 'completo';
+var isPoliRequired = (frameMontaje === 'al_aire' || frameMontaje === 'semi_al_aire');
+function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:isPoliRequired?"1.59":"1.50",poli:isPoliRequired,perfora:frameMontaje==="al_aire",level:"precision",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
+var ST=fresh();
 var initialType = urlParams.get('initialType');
 if (initialType) {
   if (initialType === 'Progresivos') ST.type = 'prog';
@@ -736,7 +739,7 @@ function heroSVG(){
    +'</svg>';
  }
  var showStandardOverlay = !hasCustomFrame;
- var currentArmImg = ST.perfora ? IMG_AIRE : IMG_ARM;
+ var currentArmImg = hasCustomFrame ? IMG_ARM : (ST.perfora ? IMG_AIRE : IMG_ARM);
  var frameStyle = hasCustomFrame ? 'style="object-fit:contain;max-height:280px;margin:0 auto;background:#ffffff;border:none;box-shadow:none;"' : '';
  var overlayHtml = !showStandardOverlay ? '' : ('<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
   +'<mask id="lensMask"><image href="'+IMG_MASK+'" x="0" y="0" width="2816" height="1536"/></mask>'
@@ -778,7 +781,7 @@ function miniLens(pot,minus,mm,sel){var cx=24,topY=6,botY=78,cyY=42,thin=3,thick
 function bigCross(eT,minus){var cx=70,topY=18,botY=162,cyY=90,thin=9;var edge=minus?eT:thin,ctr=minus?thin:eT,cl=cx+(edge-2*ctr),cr=cx-(edge-2*ctr);var p="M"+(cx-edge)+" "+topY+" L"+(cx+edge)+" "+topY+" Q"+cr+" "+cyY+" "+(cx+edge)+" "+botY+" L"+(cx-edge)+" "+botY+" Q"+cl+" "+cyY+" "+(cx-edge)+" "+topY+" Z";return '<ellipse cx="'+cx+'" cy="170" rx="'+(edge+8)+'" ry="4" fill="#16223f" opacity=".1"/><path d="'+p+'" fill="url(#thG)" stroke="#0f1a30" stroke-width="1.4"/><path d="M'+(cx-edge*0.45)+' '+(topY+12)+' Q'+(cx-edge*0.95)+' '+cyY+' '+(cx-edge*0.45)+' '+(botY-12)+'" stroke="#fff" stroke-width="2" fill="none" opacity=".28" stroke-linecap="round"/>';}
 function thickPreview(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P);var idx=ST.poli?"1.59":ST.idx,mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var lbl=pot<0.5?'<span class="muted">Pon tu graduación arriba para ver el grosor.</span>':'Grosor del borde <b style="color:var(--navy)">≈ '+mm.toFixed(1)+' mm</b>'+(red>0?'<br><b style="color:var(--gold)">−'+red+'% más delgado que 1.50</b>':'');var leyenda=pot>=5?'<div style="margin-top:9px;padding:8px 11px;border-radius:9px;background:#f4efe2;color:#8a6d2f;font-size:12.5px;font-weight:600;line-height:1.45">Tu graduación es alta — sí hay maneras de adelgazarla: sube de índice (1.67/1.74) y suma antirreflejante para una mica más fina y ligera.</div>':'';return '<div style="margin:10px 0 4px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.5;color:var(--grey)">Al elegir el índice, la imagen muestra <b style="color:var(--navy)">tu mica de perfil</b> con el grosor.<br>'+lbl+leyenda+'<div style="display:flex;gap:8px;margin-top:10px"><button onclick="showFrontNow()" style="flex:1;padding:8px 6px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer">Ver armazón</button><button onclick="showSide()" style="flex:1;padding:8px 6px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer">Ver grosor de mica</button></div></div>';}
 function lensCompare(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0,rec=recIdx();var list=["1.50","1.60","1.67","1.74"];var base=mmFor(pot,"1.50");var h='<div class="matlbl">Material e índice</div><div class="muted" style="margin-top:3px">Toca el grosor que prefieras · ★ recomendado para tu graduación</div>'+thickPreview()+'<div style="display:flex;gap:7px;margin:8px 0 2px">';list.forEach(function(ix){var sel=(!ST.poli&&ST.idx===ix),mm=mmFor(pot,ix),red=pot>=0.5?Math.round((1-mm/base)*100):0;h+='<div onclick="setMat(\''+ix+'\')" style="flex:1;cursor:pointer;text-align:center;padding:17px 4px;border:1px solid '+(sel?"var(--navy)":"var(--line)")+';border-radius:10px;background:'+(sel?"#faf9f6":"#fff")+';transition:border-color .15s"><div style="font-size:18px;font-weight:700;color:var(--navy);letter-spacing:.3px">'+ix+(ix===rec?' <span style="color:var(--gold)">★</span>':'')+'</div></div>';});h+='</div>';return h;}
-function poliPerfBlock(){var h='<div class="matlbl" style="margin-top:22px">Otras opciones</div><div class="chips"><span class="chip'+(ST.poli?" on":"")+'" onclick="setPoli()">Policarbonato resistente · Ideal para niños y deporte</span></div>';h+='<div class="toggle'+(ST.perfora?" on":"")+'" onclick="togglePerf()"><span class="sw"></span><div><div class="tt">Armazón al aire / 3 piezas</div><div class="td">Perforado · look ligero (usa policarbonato)</div></div></div>';return h;}
+function poliPerfBlock(){return "";}
 function fotoColorBlock(){if(ST.treat!=="foto")return "";var cs=[["gris","Gris","#e8ecf2","#46566e"],["cafe","Café","#f4ecdb","#8f5e1e"]];var nm={gris:"Gris",cafe:"Café"}[ST.fotoColor]||"";var h='<div id="fotoBlock" style="margin:-4px 0 4px;padding:18px 20px;border:1px solid var(--navy);border-top:none;border-radius:0 0 12px 12px;background:#faf9f6">';h+='<div class="matlbl" style="margin-top:0">Color<span style="text-transform:none;letter-spacing:0;font-weight:600;color:var(--navy);margin-left:7px;font-size:13px">'+nm+'</span></div><div style="display:flex;gap:14px;margin-top:14px">';cs.forEach(function(co){var sel=ST.fotoColor===co[0];h+='<div onclick="setFColor(\''+co[0]+'\')" title="'+co[1]+'" style="width:40px;height:40px;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,'+co[2]+' 0%,'+co[3]+' 100%);box-shadow:'+(sel?'0 0 0 2.5px #faf9f6,0 0 0 4px var(--navy)':'inset 0 0 0 1px rgba(0,0,0,.16)')+';transition:box-shadow .15s ease"></div>';});h+='</div><div class="muted" style="margin-top:11px;font-size:11.5px">El tono va de claro (interior) a oscuro (exterior). Otros colores bajo pedido en línea premium.</div></div>';return h;}
 function setFColor(c){ST.fotoColor=c;var ov=document.getElementById("frameOverlay"),fb=document.getElementById("fotoBlock");if(ov&&fb&&ST.treat==="foto"){var col=ST.fotoColor==="cafe"?"#6e4720":"#3f4a5e";var rects=ov.querySelectorAll(".tintRect");for(var i=0;i<rects.length;i++){rects[i].style.fill=col;}var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var cap=document.getElementById("heroCap"),nc=tmp.querySelector(".heroCap");if(cap&&nc&&cap.parentNode)cap.parentNode.replaceChild(nc,cap);fb.outerHTML=fotoColorBlock();}else{render();}if(ST.step===TOTAL_STEPS)renderUps();}
 var TINTS={cafe:["Café","#9c6b2e"],azul:["Azul","#2d5b9e"],amarillo:["Amarillo","#d9b125"],naranja:["Naranja","#d97a1e"],rojo:["Rojo","#b53030"]};
@@ -860,8 +863,14 @@ function normalizeST() {
 }
 
 function materialSimple(){
-  if(ST.poli){
-    return '<div style="margin:6px 0 8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Mica en <b style="color:var(--navy)">policarbonato resistente (índice 1.59)</b> — ideal para deporte, niños y armazón al aire.</div>';
+  if(isPoliRequired || ST.poli){
+    var tipoArmTxt = frameMontaje === 'al_aire' ? 'al aire (3 piezas)' : 'semi al aire (ranurado)';
+    return '<div style="margin:6px 0 12px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:13.5px;line-height:1.55;color:#334155;">'
+      + '<div style="font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px;margin-bottom:4px;">'
+      + '<span>🛡️</span> Material incluido para tu armazón'
+      + '</div>'
+      + 'Por el diseño de tu armazón (' + tipoArmTxt + '), tus lentes incluyen automáticamente <b style="color:var(--navy)">policarbonato resistente de alto impacto (índice 1.59)</b> para máxima seguridad y durabilidad en el montaje.'
+      + '</div>';
   }
   if(!ST.rxMethod){
     return '<div onclick="scrollToRx()" style="cursor:pointer;margin:6px 0 10px;padding:14px 16px;border:1px solid #fde68a;border-radius:12px;background:#fef3c7;color:#92400e;font-size:13.5px;line-height:1.5"><div style="font-weight:700;display:flex;align-items:center;gap:6px"><span>⚠️</span> Falta elegir tu graduación</div><div style="margin-top:4px;color:#78350f;font-size:13px">Indica tu graduación en el <span style="text-decoration:underline;font-weight:600">Paso 02</span> para recomendarte el grosor ideal de tu mica.</div></div>';
@@ -904,6 +913,7 @@ function waText(){
  var L=[];
  L.push('Hola, vengo del asesor de Lensique. Me interesa esta cotización:');
  L.push('• '+q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' ('+TYPES[ST.type].nm+')');
+ if(frameMontaje && frameMontaje !== 'completo') { L.push('• Montaje armazón: ' + (frameMontaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire (ranurado)')); }
  var pl='• Precio aprox: '+money(q.pvp);
  if(q.pvp>=MSI_MIN)pl+=' ('+MSI+' meses sin intereses de '+money(Math.round(q.pvp/MSI))+')';
  L.push(pl);
@@ -1022,6 +1032,7 @@ function waLabText(){
  var q=zeissQuote();if(!q||!q.disponible)return '';
  var lines=['ORDEN LENSIQUE → laboratorio'];
  lines.push(q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' · '+q.tipoFab);
+  if(frameMontaje && frameMontaje !== 'completo') { lines.push('Montaje: ' + (frameMontaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire (ranurado)')); }
  lines.push('OD: '+rxLine({E:ST.odE,C:ST.odC,Ax:ST.odAx,Ad:ST.odAdd}));
  lines.push('OI: '+rxLine({E:ST.oiE,C:ST.oiC,Ax:ST.oiAx,Ad:ST.oiAdd}));
  var foot='DI/PD: '+(ST.pd||'—')+' mm';
@@ -1059,7 +1070,8 @@ function buyFrameOnly() {
   var payload = {
     onlyFrame: true,
     pvp: 0,
-    etiqueta: 'Solo armazón'
+    etiqueta: 'Solo armazón',
+    montaje: frameMontaje
   };
   try {
     if (window.parent && window.parent !== window) {
@@ -1210,7 +1222,6 @@ function render(){
    o3 += '</div>';
  }
  o3 += materialSimple();
- o3 += poliPerfBlock();
  R+=stepWrap(3, '<section class="sec" id="sec-03">'+secHead("03 — Material y grosor","Tu mica: diseño, material y grosor","Elige qué tan delgada y resistente quieres tu mica.")+o3+'</section>');
 
  // 04 Tratamiento
@@ -1333,12 +1344,12 @@ function pick(field,val){
  showFrontNow();
  if(window.innerWidth<=880&&ST.step===1)setTimeout(function(){go(1);},300);
 }
-function setMat(idx){ST.idx=idx;ST.idxManual=true;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
-function setPoli(){ST.poli=!ST.poli;ST.idxManual=true;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+function setMat(idx){if(isPoliRequired)return;ST.idx=idx;ST.idxManual=true;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){if(isPoliRequired)return;ST.poli=!ST.poli;ST.idxManual=true;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
 var _rotAF=null,ROT_N=30;
 function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
 function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
-function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function togglePerf(){if(isPoliRequired)return;ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
 function go(dir){
  if(dir>0){
   if(ST.step===1&&!ST.type)return;
@@ -1358,7 +1369,7 @@ function addToCart(){
  var q=zeissQuote();
  var b=$("cartBtn");
  if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
- var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText(),montaje:frameMontaje};
  try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
  if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
 }

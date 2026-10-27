@@ -471,6 +471,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             <div style={{ fontSize: '11px', marginTop: '2px' }}>
                               Índice {item.lensConfig.indice} · {item.lensConfig.tipoFab}
                               {(item.lensConfig.esfera || item.lensConfig.cilindro) ? ' · Rx incl.' : ''}
+                              {(item.lensConfig.montaje && item.lensConfig.montaje !== 'completo') ? ` · Montaje: ${item.lensConfig.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : (item.product?.montaje && item.product.montaje !== 'completo' ? ` · Montaje: ${item.product.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : '')}
                             </div>
                           </div>
                         )}

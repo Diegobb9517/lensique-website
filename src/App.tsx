@@ -2078,6 +2078,10 @@ function App() {
             if (config.etiqueta) {
               configText += `• ${config.etiqueta} · índice ${config.indice}\n`;
             }
+            if (config.montaje && config.montaje !== 'completo') {
+              const montLabel = config.montaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire';
+              configText += `• Montaje: ${montLabel}\n`;
+            }
             
             const pvp = config.pvp || 0;
             const total = pvp + productPrice;

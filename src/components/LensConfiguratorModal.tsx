@@ -42,6 +42,9 @@ export default function LensConfiguratorModal({
         const payload = event.data.payload;
         if (payload) {
           hasProcessed.current = true;
+          if (!payload.montaje && product?.montaje) {
+            payload.montaje = product.montaje;
+          }
           // Pass both the ZEISS payload and the original product being purchased
           onComplete({
             ...payload,
@@ -69,6 +72,9 @@ export default function LensConfiguratorModal({
   }
   if (initialSection) {
     queryParams.set('section', initialSection);
+  }
+  if (product?.montaje) {
+    queryParams.set('montaje', product.montaje);
   }
   const iframeSrc = `/asesor_zeiss.html?${queryParams.toString()}`;
 

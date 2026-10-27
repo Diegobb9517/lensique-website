@@ -1081,12 +1081,12 @@ function stepWrap(stepNum, content) {
   if(stepNum === 2 && !ST.rxMethod) disabledNext = true;
   
   if(stepNum < 5) {
-    row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>' + (stepNum === 2 && !ST.rxMethod ? 'Falta elegir tu graduación' : 'Continuar') + '</button>';
+    row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
   } else {
     var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}
     var hasRx = !!ST.rxMethod;
     var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
-    var _bTxt = hasRx ? (_tot > 0 ? "Comprar ahora — $" + _tot.toLocaleString("en-US") : "Agregar al carrito") : "Falta elegir tu graduación";
+    var _bTxt = hasRx ? (_tot > 0 ? "Comprar ahora — $" + _tot.toLocaleString("en-US") : "Agregar al carrito") : "Continuar";
     var _bg = hasRx ? "#16a34a" : "#cbd5e1";
     var _col = hasRx ? "#fff" : "#475569";
     if(_frame){
@@ -1231,7 +1231,7 @@ function render(){
  if(_frame){
   var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
   var hasRx=!!ST.rxMethod;
-  var _bTxt=hasRx?(_tot>0?"Comprar ahora — $"+_tot.toLocaleString("en-US"):"Agregar al carrito"):"Falta elegir tu graduación";
+  var _bTxt=hasRx?(_tot>0?"Comprar ahora — $"+_tot.toLocaleString("en-US"):"Agregar al carrito"):"Continuar";
   var _bg=hasRx?"#16a34a":"#cbd5e1";
   var _col=hasRx?"#fff":"#475569";
   var _cursor=hasRx?"pointer":"not-allowed";

@@ -1083,7 +1083,7 @@ function stepWrap(stepNum, content) {
   if(stepNum < 5) {
     row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
   } else {
-    var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}
+    var _frame=true;try{_frame=(window.self!==window.top)||(window.framePrice>0);}catch(e){_frame=true;}
     var hasRx = !!ST.rxMethod;
     var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
     var _bTxt = hasRx ? (_tot > 0 ? "Comprar ahora — $" + _tot.toLocaleString("en-US") : "Agregar al carrito") : "Continuar";
@@ -1101,10 +1101,10 @@ function stepWrap(stepNum, content) {
   btns += row;
   
   if (!ST.rxMethod && stepNum === 5) {
-    btns += '<div onclick="scrollToRx()" style="cursor:pointer;text-align:center;padding:8px 12px;background:#fef3c7;color:#92400e;border-radius:16px;font-size:12.5px;font-weight:600;border:1px solid #fde68a;">⚠️ Paso 2: Falta elegir tu graduación <span style="text-decoration:underline;">(Ir a paso 2)</span></div>';
+    btns += '<div onclick="scrollToRx()" onmouseover="this.style.background=\'#fde68a\'" onmouseout="this.style.background=\'#fef3c7\'" style="cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;width:fit-content;max-width:100%;margin:4px auto 0;padding:5px 12px;background:#fef3c7;color:#92400e;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid #fde68a;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.04);transition:background 0.15s ease;"><span style="font-size:12px;">⚠️</span> Falta tu graduación — <span style="text-decoration:underline;margin-left:2px;">Ir a paso 2 &darr;</span></div>';
   }
   if (window.framePrice > 0) {
-    btns += '<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px;text-align:center;">Comprar solo armazón sin micas (' + money(window.framePrice||0) + ')</button>';
+    btns += '<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:11.5px;text-decoration:underline;cursor:pointer;padding:4px;text-align:center;">Comprar solo armazón sin micas (' + money(window.framePrice||framePrice||0) + ')</button>';
   }
   btns += '</div>';
   return '<div class="m-step m-step-' + stepNum + on + '">' + content + btns + '</div>';
@@ -1227,7 +1227,7 @@ function render(){
  if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
  else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
  updateSideTh();
- var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}var _btn;
+ var _frame=true;try{_frame=(window.self!==window.top)||(window.framePrice>0);}catch(e){_frame=true;}var _btn;
  if(_frame){
   var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
   var hasRx=!!ST.rxMethod;
@@ -1239,14 +1239,14 @@ function render(){
   var _btnDis=hasRx?'':'disabled';
   
   var noticeHtml=!hasRx
-    ?'<div onclick="scrollToRx()" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#fef3c7;color:#92400e;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #fde68a;transition:all 0.2s;"><span style="font-size:14px">⚠️</span> Paso 2: Falta elegir tu graduación <span style="text-decoration:underline;margin-left:4px">Ir a sección 02 &darr;</span></div>'
-    :'<div style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f0fdf4;color:#166534;border-radius:20px;font-size:12.5px;font-weight:600;margin-right:12px;border:1px solid #bbf7d0;">✓ Graduación elegida</div>';
+    ?'<div onclick="scrollToRx()" onmouseover="this.style.background=\'#fde68a\'" onmouseout="this.style.background=\'#fef3c7\'" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#fef3c7;color:#92400e;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid #fde68a;transition:background 0.15s ease;white-space:nowrap;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.04);"><span style="font-size:12px;">⚠️</span> Falta tu graduación — <span style="text-decoration:underline;margin-left:2px;">Ir a sección 02 &darr;</span></div>'
+    :'<div style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#f0fdf4;color:#166534;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid #bbf7d0;line-height:1.3;white-space:nowrap;">✓ Graduación elegida</div>';
 
   var frameOnlyHtml=(window.framePrice>0)
-    ?'<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:12px;text-decoration:underline;cursor:pointer;margin-top:6px;display:block;width:100%;text-align:right;">Comprar solo armazón sin micas ('+money(window.framePrice||0)+')</button>'
+    ?'<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:11.5px;text-decoration:underline;cursor:pointer;margin:0;padding:2px 4px;text-align:right;">Comprar solo armazón sin micas ('+money(window.framePrice||framePrice||0)+')</button>'
     :'';
 
-  _btn=noticeHtml+'<div style="display:flex;flex-direction:column;align-items:flex-end;"><button class="btn next" id="cartBtn" onclick="'+_btnAction+'" '+_btnDis+' style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:'+_bg+';color:'+_col+';font-weight:700;border:none;border-radius:30px;cursor:'+_cursor+';">'+_bTxt+'</button>'+frameOnlyHtml+'</div>';
+  _btn='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;">'+noticeHtml+'<button class="btn next" id="cartBtn" onclick="'+_btnAction+'" '+_btnDis+' style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:'+_bg+';color:'+_col+';font-weight:700;border:none;border-radius:30px;cursor:'+_cursor+';">'+_bTxt+'</button></div>'+frameOnlyHtml+'</div>';
  }else if(isOptica()){
   _btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';
  }else{

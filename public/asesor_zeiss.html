@@ -419,7 +419,7 @@ var $=function(id){return document.getElementById(id);};
 var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
 var TOTAL_STEPS=5;
 var urlParams = new URLSearchParams(window.location.search);
-var montajeParam = (urlParams.get('montaje') || '').toLowerCase().trim();
+var montajeParam = (urlParams.get('montaje') || '').toLowerCase().replace(/[\s\-]+/g, '_').trim();
 var frameMontaje = (montajeParam === 'al_aire' || montajeParam === 'semi_al_aire') ? montajeParam : 'completo';
 var isPoliRequired = (frameMontaje === 'al_aire' || frameMontaje === 'semi_al_aire');
 function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:isPoliRequired?"1.59":"1.50",poli:isPoliRequired,perfora:frameMontaje==="al_aire",level:"precision",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
@@ -1322,8 +1322,10 @@ function renderUps(){
  var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
  if(ST.upsOpen){
   if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
-  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato resistente","setPoli()"));
-  h+=upSec("Delgadez y material",mh);
+  if(!isPoliRequired){
+   var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});
+   h+=upSec("Delgadez y material",mh);
+  }
   h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
  }
  box.innerHTML=h;

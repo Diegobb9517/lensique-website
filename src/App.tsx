@@ -2511,7 +2511,7 @@ function App() {
             <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Cotiza tus micas en menos de un minuto</h1>
             <div style={{ maxWidth: '1100px', margin: '0 auto', background: 'var(--bg, #f1ede5)', height: '90vh', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.15)' }}>
               <iframe 
-                src={`/asesor_zeiss.html?v=1.0.2${new URLSearchParams(window.location.search).get('tipo') ? `&initialType=${encodeURIComponent(new URLSearchParams(window.location.search).get('tipo')!)}` : ''}`}
+                src={`/asesor_zeiss.html?v=1.0.6${new URLSearchParams(window.location.search).get('tipo') ? `&initialType=${encodeURIComponent(new URLSearchParams(window.location.search).get('tipo')!)}` : ''}${new URLSearchParams(window.location.search).get('montaje') ? `&montaje=${encodeURIComponent(new URLSearchParams(window.location.search).get('montaje')!)}` : ''}`}
                 title="Asesor Visual ZEISS"
                 style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit' }}
               />

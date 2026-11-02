@@ -203,11 +203,12 @@ function FullCatalog({
   )).sort();
   
   const [selectedBrand, setSelectedBrand] = useState('Todas');
+  const [sortBy, setSortBy] = useState('destacados');
   const [visibleCount, setVisibleCount] = useState(24);
 
   useEffect(() => {
     setVisibleCount(24);
-  }, [filter, searchQuery, selectedBrand, contactUsageFilter]);
+  }, [filter, searchQuery, selectedBrand, contactUsageFilter, availabilityFilter, sortBy]);
 
   useEffect(() => {
     if (isPage || isStandalone) {
@@ -289,9 +290,64 @@ function FullCatalog({
     
     return matchesSearch && matchesBrand && matchesCategory && matchesAvailability;
   }).sort((a, b) => {
+    const getProductDisplayPrice = (p: any): number => {
+      const isFrame = !String(p.category || '').toLowerCase().includes('sol') && !String(p.category || '').toLowerCase().includes('contacto');
+      return (Number(p.price_incl_tax) || 0) + (isFrame ? BASE_LENS_PRICE : 0);
+    };
+
+    if (sortBy === 'precio-menor') {
+      const diff = getProductDisplayPrice(a) - getProductDisplayPrice(b);
+      if (diff !== 0) return diff;
+      const aOut = !isInStock(a);
+      const bOut = !isInStock(b);
+      if (!aOut && bOut) return -1;
+      if (aOut && !bOut) return 1;
+      return 0;
+    }
+
+    if (sortBy === 'precio-mayor') {
+      const diff = getProductDisplayPrice(b) - getProductDisplayPrice(a);
+      if (diff !== 0) return diff;
+      const aOut = !isInStock(a);
+      const bOut = !isInStock(b);
+      if (!aOut && bOut) return -1;
+      if (aOut && !bOut) return 1;
+      return 0;
+    }
+
+    if (sortBy === 'populares') {
+      // 1. Popularity / sales / views if available
+      const aPop = Number(a.popularity ?? a.views ?? a.sales ?? a.ventas ?? 0);
+      const bPop = Number(b.popularity ?? b.views ?? b.sales ?? b.ventas ?? 0);
+      if (aPop !== bPop) return bPop - aPop;
+
+      // 2. Featured / destacado flag if available
+      const aFeat = Boolean(a.is_featured || a.featured || a.destacado);
+      const bFeat = Boolean(b.is_featured || b.featured || b.destacado);
+      if (aFeat !== bFeat) return aFeat ? -1 : 1;
+
+      // 3. Fallback to default catalog order (in-stock first for frames)
+      const aIsContact = String(a.category || 'vista').toLowerCase().includes('contacto');
+      const bIsContact = String(b.category || 'vista').toLowerCase().includes('contacto');
+      if (!aIsContact && !bIsContact) {
+        const aOutOfStock = !isInStock(a);
+        const bOutOfStock = !isInStock(b);
+        if (!aOutOfStock && bOutOfStock) return -1;
+        if (aOutOfStock && !bOutOfStock) return 1;
+      }
+      return 0;
+    }
+
+    if (sortBy === 'novedades') {
+      const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (aTime !== bTime) return bTime - aTime;
+      return (Number(b.id) || 0) - (Number(a.id) || 0);
+    }
+
+    // Default: 'destacados' / Relevancia (original behavior)
     const aIsContact = String(a.category || 'vista').toLowerCase().includes('contacto');
     const bIsContact = String(b.category || 'vista').toLowerCase().includes('contacto');
-    
     if (!aIsContact && !bIsContact) {
       const aOutOfStock = !isInStock(a);
       const bOutOfStock = !isInStock(b);
@@ -397,6 +453,21 @@ function FullCatalog({
                   options={[
                     { label: 'Marcas', value: 'Todas' },
                     ...availableBrands.map(b => ({ label: b, value: b }))
+                  ]}
+                />
+              </div>
+
+              <div className="filter-group">
+                <CustomSelect
+                  value={sortBy}
+                  onChange={(val) => setSortBy(val)}
+                  triggerLabel={sortBy === 'destacados' ? 'Ordenar por' : undefined}
+                  options={[
+                    { label: 'Destacados / Relevancia', value: 'destacados' },
+                    { label: 'Precio: menor a mayor', value: 'precio-menor' },
+                    { label: 'Precio: mayor a menor', value: 'precio-mayor' },
+                    { label: 'Más populares', value: 'populares' },
+                    { label: 'Novedades', value: 'novedades' }
                   ]}
                 />
               </div>

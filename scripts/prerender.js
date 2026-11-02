@@ -332,6 +332,118 @@ if (!fs.existsSync(micasDir)) fs.mkdirSync(micasDir, { recursive: true });
 fs.writeFileSync(path.join(micasDir, 'index.html'), micasHtml, 'utf8');
 console.log('✅ Pre-rendered /micas/index.html');
 
+// Generate /lentes-de-contacto prerender
+const lentesContactoTitle = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Adaptación Lensique";
+const lentesContactoDesc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, adaptación con optometrista y marcas líderes.";
+const lentesContactoCanonical = "https://www.lensique.com.mx/lentes-de-contacto";
+
+const lentesContactoHeadInjection = `
+    <title>${lentesContactoTitle}</title>
+    <meta name="description" content="${lentesContactoDesc}" />
+    <link rel="canonical" href="${lentesContactoCanonical}" />
+    <meta property="og:title" content="${lentesContactoTitle}" />
+    <meta property="og:description" content="${lentesContactoDesc}" />
+    <meta property="og:url" content="${lentesContactoCanonical}" />
+    <meta property="og:type" content="website" />
+`;
+
+const lentesContactoBodyInjection = `
+  <main style="max-width: 960px; margin: 40px auto; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a;">
+    <h1 style="font-size: 38px; font-weight: 700; margin-bottom: 8px;">Lentes de contacto</h1>
+    <p style="font-size: 22px; color: #475569; font-style: italic; margin-bottom: 24px;">Visión libre y cómoda</p>
+    <p style="font-size: 18px; line-height: 1.6; color: #334155; margin-bottom: 32px;">
+      Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la adaptación de un optometrista de por medio. La idea es que los uses con seguridad y comodidad, no a prueba y error.
+    </p>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Cómo ponerte los lentes de contacto</h2>
+    <ol style="font-size: 16px; line-height: 1.8; color: #334155; padding-left: 20px;">
+      <li><strong>Lávate y seca bien las manos</strong> con una toalla sin pelusa. Es el paso más importante.</li>
+      <li><strong>Saca el lente</strong> del estuche o blíster y ponlo en la yema del dedo índice. Revisa que no esté roto.</li>
+      <li><strong>Verifica que no esté al revés:</strong> un lente bien puesto parece un tazón con bordes rectos hacia arriba; si los bordes se abren como un plato, está volteado.</li>
+      <li>Con la otra mano, <strong>sujeta el párpado de arriba</strong> para que no parpadees.</li>
+      <li><strong>Baja el párpado de abajo</strong> con el dedo medio de la mano que tiene el lente.</li>
+      <li><strong>Mira hacia arriba o al frente</strong> y acerca el lente despacio hasta tocar el ojo; suéltalo.</li>
+      <li><strong>Cierra el ojo un momento</strong>, mira en varias direcciones para acomodarlo, y suelta los párpados. Parpadea suave. Listo.</li>
+    </ol>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Cómo quitártelos</h2>
+    <ol style="font-size: 16px; line-height: 1.8; color: #334155; padding-left: 20px;">
+      <li><strong>Lávate y seca las manos</strong> otra vez.</li>
+      <li><strong>Mira hacia arriba</strong> y baja el párpado inferior con el dedo medio.</li>
+      <li>Con el índice, <strong>desliza el lente suavemente hacia abajo</strong> (a la parte blanca del ojo).</li>
+      <li><strong>Pellízcalo con cuidado</strong> entre el pulgar y el índice para sacarlo.</li>
+      <li>Si es <strong>mensual</strong>, guárdalo en su estuche con solución nueva (no la reuses). Si es <strong>diario</strong>, tíralo.</li>
+    </ol>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Higiene y cuidado: lo que sí y lo que no</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+      <div style="background: #f0fdf4; padding: 20px; border-radius: 16px;">
+        <h3 style="color: #166534; margin-top: 0;">Lo que Sí debes hacer</h3>
+        <ul style="color: #14532d; line-height: 1.6;">
+          <li>Manos limpias y secas siempre.</li>
+          <li>Usa solo la solución recomendada, y cambia el estuche cada ~3 meses.</li>
+          <li>Respeta el tiempo de uso (un diario es de un día).</li>
+          <li>Quítatelos antes de dormir (salvo que sean de uso prolongado).</li>
+        </ul>
+      </div>
+      <div style="background: #fef2f2; padding: 20px; border-radius: 16px;">
+        <h3 style="color: #991b1b; margin-top: 0;">Lo que No debes hacer</h3>
+        <ul style="color: #7f1d1d; line-height: 1.6;">
+          <li>Nunca uses agua de la llave ni saliva.</li>
+          <li>No reutilices un lente diario.</li>
+          <li>No los compartas con nadie.</li>
+          <li>No te bañes ni nades con ellos puestos (salvo indicación).</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Tipos que manejamos</h2>
+    <ul style="font-size: 16px; line-height: 1.8; color: #334155;">
+      <li><strong>Diarios:</strong> un par nuevo cada día, lo más higiénico y sin limpieza.</li>
+      <li><strong>Mensuales / quincenales:</strong> más económicos por día; requieren cuidado.</li>
+      <li><strong>Tóricos:</strong> para astigmatismo.</li>
+      <li><strong>Multifocales:</strong> para ver de lejos y cerca (presbicia).</li>
+      <li><strong>De color / cosméticos:</strong> siempre con adaptación profesional.</li>
+    </ul>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Por qué la adaptación con optometrista</h2>
+    <p style="font-size: 16px; line-height: 1.7; color: #334155;">
+      Un lente no es talla única: depende de la curva, el diámetro y la lágrima de tus ojos. Por eso medimos, elegimos el lente correcto y te enseñamos a usarlo. Así evitas molestias e infecciones.
+    </p>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Cómo funciona</h2>
+    <p style="font-size: 16px; line-height: 1.7; color: #334155;">
+      1. Agenda tu valoración (incluye examen). 2. Adaptación y prueba. 3. Entrega y guía de uso. 4. Recompra fácil cuando se acaben.
+    </p>
+    <p style="font-size: 16px; line-height: 1.7; color: #166534; font-weight: 600;">
+      Garantía Lensique: Devolución de cajas selladas hasta 15 días y validación por optometrista.
+    </p>
+
+    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Marcas</h2>
+    <p style="font-size: 16px; line-height: 1.7; color: #334155;">
+      Acuvue, Biofinity (CooperVision), Bausch + Lomb, Biotrue, Air Optix y más.
+    </p>
+
+    <div style="margin-top: 32px;">
+      <a href="/catalogo?tipo=contacto" style="display: inline-block; padding: 14px 28px; background: #0f172a; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600; margin-right: 12px;">Ver lentes de contacto</a>
+    </div>
+  </main>
+`;
+
+let lentesContactoHtml = indexTemplate;
+if (lentesContactoHtml.includes('<title>')) {
+  lentesContactoHtml = lentesContactoHtml.replace(/<title>.*?<\/title>/s, `<title>${lentesContactoTitle}</title>`);
+}
+lentesContactoHtml = lentesContactoHtml.replace('</head>', `${lentesContactoHeadInjection}\n</head>`);
+lentesContactoHtml = lentesContactoHtml.replace('<div id="root"></div>', `<div id="root">${lentesContactoBodyInjection}</div>`);
+
+const lentesContactoDir = path.join(distDir, 'lentes-de-contacto');
+if (!fs.existsSync(lentesContactoDir)) {
+  fs.mkdirSync(lentesContactoDir, { recursive: true });
+}
+fs.writeFileSync(path.join(lentesContactoDir, 'index.html'), lentesContactoHtml, 'utf8');
+console.log('✅ Pre-rendered /lentes-de-contacto/index.html');
+
 // Generate /nosotros prerender
 const nosotrosTitle = "Nosotros | Óptica Lensique Zapopan";
 const nosotrosDesc = "Nuestra Pasión es tu Visión. Conoce la historia de Óptica Lensique y nuestro compromiso con tu salud visual y tu estilo.";

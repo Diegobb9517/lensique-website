@@ -25,6 +25,7 @@ import BlogPost from './components/BlogPost';
 import { blogPosts } from './data/blogPosts';
 
 import ProgressiveExplainer from './components/ProgressiveExplainer';
+import { ContactLensServicePage } from './components/ContactLensServicePage';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
@@ -1028,9 +1029,15 @@ function PaymentSuccessView() {
   );
 }
 
+function normalizePath(p: string): string {
+  if (!p) return '/';
+  const clean = p.split('?')[0].split('#')[0];
+  return clean.length > 1 && clean.endsWith('/') ? clean.slice(0, -1) : clean;
+}
+
 function getInitialCatalogFilter(): string {
   if (typeof window === 'undefined') return 'Todas';
-  const path = window.location.pathname;
+  const path = normalizePath(window.location.pathname);
   const searchParams = new URLSearchParams(window.location.search);
   const tipo = searchParams.get('tipo');
   if (tipo === 'armazones' || path === '/armazones') return 'Armazones';
@@ -1040,7 +1047,7 @@ function getInitialCatalogFilter(): string {
 }
 
 function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [currentPath, setCurrentPath] = useState(normalizePath(typeof window !== 'undefined' ? window.location.pathname : '/'));
 
   useEffect(() => {
     if (window.location.hash && currentPath === '/') {
@@ -1059,7 +1066,7 @@ function App() {
 
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname;
+      const path = normalizePath(window.location.pathname);
       setCurrentPath(path);
       setIsCatalogOpen(path === '/catalogo' || path === '/armazones' || path.startsWith('/marca/'));
       setCatalogInitialFilter(getInitialCatalogFilter());
@@ -1102,8 +1109,8 @@ function App() {
       title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
       desc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";
     } else if (currentPath === '/lentes-de-contacto') {
-      title = "Lentes de Contacto en Zapopan | Óptica Lensique";
-      desc = "Lentes de contacto blandos, tóricos para astigmatismo y multifocales. Acuvue, Biotrue, Bausch + Lomb, Biofinity y Clariti. Adaptación con oftalmólogo en Zapopan.";
+      title = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Adaptación Lensique";
+      desc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, adaptación con optometrista y marcas líderes.";
     } else if (currentPath === '/seguimiento' || currentPath.startsWith('/p/')) {
       title = "Seguimiento de Pedido | Óptica Lensique";
       desc = "Consulta el estado en tiempo real de tu pedido en Óptica Lensique.";
@@ -1447,7 +1454,7 @@ function App() {
         document.title = "Catálogo | Óptica Lensique";
       }
     } else {
-      if (window.location.pathname === '/catalogo' || window.location.pathname === '/lentes-de-contacto' || window.location.pathname.startsWith('/marca/')) {
+      if (window.location.pathname === '/catalogo' || window.location.pathname.startsWith('/marca/')) {
         setCurrentPath('/');
         window.history.pushState(null, '', '/');
         document.title = 'Lensique | Óptica en Zapopan, Guadalajara – Examen con oftalmólogo';
@@ -2591,50 +2598,23 @@ function App() {
         )}
 
         {currentPath === '/lentes-de-contacto' && (
-          <div style={{ paddingTop: '80px', backgroundColor: '#ffffff', paddingBottom: '80px' }}>
-            <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px 40px', textAlign: 'center' }}>Lentes de contacto en Zapopan</h1>
-            
-            <section className="contact-cta-section" style={{ padding: '40px 20px', background: '#f0fdf4', color: '#166534', textAlign: 'center', marginBottom: '40px' }}>
-              <div className="contact-cta-content" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                <h3 style={{ fontSize: '24px', marginBottom: '16px', fontWeight: 600 }}>Adaptación Profesional</h3>
-                <p style={{ fontSize: '16px', color: '#166534', marginBottom: '20px' }}>
-                  Los lentes de contacto requieren adaptación, no solo graduación. La adaptación la realiza un oftalmólogo y el examen es realizado por un oftalmólogo certificado.
-                </p>
-                <a 
-                  href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}?text=${encodeURIComponent('Hola, tengo dudas sobre lentes de contacto')}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="btn btn-wp-primary" 
-                  style={{ backgroundColor: '#16a34a', borderColor: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-                >
-                  Dudas por WhatsApp
-                </a>
-              </div>
-            </section>
-
-            <div className="wp-carousel-grid" style={{ maxWidth: '1200px', margin: '0 auto 60px', padding: '0 20px' }}>
-              {safeJsonParse(settings.featured_contact_lenses).map((product: any, idx: number) => (
-                <div 
-                  key={`contact-${idx}-${product.id}`}
-                  className="wp-product-card"
-                  onClick={() => setSelectedProductDetail(product)}
-                >
-                  <div className="wp-product-image-wrapper">
-                    <img src={resolveImageUrl(product.image_url, product.image)} alt={product.name} className="wp-product-image" loading="lazy" />
-                  </div>
-                  <div className="wp-product-info">
-                    <div className="wp-product-title">{product.name}</div>
-                    <div className="wp-product-price">{product.price ? `${product.price}` : ''}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div style={{ textAlign: 'center' }}>
-                <button className="btn btn-wp-secondary" onClick={() => setIsContactQuizOpen(true)}>
-                  Iniciar guía interactiva
-                </button>
-            </div>
-          </div>
+          <ContactLensServicePage
+            onNavigateToCatalog={(cat) => {
+              setCatalogInitialFilter('Lentes de Contacto');
+              setIsCatalogOpen(true);
+              setCurrentPath('/catalogo');
+              window.history.pushState(null, '', '/catalogo?tipo=contacto');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenWhatsApp={(msg) => {
+              const cleanPhone = (settings.contact_whatsapp || '523316929111').replace(/\D/g, '');
+              window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg || 'Hola, tengo dudas sobre lentes de contacto')}`, '_blank', 'noopener,noreferrer');
+            }}
+            onBookExam={() => handleOpenBooking()}
+            onViewProduct={(product) => setSelectedProductDetail(product)}
+            featuredProducts={safeJsonParse(settings.featured_contact_lenses)}
+            contactWhatsapp={settings.contact_whatsapp}
+          />
         )}
 
         {currentPath === '/blog' && (
@@ -3141,22 +3121,11 @@ function App() {
                 id: 's4', 
                 title: 'Lentes de contacto', 
                 img: contactLensesImg, 
-                action: () => setSelectedServiceInfo({
-                  id: 's4',
-                  title: 'Lentes de contacto',
-                  subtitle: 'Visión libre y cómoda',
-                  description: '<p>Descubre una forma cómoda e invisible de corregir tu visión. Ofrecemos adaptaciones personalizadas para asegurar la mejor opción para tus ojos, ya sea para uso diario, mensual o casos especiales.</p>',
-                  image: contactLensesImg,
-                  actionText: 'Ver lentes de contacto',
-                  onAction: () => {
-                    setSelectedServiceInfo(null);
-                    setCatalogInitialFilter('Lentes de Contacto');
-                    setIsCatalogOpen(true);
-                    setCurrentPath('/catalogo');
-                    window.history.pushState(null, '', '/catalogo?tipo=contacto');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }
-                })
+                action: () => {
+                  setCurrentPath('/lentes-de-contacto');
+                  window.history.pushState(null, '', '/lentes-de-contacto');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
               }
             ].map((service, idx) => (
               <div key={service.id} className="wp-service-wrapper">
@@ -3702,7 +3671,7 @@ function App() {
                   }}>Lentes oftálmicos</a>
                   <a href="/micas">Micas monofocales</a>
                   <a href="/micas">Micas progresivas</a>
-                  <a href="#lentes-contacto" onClick={(e) => { e.preventDefault(); setIsContactQuizOpen(true); }}>Lentes de contacto</a>
+                  <a href="/lentes-de-contacto" onClick={(e) => { e.preventDefault(); setCurrentPath('/lentes-de-contacto'); window.history.pushState(null, '', '/lentes-de-contacto'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Lentes de contacto</a>
                 </div>
                 
                 <div className="footer-col">

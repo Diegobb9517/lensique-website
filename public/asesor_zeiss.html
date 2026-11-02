@@ -70,12 +70,268 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 .muted{font-size:12.5px;color:var(--grey);line-height:1.55}
 .restart{display:flex;justify-content:center;align-items:center;text-align:center;padding:14px 32px 20px}.restart button{background:none;border:none;color:var(--grey);font-size:12.5px;cursor:pointer;text-decoration:underline;margin:0 auto}
 .center-narrow{max-width:600px;margin:0 auto}
-.stage{display:grid;grid-template-columns:1fr 440px;gap:46px;align-items:start}
-.stageVisual{position:sticky;top:104px;background:#ffffff}
-.stageBody{min-width:0}
-@media(max-width:880px){.stage{grid-template-columns:1fr;gap:14px}.stageVisual{position:static;max-width:560px;margin:0 auto;background:#ffffff}.heroStage{min-height:auto;padding:2px;background:#ffffff;border:none;box-shadow:none;border-radius:0}.frameWrap{max-width:400px;background:#ffffff;border:none;box-shadow:none;border-radius:0}.heroTag{margin-bottom:6px}.thDetail{margin-top:6px}.step{padding:12px 22px 105px}header{padding:20px 24px 14px}.prog{padding:16px 24px 4px}.nav{padding:10px 22px}.restart{padding:0 22px 10px}.secQ{font-size:22px}.secS{font-size:13.5px}.big{padding:15px 16px}.big .nm{font-size:16px}.big .ds{font-size:13px}.heroCap{margin-top:12px;font-size:13.5px}}
-@media(max-width:560px){.stageVisual{position:static;max-width:100%;margin:0 auto 14px;background:#ffffff;display:block}.frameWrap{max-width:320px;background:#ffffff;border:none;box-shadow:none;border-radius:0}.step{padding:12px 16px 105px}header{padding:14px 16px 12px}header .s{display:none}#closeBtnStandalone{margin-top:0}.prog{padding:12px 16px 4px}.logo{font-size:24px}.hcred{font-size:8px;letter-spacing:0.8px}.secQ{font-size:20px}.m-step{display:none}.m-step.m-active{display:block}.nav{display:none !important}.m-nav{display:flex;gap:12px;margin-top:24px;padding-bottom:24px}.sec{border-bottom:none !important;margin-bottom:0 !important}}
-@media(min-width:561px){.m-nav{display:none !important}}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #ffffff;
+  color: var(--navy);
+  display: flex;
+  flex-direction: column;
+}
+
+#top-price-bar {
+  flex: 0 0 auto;
+  min-height: 40px;
+  box-sizing: border-box;
+  background: #f8fafc;
+  color: var(--navy);
+  padding: 10px 60px 10px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 100;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  position: relative;
+  width: 100%;
+}
+
+.app {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+  border-top: none;
+}
+
+.col-left {
+  flex: 0 0 46%;
+  min-width: 360px;
+  max-width: 540px;
+  height: 100%;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.col-left header {
+  flex: 0 0 auto;
+  padding: 22px 30px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+  position: static;
+}
+
+.col-left .stageVisual {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px 30px;
+  background: #ffffff;
+  position: static;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.col-right {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.stageBody-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px 36px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stageBody-scroll .step {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.stageBody-scroll .stageBody {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.stageBody-scroll .restart {
+  width: 100%;
+  max-width: 580px;
+  margin: 18px auto 0;
+  padding: 0;
+  text-align: center;
+}
+
+.nav {
+  flex: 0 0 auto;
+  border-top: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  padding: 12px 28px;
+  z-index: 50;
+  width: 100%;
+  box-sizing: border-box;
+  display: block !important;
+  position: static;
+}
+
+@media(max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+  .col-left {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: #ffffff;
+    z-index: 10;
+    overflow: hidden;
+  }
+  .col-left header {
+    padding: 0;
+    border-bottom: none;
+    flex: 0 0 auto;
+  }
+  .col-left header .brandrow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .col-left header .logo {
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  .col-left header .hcred {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  .col-left header .s {
+    display: none;
+  }
+  .col-left .stageVisual {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .col-left .heroStage {
+    padding: 0;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+  }
+  .col-left .heroTag {
+    display: none;
+  }
+  .col-left .frameWrap {
+    max-width: 85px;
+    max-height: 44px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .col-left .frameImg {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+  }
+  .col-left .heroCap {
+    display: block;
+    font-size: 10px;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    text-align: right;
+  }
+  .col-right {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .stageBody-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 14px 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .stageBody-scroll .step,
+  .stageBody-scroll .stageBody {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+  .nav {
+    display: block !important;
+    padding: 8px 12px;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+    z-index: 50;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .navBar {
+    width: 100%;
+    justify-content: center;
+  }
+  .m-step {
+    display: block !important;
+  }
+  .m-nav {
+    display: none !important;
+  }
+}
 .heroStage{background:#ffffff;border:none;border-radius:0;box-shadow:none;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:0;width:100%}
 .heroTag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
 .heroSvg{width:100%;max-width:760px;display:block;margin:0 auto;overflow:visible}
@@ -119,20 +375,30 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 ::-webkit-scrollbar-thumb:hover{background:rgba(118,114,107,.5)}
 </style></head><body>
 <div class="app firstload">
-<header>
-  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-    <div>
-      <div class="brandrow"><a href="/" target="_top" class="logo" style="text-decoration:none;">Lensique<sup>&reg;</sup></a><div class="hcred">Asesor&iacute;a &oacute;ptica profesional</div></div>
-      <div class="s">Encontremos el lente perfecto para ti</div>
+  <aside class="col-left" id="colLeft">
+    <header>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="brandrow"><a href="/" target="_top" class="logo" style="text-decoration:none;">Lensique<sup>&reg;</sup></a><div class="hcred">Asesor&iacute;a &oacute;ptica profesional</div></div>
+          <div class="s">Encontremos el lente perfecto para ti</div>
+        </div>
+        <a href="/" target="_top" id="closeBtnStandalone" style="display:none; border-radius:30px; background:#f1f3f6; color:var(--navy); align-items:center; justify-content:center; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 14px; margin-top:0px; flex-shrink:0; border:1px solid #e2e6eb; gap:6px; letter-spacing:0.3px;" onmouseover="this.style.background='#e3e7ec'" onmouseout="this.style.background='#f1f3f6'">&#8592; Volver</a>
+      </div>
+      <script>try{if(window.self===window.top)document.getElementById("closeBtnStandalone").style.display="flex";}catch(e){}</script>
+    </header>
+    <div class="stageVisual" id="stageVisual"></div>
+  </aside>
+
+  <main class="col-right" id="colRight">
+    <div class="prog" id="prog" style="display:none"></div>
+    <div class="stageBody-scroll" id="stageBodyScroll">
+      <div class="step" id="step">
+        <div class="stageBody" id="stageBody"></div>
+      </div>
+      <div class="restart" id="restart" style="display:none"><button onclick="reset()">↻ Empezar de nuevo</button></div>
     </div>
-    <a href="/" target="_top" id="closeBtnStandalone" style="display:none; border-radius:30px; background:#f1f3f6; color:var(--navy); align-items:center; justify-content:center; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 14px; margin-top:0px; flex-shrink:0; border:1px solid #e2e6eb; gap:6px; letter-spacing:0.3px;" onmouseover="this.style.background='#e3e7ec'" onmouseout="this.style.background='#f1f3f6'">&#8592; Volver</a>
-  </div>
-  <script>try{if(window.self===window.top)document.getElementById("closeBtnStandalone").style.display="flex";}catch(e){}</script>
-</header>
-<div class="prog" id="prog"></div>
-<div class="step" id="step"></div>
-<div class="nav" id="nav"></div>
-<div class="restart" id="restart" style="display:none"><button onclick="reset()">↻ Empezar de nuevo</button></div>
+    <div class="nav" id="nav"></div>
+  </main>
 </div>
 <script>
 /* === IMÁGENES DEL ARMAZÓN (embebidas en base64) === */
@@ -1093,54 +1359,15 @@ function buyFrameOnly() {
 }
 
 function stepWrap(stepNum, content) {
-  var isMobile = window.innerWidth <= 560;
-  if(!isMobile) return content;
-  var on = ST.step === stepNum ? ' m-active' : '';
-  var btns = '<div class="m-nav" style="flex-direction:column;gap:8px;">';
-  var row = '<div style="display:flex;gap:12px;width:100%;">';
-  if(stepNum > 1) row += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
-  
-  var disabledNext = false;
-  if(stepNum === 2 && !ST.rxMethod) disabledNext = true;
-  
-  if(stepNum < 5) {
-    row += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:' + (disabledNext ? '#64748b' : '#fff') + ';" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
-  } else {
-    var _frame=true;try{_frame=(window.self!==window.top)||(window.framePrice>0);}catch(e){_frame=true;}
-    var hasRx = !!ST.rxMethod;
-    var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
-    var _bTxt = hasRx ? (_tot > 0 ? "Comprar ahora — $" + _tot.toLocaleString("en-US") : "Agregar al carrito") : "Continuar";
-    var _bg = hasRx ? "#16a34a" : "#cbd5e1";
-    var _col = hasRx ? "#fff" : "#475569";
-    if(_frame){
-      row += '<button class="btn next" id="cartBtn" onclick="' + (hasRx ? 'addToCart()' : 'scrollToRx()') + '" ' + (!hasRx ? 'disabled' : '') + ' style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:' + _bg + ';color:' + _col + ';cursor:' + (hasRx ? 'pointer' : 'not-allowed') + ';">' + _bTxt + '</button>';
-    } else if(isOptica()){
-      row += '<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar orden por WhatsApp</button>';
-    } else {
-      row += '<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar mi cotización por WhatsApp</button>';
-    }
-  }
-  row += '</div>';
-  btns += row;
-  
-  if (!ST.rxMethod && stepNum === 5) {
-    btns += '<div onclick="scrollToRx()" onmouseover="this.style.background=\'#fef08a\'" onmouseout="this.style.background=\'#fef9c3\'" style="cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:fit-content;max-width:100%;margin:4px auto 0;padding:6px 13px;background:#fef9c3;color:#854d0e;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid #fef08a;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.03);user-select:none;transition:background 0.15s ease;"><span style="font-size:12px;">⚠️</span> Falta tu graduación — <span style="text-decoration:underline;margin-left:2px;">Ir a paso 2 &darr;</span></div>';
-  }
-  if (window.framePrice > 0) {
-    btns += '<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:11.5px;text-decoration:underline;cursor:pointer;padding:4px;text-align:center;">Comprar solo armazón sin micas (' + money(window.framePrice||framePrice||0) + ')</button>';
-  }
-  btns += '</div>';
-  return '<div class="m-step m-step-' + stepNum + on + '">' + content + btns + '</div>';
+  return '<div class="step-card" id="sec-step-' + stepNum + '">' + content + '</div>';
 }
-
-
 
 function renderTopBar() {
   var topBar = document.getElementById("top-price-bar");
   if (!topBar) {
     topBar = document.createElement("div");
     topBar.id = "top-price-bar";
-    topBar.style.cssText = "position:sticky;top:0;background:#f8fafc;color:var(--navy);padding:12px;text-align:center;font-size:14px;font-weight:600;z-index:100;border-bottom:1px solid #e2e8f0;box-shadow:0 2px 4px rgba(0,0,0,0.05);";
+    topBar.style.cssText = "flex:0 0 auto;min-height:40px;box-sizing:border-box;background:#f8fafc;color:var(--navy);padding:10px 60px 10px 16px;text-align:center;font-size:14px;font-weight:600;z-index:100;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative;width:100%;";
     document.body.insertBefore(topBar, document.body.firstChild);
   }
   var q = zeissQuote();
@@ -1242,9 +1469,23 @@ function render(){
  var sec05TuLente = '<section class="sec" id="sec-05">'+secHead("05 — Tu lente","Lo que hace por ti","")+o5b+'</section>';
  R+=stepWrap(5, sec05TuLente + priceSection() + labPanel());
 
- var _sb=document.getElementById("stageBody");
- if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
- else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ var _sv = document.getElementById("stageVisual");
+ if (_sv) {
+   if (!_sv.innerHTML || !document.getElementById("heroStage")) {
+     _sv.innerHTML = heroSVG();
+   } else {
+     updateHeroPieces();
+   }
+ }
+ var _sb = document.getElementById("stageBody");
+ if (_sb) {
+   var _ap = document.querySelector(".app");
+   if (_ap) _ap.classList.remove("firstload");
+   _sb.innerHTML = R;
+ } else {
+   var _st = $("step");
+   if (_st) _st.innerHTML = '<div class="stageBody" id="stageBody">' + R + '</div>';
+ }
  updateSideTh();
  var _frame=true;try{_frame=(window.self!==window.top)||(window.framePrice>0);}catch(e){_frame=true;}var _btn;
  if(_frame){

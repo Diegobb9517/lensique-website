@@ -108,22 +108,24 @@ export default function LensConfiguratorModal({
             aria-label="Cerrar modal"
             onClick={onClose} 
             style={{ 
-              position: 'absolute', 
-              top: '16px', 
-              right: '20px', 
-              zIndex: 100, 
-              background: '#fff', 
+              position: 'fixed', 
+              top: '8px', 
+              right: '16px', 
+              zIndex: 1000, 
+              background: '#ffffff', 
               borderRadius: '50%', 
               padding: '8px', 
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              border: 'none',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              border: '1px solid #e2e8f0',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              width: '38px',
+              height: '38px'
             }}
           >
-            <X size={24} color="#1b2436" />
+            <X size={20} color="#1b2436" />
           </button>
           
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: iframeLoaded ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 1, backgroundColor: '#f8fafc' }}>

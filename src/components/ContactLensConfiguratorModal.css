@@ -1,48 +1,53 @@
 .contact-lens-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background-color: #ffffff;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   z-index: 10000;
-  padding: 0.75rem 1rem;
-  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .contact-lens-modal {
   background: white;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 1040px;
-  height: 500px;
-  max-height: calc(100vh - 1.5rem);
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100vh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: row;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  margin: auto;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
 }
 
 .contact-lens-modal-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+  position: fixed;
+  top: 10px;
+  right: 16px;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
-  color: #64748b;
+  z-index: 100;
+  color: #1b2436;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: all 0.2s ease;
 }
 
@@ -53,39 +58,58 @@
 
 /* LEFT PANEL */
 .contact-lens-summary-panel {
-  flex: 0 0 320px;
-  max-width: 340px;
+  flex: 0 0 380px;
+  max-width: 420px;
+  height: 100%;
   background: white;
   border-right: 1px solid #e2e8f0;
-  padding: 1.15rem 1.35rem;
+  padding: 2.25rem 2rem;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .contact-lens-summary-image-wrapper {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   background: #f8fafc;
-  border-radius: 10px;
-  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid #f1f5f9;
-  min-height: 85px;
-  max-height: 110px;
+  min-height: 140px;
+  max-height: 190px;
   overflow: hidden;
 }
 
 .contact-lens-summary-image {
   max-width: 100%;
-  max-height: 95px;
+  max-height: 160px;
   width: auto;
   height: auto;
   object-fit: contain;
   display: block;
   margin: 0 auto;
+}
+
+.contact-lens-summary-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-lens-summary-usage {
+  font-size: 0.8125rem;
+  color: #0f172a;
+  font-weight: 600;
+  margin-top: 0.2rem;
+  margin-bottom: 0;
+}
+
+.contact-lens-mobile-total {
+  display: none;
 }
 
 .contact-lens-summary-brand {
@@ -122,9 +146,30 @@
 }
 
 /* RIGHT PANEL */
-.contact-lens-content-panel {
+.contact-lens-scroll-panel {
   flex: 1;
-  padding: 1.25rem 2rem;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: white;
+  box-sizing: border-box;
+  padding: 2.5rem 2.5rem 4rem;
+}
+
+.contact-lens-scroll-inner {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-lens-content-panel {
+  width: 100%;
+  padding: 0;
   display: flex;
   flex-direction: column;
   overflow: visible;
@@ -492,8 +537,7 @@
     min-height: 100dvh;
     max-height: 100dvh;
     border-radius: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     margin: 0;
     max-width: 100%;
   }
@@ -501,15 +545,21 @@
   .contact-lens-summary-panel {
     display: flex;
     flex: 0 0 auto;
+    width: 100%;
     max-width: 100%;
-    padding: 1rem 1.25rem;
-    padding-top: 2.75rem;
+    height: auto;
+    padding: 8px 12px;
+    padding-right: 56px; /* leave room for close button */
     border-right: none;
     border-bottom: 1px solid #e2e8f0;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    gap: 10px;
+    text-align: left;
     background: #fafafa;
-    overflow-y: visible;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 10;
   }
 
   .contact-lens-summary-extra {
@@ -517,30 +567,79 @@
   }
 
   .contact-lens-summary-image-wrapper {
-    margin: 0 auto 0.5rem;
-    padding: 0.5rem;
+    margin: 0;
+    padding: 2px 4px;
     min-height: auto;
-    max-height: 100px;
-    max-width: 140px;
-    width: 100%;
+    max-height: 48px;
+    max-width: 60px;
+    width: 60px;
+    height: 48px;
     background: #ffffff;
+    flex-shrink: 0;
   }
 
   .contact-lens-summary-image {
-    max-height: 85px;
+    max-height: 44px;
     max-width: 100%;
     object-fit: contain;
     margin: 0 auto;
     display: block;
   }
 
+  .contact-lens-summary-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .contact-lens-summary-brand {
+    font-size: 0.65rem;
+    line-height: 1.1;
+  }
+
   .contact-lens-summary-name {
-    font-size: 1.15rem;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .contact-lens-summary-usage {
+    display: none;
+  }
+
+  .contact-lens-mobile-total {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1a4cd2;
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .contact-lens-scroll-panel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 16px 36px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .contact-lens-scroll-inner {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
   }
   
   .contact-lens-content-panel {
-    padding: 1.25rem;
-    padding-top: 1rem;
+    padding: 0;
     overflow-y: visible;
   }
   

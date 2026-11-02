@@ -523,7 +523,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
       >
-        <button className="contact-lens-modal-close" onClick={onClose}>
+        <button className="contact-lens-modal-close" onClick={onClose} aria-label="Cerrar modal">
           <X size={20} />
         </button>
 
@@ -542,13 +542,19 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             />
           </div>
           
-          <span className="contact-lens-summary-brand">
-            {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
-          </span>
-          <h3 className="contact-lens-summary-name">
-            {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
-          </h3>
-          <p style={{ fontSize: '0.8125rem', color: '#0f172a', fontWeight: 600, marginTop: '0.2rem', marginBottom: 0 }}>{getUsageType()}</p>
+          <div className="contact-lens-summary-info">
+            <span className="contact-lens-summary-brand">
+              {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
+            </span>
+            <h3 className="contact-lens-summary-name">
+              {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
+            </h3>
+            <p className="contact-lens-summary-usage">{getUsageType()}</p>
+          </div>
+
+          <div className="contact-lens-mobile-total">
+            ${Math.round(totalPrice).toLocaleString('es-MX')}
+          </div>
           
           <div className="contact-lens-summary-extra">
             <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #f1f5f9' }}>
@@ -578,8 +584,10 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
           </div>
         </div>
 
-        <div style={{ flex: 1, display: 'flex', overflowY: 'auto' }}>
-          {renderStepContent()}
+        <div className="contact-lens-scroll-panel">
+          <div className="contact-lens-scroll-inner">
+            {renderStepContent()}
+          </div>
         </div>
 
       </motion.div>

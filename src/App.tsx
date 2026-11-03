@@ -29,10 +29,10 @@ import { ContactLensServicePage } from './components/ContactLensServicePage';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
-import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName } from './lib/format';
+import { getDisplayName, formatProductTitle, getContactLensUsage, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName } from './lib/format';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
-import { ProductCard } from './components/ProductCard';
+import { ProductCard, FormatProductName } from './components/ProductCard';
 import { CollectionRow } from './components/CollectionRow';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
@@ -264,7 +264,7 @@ function FullCatalog({
       ...p,
       name: displayName,
       image: resolveImageUrl(p.image_url, p.image),
-      model: p.sku 
+      model: p.model || p.sku 
     };
   }).filter(p => {
     const searchLower = searchQuery.toLowerCase();
@@ -1843,10 +1843,14 @@ function App() {
 
               {/* Right: Info */}
               <div className="product-detail-info-col">
-                <span className="product-detail-category">{selectedProductDetail.brand || selectedProductDetail.category || 'Lensique'}</span>
+                <span className="product-detail-category">
+                  {(selectedProductDetail.brand && selectedProductDetail.brand !== 'null')
+                    ? formatBrandName(selectedProductDetail.brand)
+                    : (selectedProductDetail.category || 'Lensique')}
+                </span>
                 
                 <h2 className="product-detail-name">
-                  <span style={isProvisionalName(selectedProductDetail) ? { color: '#888', fontSize: '0.8em', fontWeight: 'normal', textTransform: 'uppercase' } : {}}>{getDisplayName(selectedProductDetail)}</span>
+                  <FormatProductName product={selectedProductDetail} />
                 </h2>
 
                 {(() => {

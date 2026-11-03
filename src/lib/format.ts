@@ -23,49 +23,23 @@ export const formatModelName = (modelRaw: string): string => {
 export const isProvisionalName = (product: any): boolean => {
   const isContact = String(product.category || '').toLowerCase().includes('contacto');
   if (!isContact) return false;
-  let model = (product.model || product.name || '').trim();
-  return (!product.description && (/^LC-/i.test(model) || model === product.sku));
+  let name = (product.name || product.model || '').trim();
+  name = name.replace(/\s*\([^)]*\)\s*$/g, '').trim();
+  return (!product.description && (/^LC-[A-Z0-9]+$/i.test(name) || name === product.sku));
 };
 
 export const getDisplayName = (product: any): string => {
   if (!product) return '';
   if (product.display_name) return product.display_name.trim();
   
-  const brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
-  let model = (product.model || product.name || '').trim();
+  const brand = (product.brand && product.brand !== 'null') ? formatBrandName(product.brand) : '';
+  const cleanModel = getCardDisplayName(product);
   
-  const isContact = String(product.category || '').toLowerCase().includes('contacto');
-  if (isContact && (/^LC-/i.test(model) || model === product.sku)) {
-    let descText = '';
-    if (product.description) {
-      descText = toTitleCase(product.description.split(/\s+/).slice(0, 6).join(' '));
-      return (brand ? brand + ' ' + descText : descText).trim();
-    } else {
-      let skuRaw = product.sku || model;
-      return skuRaw.replace(/^LC-/i, '');
-    }
+  if (!brand) return cleanModel;
+  if (cleanModel.toUpperCase().startsWith(brand.toUpperCase())) {
+    return cleanModel;
   }
-  
-  if (brand) {
-    const brandUpper = brand.toUpperCase().trim();
-    let cleaned = false;
-    do {
-      cleaned = false;
-      if (model.toUpperCase().startsWith(brandUpper)) {
-        model = model.substring(brandUpper.length).trim();
-        cleaned = true;
-      }
-    } while (cleaned);
-  }
-  
-  const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
-  if (isFrame) {
-    model = model.replace(/^VISTA\s+/i, '').trim();
-  }
-  
-  model = formatModelName(model);
-  
-  return (brand ? brand + ' ' + model : model).trim();
+  return `${brand} ${cleanModel}`.trim();
 };
 
 export const getCardDisplayName = (product: any): string => {
@@ -77,7 +51,10 @@ export const getCardDisplayName = (product: any): string => {
 
   // 1. Lentes de contacto: mantener la lógica actual
   if (isContact) {
-    if (!product.description && (/^LC-/i.test(rawName) || rawName === product.sku)) {
+    rawName = (product.name || product.model || '').trim();
+    rawName = rawName.replace(/\s*\([^)]*\)\s*$/g, '').trim();
+
+    if (!product.description && (/^LC-[A-Z0-9]+$/i.test(rawName) || rawName === product.sku)) {
       let descText = '';
       if (product.description) {
         descText = toTitleCase(product.description.split(/\s+/).slice(0, 6).join(' '));
@@ -87,10 +64,26 @@ export const getCardDisplayName = (product: any): string => {
         return skuRaw.replace(/^LC-/i, '');
       }
     }
+
+    // Limpiar prefijo LC o LC-
+    rawName = rawName.replace(/^LC[\s-]+/i, '');
+
+    // Corregir erratas comunes en catálogo
+    rawName = rawName.replace(/^dalies\s+/i, 'Dailies ');
+    rawName = rawName.replace(/^bioinfinity\s+/i, 'Biofinity ');
+
+    const formattedB = formatBrandName(brand);
+
     if (brand && rawName.toUpperCase().startsWith(brand.toUpperCase())) {
       rawName = rawName.substring(brand.length).trim();
     }
-    return (brand ? `${formatBrandName(brand)} ${rawName}` : rawName).trim();
+    if (rawName === rawName.toUpperCase() && !/\b[A-Z]{1,3}\d+\b/.test(rawName)) {
+      rawName = toTitleCase(rawName);
+    }
+    if (formattedB && rawName.toUpperCase().includes(formattedB.toUpperCase())) {
+      return rawName.trim();
+    }
+    return (formattedB ? `${formattedB} ${rawName}` : rawName).trim();
   }
 
   // 2. Armazones / Sol

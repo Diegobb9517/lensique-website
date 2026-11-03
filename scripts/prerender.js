@@ -99,35 +99,123 @@ if (products.length === 0) {
   }
 }
 
+const toTitleCase = (str) => {
+  return String(str).toLowerCase().replace(/(?:^|\s|-)\S/g, s => s.toUpperCase());
+};
+
+const formatBrandName = (brand) => {
+  if (!brand) return '';
+  const b = brand.trim();
+  if (/^ray-?ban$/i.test(b)) return 'Ray-Ban';
+  if (/^oq optiqus$/i.test(b)) return 'OQ Optiqus';
+  if (/^thf$/i.test(b) || /^tommy hilfiger$/i.test(b)) return 'Tommy Hilfiger';
+  if (/^calvin klein$/i.test(b)) return 'Calvin Klein';
+  if (/^pierre thomas$/i.test(b)) return 'Pierre Thomas';
+  return toTitleCase(b);
+};
+
+const formatModelName = (modelRaw) => {
+  if (!modelRaw) return '';
+  let cleaned = modelRaw.trim();
+  cleaned = cleaned.replace(/^[0oO](?=[A-Za-z]{2})/i, '');
+  return cleaned;
+};
+
+const getCleanModelName = (product) => {
+  if (!product) return '';
+  const isContact = String(product.category || '').toLowerCase().includes('contacto');
+  let brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
+  let rawName = (product.model || product.name || '').trim();
+
+  if (isContact) {
+    rawName = (product.name || product.model || '').trim();
+    rawName = rawName.replace(/\\s*\\([^)]*\\)\\s*$/g, '').trim();
+
+    if (!product.description && (/^LC-[A-Z0-9]+$/i.test(rawName) || rawName === product.sku)) {
+      let skuRaw = product.sku || rawName;
+      return skuRaw.replace(/^LC-/i, '');
+    }
+    rawName = rawName.replace(/^LC[\s-]+/i, '');
+    rawName = rawName.replace(/^dalies\s+/i, 'Dailies ');
+    rawName = rawName.replace(/^bioinfinity\s+/i, 'Biofinity ');
+    const formattedB = formatBrandName(brand);
+    if (brand && rawName.toUpperCase().startsWith(brand.toUpperCase())) {
+      rawName = rawName.substring(brand.length).trim();
+    }
+    if (rawName === rawName.toUpperCase() && !/\b[A-Z]{1,3}\d+\b/.test(rawName)) {
+      rawName = toTitleCase(rawName);
+    }
+    if (formattedB && rawName.toUpperCase().includes(formattedB.toUpperCase())) {
+      return rawName.trim();
+    }
+    return (formattedB ? `${formattedB} ${rawName}` : rawName).trim();
+  }
+
+  let clean = rawName;
+  const KNOWN_BRANDS = [
+    'RAY-BAN', 'RAY BAN', 'ARNETTE', 'VOGUE', 'CARRERA', 'CALVIN KLEIN',
+    'TOMMY HILFIGER', 'LACOSTE', 'RALPH', 'OAKLEY', 'PUMA', 'SEMA', 'ACADEMIC', 'PIERRE THOMAS'
+  ];
+  if (!brand) {
+    for (const kb of KNOWN_BRANDS) {
+      if (clean.toUpperCase().startsWith(kb)) {
+        brand = kb;
+        clean = clean.substring(kb.length).trim();
+        break;
+      }
+    }
+  } else {
+    const bUpper = brand.toUpperCase();
+    while (clean.toUpperCase().startsWith(bUpper)) {
+      clean = clean.substring(bUpper.length).trim();
+    }
+  }
+
+  clean = clean.replace(/^(?:RAY-?BAN\s+)?VISTA\s+/i, '');
+  clean = clean.replace(/\s*\((?:Vista|Sol)\)/gi, '');
+  clean = clean.replace(/\b(?:Vista|Sol)\b/gi, '');
+  clean = clean.replace(/\s*Talla\b.*$/i, '');
+  clean = clean.replace(/\s*\([^)]*\)/g, '');
+  clean = clean.replace(/\s*-\s*[A-Za-z0-9\u00C0-\u017F/]+(?:\s+[A-Za-z0-9\u00C0-\u017F/]+)*\s*$/, '');
+
+  const multiDashMatch = clean.match(/^([A-Za-z]{1,4}-\d+[A-Za-z]?)-([A-Za-z0-9/]+)$/);
+  if (multiDashMatch) {
+    clean = multiDashMatch[1];
+  }
+
+  clean = clean.replace(/^([0oO]?[A-Za-z]{2}\d+[A-Za-z]?)\s+[A-Za-z0-9/]+.*$/, '$1');
+  clean = formatModelName(clean);
+
+  clean = clean.split(/\s+/).map(token => {
+    if (/\d/.test(token) || /^(TH|CK|CA|ML|PU|SM|RA|RX|AN|VO)$/i.test(token)) {
+      return token.toUpperCase();
+    }
+    return toTitleCase(token);
+  }).join(' ');
+
+  const formattedBrand = formatBrandName(brand);
+  if (formattedBrand && clean.toUpperCase().startsWith(formattedBrand.toUpperCase())) {
+    clean = clean.substring(formattedBrand.length).trim();
+  }
+
+  clean = clean.replace(/\s*-\s*$/, '').replace(/\s{2,}/g, ' ').trim();
+  if (!clean || !/[a-zA-Z0-9]/.test(clean) || (formattedBrand && clean.toUpperCase() === formattedBrand.toUpperCase())) {
+    clean = (formattedBrand || rawName).trim();
+  }
+  return clean;
+};
+
 // Process each product
 let generatedCount = 0;
 products.forEach(p => {
-    const brand = (p.brand && p.brand !== 'null') ? p.brand.trim() : '';
-  let model = (p.model || p.name || '').trim();
-  
-  if (brand) {
-    const brandUpper = brand.toUpperCase().trim();
-    let cleaned = false;
-    do {
-      cleaned = false;
-      if (model.toUpperCase().startsWith(brandUpper)) {
-        model = model.substring(brandUpper.length).trim();
-        cleaned = true;
-      }
-    } while (cleaned);
-  }
-  
+  const brand = (p.brand && p.brand !== 'null') ? p.brand.trim() : '';
   const isContact = String(p.category || '').toLowerCase().includes('contacto');
   const categoryLabel = isContact ? 'Lentes de Contacto' : 'Armazón oftálmico';
-  
+  const brandLabel = brand ? formatBrandName(brand) : (isContact ? 'Lentes de Contacto' : 'Óptica Lensique');
+  const cleanModel = getCleanModelName(p);
+  const displayName = p.display_name ? p.display_name.trim() : (brandLabel && !cleanModel.toUpperCase().startsWith(brandLabel.toUpperCase()) ? `${brandLabel} ${cleanModel}` : cleanModel).trim();
   const isFrame = !String(p.category || '').toLowerCase().includes('sol') && !isContact;
-  if (isFrame) {
-    model = model.replace(/^VISTA\s+/i, '').trim();
-  }
-  
-  model = model.replace(/^0(?=[A-Za-z]{2})/i, '');
-  
-  const displayName = p.display_name ? p.display_name.trim() : (brand ? brand + ' ' + model : model).trim();
+  const model = cleanModel;
   
   const slug = getProductSlug(p);
   const canonicalUrl = `https://www.lensique.com.mx/producto/${slug}`;
@@ -189,8 +277,8 @@ ${JSON.stringify(jsonLd, null, 2)}
 
   const bodyInjection = `
     <div id="product-seo-fallback" style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif; border: 1px solid #eaeaea; border-radius: 16px; background: #ffffff;">
-      <span style="font-size: 14px; text-transform: uppercase; color: #6b7280; letter-spacing: 0.05em;">${brand || 'Óptica Lensique'} · ${categoryLabel}</span>
-      <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 8px 0;">${brand ? brand + ' ' : ''}${model}</h1>
+      <span style="font-size: 14px; font-weight: 500; color: #6b7280; letter-spacing: 0.05em;">${brandLabel} · ${categoryLabel}</span>
+      <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 8px 0;">${cleanModel}</h1>
       <p style="font-size: 24px; font-weight: 700; color: #16a34a; margin: 12px 0;">${formattedPriceMxn}</p>
       <div style="display: inline-block; padding: 6px 12px; background: ${isOutOfStock ? '#fff7ed' : '#f0fdf4'}; color: ${isOutOfStock ? '#c2410c' : '#15803d'}; font-weight: 600; border-radius: 6px; font-size: 13px; margin-bottom: 16px;">
         Disponibilidad: ${availabilityText}

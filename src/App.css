@@ -3430,10 +3430,10 @@ body.no-scroll {
 }
 
 .product-detail-category {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #999;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #6b7280;
   margin-bottom: 8px;
   display: block;
 }
@@ -3445,6 +3445,13 @@ body.no-scroll {
   color: #1d1d1f;
   margin: 0 0 12px;
   line-height: 1.05;
+}
+
+.product-detail-name .fpn-main {
+  display: inline;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .product-detail-code {

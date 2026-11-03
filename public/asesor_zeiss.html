@@ -996,19 +996,21 @@ function heroSVG(){
  var rw=ST.poli?5:(({"1.50":7,"1.60":6,"1.67":4.5,"1.74":3.5})[ST.idx]||6);
  var A="",AT=11,isFoto=(t==="foto");
  function progGroup(g){
-  if(ST.type!=="prog")return "";
-  var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry;
-  var pq=(ST.type==="prog"&&LEVEL_Q[ST.level]!=null)?LEVEL_Q[ST.level]:0.6,wf=0.26+pq*0.5,wingOp=(0.84-pq*0.22).toFixed(2);
-  var dark=(tintOp>0.45||mirOp>0),labCol=dark?"#f0f2f5":"#2c3543",wingCol=dark?"#cfd4da":"#54616f";
-  var lf=' font-weight="600" fill="'+labCol+'" opacity=".72" font-family="-apple-system,Segoe UI,sans-serif"';
-  return '<g style="opacity:'+progOp+';'+A+'">'
-   +'<path d="M'+(cx-rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx-rx*wf)+' '+(cy+ry*0.32)+' '+(cx-rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx-rx*wf)+' '+(cy+ry*1.05)+' L'+(cx-rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/>'
-   +'<path d="M'+(cx+rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx+rx*wf)+' '+(cy+ry*0.32)+' '+(cx+rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx+rx*wf)+' '+(cy+ry*1.05)+' L'+(cx+rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/>'
-   +'<text x="'+cx+'" y="'+(cy-ry*0.42)+'" text-anchor="middle" font-size="50" letter-spacing="4"'+lf+'>LEJOS</text>'
-   +'<text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="44" letter-spacing="3"'+lf+'>INTERMEDIO</text>'
-   +'<text x="'+cx+'" y="'+(cy+ry*0.54)+'" text-anchor="middle" font-size="50" letter-spacing="4"'+lf+'>CERCA</text>'
-   +'</g>';
- }
+   if(ST.type!=="prog"||g.id!=="R")return "";
+   var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry;
+   var dark=(tintOp>0.45||mirOp>0);
+   var labCol=dark?"#f8fafc":"#0f172a",lineCol=dark?"rgba(248,250,252,0.38)":"rgba(15,23,42,0.22)";
+   var textStyle='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;font-weight:700;';
+   var yLejos=cy-ry*0.44,yDiv1=cy-ry*0.13,yInter=cy+12,yDiv2=cy+ry*0.28,yCerca=cy+ry*0.54;
+   var div1='<line x1="'+(cx-210)+'" y1="'+yDiv1+'" x2="'+(cx+210)+'" y2="'+yDiv1+'" stroke="'+lineCol+'" stroke-width="1.5" stroke-linecap="round"/>';
+   var div2='<line x1="'+(cx-180)+'" y1="'+yDiv2+'" x2="'+(cx+180)+'" y2="'+yDiv2+'" stroke="'+lineCol+'" stroke-width="1.5" stroke-linecap="round"/>';
+   return '<g style="opacity:'+progOp+';'+A+'">'
+    +div1+div2
+    +'<text x="'+cx+'" y="'+yLejos+'" text-anchor="middle" font-size="48" letter-spacing="4.5" fill="'+labCol+'" opacity="'+(dark?0.95:0.88)+'" style="'+textStyle+'">LEJOS</text>'
+    +'<text x="'+cx+'" y="'+yInter+'" text-anchor="middle" font-size="38" letter-spacing="3.5" fill="'+labCol+'" opacity="'+(dark?0.95:0.88)+'" style="'+textStyle+'">INTERMEDIO</text>'
+    +'<text x="'+cx+'" y="'+yCerca+'" text-anchor="middle" font-size="48" letter-spacing="4.5" fill="'+labCol+'" opacity="'+(dark?0.95:0.88)+'" style="'+textStyle+'">CERCA</text>'
+    +'</g>';
+  }
  var LENS=[{cx:841,cy:818,rx:398,ry:372,id:"L"},{cx:1974,cy:820,rx:397,ry:374,id:"R"}];
  function fx(g){
   var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry,by=cy+ry*0.3;

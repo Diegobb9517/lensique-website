@@ -205,18 +205,28 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const renderPrescriptionForm = (eye: 'OD' | 'OS', label: string) => {
     const values = eye === 'OD' ? prescriptionOD : prescriptionOS;
     const setValues = eye === 'OD' ? setPrescriptionOD : setPrescriptionOS;
+    const isComplex = isToric || isMultifocal;
 
     return (
       <div className="cl-prescription-column">
         <h4>{label}</h4>
-        <div style={{ display: 'grid', gridTemplateColumns: samePrescription ? '1fr 1fr' : '1fr', gap: '0 12px' }}>
-          <WPSelect 
-            label="Esfera (SPH/PWR)"
-            value={values.sph}
-            options={spmOptions}
-            onChange={(val: string) => setValues({ ...values, sph: val })}
-            zeroValue="0.00"
-          />
+        <div 
+          className="cl-prescription-grid"
+          style={{ 
+            display: 'grid', 
+            gridTemplateColumns: samePrescription && isComplex ? '1fr 1fr' : '1fr', 
+            gap: '12px 14px' 
+          }}
+        >
+          <div style={{ gridColumn: samePrescription && isComplex ? 'span 1' : '1 / -1' }}>
+            <WPSelect 
+              label="Esfera (SPH/PWR)"
+              value={values.sph}
+              options={spmOptions}
+              onChange={(val: string) => setValues({ ...values, sph: val })}
+              zeroValue="0.00"
+            />
+          </div>
 
           {isToric && (
             <>
@@ -245,7 +255,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
             />
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', gridColumn: samePrescription ? 'span 2' : 'span 1' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', gridColumn: '1 / -1' }}>
             <div className="cl-wp-input-wrapper is-readonly" style={{ marginBottom: 0 }}>
               <label>Curva Base (BC)</label>
               <input type="text" value="8.6" readOnly />
@@ -528,58 +538,60 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         </button>
 
         <div className="contact-lens-summary-panel">
-          <div className="contact-lens-summary-image-wrapper">
-            <img 
-              src={getProductImage()} 
-              alt={product?.name || 'Lente de contacto'} 
-              className="contact-lens-summary-image" 
-              onError={(e) => {
-                const target = e.currentTarget as HTMLImageElement;
-                if (target.src !== contactLensesImg) {
-                  target.src = contactLensesImg;
-                }
-              }}
-            />
-          </div>
-          
-          <div className="contact-lens-summary-info">
-            <span className="contact-lens-summary-brand">
-              {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
-            </span>
-            <h3 className="contact-lens-summary-name">
-              {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
-            </h3>
-            <p className="contact-lens-summary-usage">{getUsageType()}</p>
-          </div>
-
-          <div className="contact-lens-mobile-total">
-            ${Math.round(totalPrice).toLocaleString('es-MX')}
-          </div>
-          
-          <div className="contact-lens-summary-extra">
-            <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #f1f5f9' }}>
-              <p style={{ fontSize: '0.75rem', fontWeight: 500, color: '#0f172a', margin: 0 }}>
-                Cantidad seleccionada:
-              </p>
-              <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.1rem', marginBottom: 0 }}>
-                {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
-              </p>
-            </div>
-
-            <div className="contact-lens-summary-price">
-              <span>Total Estimado</span>
-              <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
+          <div className="contact-lens-summary-card">
+            <div className="contact-lens-summary-image-wrapper">
+              <img 
+                src={getProductImage()} 
+                alt={product?.name || 'Lente de contacto'} 
+                className="contact-lens-summary-image" 
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement;
+                  if (target.src !== contactLensesImg) {
+                    target.src = contactLensesImg;
+                  }
+                }}
+              />
             </div>
             
-            <div style={{ marginTop: '7px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px 8px', fontSize: '11px', color: '#334155', lineHeight: 1.3 }}>
-              <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style={{ color: '#0ea5e9', textDecoration: 'none' }}>Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
+            <div className="contact-lens-summary-info">
+              <span className="contact-lens-summary-brand">
+                {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
+              </span>
+              <h3 className="contact-lens-summary-name">
+                {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
+              </h3>
+              <p className="contact-lens-summary-usage">{getUsageType()}</p>
             </div>
 
-            <div style={{ marginTop: '7px' }}>
-              <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }} style={{ background: '#eff6ff', color: '#1e3a8a', padding: '7px 10px', borderRadius: '8px', fontWeight: 600, textDecoration: 'none', fontSize: '11.5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', border: '1px solid #bfdbfe' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                ¿Dudas? Escríbenos por WhatsApp
-              </a>
+            <div className="contact-lens-mobile-total">
+              ${Math.round(totalPrice).toLocaleString('es-MX')}
+            </div>
+            
+            <div className="contact-lens-summary-extra">
+              <div className="contact-lens-summary-qty-box">
+                <p className="contact-lens-summary-qty-label">
+                  Cantidad seleccionada:
+                </p>
+                <p className="contact-lens-summary-qty-value">
+                  {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
+                </p>
+              </div>
+
+              <div className="contact-lens-summary-price">
+                <span>Total Estimado</span>
+                <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
+              </div>
+              
+              <div className="contact-lens-summary-warranty">
+                <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank">Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
+              </div>
+
+              <div className="contact-lens-summary-whatsapp">
+                <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  ¿Dudas? Escríbenos por WhatsApp
+                </a>
+              </div>
             </div>
           </div>
         </div>

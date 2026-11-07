@@ -5457,3 +5457,230 @@ body.no-scroll .whatsapp-float {
     font-size: 16px !important;
   }
 }
+
+
+/* ============================================================ */
+/* CHECKOUT AMPLIO (2 COLUMNAS)                                  */
+/* ============================================================ */
+.lsq-checkout-overlay {
+  position: fixed;
+  inset: 0;
+  background: #f8fafc;
+  z-index: 1000000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  color: #0f172a;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.lsq-checkout-topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.lsq-checkout-topbar-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lsq-checkout-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lsq-checkout-brand-title {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+}
+
+.lsq-checkout-brand-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.lsq-checkout-back-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.lsq-checkout-back-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.lsq-checkout-container {
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+.lsq-checkout-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.lsq-checkout-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.lsq-checkout-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lsq-checkout-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 0;
+}
+
+.lsq-checkout-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.lsq-checkout-grid-3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+}
+
+.lsq-checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lsq-checkout-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lsq-checkout-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.lsq-checkout-input:focus {
+  border-color: #16223f;
+  box-shadow: 0 0 0 3px rgba(22, 34, 63, 0.08);
+}
+
+.lsq-checkout-privacy {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.lsq-checkout-sidebar {
+  position: sticky;
+  top: 88px;
+  align-self: start;
+}
+
+.lsq-checkout-summary-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.lsq-checkout-notice-soft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* Responsive móvil */
+@media (max-width: 860px) {
+  .lsq-checkout-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 16px 14px 60px;
+  }
+  
+  .lsq-checkout-sidebar {
+    position: static;
+    top: auto;
+  }
+
+  .lsq-checkout-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .lsq-checkout-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

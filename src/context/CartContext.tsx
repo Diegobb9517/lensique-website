@@ -20,6 +20,8 @@ interface CartContextType {
   addItem: (item: Omit<CartItem, 'id'>) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  updateItemPrice: (id: string, newUnitPrice: number) => void;
+  setCartItems: (newItems: CartItem[]) => void;
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
@@ -91,6 +93,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setItems(prev => prev.map(i => i.id === id ? { ...i, quantity } : i));
   };
 
+  const updateItemPrice = (id: string, newUnitPrice: number) => { setItems(prev => prev.map(i => i.id === id ? { ...i, unit_price: newUnitPrice } : i)); };
+
+  const setCartItems = (newItems: CartItem[]) => { setItems(newItems); };
+
   const clearCart = () => {
     setItems([]);
     localStorage.removeItem('lensique_cart');
@@ -99,7 +105,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const total = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, isCartOpen, setIsCartOpen, total }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, updateItemPrice, setCartItems, clearCart, isCartOpen, setIsCartOpen, total }}>
       {children}
     </CartContext.Provider>
   );

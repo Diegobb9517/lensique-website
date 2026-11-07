@@ -49,6 +49,134 @@ export function priceWithMP(net: number): { price: number; n: number; monthly: n
   return { price, n, monthly };
 }
 
+
+export interface ContactLensSpecs {
+  bcOptions: string[];
+  dia: string;
+  isMultipleBc: boolean;
+}
+
+export function getContactLensSpecs(product: any): ContactLensSpecs {
+  const name = String(product?.name || '').toUpperCase();
+  const sku = String(product?.sku || '').toUpperCase();
+
+  // Modelos con MÚLTIPLES CURVAS BASE de fabricante:
+  // 1. Acuvue Oasys (esférico estándar quincenal) - se fabrica en 8.4 y 8.8, DIA 14.0
+  if ((name.includes('OASYS') || sku.includes('OASYS')) && !name.includes('ASTIGMATIS') && !name.includes('TORIC') && !name.includes('1 DAY') && !name.includes('HYDRALUXE')) {
+    return { bcOptions: ['8.4', '8.8'], dia: '14.0', isMultipleBc: true };
+  }
+  // 2. 1-Day Acuvue Moist (esférico) - se fabrica en 8.5 y 9.0, DIA 14.2
+  if ((name.includes('MOIST') || sku.includes('MOIST')) && !name.includes('ASTIGMATIS') && !name.includes('TORIC')) {
+    return { bcOptions: ['8.5', '9.0'], dia: '14.2', isMultipleBc: true };
+  }
+  // 3. Acuvue Oasys 1-Day with HydraLuxe - se fabrica en 8.5 y 9.0, DIA 14.3
+  if (name.includes('HYDRALUXE') || (name.includes('OASYS') && name.includes('1 DAY'))) {
+    return { bcOptions: ['8.5', '9.0'], dia: '14.3', isMultipleBc: true };
+  }
+  // 4. Acuvue 2 - se fabrica en 8.3 y 8.7, DIA 14.0
+  if (name.includes('ACUVUE 2') || sku.includes('ACUVUE2')) {
+    return { bcOptions: ['8.3', '8.7'], dia: '14.0', isMultipleBc: true };
+  }
+  // 5. Biomedics 55 - se fabrica en 8.6 y 8.8, DIA 14.2
+  if (name.includes('BIOMEDICS 55') || sku.includes('BIOMEDICS55')) {
+    return { bcOptions: ['8.6', '8.8'], dia: '14.2', isMultipleBc: true };
+  }
+  // 6. Air Optix Aqua Night & Day - se fabrica en 8.4 y 8.6, DIA 13.8
+  if (name.includes('NIGHT & DAY') || name.includes('NIGHT AND DAY')) {
+    return { bcOptions: ['8.4', '8.6'], dia: '13.8', isMultipleBc: true };
+  }
+  // 7. Optima 38 - se fabrica en 8.4 y 8.7, DIA 14.0
+  if (name.includes('OPTIMA 38')) {
+    return { bcOptions: ['8.4', '8.7'], dia: '14.0', isMultipleBc: true };
+  }
+
+  // Modelos con UNA SOLA CURVA BASE Y DIÁMETRO FIJOS (la gran mayoría):
+  // Acuvue Oasys Astigmatismo: BC 8.6, DIA 14.5
+  if (name.includes('OASYS') && (name.includes('ASTIGMATIS') || name.includes('TORIC'))) {
+    return { bcOptions: ['8.6'], dia: '14.5', isMultipleBc: false };
+  }
+  // Acuvue 1 Day Moist Astigmatismo: BC 8.5, DIA 14.5
+  if (name.includes('MOIST') && (name.includes('ASTIGMATIS') || name.includes('TORIC'))) {
+    return { bcOptions: ['8.5'], dia: '14.5', isMultipleBc: false };
+  }
+  // Acuvue Vita Torico: BC 8.6, DIA 14.5
+  if (name.includes('VITA') && (name.includes('ASTIGMATIS') || name.includes('TORIC'))) {
+    return { bcOptions: ['8.6'], dia: '14.5', isMultipleBc: false };
+  }
+  // Biofinity Toric / XR Toric / Multifocal Toric: BC 8.7, DIA 14.5
+  if (name.includes('BIOFINITY') && (name.includes('TORIC') || name.includes('ASTIGMATIS'))) {
+    return { bcOptions: ['8.7'], dia: '14.5', isMultipleBc: false };
+  }
+  // Biofinity Esférico / XR / Energys / Multifocal: BC 8.6, DIA 14.0
+  if (name.includes('BIOFINITY') || name.includes('BIOINFINITY')) {
+    return { bcOptions: ['8.6'], dia: '14.0', isMultipleBc: false };
+  }
+  // Bausch + Lomb Ultra Toric: BC 8.6, DIA 14.5
+  if (name.includes('ULTRA') && (name.includes('TORIC') || name.includes('ASTIGMATIS'))) {
+    return { bcOptions: ['8.6'], dia: '14.5', isMultipleBc: false };
+  }
+  // Biotrue ONEday (esférico): BC 8.6, DIA 14.2
+  if (name.includes('BIOTRUE') && !name.includes('ASTIGMATIS') && !name.includes('TORIC')) {
+    return { bcOptions: ['8.6'], dia: '14.2', isMultipleBc: false };
+  }
+  // Biotrue ONEday Astigmatismo: BC 8.4, DIA 14.5
+  if (name.includes('BIOTRUE') && (name.includes('ASTIGMATIS') || name.includes('TORIC'))) {
+    return { bcOptions: ['8.4'], dia: '14.5', isMultipleBc: false };
+  }
+  // Clariti 1 Day Toric: BC 8.6, DIA 14.3
+  if (name.includes('CLARITI') && (name.includes('TORIC') || name.includes('ASTIGMATIS'))) {
+    return { bcOptions: ['8.6'], dia: '14.3', isMultipleBc: false };
+  }
+  // Clariti 1 Day / Multifocal: BC 8.6, DIA 14.1
+  if (name.includes('CLARITI')) {
+    return { bcOptions: ['8.6'], dia: '14.1', isMultipleBc: false };
+  }
+  // Air Optix Colors / Plus HydraGlyde: BC 8.6, DIA 14.2
+  if (name.includes('AIR OPTIX')) {
+    return { bcOptions: ['8.6'], dia: '14.2', isMultipleBc: false };
+  }
+  // Dailies Total 1: BC 8.5, DIA 14.1
+  if (name.includes('DAILIES TOTAL')) {
+    return { bcOptions: ['8.5'], dia: '14.1', isMultipleBc: false };
+  }
+  // Dailies AquaComfort Plus: BC 8.7, DIA 14.0
+  if (name.includes('DAILIES') || name.includes('DALIES')) {
+    return { bcOptions: ['8.7'], dia: '14.0', isMultipleBc: false };
+  }
+  // Soflens 59: BC 8.6, DIA 14.2
+  if (name.includes('SOFLENS 59') || sku.includes('SOFLENS59')) {
+    return { bcOptions: ['8.6'], dia: '14.2', isMultipleBc: false };
+  }
+  // Soflens Toric: BC 8.5, DIA 14.5
+  if (name.includes('SOFLENS') && (name.includes('TORIC') || name.includes('ASTIGMATIS'))) {
+    return { bcOptions: ['8.5'], dia: '14.5', isMultipleBc: false };
+  }
+  // Soflens Stars / Lunare: BC 8.7, DIA 14.1
+  if (name.includes('LUNARE') || name.includes('STARS')) {
+    return { bcOptions: ['8.7'], dia: '14.1', isMultipleBc: false };
+  }
+  // Freshlook: BC 8.6, DIA 13.8
+  if (name.includes('FRESHLOOK')) {
+    return { bcOptions: ['8.6'], dia: '13.8', isMultipleBc: false };
+  }
+  // Sense: BC 8.6, DIA 14.0 (esférico) o 14.2 (tórico)
+  if (name.includes('SENSE')) {
+    return { bcOptions: ['8.6'], dia: name.includes('TORIC') ? '14.2' : '14.0', isMultipleBc: false };
+  }
+  // Liberti: BC 8.6, DIA 14.0 (esférico) o 14.2 (tórico)
+  if (name.includes('LIBERTI')) {
+    return { bcOptions: ['8.6'], dia: name.includes('TORIC') ? '14.2' : '14.0', isMultipleBc: false };
+  }
+  // Si viene explícito en el catálogo
+  if (product?.bc && product?.dia) {
+    const bcs = String(product.bc).split(/[,/]/).map((s: string) => s.trim()).filter(Boolean);
+    return { bcOptions: bcs, dia: String(product.dia), isMultipleBc: bcs.length > 1 };
+  }
+
+  // Fallback general estándar
+  return { bcOptions: ['8.6'], dia: '14.2', isMultipleBc: false };
+}
+
 interface ContactLensConfiguratorModalProps {
   product: any;
   onClose: () => void;
@@ -70,8 +198,25 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const [showRxGuide, setShowRxGuide] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', bc: '', dia: '', cyl: '', axis: '', add: '' });
-  const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', bc: '', dia: '', cyl: '', axis: '', add: '' });
+  const specs = useMemo(() => getContactLensSpecs(product), [product]);
+  const defaultBc = specs.isMultipleBc ? '' : specs.bcOptions[0];
+  const defaultDia = specs.dia;
+
+  const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', bc: defaultBc, dia: defaultDia, cyl: '', axis: '', add: '' });
+  const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', bc: defaultBc, dia: defaultDia, cyl: '', axis: '', add: '' });
+
+  useEffect(() => {
+    setPrescriptionOD(prev => ({
+      ...prev,
+      bc: specs.isMultipleBc ? (specs.bcOptions.includes(prev.bc) ? prev.bc : '') : specs.bcOptions[0],
+      dia: specs.dia
+    }));
+    setPrescriptionOS(prev => ({
+      ...prev,
+      bc: specs.isMultipleBc ? (specs.bcOptions.includes(prev.bc) ? prev.bc : '') : specs.bcOptions[0],
+      dia: specs.dia
+    }));
+  }, [specs]);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -188,21 +333,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return opts;
   }, []);
 
-  const bcOptions = useMemo(() => {
-    const opts = [{ value: '', label: 'BC' }];
-    ['8.3', '8.4', '8.5', '8.6', '8.7', '8.8', '8.9', '9.0'].forEach(v => {
-      opts.push({ value: v, label: v });
+  const dynamicBcOptions = useMemo(() => {
+    const opts = [{ value: '', label: 'Elige curva' }];
+    specs.bcOptions.forEach(v => {
+      opts.push({ value: v, label: `Curva ${v}` });
     });
     return opts;
-  }, []);
-
-  const diaOptions = useMemo(() => {
-    const opts = [{ value: '', label: 'DIA' }];
-    ['13.8', '14.0', '14.1', '14.2', '14.3', '14.4', '14.5'].forEach(v => {
-      opts.push({ value: v, label: v });
-    });
-    return opts;
-  }, []);
+  }, [specs.bcOptions]);
 
   const cylOptions = useMemo(() => {
     const opts = [{ value: '', label: 'CYL' }];
@@ -253,11 +390,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         samePrescription,
         tab,
         prescriptionOD: tab === 'rx' 
-          ? prescriptionOD 
-          : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: prescriptionOD.bc || '8.6', dia: prescriptionOD.dia || '14.5', cyl: '', axis: '', add: '' },
+          ? { ...prescriptionOD, bc: prescriptionOD.bc || specs.bcOptions[0], dia: specs.dia }
+          : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: specs.bcOptions[0], dia: specs.dia, cyl: '', axis: '', add: '' },
         prescriptionOS: tab === 'rx' 
-          ? (samePrescription ? prescriptionOD : prescriptionOS) 
-          : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: prescriptionOS.bc || '8.6', dia: prescriptionOS.dia || '14.5', cyl: '', axis: '', add: '' },
+          ? (samePrescription ? { ...prescriptionOD, bc: prescriptionOD.bc || specs.bcOptions[0], dia: specs.dia } : { ...prescriptionOS, bc: prescriptionOS.bc || specs.bcOptions[0], dia: specs.dia }) 
+          : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: specs.bcOptions[0], dia: specs.dia, cyl: '', axis: '', add: '' },
         prescriptionPending: tab === 'later',
         hasPhoto: tab === 'photo' && !!photoFile,
         photoFileName: photoFile ? photoFile.name : null,
@@ -575,14 +712,40 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         </div>
                       )}
 
-                      <div className={`cl-rxgrid ${isToric ? 'toric' : isMultifocal ? 'multifocal' : ''}`}>
+                      {/* Especificaciones de Curva y Diámetro predeterminadas */}
+                      <div className="cl-specs-fixed-banner">
+                        <div className="cl-specs-fixed-title">
+                          <span style={{ fontSize: '15px' }}>📐</span>
+                          <b>
+                            {!specs.isMultipleBc 
+                              ? `Parámetros predeterminados para ${cleanName}:`
+                              : `Diámetro predeterminado para ${cleanName}:`}
+                          </b>
+                        </div>
+                        <div className="cl-specs-fixed-values">
+                          {!specs.isMultipleBc ? (
+                            <>
+                              <span className="cl-specs-pill">Curva base (BC): <b>{specs.bcOptions[0]}</b></span>
+                              <span className="cl-specs-pill">Diámetro (DIA): <b>{specs.dia}</b></span>
+                            </>
+                          ) : (
+                            <span className="cl-specs-pill">Diámetro (DIA): <b>{specs.dia}</b></span>
+                          )}
+                        </div>
+                        {specs.isMultipleBc && (
+                          <div className="cl-specs-fixed-sub">
+                            Este modelo se fabrica en {specs.bcOptions.length} curvas base ({specs.bcOptions.join(' y ')}). Elige la curva indicada en tu caja o receta:
+                          </div>
+                        )}
+                      </div>
+
+                      <div className={`cl-rxgrid ${specs.isMultipleBc ? 'multi-bc' : 'fixed-specs'} ${isToric ? 'toric' : isMultifocal ? 'multifocal' : ''}`}>
                         <div></div>
-                        <div className="cl-lb">Esfera (PWR)</div>
+                        <div className="cl-lb">Esfera (PWR) *</div>
+                        {specs.isMultipleBc && <div className="cl-lb">Curva (BC) *</div>}
                         {isToric && <div className="cl-lb">Cilindro</div>}
                         {isToric && <div className="cl-lb">Eje</div>}
                         {isMultifocal && <div className="cl-lb">Adición</div>}
-                        <div className="cl-lb">Curva (BC)</div>
-                        <div className="cl-lb">Diámetro (DIA)</div>
 
                         {/* Fila OD */}
                         {odOn && (
@@ -599,6 +762,20 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                             >
                               {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
+
+                            {specs.isMultipleBc && (
+                              <select 
+                                value={prescriptionOD.bc} 
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setValidationError(null);
+                                  setPrescriptionOD(prev => ({ ...prev, bc: val }));
+                                  if (samePrescription) setPrescriptionOS(prev => ({ ...prev, bc: val }));
+                                }}
+                              >
+                                {dynamicBcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                              </select>
+                            )}
 
                             {isToric && (
                               <>
@@ -637,30 +814,6 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                               </select>
                             )}
-
-                            <select 
-                              value={prescriptionOD.bc} 
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                setValidationError(null);
-                                setPrescriptionOD(prev => ({ ...prev, bc: val }));
-                                if (samePrescription) setPrescriptionOS(prev => ({ ...prev, bc: val }));
-                              }}
-                            >
-                              {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
-
-                            <select 
-                              value={prescriptionOD.dia} 
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                setValidationError(null);
-                                setPrescriptionOD(prev => ({ ...prev, dia: val }));
-                                if (samePrescription) setPrescriptionOS(prev => ({ ...prev, dia: val }));
-                              }}
-                            >
-                              {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
                           </>
                         )}
 
@@ -675,6 +828,16 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                             >
                               {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
+
+                            {specs.isMultipleBc && (
+                              <select 
+                                value={samePrescription ? prescriptionOD.bc : prescriptionOS.bc} 
+                                disabled={samePrescription}
+                                onChange={(e) => setPrescriptionOS(prev => ({ ...prev, bc: e.target.value }))}
+                              >
+                                {dynamicBcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                              </select>
+                            )}
 
                             {isToric && (
                               <>
@@ -704,22 +867,6 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                               </select>
                             )}
-
-                            <select 
-                              value={samePrescription ? prescriptionOD.bc : prescriptionOS.bc} 
-                              disabled={samePrescription}
-                              onChange={(e) => setPrescriptionOS(prev => ({ ...prev, bc: e.target.value }))}
-                            >
-                              {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
-
-                            <select 
-                              value={samePrescription ? prescriptionOD.dia : prescriptionOS.dia} 
-                              disabled={samePrescription}
-                              onChange={(e) => setPrescriptionOS(prev => ({ ...prev, dia: e.target.value }))}
-                            >
-                              {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
                           </>
                         )}
                       </div>
@@ -729,9 +876,16 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         {odOn && (
                           <div className="cl-rx-eye-card">
                             <div className="cl-rx-eye-header">👁️ Ojo derecho (OD)</div>
+                            
+                            <div className="cl-rx-card-fixed-specs">
+                              {!specs.isMultipleBc 
+                                ? `📐 Curva ${specs.bcOptions[0]} · Diámetro ${specs.dia} (de fábrica)` 
+                                : `📐 Diámetro: ${specs.dia} (estándar de fábrica)`}
+                            </div>
+
                             <div className="cl-rx-fields-grid">
                               <div className="cl-field-group">
-                                <label>Esfera (PWR)</label>
+                                <label>Esfera (PWR) *</label>
                                 <select 
                                   value={prescriptionOD.sph} 
                                   onChange={(e) => {
@@ -745,40 +899,27 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 </select>
                               </div>
 
-                              <div className="cl-field-group">
-                                <label>Curva base (BC)</label>
-                                <select 
-                                  value={prescriptionOD.bc} 
-                                  onChange={(e) => {
-                                    const val = e.target.value;
-                                    setValidationError(null);
-                                    setPrescriptionOD(prev => ({ ...prev, bc: val }));
-                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, bc: val }));
-                                  }}
-                                >
-                                  {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
-                              </div>
-
-                              <div className="cl-field-group">
-                                <label>Diámetro (DIA)</label>
-                                <select 
-                                  value={prescriptionOD.dia} 
-                                  onChange={(e) => {
-                                    const val = e.target.value;
-                                    setValidationError(null);
-                                    setPrescriptionOD(prev => ({ ...prev, dia: val }));
-                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, dia: val }));
-                                  }}
-                                >
-                                  {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
-                              </div>
+                              {specs.isMultipleBc && (
+                                <div className="cl-field-group">
+                                  <label>Curva base (BC) *</label>
+                                  <select 
+                                    value={prescriptionOD.bc} 
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setValidationError(null);
+                                      setPrescriptionOD(prev => ({ ...prev, bc: val }));
+                                      if (samePrescription) setPrescriptionOS(prev => ({ ...prev, bc: val }));
+                                    }}
+                                  >
+                                    {dynamicBcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                </div>
+                              )}
 
                               {isToric && (
                                 <>
                                   <div className="cl-field-group">
-                                    <label>Cilindro (CYL)</label>
+                                    <label>Cilindro (CYL) *</label>
                                     <select 
                                       value={prescriptionOD.cyl} 
                                       onChange={(e) => {
@@ -790,7 +931,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                     </select>
                                   </div>
                                   <div className="cl-field-group">
-                                    <label>Eje (AXIS)</label>
+                                    <label>Eje (AXIS) *</label>
                                     <select 
                                       value={prescriptionOD.axis} 
                                       onChange={(e) => {
@@ -806,7 +947,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
                               {isMultifocal && (
                                 <div className="cl-field-group">
-                                  <label>Adición (ADD)</label>
+                                  <label>Adición (ADD) *</label>
                                   <select 
                                     value={prescriptionOD.add} 
                                     onChange={(e) => {
@@ -830,72 +971,72 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 ✓ Mismos datos que el ojo derecho
                               </div>
                             ) : (
-                              <div className="cl-rx-fields-grid">
-                                <div className="cl-field-group">
-                                  <label>Esfera (PWR)</label>
-                                  <select 
-                                    value={prescriptionOS.sph} 
-                                    onChange={(e) => setPrescriptionOS(prev => ({ ...prev, sph: e.target.value }))}
-                                  >
-                                    {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                  </select>
+                              <>
+                                <div className="cl-rx-card-fixed-specs">
+                                  {!specs.isMultipleBc 
+                                    ? `📐 Curva ${specs.bcOptions[0]} · Diámetro ${specs.dia} (de fábrica)` 
+                                    : `📐 Diámetro: ${specs.dia} (estándar de fábrica)`}
                                 </div>
 
-                                <div className="cl-field-group">
-                                  <label>Curva base (BC)</label>
-                                  <select 
-                                    value={prescriptionOS.bc} 
-                                    onChange={(e) => setPrescriptionOS(prev => ({ ...prev, bc: e.target.value }))}
-                                  >
-                                    {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                  </select>
-                                </div>
-
-                                <div className="cl-field-group">
-                                  <label>Diámetro (DIA)</label>
-                                  <select 
-                                    value={prescriptionOS.dia} 
-                                    onChange={(e) => setPrescriptionOS(prev => ({ ...prev, dia: e.target.value }))}
-                                  >
-                                    {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                  </select>
-                                </div>
-
-                                {isToric && (
-                                  <>
-                                    <div className="cl-field-group">
-                                      <label>Cilindro (CYL)</label>
-                                      <select 
-                                        value={prescriptionOS.cyl} 
-                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }))}
-                                      >
-                                        {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                      </select>
-                                    </div>
-                                    <div className="cl-field-group">
-                                      <label>Eje (AXIS)</label>
-                                      <select 
-                                        value={prescriptionOS.axis} 
-                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }))}
-                                      >
-                                        {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                      </select>
-                                    </div>
-                                  </>
-                                )}
-
-                                {isMultifocal && (
+                                <div className="cl-rx-fields-grid">
                                   <div className="cl-field-group">
-                                    <label>Adición (ADD)</label>
+                                    <label>Esfera (PWR) *</label>
                                     <select 
-                                      value={prescriptionOS.add} 
-                                      onChange={(e) => setPrescriptionOS(prev => ({ ...prev, add: e.target.value }))}
+                                      value={prescriptionOS.sph} 
+                                      onChange={(e) => setPrescriptionOS(prev => ({ ...prev, sph: e.target.value }))}
                                     >
-                                      {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                      {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                                     </select>
                                   </div>
-                                )}
-                              </div>
+
+                                  {specs.isMultipleBc && (
+                                    <div className="cl-field-group">
+                                      <label>Curva base (BC) *</label>
+                                      <select 
+                                        value={prescriptionOS.bc} 
+                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, bc: e.target.value }))}
+                                      >
+                                        {dynamicBcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                      </select>
+                                    </div>
+                                  )}
+
+                                  {isToric && (
+                                    <>
+                                      <div className="cl-field-group">
+                                        <label>Cilindro (CYL) *</label>
+                                        <select 
+                                          value={prescriptionOS.cyl} 
+                                          onChange={(e) => setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }))}
+                                        >
+                                          {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                        </select>
+                                      </div>
+                                      <div className="cl-field-group">
+                                        <label>Eje (AXIS) *</label>
+                                        <select 
+                                          value={prescriptionOS.axis} 
+                                          onChange={(e) => setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }))}
+                                        >
+                                          {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                        </select>
+                                      </div>
+                                    </>
+                                  )}
+
+                                  {isMultifocal && (
+                                    <div className="cl-field-group">
+                                      <label>Adición (ADD) *</label>
+                                      <select 
+                                        value={prescriptionOS.add} 
+                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, add: e.target.value }))}
+                                      >
+                                        {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                      </select>
+                                    </div>
+                                  )}
+                                </div>
+                              </>
                             )}
                           </div>
                         )}
@@ -999,7 +1140,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                           }
                         } else if (tab === 'rx') {
                           const checkEye = (eye: typeof prescriptionOD) => {
-                            if (!eye.sph || !eye.bc || !eye.dia) return false;
+                            if (!eye.sph || eye.sph.trim() === '') return false;
+                            if (specs.isMultipleBc && (!eye.bc || eye.bc.trim() === '')) return false;
                             if (isToric && (!eye.cyl || !eye.axis)) return false;
                             if (isMultifocal && !eye.add) return false;
                             return true;
@@ -1007,7 +1149,19 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                           const odOk = !odOn || checkEye(prescriptionOD);
                           const oiOk = !oiOn || checkEye(samePrescription ? prescriptionOD : prescriptionOS);
                           if (!odOk || !oiOk) {
-                            setValidationError('Por favor completa todos los campos de tu graduación (o elige la pestaña "Subir caja o receta" o "La envío después").');
+                            if (odOn && !prescriptionOD.sph) {
+                              setValidationError('Por favor selecciona la Esfera (PWR) para el ojo derecho.');
+                            } else if (oiOn && !samePrescription && !prescriptionOS.sph) {
+                              setValidationError('Por favor selecciona la Esfera (PWR) para el ojo izquierdo.');
+                            } else if (specs.isMultipleBc && ((odOn && !prescriptionOD.bc) || (oiOn && !samePrescription && !prescriptionOS.bc))) {
+                              setValidationError('Por favor selecciona la Curva (BC) para tus lentes.');
+                            } else if (isToric && ((odOn && (!prescriptionOD.cyl || !prescriptionOD.axis)) || (oiOn && !samePrescription && (!prescriptionOS.cyl || !prescriptionOS.axis)))) {
+                              setValidationError('Por favor completa Cilindro y Eje para astigmatismo.');
+                            } else if (isMultifocal && ((odOn && !prescriptionOD.add) || (oiOn && !samePrescription && !prescriptionOS.add))) {
+                              setValidationError('Por favor selecciona la Adición (ADD) para multifocal.');
+                            } else {
+                              setValidationError('Por favor completa todos los campos requeridos de tu graduación.');
+                            }
                             return;
                           }
                         }
@@ -1062,13 +1216,28 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                     </div>
 
                     <div className="cl-sumrow">
-                      <span className="cl-k">Datos</span>
+                      <span className="cl-k">Graduación</span>
                       <span className="cl-v">
-                        {tab === 'rx' 
-                          ? 'Capturados' 
-                          : tab === 'photo' 
-                          ? `Por foto/receta (${photoFile?.name || 'Archivo adjunto'})` 
-                          : 'Los envías después'}
+                        {tab === 'photo' && `Por foto o receta (${photoFile?.name || 'Archivo adjunto'})`}
+                        {tab === 'later' && 'Receta pendiente (la envías por WhatsApp)'}
+                        {tab === 'rx' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {odOn && (
+                              <div>
+                                <b>OD:</b> Esf {prescriptionOD.sph} · Curva {prescriptionOD.bc || specs.bcOptions[0]} · Diámetro {specs.dia}
+                                {isToric && ` · Cil ${prescriptionOD.cyl} · Eje ${prescriptionOD.axis}°`}
+                                {isMultifocal && ` · Add ${prescriptionOD.add}`}
+                              </div>
+                            )}
+                            {oiOn && (
+                              <div>
+                                <b>OI:</b> Esf {samePrescription ? prescriptionOD.sph : prescriptionOS.sph} · Curva {(samePrescription ? prescriptionOD.bc : prescriptionOS.bc) || specs.bcOptions[0]} · Diámetro {specs.dia}
+                                {isToric && ` · Cil ${samePrescription ? prescriptionOD.cyl : prescriptionOS.cyl} · Eje ${samePrescription ? prescriptionOD.axis : prescriptionOS.axis}°`}
+                                {isMultifocal && ` · Add ${samePrescription ? prescriptionOD.add : prescriptionOS.add}`}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </span>
                     </div>
 

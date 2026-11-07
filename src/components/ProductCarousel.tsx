@@ -27,7 +27,7 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
 
   if (!images || images.length === 0) {
     return (
-      <div className="lsq-carousel-root" style={{ alignItems: 'center', justifyContent: 'center', background: '#f7f7f7', borderRadius: '20px', minHeight: '400px' }}>
+      <div className="lsq-carousel-root" style={{ alignItems: 'center', justifyContent: 'center', background: '#ffffff', minHeight: '400px' }}>
         <span style={{ color: '#A0A0A0', fontWeight: 500 }}>Sin imágenes</span>
       </div>
     );
@@ -105,8 +105,8 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
           flex: 1 !important;
           height: 100% !important;
           background: #fff !important;
-          border-radius: 20px !important;
-          border: 1px solid rgba(0,0,0,0.06) !important;
+          border-radius: 0 !important;
+          border: none !important;
           overflow: hidden !important;
           display: flex !important;
           align-items: center !important;

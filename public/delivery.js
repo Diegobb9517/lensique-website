@@ -69,8 +69,12 @@ function getDeliveryEstimate(frameAvailability, lensType = 'none', shippingMetho
     const maxDate = addBusinessDays(today, maxDays);
     const isXr = frameAvailability === 'contact_xr';
     let dateRange = '';
+    const isSameDay = minDate.toDateString() === maxDate.toDateString();
     if (isXr) {
         dateRange = `Llega entre 8 y 12 semanas (a partir del ${formatDate(today)})`;
+    }
+    else if (isSameDay) {
+        dateRange = `Llega aprox. el ${formatDate(maxDate)}`;
     }
     else if (minDate.getMonth() === maxDate.getMonth()) {
         dateRange = `Llega entre el ${minDate.getDate()} y el ${maxDate.getDate()} de ${MONTHS[maxDate.getMonth()]}`;
@@ -166,9 +170,11 @@ function calculateDeliveryTime(product, lensConfig, fulfillmentMethod) {
         shippingMethod = 'pickup';
     }
     const est = getDeliveryEstimate(frameAvailability, lensType, shippingMethod);
+    const isSun = String((product === null || product === void 0 ? void 0 : product.category) || '').toLowerCase().includes('sol');
+    const includesLenses = (!isContactLens && !isSun) || Boolean(lensConfig);
     return {
         label: est.dateRange,
-        subtitle: `Incluye ${lensConfig ? 'fabricación de micas' : 'preparación'}${frameAvailability === 'preorder' ? ' (sobre pedido)' : ''} · Te avisamos por WhatsApp cuando esté listo`,
+        subtitle: `Incluye ${includesLenses ? 'fabricación de micas' : 'preparación'} · te avisamos por WhatsApp cuando esté listo.`,
         minDays: est.minDays,
         maxDays: est.maxDays,
         labelShort: est.labelShort,

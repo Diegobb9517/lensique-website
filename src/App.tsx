@@ -1896,11 +1896,9 @@ function App() {
                       </div>
                     </div>
 
-                    {isOutOfStock && (
-                      <div className="cl-detail-stock">
-                        ¿Lo necesitas antes? <a href="/catalogo?disponibilidad=existencia">Ver modelos en existencia →</a>
-                      </div>
-                    )}
+                    <div className="cl-detail-stock">
+                      ¿Lo necesitas antes? <a href="/catalogo?disponibilidad=existencia">Ver modelos en existencia →</a>
+                    </div>
 
                     <button 
                       className="cl-detail-buy"
@@ -1928,6 +1926,13 @@ function App() {
             );
           }
 
+          const isOutOfStock = selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0;
+          const isSun = String(selectedProductDetail.category || '').toLowerCase().includes('sol');
+          const isFrame = !isSun && !isContact;
+          const basePrice = selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0;
+          const finalPrice = isFrame ? basePrice + BASE_LENS_PRICE : basePrice;
+          const deliv = calculateDeliveryTime(selectedProductDetail);
+
           return (
             <motion.div
               className="product-detail-overlay"
@@ -1944,123 +1949,121 @@ function App() {
                 transition={{ duration: 0.35, ease: 'easeOut' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <button className="product-detail-close" onClick={() => setSelectedProductDetail(null)}><X size={20} /></button>
+                <button 
+                  className="product-detail-close" 
+                  onClick={() => setSelectedProductDetail(null)}
+                  style={{ position: 'absolute', top: '18px', right: '18px', zIndex: 10, background: 'rgba(255,255,255,0.85)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)' }}
+                  aria-label="Cerrar ficha"
+                >
+                  <X size={20} color="#16223f" />
+                </button>
 
-                {/* Left: Image Carousel */}
+                {/* Left: Imagen limpia sobre fondo blanco sin recuadro ni borde */}
                 <div className="product-detail-img-col">
-                  <div className="product-detail-img-box w-full max-w-full" style={{ position: 'relative' }}>
-                    {(selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0) && <div className="out-of-stock-badge" style={{ top: '20px', right: '20px' }}>Sobre pedido</div>}
-                    {(Array.isArray(selectedProductDetail.images) && selectedProductDetail.images.length > 0) ? (
-                      <ProductCarousel 
-                        images={selectedProductDetail.images.map((img: any) => ({
+                  <div className="product-detail-badge">
+                    {isOutOfStock ? '● SOBRE PEDIDO' : '● EN EXISTENCIA'}
+                  </div>
+                  {(Array.isArray(selectedProductDetail.images) && selectedProductDetail.images.length > 0) ? (
+                    <ProductCarousel 
+                      images={selectedProductDetail.images.map((img: any) => ({
                         id: img.id,
                         image_url: resolveImageUrl(img.image_url, undefined)
                       }))}
                       alt={selectedProductDetail.name}
-                      hideTryOn={String(selectedProductDetail.category || '').toLowerCase().includes('contacto')}
+                      hideTryOn={false}
                     />
-                    ) : (
-                      <ImageWithSkeleton
-                        src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || (String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg)}
-                        alt={selectedProductDetail.name}
-                        className="product-detail-img smooth-img"
-                        onError={(e: any) => { 
-                          const target = e.currentTarget;
-                          const fallback = String(selectedProductDetail.category || '').toLowerCase().includes('contacto') ? contactLensesImg : heroImg;
-                          if (!target.src.includes(fallback)) target.src = fallback; 
-                        }}
-                      />
-                    )}
-                  </div>
+                  ) : (
+                    <img
+                      src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || heroImg}
+                      alt={selectedProductDetail.name}
+                      className="product-detail-img"
+                      onError={(e: any) => { 
+                        const target = e.currentTarget;
+                        if (!target.src.includes(heroImg)) target.src = heroImg; 
+                      }}
+                    />
+                  )}
                 </div>
 
-                {/* Right: Info */}
+                {/* Right: Info con jerarquía y aire */}
                 <div className="product-detail-info-col">
-                  <span className="product-detail-category">
+                  {/* Categoría UNA SOLA VEZ (marca o 'Armazón') */}
+                  <div className="product-detail-cat">
                     {(selectedProductDetail.brand && selectedProductDetail.brand !== 'null')
                       ? formatBrandName(selectedProductDetail.brand)
-                      : (selectedProductDetail.category || 'Lensique')}
-                  </span>
+                      : (isSun ? 'Lentes de Sol' : 'Armazón')}
+                  </div>
                   
-                  <h2 className="product-detail-name">
+                  {/* Título grande del modelo */}
+                  <h1 className="product-detail-name">
                     <FormatProductName product={selectedProductDetail} />
-                  </h2>
+                  </h1>
 
-                  {(() => {
-                    const isSun = String(selectedProductDetail.category || '').toLowerCase().includes('sol');
-                    const isFrame = !isSun && !isContact;
-                    const basePrice = selectedProductDetail.price_incl_tax || 0;
-                    const finalPrice = isFrame ? basePrice + BASE_LENS_PRICE : basePrice;
-
-                    return (
-                      <div className="product-detail-price-row" style={{ margin: '6px 0 14px' }}>
-                        {isFrame ? (
-                          <div>
-                            <div style={{ fontSize: '18px', fontWeight: 600, color: '#1d1d1f' }} className="tabular-nums">
-                              ${finalPrice.toLocaleString('es-MX')} · micas incluidas
-                            </div>
-                            <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 400, marginTop: '2px' }}>
-                              Armazón ${basePrice.toLocaleString('es-MX')} · Micas $1,200
-                            </div>
-                          </div>
-                        ) : (
-                          <div style={{ fontSize: '18px', fontWeight: 600, color: '#1d1d1f' }} className="tabular-nums">
-                            ${basePrice.toLocaleString('es-MX')}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-
-                  <p className="product-detail-desc">
-                    {selectedProductDetail.category || 'Armazón Premium'}
-                  </p>
-                  
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginTop: '14px', color: '#16a34a', fontSize: '13px', fontWeight: 500, background: '#f0fdf4', padding: '10px 14px', borderRadius: '10px', maxWidth: '100%', boxSizing: 'border-box' }}>
-                    <Clock size={16} style={{ marginTop: '2px', flexShrink: 0 }} />
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ marginBottom: '2px', color: '#15803d', wordBreak: 'break-word' }}>{calculateDeliveryTime(selectedProductDetail).label}</div>
-                      <div style={{ fontSize: '12px', color: '#16a34a', fontWeight: 400, wordBreak: 'break-word' }}>{calculateDeliveryTime(selectedProductDetail).subtitle}</div>
-                      {(selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0) && (
-                        <div style={{ marginTop: '6px' }}>
-                          <a href="/catalogo?disponibilidad=existencia" style={{ fontSize: '12px', color: '#15803d', textDecoration: 'underline', fontWeight: 500, display: 'inline-block', wordBreak: 'break-word' }}>¿Lo necesitas antes? Ver modelos en existencia →</a>
+                  {/* Precio con desglose discreto */}
+                  <div className="product-detail-price-box">
+                    {isFrame ? (
+                      <>
+                        <div className="product-detail-price">
+                          ${Math.round(finalPrice).toLocaleString('es-MX')} <small>· micas incluidas</small>
                         </div>
-                      )}
+                        <div className="product-detail-breakdown">
+                          Armazón ${Math.round(basePrice).toLocaleString('es-MX')} · Micas $1,200
+                        </div>
+                      </>
+                    ) : (
+                      <div className="product-detail-price">
+                        ${Math.round(basePrice).toLocaleString('es-MX')}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="product-detail-hr" />
+
+                  {/* Entrega simplificada (sin bloque verde amontonado) */}
+                  <div className="product-detail-deliv">
+                    <span className="ic">🕐</span>
+                    <div className="tx">
+                      <b>{deliv.label}</b>
+                      <small>{deliv.subtitle || 'Incluye preparación · te avisamos por WhatsApp cuando esté listo.'}</small>
                     </div>
                   </div>
 
-                  <div className="product-detail-divider" />
+                  {/* Link 'ver en existencia' en su propia línea fuera de entrega */}
+                  <div className="product-detail-stock">
+                    ¿Lo necesitas antes? <a href="/catalogo?disponibilidad=existencia">Ver modelos en existencia →</a>
+                  </div>
 
+                  {/* Dos botones claros con aire entre ellos */}
                   <button 
-                      className="btn btn-primary full-width product-detail-btn"
-                      onClick={() => {
-                        const category = String(selectedProductDetail.category || '').toLowerCase();
-                        if (category.includes('sol')) {
-                          const delTime = calculateDeliveryTime(selectedProductDetail);
-                          addItem({
-                            type: 'product',
-                            title: formatProductTitle(selectedProductDetail, 'Lentes de Sol'),
-                            quantity: 1,
-                            unit_price: selectedProductDetail.price_incl_tax || 0,
-                            product: selectedProductDetail,
-                            image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url),
-                            estimatedDeliveryStr: delTime.label,
-                            estimatedDeliverySubtitle: delTime.subtitle,
-                            maxDeliveryDays: delTime.maxDays,
-                            minDeliveryDays: delTime.maxDays
-                          });
-                          setSelectedProductDetail(null);
-                        } else {
-                          setConfiguratorProduct(selectedProductDetail); 
-                        }
-                      }}
-                    >
-                      {String(selectedProductDetail.category || '').toLowerCase().includes('sol') ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar'}
-                    </button>
+                    className="product-detail-buy"
+                    onClick={() => {
+                      if (isSun) {
+                        const delTime = calculateDeliveryTime(selectedProductDetail);
+                        addItem({
+                          type: 'product',
+                          title: formatProductTitle(selectedProductDetail, 'Lentes de Sol'),
+                          quantity: 1,
+                          unit_price: selectedProductDetail.price_incl_tax || 0,
+                          product: selectedProductDetail,
+                          image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url),
+                          estimatedDeliveryStr: delTime.label,
+                          estimatedDeliverySubtitle: delTime.subtitle,
+                          maxDeliveryDays: delTime.maxDays,
+                          minDeliveryDays: delTime.maxDays
+                        });
+                        setSelectedProductDetail(null);
+                      } else {
+                        setConfiguratorProduct(selectedProductDetail); 
+                      }
+                    }}
+                  >
+                    {isSun ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar'}
+                  </button>
 
-                  {!String(selectedProductDetail.category || '').toLowerCase().includes('sol') && (
+                  {!isSun && (
                     <button
                       type="button"
+                      className="product-detail-btn-secondary"
                       onClick={() => {
                         const delTime = calculateDeliveryTime(selectedProductDetail);
                         addItem({
@@ -2077,42 +2080,34 @@ function App() {
                         });
                         setSelectedProductDetail(null);
                       }}
-                      style={{
-                        marginTop: '10px',
-                        background: 'none',
-                        border: 'none',
-                        color: '#64748b',
-                        fontSize: '13px',
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                        textAlign: 'center',
-                        width: '100%'
-                      }}
                     >
                       Comprar solo armazón sin micas (${Math.round(selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0).toLocaleString('es-MX')})
                     </button>
                   )}
 
-                  <div className="product-detail-perks">
-                    <span>✓ Asesoría personalizada</span>
-                    <span>✓ Examen de vista incluido</span>
+                  {/* Fila de confianza con separación */}
+                  <div className="product-detail-trust">
+                    <div><span className="c">✓</span>Asesoría personalizada</div>
+                    <div><span className="c">✓</span>Examen de vista incluido</div>
                   </div>
 
+                  {/* Link agenda con separación */}
                   <a 
                     href="#agendar" 
                     onClick={(e) => { 
                       e.preventDefault(); 
                       handleOpenBooking(selectedProductDetail.name); 
                     }} 
-                    style={{ fontSize: '12px', color: '#6b7280', textDecoration: 'underline', textAlign: 'center', display: 'block', marginTop: '14px', lineHeight: 1.4 }}
+                    className="product-detail-agenda"
                   >
                     ¿Te interesa este modelo? Agenda una cita con nosotros y te asesoramos en persona
                   </a>
 
+                  {/* SKU chico y gris al final */}
                   {selectedProductDetail.sku && (
-                    <p className="product-detail-sku" style={{ fontSize: '11px', color: '#9ca3af', textAlign: 'center', marginTop: '12px', marginBottom: 0 }}>
-                      SKU: {selectedProductDetail.sku}
-                    </p>
+                    <div className="product-detail-sku">
+                      SKU · {selectedProductDetail.sku}
+                    </div>
                   )}
                 </div>
               </motion.div>

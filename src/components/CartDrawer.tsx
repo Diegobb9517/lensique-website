@@ -24,7 +24,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
     colony: '',
     zip: '',
     city: '',
-    state: ''
+    state: '',
+    references: ''
   });
   const [formError, setFormError] = useState('');
   const [zipError, setZipError] = useState('');
@@ -97,9 +98,6 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
     const timeout = setTimeout(fetchShippingQuote, 500);
     return () => clearTimeout(timeout);
   }, [deliveryMethod, addressDetails.zip, total, isFreeShipping]);
-  
-  // FEATURE FLAG: Mantener oculto del público por solicitud del usuario
-  const ENABLE_SHIPPING_FEATURE = true;
 
   let finalMaxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
   let minDelDays = items.length > 0 ? Math.max(...items.map(i => (i as any).minDeliveryDays || Math.max(0, (i.maxDeliveryDays||3)-3))) : 0;
@@ -123,14 +121,15 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const today = new Date();
   const dMin = addBizDays(today, minDelDays);
   const dMax = addBizDays(today, finalMaxDeliveryDays);
-  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   
-  let maxDelStr = '';
+  let deliveryDaysRange = '';
   if (dMin.getMonth() === dMax.getMonth()) {
-    maxDelStr = `Llega entre el ${dMin.getDate()} y el ${dMax.getDate()} de ${months[dMax.getMonth()]}`;
+    deliveryDaysRange = `${dMin.getDate()} – ${dMax.getDate()} ${months[dMax.getMonth()]}`;
   } else {
-    maxDelStr = `Llega entre el ${dMin.getDate()} de ${months[dMin.getMonth()]} y el ${dMax.getDate()} de ${months[dMax.getMonth()]}`;
+    deliveryDaysRange = `${dMin.getDate()} ${months[dMin.getMonth()]} – ${dMax.getDate()} ${months[dMax.getMonth()]}`;
   }
+  const maxDelStr = `Llega ${deliveryDaysRange}`;
 
   const payOnline = async () => {
     setPaymentError('');
@@ -155,7 +154,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
           return;
         }
       }
-      import('../lib/analytics').then(({ trackBeginCheckout }) => trackBeginCheckout(total + shippingCost, items));
+      import('../lib/analytics').then(({ trackBeginCheckout }) => trackBeginCheckout(finalTotal, items));
       setShowCheckoutForm(true);
       return;
     }
@@ -183,24 +182,22 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
     setFormError('');
     try {
       setIsProcessing(true);
-      // Guardar en localstorage para la página de exito
       localStorage.setItem('lensique_last_order_delivery', maxDelStr);
       localStorage.setItem('lensique_last_order_delivery_method', deliveryMethod);
       if (deliveryMethod === 'HOME_DELIVERY') {
-        const fullAddress = `${addressDetails.street} ${addressDetails.exterior} ${addressDetails.interior ? `Int. ${addressDetails.interior}` : ''}, ${addressDetails.colony}, C.P. ${addressDetails.zip}, ${addressDetails.city}, ${addressDetails.state}`.trim();
+        const fullAddress = `${addressDetails.street} ${addressDetails.exterior} ${addressDetails.interior ? `Int. ${addressDetails.interior}` : ''}, ${addressDetails.colony}, C.P. ${addressDetails.zip}, ${addressDetails.city}, ${addressDetails.state}${addressDetails.references ? ` (Ref: ${addressDetails.references})` : ''}`.trim();
         localStorage.setItem('lensique_last_order_shipping_address', fullAddress);
       }
       localStorage.setItem('lensique_last_order_items', JSON.stringify(items));
-      localStorage.setItem('lensique_last_order_total', (total + shippingCost).toString());
+      localStorage.setItem('lensique_last_order_total', finalTotal.toString());
 
       const res = await fetch('https://lensique-pos.onrender.com/api/checkout/preference', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           amount: finalTotal, 
-          // Enviar el carrito enriquecido para que el backend recalcule los precios
           cart: items,
-          estimatedDelivery: maxDelStr, // Campo extra limpio para el backend
+          estimatedDelivery: maxDelStr,
           buyerInfo: {
             name: buyerName.trim(),
             phone: phoneClean,
@@ -270,171 +267,324 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
               fontFamily: 'var(--font-body, system-ui, sans-serif)'
             }}
           >
-            <div style={{ padding: '20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            {/* Header del carrito con barra de progreso de 2 segmentos */}
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e8f0', flexShrink: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <ShoppingBag size={20} color="#0f172a" />
                   <div style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', margin: 0 }}>Tu Carrito</div>
+                  {items.length > 0 && (
+                    <span style={{ fontSize: '11px', background: '#f1f5f9', color: '#475569', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>
+                      {items.reduce((acc, i) => acc + i.quantity, 0)}
+                    </span>
+                  )}
                 </div>
-                {items.length > 0 && (
-                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>
-                    {!showCheckoutForm ? 'Paso 1 de 2 · Entrega' : 'Paso 2 de 2 · Datos y pago'}
-                  </div>
-                )}
+                <button 
+                  className="cart-close-btn"
+                  aria-label="Cerrar carrito"
+                  onClick={() => setIsCartOpen(false)} 
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <X size={22} color="#64748b" />
+                </button>
               </div>
-              <button 
-                className="cart-close-btn"
-                aria-label="Cerrar carrito"
-                onClick={() => setIsCartOpen(false)} 
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
-              >
-                <X size={24} color="#64748b" />
-              </button>
+
+              {/* Barra de progreso de 2 segmentos */}
+              {items.length > 0 && (
+                <div style={{ marginTop: '12px' }}>
+                  <div style={{ display: 'flex', gap: '6px', height: '4px', marginBottom: '8px' }}>
+                    <div style={{ flex: 1, height: '100%', borderRadius: '2px', background: '#16223f' }} />
+                    <div style={{ flex: 1, height: '100%', borderRadius: '2px', background: showCheckoutForm ? '#16223f' : '#e2e8f0', transition: 'background 0.3s' }} />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px' }}>
+                    <span style={{ fontWeight: !showCheckoutForm ? 700 : 500, color: !showCheckoutForm ? '#0f172a' : '#64748b' }}>
+                      1. Entrega
+                    </span>
+                    <span style={{ fontWeight: showCheckoutForm ? 700 : 500, color: showCheckoutForm ? '#0f172a' : '#94a3b8' }}>
+                      2. Datos y pago
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: '20px' }}>
+            {/* Cuerpo del carrito (scroll vertical, sin scroll horizontal) */}
+            <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '20px' }}>
               {showCheckoutForm ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                  
+                /* ============================================================ */
+                /* PASO 2 — DATOS Y PAGO                                       */
+                /* ============================================================ */
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {/* Botón Volver a entrega */}
+                  <button 
+                    onClick={() => setShowCheckoutForm(false)} 
+                    style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '12.5px', cursor: 'pointer', padding: 0, marginBottom: '14px', display: 'inline-flex', alignItems: 'center', gap: '4px', alignSelf: 'flex-start', fontWeight: 500 }}
+                  >
+                    <span>&larr;</span> <span>Volver a entrega</span>
+                  </button>
+
+                  {/* Resumen compacto del pedido */}
+                  <div style={{ paddingBottom: '14px', borderBottom: '1px solid #e2e8f0', marginBottom: '18px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase' }}>
+                        Resumen del pedido
+                      </span>
+                      <button 
+                        onClick={() => setShowCheckoutForm(false)} 
+                        style={{ background: 'none', border: 'none', fontSize: '11.5px', color: '#2563eb', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                      >
+                        Modificar
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {items.map(it => (
+                        <div key={it.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          {it.image && (
+                            <img src={resolveImageUrl(it.image, '')} alt={it.title} style={{ width: '42px', height: '42px', objectFit: 'contain', background: '#f8fafc', borderRadius: '6px', flexShrink: 0, border: '1px solid #e2e8f0' }} />
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              {it.quantity > 1 ? `${it.quantity}x ` : ''}{it.title}
+                            </div>
+                            {it.lensConfig?.etiqueta && (
+                              <div style={{ fontSize: '11.5px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                Micas {it.lensConfig.etiqueta} · {it.lensConfig.indice} · {it.lensConfig.tipoFab || 'estándar'}
+                              </div>
+                            )}
+                          </div>
+                          <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', flexShrink: 0 }}>
+                            ${Math.round(it.unit_price * it.quantity).toLocaleString('es-MX')}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   {formError && (
-                    <div style={{ padding: '12px', background: '#fef2f2', color: '#ef4444', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: '1px solid #fecaca' }}>
+                    <div style={{ padding: '10px 12px', background: '#fef2f2', color: '#ef4444', borderRadius: '8px', fontSize: '12.5px', fontWeight: 500, border: '1px solid #fecaca', marginBottom: '16px' }}>
                       {formError}
                     </div>
                   )}
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div style={{ fontSize: '18px', color: '#0f172a', fontWeight: 700 }}>Tus datos</div>
+                  {/* SECCIÓN: TUS DATOS */}
+                  <div style={{ marginBottom: '22px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '10px' }}>
+                      Tus datos
+                    </div>
                     
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Nombre completo *</label>
-                      <input 
-                        type="text" 
-                        value={buyerName} 
-                        onChange={e => setBuyerName(e.target.value)} 
-                        onFocus={handleInputFocus}
-                        placeholder="Ej. Juan Pérez"
-                        style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
-                      />
-                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                          Nombre completo *
+                        </label>
+                        <input 
+                          type="text" 
+                          value={buyerName} 
+                          onChange={e => setBuyerName(e.target.value)} 
+                          onFocus={handleInputFocus}
+                          placeholder="Ej. Juan Pérez"
+                          style={{ width: '100%', boxSizing: 'border-box', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                        />
+                      </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Teléfono / WhatsApp *</label>
-                      <input 
-                        type="tel" 
-                        value={buyerPhone} 
-                        onChange={e => setBuyerPhone(e.target.value)} 
-                        placeholder="10 dígitos"
-                        maxLength={10}
-                        style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
-                      />
-                    </div>
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                          Teléfono / WhatsApp *
+                        </label>
+                        <input 
+                          type="tel" 
+                          value={buyerPhone} 
+                          onChange={e => setBuyerPhone(e.target.value)} 
+                          placeholder="10 dígitos"
+                          maxLength={10}
+                          style={{ width: '100%', boxSizing: 'border-box', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                        />
+                      </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>Correo electrónico (Opcional)</label>
-                      <input 
-                        type="email" 
-                        value={buyerEmail} 
-                        onChange={e => setBuyerEmail(e.target.value)} 
-                        onFocus={handleInputFocus}
-                        placeholder="ejemplo@correo.com"
-                        style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none' }}
-                      />
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                          Correo electrónico (opcional)
+                        </label>
+                        <input 
+                          type="email" 
+                          value={buyerEmail} 
+                          onChange={e => setBuyerEmail(e.target.value)} 
+                          onFocus={handleInputFocus}
+                          placeholder="ejemplo@correo.com"
+                          style={{ width: '100%', boxSizing: 'border-box', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {ENABLE_SHIPPING_FEATURE && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
-                      {deliveryMethod === 'HOME_DELIVERY' ? (
-                        <>
-                          <div style={{ fontSize: '16px', color: '#0f172a', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <MapPin size={18} className="text-indigo-600" /> Dirección de envío
+                  {/* SECCIÓN: DIRECCIÓN DE ENVÍO */}
+                  {deliveryMethod === 'HOME_DELIVERY' ? (
+                    <div style={{ marginBottom: '18px' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '10px' }}>
+                        Dirección de envío
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                            Calle y número *
+                          </label>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <input 
+                              type="text" 
+                              value={addressDetails.street} 
+                              onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              placeholder="Calle" 
+                              style={{ flex: 2, minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
+                            <input 
+                              type="text" 
+                              value={addressDetails.exterior} 
+                              onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              placeholder="Ext *" 
+                              style={{ flex: 1, minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
+                            <input 
+                              type="text" 
+                              value={addressDetails.interior} 
+                              onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              placeholder="Int" 
+                              style={{ flex: 1, minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                              <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Calle *</label>
-                                <input type="text" value={addressDetails.street} onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Ext *</label>
-                                <input type="text" value={addressDetails.exterior} onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>No. Int</label>
-                                <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                              <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Colonia *</label>
-                                <input type="text" value={addressDetails.colony} onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>C.P. *</label>
-                                <input type="text" value={addressDetails.zip} onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Ciudad *</label>
-                                <input type="text" value={addressDetails.city} onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>Estado *</label>
-                                <input type="text" value={addressDetails.state} onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} onFocus={handleInputFocus} style={{ padding: '10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div style={{ background: '#eff6ff', padding: '16px', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
-                          <div style={{ fontSize: '15px', fontWeight: 700, color: '#1e3a8a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <MapPin size={16} /> Recoger en tienda
-                          </div>
-                          <p style={{ fontSize: '13px', color: '#1e40af', margin: 0, lineHeight: 1.5 }}>
-                            <strong>Recoges en:</strong> Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jal. 45040.<br/>
-                            <strong>Horario:</strong> Lun-Vie 10:00-20:00, Sáb 10:00-17:00.<br/><br/>
-                            Te avisaremos por WhatsApp o correo cuando tu pedido esté listo.
-                          </p>
                         </div>
-                      )}
+
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <div style={{ flex: 1.3, minWidth: 0 }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>Colonia *</label>
+                            <input 
+                              type="text" 
+                              value={addressDetails.colony} 
+                              onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              style={{ width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>C.P. *</label>
+                            <input 
+                              type="text" 
+                              value={addressDetails.zip} 
+                              onChange={e => setAddressDetails({...addressDetails, zip: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              maxLength={5}
+                              style={{ width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>Ciudad *</label>
+                            <input 
+                              type="text" 
+                              value={addressDetails.city} 
+                              onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              style={{ width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>Estado *</label>
+                            <input 
+                              type="text" 
+                              value={addressDetails.state} 
+                              onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} 
+                              onFocus={handleInputFocus} 
+                              style={{ width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none', boxSizing: 'border-box' }} 
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                            Referencias (opcional)
+                          </label>
+                          <input 
+                            type="text" 
+                            value={addressDetails.references || ''} 
+                            onChange={e => setAddressDetails({...addressDetails, references: e.target.value})} 
+                            onFocus={handleInputFocus} 
+                            placeholder="Ej. Entre calles o color del portón"
+                            style={{ width: '100%', boxSizing: 'border-box', minWidth: 0, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13.5px', outline: 'none' }} 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ marginBottom: '18px', padding: '12px 14px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <MapPin size={15} color="#16223f" /> Recoger en tienda (sin costo)
+                      </div>
+                      <p style={{ fontSize: '12px', color: '#64748b', margin: 0, lineHeight: 1.45 }}>
+                        Av. Guadalupe 1296, Zapopan, Jal. Te notificaremos por WhatsApp o correo en cuanto tu pedido esté listo para entrega.
+                      </p>
                     </div>
                   )}
-                  
-                  <div style={{ display: 'flex', gap: '10px', background: '#dbeafe', color: '#1e40af', padding: '12px', borderRadius: '8px', alignItems: 'center' }}>
-                    <Clock size={18} style={{ flexShrink: 0 }} />
-                    <p style={{ fontSize: '13px', margin: 0, fontWeight: 500 }}>
-                      Entrega estimada del pedido: {maxDelStr}
-                    </p>
+
+                  {/* Aviso de privacidad en una línea chica */}
+                  <div style={{ fontSize: '11.5px', color: '#64748b', lineHeight: 1.4, marginTop: '2px', marginBottom: '8px' }}>
+                    🔒 Tus datos personales y de salud (receta) están protegidos. Al pagar aceptas el{' '}
+                    <a href="#privacidad" onClick={(e) => { e.preventDefault(); setIsCartOpen(false); document.getElementById('footer-privacy-link')?.click(); }} style={{ color: '#0f172a', textDecoration: 'underline' }}>
+                      Aviso de Privacidad
+                    </a>.
                   </div>
-                  
-                  <button 
-                    onClick={() => setShowCheckoutForm(false)} 
-                    style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '14px', cursor: 'pointer', marginTop: '8px', textDecoration: 'underline' }}
-                  >
-                    Volver al carrito
-                  </button>
                 </div>
               ) : items.length === 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', gap: '12px', padding: '40px 0' }}>
                   <ShoppingBag size={48} opacity={0.3} />
-                  <p>Tu carrito está vacío</p>
-                  <button onClick={() => setIsCartOpen(false)} style={{ padding: '10px 20px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '30px', fontWeight: 600, cursor: 'pointer', marginTop: '12px' }}>
+                  <p style={{ margin: 0, fontSize: '15px' }}>Tu carrito está vacío</p>
+                  <button onClick={() => setIsCartOpen(false)} style={{ padding: '10px 20px', background: '#16223f', color: '#fff', border: 'none', borderRadius: '30px', fontWeight: 600, cursor: 'pointer', marginTop: '8px', fontSize: '13.5px' }}>
                     Explorar productos
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                /* ============================================================ */
+                /* PASO 1 — ENTREGA                                            */
+                /* ============================================================ */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Lista de artículos: UNA sola tarjeta por artículo */}
                   {items.map((item) => (
-                    <div key={item.id} style={{ display: 'flex', gap: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
+                    <div 
+                      key={item.id} 
+                      style={{ 
+                        display: 'flex', 
+                        gap: '12px', 
+                        background: '#ffffff', 
+                        border: '1px solid #e2e8f0', 
+                        borderRadius: '12px', 
+                        padding: '14px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+                      }}
+                    >
                       {item.image && (
-                        <div style={{ width: '80px', height: '80px', borderRadius: '8px', background: '#f8fafc', overflow: 'hidden', flexShrink: 0 }}>
+                        <div style={{ width: '68px', height: '68px', borderRadius: '8px', background: '#f8fafc', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
                           <img src={resolveImageUrl(item.image, '')} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                         </div>
                       )}
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0', lineHeight: 1.3 }}>{item.title}</div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                        <div style={{ fontSize: '14.5px', fontWeight: 600, color: '#0f172a', margin: '0 0 2px 0', lineHeight: 1.3 }}>
+                          {item.title}
+                        </div>
                         
+                        {/* Línea puntual de mica en gris */}
+                        {item.lensConfig && item.lensConfig.etiqueta && (
+                          <div style={{ fontSize: '12px', color: '#64748b', lineHeight: 1.35, margin: '1px 0' }}>
+                            Micas {item.lensConfig.etiqueta} · índice {item.lensConfig.indice} · {item.lensConfig.tipoFab || 'estándar'}
+                            {(item.lensConfig.esfera || item.lensConfig.cilindro) ? ' · Rx incl.' : ''}
+                            {(item.lensConfig.montaje && item.lensConfig.montaje !== 'completo') ? ` · Montaje: ${item.lensConfig.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : (item.product?.montaje && item.product.montaje !== 'completo' ? ` · Montaje: ${item.product.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : '')}
+                          </div>
+                        )}
+
+                        {/* Aviso sutil de falta de graduación */}
                         {item.type === 'frame_with_lenses' && (!item.lensConfig || !item.lensConfig.rxMethod) && (
                           <div 
                             onClick={() => {
@@ -443,57 +593,59 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                                 onOpenConfigurator(item.product, '3');
                               }
                             }}
-                            style={{ 
-                              fontSize: '12px', 
-                              color: '#b91c1c', 
-                              margin: '0 0 8px 0', 
-                              lineHeight: 1.4, 
-                              background: '#fef2f2', 
-                              padding: '6px 8px', 
-                              borderRadius: '6px', 
-                              border: '1px solid #fecaca', 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'space-between',
-                              cursor: 'pointer' 
-                            }}
+                            style={{ fontSize: '11.5px', color: '#b91c1c', marginTop: '2px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
                           >
-                            <span>⚠️ Falta elegir graduación</span>
+                            <span>⚠️ Falta elegir graduación ·</span>
                             <span style={{ textDecoration: 'underline', fontWeight: 600 }}>Elegir ahora &rarr;</span>
                           </div>
                         )}
 
+                        {/* Nota de receta como texto chico */}
                         {item.lensConfig && item.lensConfig.prescriptionPending && (
-                          <div style={{ fontSize: '12px', color: '#c2410c', margin: '0 0 8px 0', lineHeight: 1.4, background: '#fff7ed', padding: '6px 8px', borderRadius: '6px', border: '1px solid #fdba74', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span style={{fontSize: '14px'}}>📋</span> Receta pendiente — la enviarás por WhatsApp
+                          <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span>📋</span>
+                            <span>Receta pendiente — la envías por WhatsApp</span>
                           </div>
                         )}
-                        {item.lensConfig && item.lensConfig.etiqueta && (
 
-                          <div style={{ fontSize: '12px', color: '#64748b', margin: '0 0 8px 0', lineHeight: 1.4, background: '#f8fafc', padding: '6px 8px', borderRadius: '6px' }}>
-                            <div style={{color: '#0f172a', fontWeight: 500}}>Micas {item.lensConfig.etiqueta}</div>
-                            <div style={{ fontSize: '11px', marginTop: '2px' }}>
-                              Índice {item.lensConfig.indice} · {item.lensConfig.tipoFab}
-                              {(item.lensConfig.esfera || item.lensConfig.cilindro) ? ' · Rx incl.' : ''}
-                              {(item.lensConfig.montaje && item.lensConfig.montaje !== 'completo') ? ` · Montaje: ${item.lensConfig.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : (item.product?.montaje && item.product.montaje !== 'completo' ? ` · Montaje: ${item.product.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : '')}
-                            </div>
+                        {/* Entrega como línea chica verde */}
+                        <div style={{ fontSize: '11.5px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '3px' }}>
+                          <Clock size={12} />
+                          <span>Llega {deliveryDaysRange}</span>
+                        </div>
+
+                        {/* Fila inferior: stepper · precio · eliminar */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid #f8fafc' }}>
+                          <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px', background: '#f8fafc' }}>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                              style={{ width: '26px', height: '26px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}
+                              aria-label="Disminuir cantidad"
+                            >
+                              -
+                            </button>
+                            <span style={{ fontSize: '12.5px', fontWeight: 600, width: '22px', textAlign: 'center', color: '#0f172a' }}>
+                              {item.quantity}
+                            </span>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)} 
+                              style={{ width: '26px', height: '26px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}
+                              aria-label="Aumentar cantidad"
+                            >
+                              +
+                            </button>
                           </div>
-                        )}
-                        {item.estimatedDeliveryStr && (
-                          <div style={{ fontSize: '12px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px' }}>
-                            <Clock size={12} />
-                            <span>Entrega: {item.estimatedDeliveryStr}</span>
-                          </div>
-                        )}
-                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} style={{ padding: '4px 10px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a' }}>-</button>
-                            <span style={{ fontSize: '13px', fontWeight: 500, width: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} style={{ padding: '4px 10px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a' }}>+</button>
-                          </div>
+
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ fontWeight: 600, fontSize: '15px' }}>${Math.round(item.unit_price * item.quantity).toLocaleString('es-MX')}</span>
-                            <button onClick={() => removeItem(item.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', padding: '4px' }}>
+                            <span style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a' }}>
+                              ${Math.round(item.unit_price * item.quantity).toLocaleString('es-MX')}
+                            </span>
+                            <button 
+                              onClick={() => removeItem(item.id)} 
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                              title="Eliminar producto"
+                              aria-label="Eliminar producto"
+                            >
                               <Trash2 size={16} />
                             </button>
                           </div>
@@ -501,219 +653,215 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
                     </div>
                   ))}
-                </div>
-              )}
-              
-              {items.length > 0 && (
-                <div style={{ marginTop: '20px' }}>
-                  {!showCheckoutForm && (
-                    <div style={{ background: '#f8fafc', borderRadius: '12px', fontSize: '13px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {ENABLE_SHIPPING_FEATURE ? (
-                        <div className="checkout-section" style={{ margin: 0, padding: 0, background: 'transparent', border: 'none' }}>
-                          <h3 className="checkout-section-title" style={{ fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <MapPin size={16} /> ¿Cómo quieres recibir tu pedido?
-                          </h3>
-                          <div className="delivery-options-grid" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'STORE_PICKUP' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
-                              <input type="radio" name="deliveryMethodStep1" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
-                              <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 700 : 500, color: deliveryMethod === 'STORE_PICKUP' ? '#1e3a8a' : '#0f172a' }}>Recoger en tienda</div>
-                                <div style={{ fontSize: '13px', color: deliveryMethod === 'STORE_PICKUP' ? '#2563eb' : '#64748b', marginTop: '2px' }}>Sin costo</div>
-                              </div>
-                              <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'STORE_PICKUP' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'STORE_PICKUP' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                {deliveryMethod === 'STORE_PICKUP' && <Check size={14} color="#fff" />}
-                              </div>
-                            </label>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #3b82f6' : '1px solid #cbd5e1', borderRadius: '12px', background: deliveryMethod === 'HOME_DELIVERY' ? '#eff6ff' : '#fff', cursor: 'pointer', transition: 'all 0.2s' }}>
-                              <input type="radio" name="deliveryMethodStep1" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
-                              <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#0f172a' }}>Envío a domicilio</div>
-                                <div style={{ fontSize: '13px', color: isFreeShipping ? '#16a34a' : (deliveryMethod === 'HOME_DELIVERY' ? '#2563eb' : '#64748b'), fontWeight: isFreeShipping ? 600 : 400, marginTop: '2px' }}>
-                                  {isFreeShipping ? 'Gratis' : 'desde $150'}
-                                </div>
-                              </div>
-                              <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                {deliveryMethod === 'HOME_DELIVERY' && <Check size={14} color="#fff" />}
-                              </div>
-                            </label>
-                          </div>
-                          
-                          {deliveryMethod === 'HOME_DELIVERY' && (
-                            <div style={{ marginTop: '12px', padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                              <label style={{ fontSize: '13px', fontWeight: 600, color: '#334155', display: 'block', marginBottom: '6px' }}>Código Postal *</label>
-                              <input 
-                                type="text" 
-                                value={addressDetails.zip} 
-                                onChange={e => {
-                                  setAddressDetails({...addressDetails, zip: e.target.value});
-                                  setZipError('');
-                                }} 
-                                onFocus={handleInputFocus} 
-                                placeholder="Ej. 45040"
-                                maxLength={5}
-                                style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', outline: 'none', width: '100%', boxSizing: 'border-box' }} 
-                              />
-                              {zipError && (
-                                <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
-                                  {zipError}
-                                </div>
-                              )}
-                              {shippingQuoteError && !zipError && !isFreeShipping && (
-                                <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
-                                  {shippingQuoteError}
-                                </div>
-                              )}
-                              {isFreeShipping && addressDetails.zip.replace(/\D/g, '').length === 5 && (
-                                <div style={{ color: '#16a34a', fontSize: '12px', marginTop: '6px', fontWeight: 600 }}>
-                                  ✓ Envío gratis aplicado (pedido mayor a $2,500)
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                          Todas las compras se recogen en tienda (Zapopan).
-                        </div>
-                      )}
-                    </div>
-                  )}
 
-                  {showCheckoutForm && items.some(i => i.lensConfig || String(i.product?.category || '').toLowerCase().includes('contacto')) && (
-                    <div style={{ display: 'flex', gap: '10px', background: '#fef3c7', color: '#92400e', padding: '12px', borderRadius: '8px', marginBottom: '16px', alignItems: 'flex-start' }}>
-                      <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.4, fontWeight: 500 }}>
-                        <strong>🔒 Compra segura:</strong> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
-                      </p>
-                      <p style={{ marginTop: '8px', fontSize: '12px' }}><a href="/devoluciones" style={{ color: '#0f172a', textDecoration: 'underline' }}>Políticas de devoluciones y garantías</a></p>
+                  {/* Sección: ¿Cómo quieres recibir tu pedido? */}
+                  <div style={{ marginTop: '14px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>
+                      ¿Cómo lo recibes?
                     </div>
-                  )}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <label 
+                        onClick={() => setDeliveryMethod('STORE_PICKUP')}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '12px', 
+                          padding: '12px 14px', 
+                          border: deliveryMethod === 'STORE_PICKUP' ? '2px solid #16223f' : '1px solid #e2e8f0', 
+                          borderRadius: '10px', 
+                          background: deliveryMethod === 'STORE_PICKUP' ? '#f8fafc' : '#fff', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.15s' 
+                        }}
+                      >
+                        <input type="radio" name="deliveryMethodStep1" value="STORE_PICKUP" checked={deliveryMethod === 'STORE_PICKUP'} onChange={() => setDeliveryMethod('STORE_PICKUP')} style={{ display: 'none' }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '14px', fontWeight: deliveryMethod === 'STORE_PICKUP' ? 700 : 500, color: '#0f172a' }}>Recoger en tienda</div>
+                          <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>Sin costo · Zapopan</div>
+                        </div>
+                        <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: deliveryMethod === 'STORE_PICKUP' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'STORE_PICKUP' ? '#16223f' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {deliveryMethod === 'STORE_PICKUP' && <Check size={12} color="#fff" />}
+                        </div>
+                      </label>
+
+                      <label 
+                        onClick={() => setDeliveryMethod('HOME_DELIVERY')}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '12px', 
+                          padding: '12px 14px', 
+                          border: deliveryMethod === 'HOME_DELIVERY' ? '2px solid #16223f' : '1px solid #e2e8f0', 
+                          borderRadius: '10px', 
+                          background: deliveryMethod === 'HOME_DELIVERY' ? '#f8fafc' : '#fff', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.15s' 
+                        }}
+                      >
+                        <input type="radio" name="deliveryMethodStep1" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '14px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: '#0f172a' }}>Envío a domicilio</div>
+                          <div style={{ fontSize: '12px', color: isFreeShipping ? '#16a34a' : '#64748b', fontWeight: isFreeShipping ? 600 : 400, marginTop: '2px' }}>
+                            {isFreeShipping ? 'Gratis' : 'desde $150'}
+                          </div>
+                        </div>
+                        <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#16223f' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {deliveryMethod === 'HOME_DELIVERY' && <Check size={12} color="#fff" />}
+                        </div>
+                      </label>
+                    </div>
+
+                    {deliveryMethod === 'HOME_DELIVERY' && (
+                      <div style={{ marginTop: '10px', padding: '12px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
+                          Código Postal de entrega *
+                        </label>
+                        <input 
+                          type="text" 
+                          value={addressDetails.zip} 
+                          onChange={e => {
+                            setAddressDetails({...addressDetails, zip: e.target.value});
+                            setZipError('');
+                          }} 
+                          onFocus={handleInputFocus} 
+                          placeholder="Ej. 45040"
+                          maxLength={5}
+                          style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none', background: '#fff' }} 
+                        />
+                        {zipError && (
+                          <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '6px', fontWeight: 500 }}>
+                            {zipError}
+                          </div>
+                        )}
+                        {shippingQuoteError && !zipError && !isFreeShipping && (
+                          <div style={{ color: '#ef4444', fontSize: '11.5px', marginTop: '6px', fontWeight: 500 }}>
+                            {shippingQuoteError}
+                          </div>
+                        )}
+                        {isFreeShipping && addressDetails.zip.replace(/\D/g, '').length === 5 && (
+                          <div style={{ color: '#16a34a', fontSize: '11.5px', marginTop: '6px', fontWeight: 600 }}>
+                            ✓ Envío gratis aplicado (pedido mayor a $2,500)
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
 
+            {/* Footer fijo (Totales + MSI destacado + Garantía + CTA) */}
             {items.length > 0 && (
-              <div style={{ padding: '20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', boxSizing: 'border-box' as const, flexShrink: 0, paddingBottom: 'calc(20px + env(safe-area-inset-bottom))' }}>
-
-                
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
-                  <span>Subtotal</span>
-                  <span>${Math.round(total).toLocaleString('es-MX')}</span>
-                </div>
-                {deliveryMethod === 'HOME_DELIVERY' && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
-                    <span>Envío a domicilio {shippingQuote?.zone && `(${shippingQuote.zone})`}</span>
-                    {isFreeShipping ? (
-                      <span style={{ color: '#16a34a', fontWeight: 600 }}>Gratis</span>
-                    ) : shippingQuoteLoading ? (
-                      <span style={{ fontSize: '13px', color: '#94a3b8' }}>Calculando...</span>
-                    ) : shippingQuote?.cost === 0 ? (
-                      <span style={{ color: '#16a34a', fontWeight: 600 }}>Sin costo</span>
-                    ) : (
-                      <span>${Math.round(shippingQuote?.cost ?? 150).toLocaleString('es-MX')}</span>
-                    )}
+              <div style={{ 
+                padding: '16px 20px', 
+                background: '#ffffff', 
+                borderTop: '1px solid #e2e8f0', 
+                boxSizing: 'border-box' as const, 
+                flexShrink: 0, 
+                paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' 
+              }}>
+                {/* Desglose puntual en Paso 2 o cuando hay costo de envío en Paso 1 */}
+                {showCheckoutForm ? (
+                  <div style={{ marginBottom: '10px', fontSize: '13px', color: '#475569' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span>Subtotal</span>
+                      <span>${Math.round(total).toLocaleString('es-MX')}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span>
+                        {deliveryMethod === 'HOME_DELIVERY' 
+                          ? `Envío a domicilio · llega ${deliveryDaysRange}`
+                          : 'Recoger en tienda · Zapopan'}
+                      </span>
+                      <span style={{ fontWeight: 600, color: (deliveryMethod === 'STORE_PICKUP' || isFreeShipping) ? '#16a34a' : '#0f172a' }}>
+                        {deliveryMethod === 'STORE_PICKUP' ? 'Sin costo' : (isFreeShipping ? 'Gratis' : `$${shippingCost}`)}
+                      </span>
+                    </div>
+                    <div style={{ borderTop: '1px solid #f1f5f9', margin: '6px 0' }} />
                   </div>
-                )}
-                <div style={{ borderTop: '1px solid #e2e8f0', margin: '8px 0' }} />
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: msiMonths > 0 ? '4px' : '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
-                  <span>Total</span>
-                  <span className="tabular-nums">${Math.round(finalTotal).toLocaleString('es-MX')}</span>
-                </div>
-                {msiMonths > 0 && (
-                  <div style={{ textAlign: 'right', marginTop: '-2px', marginBottom: '14px', fontSize: '13px', fontWeight: 600, color: '#16a34a' }}>
-                    o ${msiMonthly.toLocaleString('es-MX')}/mes a {msiMonths} MSI
-                  </div>
-                )}
-                
-                {showCheckoutForm && (
-                  <p style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginBottom: '12px', lineHeight: '1.4' }}>
-                    Tus datos personales y de salud (receta) están protegidos. Al continuar, aceptas nuestro{' '}
-                    <a href="#privacidad" onClick={(e) => { e.preventDefault(); setIsCartOpen(false); document.getElementById('footer-privacy-link')?.click(); }} style={{ color: '#16a34a', textDecoration: 'underline' }}>
-                      Aviso de Privacidad
-                    </a>.
-                  </p>
-                )}
-                
-                {/* Badge de Garantía Lensique */}
-                <div style={{ 
-                  margin: '0 0 12px 0', 
-                  padding: '10px 12px', 
-                  borderRadius: '10px', 
-                  background: '#f0fdf4', 
-                  border: '1px solid #bbf7d0', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  fontSize: '12px', 
-                  color: '#166534', 
-                  lineHeight: 1.35 
-                }}>
-                  <span style={{ fontSize: '15px', flexShrink: 0 }}>🔒</span>
-                  <div style={{ flex: 1 }}>
-                    <strong>Garantía Lensique:</strong> Cambio o devolución 30 días · Validación por optometrista.{' '}
-                    <a 
-                      href="/devoluciones" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      style={{ color: '#15803d', textDecoration: 'underline', fontWeight: 600 }}
-                    >
-                      Ver política
-                    </a>
-                  </div>
-                </div>
-
-                {/* Bloque de asistencia WhatsApp */}
-                <div style={{ margin: '0 0 14px 0', padding: '12px 14px', borderRadius: '12px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                  <div>
-                    <div style={{ fontWeight: 600, color: '#1e3a8a', fontSize: '13px', lineHeight: 1.3 }}>¿Dudas con tu graduación o tu talla? Escríbenos</div>
-                    <div style={{ fontSize: '12px', color: '#3b82f6', marginTop: '2px' }}>Te asesoramos paso a paso</div>
-                  </div>
-                  <a 
-                    href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20con%20mi%20graduaci%C3%B3n%20para%20los%20lentes." 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{ background: '#25d366', color: '#fff', padding: '8px 14px', borderRadius: '20px', fontWeight: 600, textDecoration: 'none', fontSize: '13px', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                    WhatsApp
-                  </a>
-                </div>
-
-                {paymentError && (
-                  <div 
-                    onClick={() => {
-                      const itemWithIssue = items.find(i => i.type === 'frame_with_lenses' && (!i.lensConfig || !i.lensConfig.rxMethod)) || items.find(i => i.type === 'frame_with_lenses');
-                      if (itemWithIssue && onOpenConfigurator) {
-                        setIsCartOpen(false);
-                        onOpenConfigurator(itemWithIssue.product, '3');
-                      }
-                    }}
-                    style={{ 
-                      padding: '12px 14px', 
-                      background: '#fef2f2', 
-                      color: '#b91c1c', 
-                      borderRadius: '8px', 
-                      fontSize: '13px', 
-                      fontWeight: 500, 
-                      border: '1px solid #fecaca', 
-                      marginBottom: '14px',
-                      cursor: items.some(i => i.type === 'frame_with_lenses') ? 'pointer' : 'default',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                        <span style={{ fontSize: '15px' }}>⚠️</span>
-                        <span style={{ flex: 1, lineHeight: 1.4 }}>{paymentError}</span>
+                ) : (
+                  (!isFreeShipping && deliveryMethod === 'HOME_DELIVERY' && shippingCost > 0) && (
+                    <div style={{ marginBottom: '8px', fontSize: '13px', color: '#475569' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span>Subtotal</span>
+                        <span>${Math.round(total).toLocaleString('es-MX')}</span>
                       </div>
-                      {items.some(i => i.type === 'frame_with_lenses') && (
-                        <div style={{ alignSelf: 'flex-end', color: '#b91c1c', fontWeight: 700, textDecoration: 'underline', fontSize: '12.5px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                          Ir a Sección 03 para elegir graduación &rarr;
-                        </div>
-                      )}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span>Envío a domicilio</span>
+                        <span>${shippingCost}</span>
+                      </div>
+                      <div style={{ borderTop: '1px solid #f1f5f9', margin: '6px 0' }} />
+                    </div>
+                  )
+                )}
+
+                {/* Total grande (no repite Subtotal idéntico) */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: msiMonths > 0 ? '10px' : '14px' }}>
+                  <span style={{ fontSize: '15px', color: '#64748b', fontWeight: 600 }}>Total</span>
+                  <span className="tabular-nums" style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>
+                    ${Math.round(finalTotal).toLocaleString('es-MX')}
+                  </span>
+                </div>
+
+                {/* Mensualidad destacada: bloque verde */}
+                {msiMonths > 0 && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: '#ecfdf5',
+                    border: '1px solid #a7f3d0',
+                    borderRadius: '10px',
+                    padding: '10px 14px',
+                    marginBottom: '12px'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', color: '#047857', textTransform: 'uppercase' }}>
+                        PÁGALO A MESES
+                      </div>
+                      <div style={{ fontSize: '12px', fontWeight: 600, color: '#065f46', marginTop: '1px' }}>
+                        {msiMonths} meses sin intereses
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '17px', fontWeight: 800, color: '#047857', lineHeight: 1.1 }}>
+                        ${msiMonthly.toLocaleString('es-MX')}
+                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#065f46', marginLeft: '2px' }}>/mes</span>
+                      </div>
                     </div>
                   </div>
                 )}
-                
+
+                {/* Garantía en una sola línea */}
+                <div style={{ textAlign: 'center', fontSize: '11.5px', color: '#64748b', marginBottom: '10px', lineHeight: 1.35 }}>
+                  🔒 Garantía 30 días · validación por optometrista.{' '}
+                  <a href="/devoluciones" target="_blank" rel="noopener noreferrer" style={{ color: '#0f172a', textDecoration: 'underline' }}>
+                    Ver política
+                  </a>
+                </div>
+
+                {/* En Paso 1: WhatsApp como link discreto */}
+                {!showCheckoutForm && (
+                  <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+                    <a 
+                      href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20con%20mi%20pedido%20de%20lentes." 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ fontSize: '12.5px', color: '#047857', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 500 }}
+                    >
+                      <span style={{ color: '#25d366', fontSize: '14px' }}>💬</span>
+                      <span>¿Dudas con tu graduación? <u>Escríbenos por WhatsApp</u></span>
+                    </a>
+                  </div>
+                )}
+
+                {paymentError && (
+                  <div style={{ padding: '10px 12px', background: '#fef2f2', color: '#b91c1c', borderRadius: '8px', fontSize: '12px', marginBottom: '10px' }}>
+                    ⚠️ {paymentError}
+                  </div>
+                )}
+
+                {/* Botón CTA principal */}
                 <button 
                   onClick={payOnline}
                   disabled={isProcessing}
@@ -725,7 +873,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                     border: 'none', 
                     borderRadius: '50px', 
                     fontWeight: 600, 
-                    fontSize: '16px', 
+                    fontSize: '15px', 
                     cursor: isProcessing ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     justifyContent: 'center',
@@ -734,14 +882,30 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                     transition: 'background 0.2s'
                   }}
                 >
-                  <CreditCard size={20} />
-                  {isProcessing ? 'Procesando...' : (showCheckoutForm ? 'Pagar con Mercado Pago' : 'Continuar')}
+                  <CreditCard size={18} />
+                  {isProcessing ? 'Procesando...' : (!showCheckoutForm ? 'Continuar' : 'Pagar con Mercado Pago')}
                 </button>
+
+                {/* En Paso 2: Sello de pago seguro debajo del botón */}
+                {showCheckoutForm && (
+                  <div style={{ textAlign: 'center', fontSize: '11px', color: '#64748b', marginTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                    <span>🔒</span>
+                    <span>Pago 100% seguro · Visa · MasterCard · OXXO · SPEI</span>
+                  </div>
+                )}
+
+                {/* Seguir comprando / Volver */}
                 <button 
-                  onClick={() => setIsCartOpen(false)}
-                  style={{ width: '100%', padding: '12px', background: 'transparent', color: '#64748b', border: 'none', fontSize: '14px', fontWeight: 500, cursor: 'pointer', marginTop: '8px', textDecoration: 'underline' }}
+                  onClick={() => {
+                    if (showCheckoutForm) {
+                      setShowCheckoutForm(false);
+                    } else {
+                      setIsCartOpen(false);
+                    }
+                  }}
+                  style={{ width: '100%', padding: '8px', background: 'transparent', color: '#64748b', border: 'none', fontSize: '13px', cursor: 'pointer', marginTop: '4px', textDecoration: 'underline' }}
                 >
-                  Seguir comprando
+                  {showCheckoutForm ? 'Volver a entrega' : 'Seguir comprando'}
                 </button>
               </div>
             )}

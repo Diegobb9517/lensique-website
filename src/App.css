@@ -5062,3 +5062,225 @@ body.no-scroll .whatsapp-float {
   }
 }
 
+/* ============================================================ */
+/* FICHA / MODAL LENTES DE CONTACTO (PROTOTIPO OFICIAL)        */
+/* ============================================================ */
+.cl-product-modal {
+  max-width: 960px !important;
+  width: 95% !important;
+  margin: 0 auto;
+  background: #ffffff !important;
+  border-radius: 22px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 60px rgba(16, 24, 40, 0.14) !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .cl-product-modal {
+    grid-template-columns: 1fr !important;
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    border-radius: 18px !important;
+  }
+}
+
+.cl-detail-imgcol {
+  padding: 48px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  position: relative;
+  min-height: 320px;
+}
+
+@media (max-width: 768px) {
+  .cl-detail-imgcol {
+    padding: 36px 24px 20px;
+    min-height: 200px;
+  }
+}
+
+.cl-detail-badge {
+  position: absolute;
+  top: 24px;
+  left: 26px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #1a9c6b;
+}
+
+.cl-detail-imgcol img {
+  max-width: 100%;
+  max-height: 280px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.cl-detail-info {
+  padding: 48px 46px 40px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .cl-detail-info {
+    padding: 20px 24px 32px;
+  }
+}
+
+.cl-detail-cat {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9a7b3b;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cl-detail-info h1 {
+  font-family: Georgia, serif;
+  font-size: 38px;
+  line-height: 1.1;
+  margin: 0 0 16px;
+  color: #16223f;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .cl-detail-info h1 {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+}
+
+.cl-detail-price {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  color: #16223f;
+}
+
+.cl-detail-price small {
+  font-size: 15px;
+  font-weight: 600;
+  color: #8a9099;
+}
+
+.cl-detail-fmt {
+  font-size: 14px;
+  color: #8a9099;
+  margin-bottom: 22px;
+}
+
+.cl-detail-hr {
+  height: 1px;
+  background: #edeef0;
+  margin: 0 0 20px;
+  border: none;
+}
+
+.cl-detail-deliv {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.cl-detail-deliv .ic {
+  color: #1a9c6b;
+  flex: none;
+  margin-top: 1px;
+  font-size: 15px;
+}
+
+.cl-detail-deliv .tx {
+  font-size: 14px;
+  color: #16223f;
+  line-height: 1.35;
+}
+
+.cl-detail-deliv .tx b {
+  font-weight: 700;
+}
+
+.cl-detail-deliv .tx small {
+  display: block;
+  color: #8a9099;
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+
+.cl-detail-stock {
+  font-size: 13px;
+  margin: 12px 0 26px;
+  color: #16223f;
+}
+
+.cl-detail-stock a {
+  color: #2f6bff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.cl-detail-stock a:hover {
+  text-decoration: underline;
+}
+
+.cl-detail-buy {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  background: #16223f;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(22, 34, 63, 0.15);
+}
+
+.cl-detail-buy:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
+
+.cl-detail-trust {
+  display: flex;
+  gap: 26px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.cl-detail-trust div {
+  font-size: 12px;
+  color: #16223f;
+  text-align: center;
+  font-weight: 500;
+}
+
+.cl-detail-trust .c {
+  color: #1a9c6b;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.cl-detail-sku {
+  text-align: center;
+  font-size: 11px;
+  color: #b7bcc4;
+  margin-top: 20px;
+  letter-spacing: 0.03em;
+}
+

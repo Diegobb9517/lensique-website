@@ -188,6 +188,21 @@ export const getContactLensUsage = (name: string) => {
   return 'Todos';
 };
 
+export const getContactLensFormat = (product: any): string => {
+  const n = String(product?.name || '').toUpperCase();
+  if (n.includes('COLOR') || n.includes('LUNARE') || n.includes('STARS') || n.includes('AIR OPTIX COLORS') || n.includes('FRESHLOOK')) {
+    if (n.includes('AIR OPTIX')) return 'Caja con 2 lentes · uso mensual por lente';
+    if (n.includes('FRESHLOOK')) return 'Caja con 10 lentes · uso diario';
+    if (n.includes('LUNARE') || n.includes('STARS')) return 'Lente individual · uso anual';
+    return 'Lentes de contacto cosméticos de color';
+  }
+  if (n.includes('SENSE') || n.includes('ANUAL') || n.includes('LIBERTI') || n.includes('OPTIMA 38')) return 'Lente individual · uso anual';
+  if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Caja con 30 lentes · uso diario';
+  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Caja con 6 lentes · uso quincenal';
+  if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Caja con 6 lentes · uso mensual';
+  return 'Caja con 6 lentes · uso mensual';
+};
+
 export const slugify = (str: string): string => {
   if (!str) return '';
   return String(str)

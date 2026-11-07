@@ -1138,8 +1138,8 @@ function App() {
       title = "Cotizador de Micas y Lentes Graduados | Óptica Lensique Zapopan";
       desc = "Calcula el costo de tus micas en menos de un minuto. Monofocales, progresivos, antirreflejante y filtro azul. Óptica en Zapopan.";
     } else if (currentPath === '/lentes-de-contacto') {
-      title = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Adaptación Lensique";
-      desc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, adaptación con optometrista y marcas líderes.";
+      title = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Compra | Lensique";
+      desc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, validación por optometrista y marcas líderes originales.";
     } else if (currentPath === '/seguimiento' || currentPath.startsWith('/p/')) {
       title = "Seguimiento de Pedido | Óptica Lensique";
       desc = "Consulta el estado en tiempo real de tu pedido en Óptica Lensique.";

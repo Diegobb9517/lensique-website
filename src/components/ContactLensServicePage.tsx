@@ -7,15 +7,12 @@ import {
   ShieldCheck,
   Sparkles,
   Eye,
-  Droplets,
   Calendar,
   MessageCircle,
   ChevronDown,
   ChevronUp,
   Clock,
   RefreshCw,
-  Award,
-  HeartPulse,
   Compass,
   Layers,
   Smile
@@ -50,14 +47,14 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
 
   useEffect(() => {
     const originalTitle = document.title;
-    document.title = 'Lentes de Contacto en Zapopan y Guadalajara | Guía y Adaptación Lensique';
+    document.title = 'Lentes de Contacto en Zapopan y Guadalajara | Guía y Compra | Lensique';
 
     let metaDesc = document.querySelector('meta[name="description"]');
     const originalDesc = metaDesc ? metaDesc.getAttribute('content') : '';
     if (metaDesc) {
       metaDesc.setAttribute(
         'content',
-        'Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Adaptación profesional con optometrista, marcas líderes y compra en línea.'
+        'Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, validación por optometrista y marcas líderes originales.'
       );
     }
 
@@ -114,7 +111,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
           <p className="cl-hero-subtitle">Visión libre y cómoda</p>
 
           <p className="cl-hero-intro">
-            Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la adaptación de un optometrista de por medio. La idea es que los uses con <strong>seguridad y comodidad</strong>, no a prueba y error.
+            Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la validación de un optometrista de por medio. La idea es que los uses con <strong>seguridad y comodidad</strong>, no a prueba y error.
           </p>
 
           <div className="cl-hero-actions">
@@ -139,7 +136,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
               onClick={onBookExam}
             >
               <Calendar size={16} />
-              <span>Agendar valoración</span>
+              <span>Agendar examen de la vista</span>
             </button>
           </div>
 
@@ -526,7 +523,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
                   <span>De color / cosméticos</span>
                 </h3>
                 <p className="cl-type-desc">
-                  Realzan o cambian el color de tus ojos con materiales de grado oftálmico, siempre con adaptación profesional.
+                  Realzan o cambian el color de tus ojos con materiales de grado oftálmico.
                 </p>
               </div>
             </div>
@@ -535,109 +532,14 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
       </section>
 
       {/* ------------------------------------------------------------------
-          7. Por qué la adaptación con optometrista
+          Garantía Lensique
           ------------------------------------------------------------------ */}
-      <section className="cl-section" id="adaptacion-profesional">
+      <section className="cl-section" style={{ padding: '32px 0 40px' }}>
         <div className="cl-container">
-          <div className="cl-section-header">
-            <span className="cl-eyebrow">Diferenciador clínico</span>
-            <h2 className="cl-section-title">Por qué la adaptación con optometrista</h2>
-            <p className="cl-section-desc">
-              La diferencia entre usar lentes con comodidad absoluta o experimentar molestias.
-            </p>
-          </div>
-
-          <div className="cl-doctor-box">
-            <p className="cl-doctor-lead">
-              Un lente no es talla única: depende de la <strong>curva, el diámetro y la lágrima</strong> de tus ojos. Por eso medimos, elegimos el lente correcto y te enseñamos a usarlo. Así evitas molestias e infecciones.
-            </p>
-
-            <div className="cl-metrics-grid">
-              <div className="cl-metric-card">
-                <div className="cl-metric-icon">
-                  <Compass size={24} />
-                </div>
-                <h3 className="cl-metric-title">Curvatura corneal (K)</h3>
-                <p className="cl-metric-desc">
-                  Medimos el radio milimétrico de tu córnea para que el lente no comprima los vasos limbares ni quede demasiado suelto al parpadear.
-                </p>
-              </div>
-
-              <div className="cl-metric-card">
-                <div className="cl-metric-icon">
-                  <Eye size={24} />
-                </div>
-                <h3 className="cl-metric-title">Diámetro y centrado</h3>
-                <p className="cl-metric-desc">
-                  Verificamos que la zona óptica cubra completamente la pupila y permita un adecuado intercambio lagrimal y oxigenación tisular.
-                </p>
-              </div>
-
-              <div className="cl-metric-card">
-                <div className="cl-metric-icon">
-                  <Droplets size={24} />
-                </div>
-                <h3 className="cl-metric-title">Calidad de lágrima</h3>
-                <p className="cl-metric-desc">
-                  Evaluamos la estabilidad del film lagrimal para seleccionar el hidrogel de silicona idóneo que evite el ojo seco.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------
-          8. Cómo funciona (4 pasos) + Garantía Lensique
-          ------------------------------------------------------------------ */}
-      <section className="cl-section cl-section-alt" id="como-funciona">
-        <div className="cl-container">
-          <div className="cl-section-header">
-            <span className="cl-eyebrow">Proceso sencillo</span>
-            <h2 className="cl-section-title">Cómo funciona</h2>
-            <p className="cl-section-desc">
-              Cuatro pasos para que disfrutes de tu visión con respaldo profesional y acompañamiento continuo.
-            </p>
-          </div>
-
-          <div className="cl-workflow-grid">
-            <div className="cl-workflow-card">
-              <span className="cl-workflow-step-num">01</span>
-              <h3 className="cl-workflow-title">Agenda tu valoración</h3>
-              <p className="cl-workflow-desc">
-                Incluye examen visual completo y evaluación de la superficie corneal con optometrista.
-              </p>
-            </div>
-
-            <div className="cl-workflow-card">
-              <span className="cl-workflow-step-num">02</span>
-              <h3 className="cl-workflow-title">Adaptación y prueba</h3>
-              <p className="cl-workflow-desc">
-                Probamos lentes diagnósticos en clínica para calibrar graduación, comodidad y centrado exacto.
-              </p>
-            </div>
-
-            <div className="cl-workflow-card">
-              <span className="cl-workflow-step-num">03</span>
-              <h3 className="cl-workflow-title">Entrega y guía de uso</h3>
-              <p className="cl-workflow-desc">
-                Te entregamos tus cajas y te enseñamos personalmente las técnicas de colocación, retiro y conservación.
-              </p>
-            </div>
-
-            <div className="cl-workflow-card">
-              <span className="cl-workflow-step-num">04</span>
-              <h3 className="cl-workflow-title">Recompra fácil</h3>
-              <p className="cl-workflow-desc">
-                Pide tus cajas selladas directamente en línea o por WhatsApp cuando se acaben, con entrega rápida.
-              </p>
-            </div>
-          </div>
-
           <div className="cl-guarantee-banner">
             <ShieldCheck size={26} color="#16a34a" />
             <p className="cl-guarantee-text">
-              <strong>Garantía Lensique:</strong> Devolución de cajas selladas hasta 15 días y validación por optometrista.
+              <strong>Garantía Lensique:</strong> Venta de cajas selladas originales, validación de receta por optometrista antes de surtir y devolución de cajas selladas hasta 15 días.
             </p>
           </div>
         </div>
@@ -677,7 +579,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
             <span className="cl-eyebrow">Dudas frecuentes</span>
             <h2 className="cl-section-title">Preguntas sobre lentes de contacto</h2>
             <p className="cl-section-desc">
-              Resolvemos las dudas más habituales sobre adaptación, seguridad y compra en línea.
+              Resolvemos las dudas más habituales sobre uso, seguridad y compra en línea.
             </p>
           </div>
 
@@ -689,7 +591,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
               </button>
               {openFaqIndex === 0 && (
                 <div className="cl-faq-body">
-                  Sí, con lentes tóricos adaptados. Existen diseños avanzados que mantienen el eje visual estable con cada parpadeo, brindando una visión tan nítida como la de tus armazones.
+                  Sí, con lentes tóricos para astigmatismo. Existen diseños de estabilización avanzados que mantienen el eje visual alineado con cada parpadeo, brindando una visión nítida y estable.
                 </div>
               )}
             </div>
@@ -701,7 +603,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
               </button>
               {openFaqIndex === 1 && (
                 <div className="cl-faq-body">
-                  Sí, bien usados y cuidados — por eso la adaptación importa. Con hábitos de higiene correctos (lavado de manos, respeto al tiempo de reemplazo y soluciones estériles), el riesgo de infección es mínimo.
+                  Sí, bien usados y con la graduación correcta. Con hábitos de higiene adecuados (lavado de manos, respeto al tiempo de reemplazo y soluciones estériles), el riesgo de infección es mínimo.
                 </div>
               )}
             </div>
@@ -713,7 +615,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
               </button>
               {openFaqIndex === 2 && (
                 <div className="cl-faq-body">
-                  Si ya tienes graduación y adaptación previa de tus lentes, sí, puedes comprarlos directamente en nuestra tienda en línea. Si es tu primera vez usando lentes de contacto, te recomendamos agendar primero tu valoración para asegurar que recibas el modelo y curvatura ideal.
+                  Si ya conoces tu graduación o cuentas con una receta previa, sí, puedes comprarlos directamente en nuestra tienda en línea. Todas las órdenes son validadas por un optometrista antes de surtir cajas selladas originales. Si tienes dudas sobre tu graduación, puedes agendar tu examen visual o escribirnos por WhatsApp.
                 </div>
               )}
             </div>
@@ -784,7 +686,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
           <div className="cl-cta-final-box">
             <h2 className="cl-cta-final-title">Visión libre y cómoda todos los días</h2>
             <p className="cl-cta-final-desc">
-              Explora las opciones disponibles en nuestro catálogo o escríbenos directamente por WhatsApp para resolver dudas sobre graduación y adaptación con nuestro optometrista.
+              Explora las opciones disponibles en nuestro catálogo o escríbenos directamente por WhatsApp para resolver dudas sobre graduación y validación con nuestro optometrista.
             </p>
 
             <div className="cl-cta-final-actions">
@@ -810,7 +712,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
                 onClick={onBookExam}
               >
                 <Calendar size={16} />
-                <span>Agendar valoración</span>
+                <span>Agendar examen de la vista</span>
               </button>
             </div>
           </div>

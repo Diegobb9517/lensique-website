@@ -421,8 +421,8 @@ fs.writeFileSync(path.join(micasDir, 'index.html'), micasHtml, 'utf8');
 console.log('✅ Pre-rendered /micas/index.html');
 
 // Generate /lentes-de-contacto prerender
-const lentesContactoTitle = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Adaptación Lensique";
-const lentesContactoDesc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, adaptación con optometrista y marcas líderes.";
+const lentesContactoTitle = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Compra | Lensique";
+const lentesContactoDesc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, validación por optometrista y marcas líderes originales.";
 const lentesContactoCanonical = "https://www.lensique.com.mx/lentes-de-contacto";
 
 const lentesContactoHeadInjection = `
@@ -440,7 +440,7 @@ const lentesContactoBodyInjection = `
     <h1 style="font-size: 38px; font-weight: 700; margin-bottom: 8px;">Lentes de contacto</h1>
     <p style="font-size: 22px; color: #475569; font-style: italic; margin-bottom: 24px;">Visión libre y cómoda</p>
     <p style="font-size: 18px; line-height: 1.6; color: #334155; margin-bottom: 32px;">
-      Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la adaptación de un optometrista de por medio. La idea es que los uses con seguridad y comodidad, no a prueba y error.
+      Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la validación de un optometrista de por medio. La idea es que los uses con seguridad y comodidad, no a prueba y error.
     </p>
 
     <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Cómo ponerte los lentes de contacto</h2>
@@ -491,21 +491,14 @@ const lentesContactoBodyInjection = `
       <li><strong>Mensuales / quincenales:</strong> más económicos por día; requieren cuidado.</li>
       <li><strong>Tóricos:</strong> para astigmatismo.</li>
       <li><strong>Multifocales:</strong> para ver de lejos y cerca (presbicia).</li>
-      <li><strong>De color / cosméticos:</strong> siempre con adaptación profesional.</li>
+      <li><strong>De color / cosméticos:</strong> con materiales de grado oftálmico.</li>
     </ul>
 
-    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Por qué la adaptación con optometrista</h2>
-    <p style="font-size: 16px; line-height: 1.7; color: #334155;">
-      Un lente no es talla única: depende de la curva, el diámetro y la lágrima de tus ojos. Por eso medimos, elegimos el lente correcto y te enseñamos a usarlo. Así evitas molestias e infecciones.
-    </p>
-
-    <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Cómo funciona</h2>
-    <p style="font-size: 16px; line-height: 1.7; color: #334155;">
-      1. Agenda tu valoración (incluye examen). 2. Adaptación y prueba. 3. Entrega y guía de uso. 4. Recompra fácil cuando se acaben.
-    </p>
-    <p style="font-size: 16px; line-height: 1.7; color: #166534; font-weight: 600;">
-      Garantía Lensique: Devolución de cajas selladas hasta 15 días y validación por optometrista.
-    </p>
+    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 16px; padding: 20px 24px; margin: 32px 0;">
+      <p style="font-size: 16px; line-height: 1.6; color: #166534; margin: 0;">
+        <strong>Garantía Lensique:</strong> Venta de cajas selladas originales, validación de receta por optometrista antes de surtir y devolución de cajas selladas hasta 15 días.
+      </p>
+    </div>
 
     <h2 style="font-size: 28px; font-weight: 700; margin-top: 40px; margin-bottom: 16px;">Marcas</h2>
     <p style="font-size: 16px; line-height: 1.7; color: #334155;">

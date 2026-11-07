@@ -1248,7 +1248,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   <div className="cl-sumrow" style={{ border: 'none', paddingTop: '4px', paddingBottom: '4px' }}>
                     <span className="cl-k">Envío</span>
                     <span className="cl-v" style={{ fontWeight: 400, color: 'var(--lsq-grey)' }}>
-                      {totalPricing.price >= 2500 ? 'Gratis' : 'Gratis en pedidos > $2,500 · o recoge en óptica'}
+                      {totalPricing.price >= 2500 ? 'Gratis' : 'Calculado en el carrito · o recoge en clínica'}
                     </span>
                   </div>
 

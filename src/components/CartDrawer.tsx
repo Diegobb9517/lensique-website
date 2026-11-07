@@ -1081,7 +1081,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             <div style={{ flex: 1 }}>
                               <div style={{ fontSize: '14px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: '#0f172a' }}>Envío a domicilio</div>
                               <div style={{ fontSize: '12px', color: isFreeShipping ? '#16a34a' : '#64748b', fontWeight: isFreeShipping ? 600 : 400, marginTop: '2px' }}>
-                                {isFreeShipping ? 'Gratis' : 'desde $150'}
+                                {isFreeShipping ? 'Gratis' : (shippingCost > 0 ? `$${shippingCost}` : 'desde $150')}
                               </div>
                             </div>
                             <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#16223f' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1119,7 +1119,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             )}
                             {isFreeShipping && addressDetails.zip.replace(/\D/g, '').length === 5 && (
                               <div style={{ color: '#16a34a', fontSize: '11.5px', marginTop: '6px', fontWeight: 600 }}>
-                                ✓ Envío gratis aplicado (pedido mayor a $2,500)
+                                ✓ Envío gratis aplicado
                               </div>
                             )}
                           </div>

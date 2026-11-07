@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lensique · DP automática (cámara + tarjeta)</title>
+<style>
+  :root{--navy:#16223f;--line:#e7e3da;--grey:#7b7b7b;--blue:#2f6bff;--green:#1a9c6b}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f2ee;color:var(--navy);display:flex;justify-content:center;padding:20px}
+  .card{width:100%;max-width:440px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+  .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey);margin-bottom:8px}
+  h1{font-size:18px;margin:0 0 4px}
+  p.sub{font-size:12.5px;color:var(--grey);line-height:1.5;margin:0 0 12px}
+  .stage{position:relative;width:100%;border-radius:14px;overflow:hidden;background:#0f1622;border:1px solid var(--line)}
+  video{display:block;width:100%;height:auto}
+  canvas.ovl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .hold{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(10,16,30,.5);color:#fff;text-align:center;z-index:5;padding:16px}
+  .hold.on{display:flex}
+  .holdbig{font-size:30px;font-weight:800;letter-spacing:1px;text-shadow:0 2px 10px rgba(0,0,0,.45);animation:holdpulse 1s ease-in-out infinite}
+  @keyframes holdpulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.72}}
+  .holdsub{font-size:16px;font-weight:600}
+  .holdbarwrap{width:62%;height:9px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden}
+  .holdbarwrap i{display:block;height:100%;width:0;background:#1a9c6b;transition:width .25s ease}
+  .readout{display:flex;gap:10px;margin-top:12px}
+  .ro{flex:1;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+  .ro .n{font-size:22px;font-weight:700;color:var(--navy)}
+  .ro .l{font-size:10px;color:var(--grey);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+  button{width:100%;border:none;border-radius:999px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;background:var(--navy);color:#fff}
+  button:disabled{opacity:.5}
+  .status{font-size:14px;color:var(--grey);margin-top:10px;min-height:20px;text-align:center;line-height:1.4;border-radius:12px;padding:0}
+  .status.wait{color:var(--navy)}
+  .status.ok,.status.warn,.status.bad{padding:12px 14px;font-weight:600;text-align:left}
+  .status.ok{background:#e6f5ee;color:#13795a;border:1px solid #bfe3d3}
+  .status.warn{background:#fff4dc;color:#8a5a00;border:1px solid #f0d89a}
+  .status.bad{background:#fde8e8;color:#a32020;border:1px solid #f1bcbc}
+  .status small{display:block;font-weight:400;margin-top:3px;font-size:12.5px;opacity:.9}
+  .note{font-size:11px;color:var(--grey);margin-top:10px;line-height:1.5}
+  .chk{display:flex;gap:8px;justify-content:center;margin-top:8px;font-size:12px}
+  .chk span{padding:3px 10px;border-radius:999px;background:#f0efe9;color:var(--grey)}
+  .chk span.on{background:#e3f3ec;color:var(--green)}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="k">Lensique · DP automática</div>
+    <h1>Mide tu DP</h1>
+
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div style="flex:1;border:1px solid #cfe9dd;background:#f3fbf7;border-radius:12px;padding:8px;text-align:center">
+        <svg viewBox="0 0 120 130" width="100%" style="max-width:130px">
+          <ellipse cx="60" cy="78" rx="34" ry="44" fill="#f1d9c4" stroke="#c9a98c" stroke-width="1.5"/>
+          <path d="M28 66 Q60 22 92 66 Q92 44 60 36 Q28 44 28 66Z" fill="#5a4636"/>
+          <rect x="38" y="44" width="44" height="28" rx="3" fill="#fff" stroke="#1a9c6b" stroke-width="2.5"/>
+          <rect x="42" y="49" width="14" height="10" fill="#d8dde6"/><rect x="60" y="50" width="18" height="2.5" fill="#cfd5df"/><rect x="60" y="56" width="14" height="2.5" fill="#cfd5df"/>
+          <circle cx="46" cy="86" r="3.6" fill="#16223f"/><circle cx="74" cy="86" r="3.6" fill="#16223f"/>
+          <line x1="46" y1="86" x2="74" y2="86" stroke="#2f6bff" stroke-width="1.6" stroke-dasharray="3 3"/>
+          <path d="M60 90 q-3 9 0 12" stroke="#c9a98c" stroke-width="1.6" fill="none"/>
+          <path d="M50 112 q10 6 20 0" stroke="#b07a6a" stroke-width="2" fill="none"/>
+        </svg>
+        <div style="font-size:12px;font-weight:700;color:#1a9c6b;margin-top:2px">✓ Así sí</div>
+      </div>
+      <div style="flex:1;border:1px solid #f0d3d3;background:#fdf5f5;border-radius:12px;padding:8px;text-align:center">
+        <svg viewBox="0 0 120 130" width="100%" style="max-width:130px">
+          <ellipse cx="62" cy="82" rx="36" ry="46" fill="#f1d9c4" stroke="#c9a98c" stroke-width="1.5" transform="rotate(-10 62 82)"/>
+          <path d="M30 70 Q62 24 94 70 Q94 46 62 38 Q30 46 30 70Z" fill="#5a4636" transform="rotate(-10 62 82)"/>
+          <g transform="rotate(-14 56 36)"><rect x="26" y="14" width="62" height="40" rx="3" fill="#fff" stroke="#c0392b" stroke-width="2.5"/>
+          <rect x="32" y="21" width="20" height="14" fill="#d8dde6"/></g>
+          <circle cx="46" cy="90" r="3.6" fill="#16223f"/><circle cx="76" cy="84" r="3.6" fill="#16223f"/>
+          <path d="M20 40 q-10 8 -4 22" stroke="#e0b99d" stroke-width="6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div style="font-size:12px;font-weight:700;color:#c0392b;margin-top:2px">✗ Así no</div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <video id="vid" autoplay playsinline muted></video>
+      <canvas class="ovl" id="ovl"></canvas>
+      <div class="hold" id="hold"><div class="holdbig">NO TE MUEVAS</div><div class="holdsub" id="holdsub">Preparando…</div><div class="holdbarwrap"><i id="holdbar"></i></div></div>
+    </div>
+
+    <div class="chk"><span id="c-face">● rostro</span><span id="c-card">● tarjeta</span><span id="c-light">● luz</span></div>
+
+    <div class="readout">
+      <div class="ro"><div class="n" id="pdmm">—</div><div class="l">DP · tarjeta (mm)</div></div>
+      <div class="ro"><div class="n" id="pdiris">—</div><div class="l">DP · iris (mm)</div></div>
+      <div class="ro" style="display:none"><div class="n" id="cardpx">—</div></div>
+    </div>
+
+    <button id="go" onclick="startCam()">Activar cámara</button>
+    <button id="measure" onclick="measure()" disabled>Medir automáticamente</button>
+    <button id="usebtn" onclick="useResult()" style="display:none;background:#1a9c6b">Usar esta medida</button>
+    <div class="status" id="status">Cargando componentes…</div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+<script>
+var cvReady=false, fmReady=false;
+var vid=document.getElementById('vid'), ovl=document.getElementById('ovl'), ctx=ovl.getContext('2d');
+var statusEl=document.getElementById('status'); // (no llamarla "status": es palabra reservada de window)
+var CARD_MM=85.6;
+var lastPupils=null; // {ax,ay,bx,by} en px del frame capturado
+var work=document.createElement('canvas');
+
+// ---- OpenCV (espera robusta: maneja promesa / onRuntimeInitialized / polling) ----
+var cvScript=document.createElement('script');
+cvScript.src='https://docs.opencv.org/4.x/opencv.js';
+cvScript.async=true;
+document.body.appendChild(cvScript);
+cvScript.onerror=function(){ statusEl.textContent='No se pudo descargar OpenCV (revisa tu internet o recarga).'; };
+var cvTries=0;
+function waitCv(){
+  cvTries++;
+  // NO usar cv.then: en OpenCV 4.x provoca un bucle y se cuelga.
+  if(typeof cv!=='undefined' && cv.Mat){ cvReady=true; maybeReady(); return; }
+  if(typeof cv!=='undefined' && !cv._hooked){ cv._hooked=true; cv.onRuntimeInitialized=function(){ cvReady=true; maybeReady(); }; }
+  if(cvTries>300){ statusEl.textContent='OpenCV tardó demasiado en cargar. Recarga la página.'; return; }
+  setTimeout(waitCv,200);
+}
+waitCv();
+
+// ---- FaceMesh ----
+var fm;
+function initFM(){
+  if(typeof FaceMesh==='undefined'){statusEl.textContent='No cargó FaceMesh (revisa internet).';return;}
+  fm=new FaceMesh({locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/'+f;}});
+  fm.setOptions({maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:0.5, minTrackingConfidence:0.5});
+  fm.onResults(onFace);
+  fmReady=true; maybeReady();
+}
+function maybeReady(){
+  if(cvReady&&fmReady) statusEl.textContent='Listo. Activa la cámara.';
+  else statusEl.textContent='Cargando componentes… ('+(cvReady?'visión ✓':'visión…')+' / '+(fmReady?'rostro ✓':'rostro…')+')';
+}
+initFM();
+
+// ---- cámara ----
+function startCam(){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false})
+    .then(function(s){vid.srcObject=s;document.getElementById('go').style.display='none';document.getElementById('measure').disabled=false;statusEl.textContent='Cámara activa. Tarjeta en la frente y presiona Medir.';startLightLoop();})
+    .catch(function(e){statusEl.textContent='No se pudo abrir la cámara: '+e.name;});
+}
+
+// ---- medir: 5 capturas seguidas, con validaciones de postura, y se queda con la MEDIANA ----
+var FACTOR=1.03;            // corrige que la tarjeta en la frente queda ligeramente adelante de los ojos
+var NSHOTS=8; var failCount={};
+var sampling=false, remaining=0, samples=[], irisSamples=[], lastMsg='', lastYaw=0, lastCardAngle=null, lastIrisPx=0;
+var IRIS_MM=11.7;           // diámetro horizontal medio del iris humano adulto (~11.7 mm, muy poco variable)
+// ---- chequeo de luz (brillo medio + reflejos quemados) ----
+var lcan=document.createElement('canvas'); lcan.width=80; lcan.height=60; var lctx=lcan.getContext('2d');
+function sampleLight(){
+  if(!vid.videoWidth) return null;
+  lctx.drawImage(vid,0,0,lcan.width,lcan.height);
+  var d=lctx.getImageData(0,0,lcan.width,lcan.height).data, n=lcan.width*lcan.height, sum=0, blown=0;
+  for(var i=0;i<d.length;i+=4){ var lum=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]; sum+=lum; if(lum>245)blown++; }
+  return {mean:sum/n, pBlown:blown/n};
+}
+function lightVerdict(){
+  var s=sampleLight(); if(!s) return {ok:true,msg:''};
+  if(s.mean<55) return {ok:false,msg:'Hay poca luz: ponte frente a una ventana o enciende una luz.'};
+  if(s.mean>218||s.pBlown>0.20) return {ok:false,msg:'Demasiada luz o reflejo: evita la luz directa y gírate un poco.'};
+  return {ok:true,msg:''};
+}
+var lightTimer=null;
+function startLightLoop(){
+  if(lightTimer) return;
+  lightTimer=setInterval(function(){
+    if(sampling||!vid.videoWidth) return;
+    var v=lightVerdict(), el=document.getElementById('c-light');
+    if(el) el.classList.toggle('on',v.ok);
+  },500);
+}
+function useResult(){
+  if(window.opener&&window.__dpLast){
+    window.opener.postMessage({type:'lensique-dp',use:true,mm:window.__dpLast.mm,conf:window.__dpLast.conf,method:window.__dpLast.method},'*');
+    window.close();
+  }
+}
+function measure(){
+  if(!vid.videoWidth){statusEl.textContent='Espera a que cargue la cámara…';return;}
+  var lv=lightVerdict();
+  if(!lv.ok){ statusEl.className='status warn'; statusEl.innerHTML='⚠ '+lv.msg+'<small>Ajusta la luz y vuelve a presionar Medir.</small>'; return; }
+  var ub=document.getElementById('usebtn'); if(ub) ub.style.display='none';
+  document.getElementById('measure').disabled=true;
+  samples=[]; irisSamples=[]; remaining=NSHOTS; sampling=true; lastMsg=''; failCount={};
+  statusEl.className='status wait'; statusEl.textContent='Midiendo… no te muevas (0/'+NSHOTS+')';
+  document.getElementById('hold').classList.add('on'); updateHold(0);
+  document.getElementById('pdmm').textContent='—'; document.getElementById('pdiris').textContent='—';
+  shoot();
+}
+function updateHold(done){
+  var sub=document.getElementById('holdsub'), bar=document.getElementById('holdbar');
+  if(sub) sub.textContent='Midiendo '+done+' de '+NSHOTS;
+  if(bar) bar.style.width=(done/NSHOTS*100)+'%';
+}
+// DP usando el IRIS como regla (sin tarjeta). Solo exige cara de frente y de tamaño razonable.
+function evalIris(){
+  if(!lastPupils||!(lastIrisPx>4)) return {ok:false};
+  var pd=Math.hypot(lastPupils.ax-lastPupils.bx,lastPupils.ay-lastPupils.by), frac=pd/work.width;
+  if(frac<0.04||Math.abs(lastYaw)>0.2) return {ok:false};
+  return {ok:true, mm: pd*(IRIS_MM/lastIrisPx)};
+}
+function shoot(){
+  work.width=vid.videoWidth; work.height=vid.videoHeight;
+  work.getContext('2d').drawImage(vid,0,0,work.width,work.height);
+  lastPupils=null; lastCardAngle=null;
+  fm.send({image:work}); // -> onFace
+}
+function median(a){var s=a.slice().sort(function(x,y){return x-y;});var m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2;}
+function endSampling(){
+  sampling=false; document.getElementById('measure').disabled=false;
+  document.getElementById('hold').classList.remove('on');
+  var cardMM=null, irisMM=null;
+  if(samples.length>=3){
+    var mn=Math.min.apply(null,samples), mx=Math.max.apply(null,samples);
+    if(mx-mn<=2.5) cardMM=median(samples);
+  }
+  if(irisSamples.length>=3) irisMM=median(irisSamples);
+  document.getElementById('pdmm').textContent=cardMM?cardMM.toFixed(1):'—';
+  document.getElementById('pdiris').textContent=irisMM?irisMM.toFixed(1):'—';
+  // motivo de fallo más frecuente
+  var top='',topN=0; for(var m in failCount){ if(failCount[m]>topN){topN=failCount[m];top=m;} }
+  var counts='(tarjeta '+samples.length+'/'+NSHOTS+' · iris '+irisSamples.length+'/'+NSHOTS+')';
+  function show(cls,title,hint){ statusEl.className='status '+cls; statusEl.innerHTML=title+(hint?'<small>'+hint+'</small>':'')+'<small>'+counts+'</small>'; }
+  // si esta ventana la abrió el prototipo, ofrecer "Usar esta medida" para devolverle el resultado
+  function notify(mm,conf,method){
+    window.__dpLast=null; var b=document.getElementById('usebtn');
+    if(!window.opener||!b) return;
+    if(mm){ window.__dpLast={mm:mm,conf:conf,method:method}; b.style.display='block'; b.textContent='Usar esta medida ('+Math.round(mm)+' mm)'; }
+    else { b.style.display='none'; }
+  }
+  var solid=cardMM && samples.length>=4;   // tarjeta estable: al menos 4 de 8 capturas buenas
+  if(solid && irisMM){
+    var diff=Math.abs(cardMM-irisMM);
+    if(diff<=3){
+      show('ok','✓ Medida lista: DP '+cardMM.toFixed(0)+' mm','Los dos métodos coinciden.');
+      notify(cardMM,'alta','tarjeta');
+    }else{
+      show('warn','⚠ Medida dudosa','Los dos métodos no coinciden ('+cardMM.toFixed(0)+' y '+irisMM.toFixed(0)+' mm). Repite con la tarjeta pegada a la frente, mirando de frente.');
+      notify(cardMM,'dudosa','tarjeta');
+    }
+  }else if(irisMM){
+    show('warn','⚠ Medida aproximada: DP ≈ '+irisMM.toFixed(0)+' mm','No se pudo usar la tarjeta'+(top?': '+top.toLowerCase():'')+' Repite si quieres más precisión.');
+    notify(irisMM,'aproximada','iris');
+  }else{
+    show('bad','✗ No se pudo medir',(top||'Mira de frente a la cámara.')+' Repite la medición.');
+    notify(null,'fallida',null);
+  }
+}
+// Valida postura y calcula la DP de UNA captura. Devuelve {ok,mm} o {ok:false,msg}.
+function evaluate(cardW){
+  if(!lastPupils) return {ok:false,msg:'No se ve tu rostro: ponte frente a la cámara.'};
+  var P=lastPupils, pd=Math.hypot(P.ax-P.bx,P.ay-P.by), frac=pd/work.width;
+  if(frac>0.125) return {ok:false,msg:'Estás muy cerca: aléjate un poco de la cámara.'};
+  if(frac<0.045) return {ok:false,msg:'Estás muy lejos: acércate un poco a la cámara.'};
+  if(Math.abs(lastYaw)>0.2) return {ok:false,msg:'Mira de frente, sin girar la cabeza.'};
+  if(!(cardW>0)) return {ok:false,msg:'No se ve la tarjeta: pégala a la frente, horizontal, con buena luz.'};
+  if(lastCardAngle!==null){
+    var eyeAng=Math.atan2(P.by-P.ay,P.bx-P.ax)*180/Math.PI;
+    var diff=((lastCardAngle-eyeAng)%180+180)%180; if(diff>90) diff-=180;
+    if(Math.abs(diff)>12) return {ok:false,msg:'La tarjeta está inclinada: ponla recta, paralela a tus ojos.'};
+  }
+  var ratio=cardW/pd;
+  if(ratio>1.58||ratio<1.0) return {ok:false,msg:'La tarjeta no está pegada a la frente: no la adelantes hacia la cámara.'};
+  return {ok:true, mm: pd*(CARD_MM/cardW)*FACTOR};
+}
+
+function onFace(res){
+  // escala de work(px nativos) a overlay(px display)
+  var sx=ovl.width/work.width, sy=ovl.height/work.height;
+  ovl.width=vid.clientWidth; ovl.height=vid.clientHeight;
+  sx=ovl.width/work.width; sy=ovl.height/work.height;
+  ctx.clearRect(0,0,ovl.width,ovl.height);
+  var faceOk=res.multiFaceLandmarks&&res.multiFaceLandmarks.length;
+  document.getElementById('c-face').classList.toggle('on',!!faceOk);
+  if(faceOk){
+    var lm=res.multiFaceLandmarks[0], a=lm[468], b=lm[473];
+    lastPupils={ax:a.x*work.width, ay:a.y*work.height, bx:b.x*work.width, by:b.y*work.height};
+    // giro de cabeza (yaw): desplazamiento horizontal de la punta de la nariz respecto al centro entre ojos, normalizado por la DP en px
+    var pd0=Math.hypot(lastPupils.ax-lastPupils.bx,lastPupils.ay-lastPupils.by)||1;
+    lastYaw=(lm[1].x*work.width-(lastPupils.ax+lastPupils.bx)/2)/pd0;
+    // diámetro del iris en px (par horizontal de cada iris) -> regla "natural" en el MISMO plano que las pupilas
+    function idist(i,j){return Math.hypot((lm[i].x-lm[j].x)*work.width,(lm[i].y-lm[j].y)*work.height);}
+    lastIrisPx=(idist(469,471)+idist(474,476))/2;
+    // dibujar en overlay
+    ctx.strokeStyle='#2f6bff';ctx.lineWidth=2;ctx.setLineDash([3,4]);
+    ctx.beginPath();ctx.moveTo(lastPupils.ax*sx,lastPupils.ay*sy);ctx.lineTo(lastPupils.bx*sx,lastPupils.by*sy);ctx.stroke();ctx.setLineDash([]);
+    [[lastPupils.ax,lastPupils.ay],[lastPupils.bx,lastPupils.by]].forEach(function(p){ctx.fillStyle='#2f6bff';ctx.beginPath();ctx.arc(p[0]*sx,p[1]*sy,5,0,7);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();});
+  }
+  // ahora la tarjeta con OpenCV sobre el mismo frame
+  var cardW=detectCard(sx,sy);
+  var r=evaluate(cardW);
+  document.getElementById('cardpx').textContent=cardW>0?Math.round(cardW):'—';
+  var ri=evalIris();
+  if(sampling){
+    if(ri.ok) irisSamples.push(ri.mm);
+    if(r.ok) samples.push(r.mm); else { lastMsg=r.msg; failCount[r.msg]=(failCount[r.msg]||0)+1; }
+    remaining--;
+    statusEl.className='status wait'; statusEl.textContent='Midiendo… no te muevas ('+(NSHOTS-remaining)+'/'+NSHOTS+')';
+    updateHold(NSHOTS-remaining);
+    if(remaining>0) setTimeout(shoot,300); else endSampling();
+  }
+}
+
+// Detecta la tarjeta SOLO en la zona de la frente (arriba de los ojos), con 2 métodos
+// (bordes Canny + umbral Otsu), usando rectángulo rotado mínimo (tolera esquinas tapadas por los dedos)
+// y un tamaño esperado relativo a la distancia entre pupilas (la tarjeta mide ~1.2-1.5x la DP).
+function detectCard(sx,sy){
+  if(!cvReady||!lastPupils){document.getElementById('c-card').classList.remove('on');return 0;}
+  var P=lastPupils, pd=Math.hypot(P.ax-P.bx,P.ay-P.by);
+  var mx=(P.ax+P.bx)/2, my=(P.ay+P.by)/2;
+  var left=Math.max(0,Math.round(mx-1.8*pd)), right=Math.min(work.width,Math.round(mx+1.8*pd));
+  var top=Math.max(0,Math.round(my-3.6*pd)), bottom=Math.min(work.height,Math.round(my-0.3*pd));
+  var rw=right-left, rh=bottom-top;
+  if(rw<30||rh<20){document.getElementById('c-card').classList.remove('on');return 0;}
+  // zona de búsqueda (amarillo punteado) para que veas dónde busca
+  ctx.save();ctx.strokeStyle='rgba(255,200,0,.8)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.strokeRect(left*sx,top*sy,rw*sx,rh*sy);ctx.restore();
+
+  var S=3, best=null, bestScore=0;
+  var src=null, roi=null, big=new cv.Mat(), gray=new cv.Mat(), blur=new cv.Mat();
+  try{
+    src=cv.imread(work);
+    roi=src.roi(new cv.Rect(left,top,rw,rh));
+    cv.resize(roi,big,new cv.Size(0,0),S,S,cv.INTER_CUBIC);
+    cv.cvtColor(big,gray,cv.COLOR_RGBA2GRAY);
+    cv.GaussianBlur(gray,blur,new cv.Size(5,5),0);
+    var masks=[];
+    var m1=new cv.Mat(); cv.Canny(blur,m1,30,100);
+    var k=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(5,5));
+    cv.dilate(m1,m1,k); cv.morphologyEx(m1,m1,cv.MORPH_CLOSE,k); masks.push(m1);
+    var m2=new cv.Mat(); cv.threshold(blur,m2,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU);
+    cv.morphologyEx(m2,m2,cv.MORPH_CLOSE,k); cv.morphologyEx(m2,m2,cv.MORPH_OPEN,k); masks.push(m2);
+    var m3=new cv.Mat(); cv.threshold(blur,m3,0,255,cv.THRESH_BINARY_INV+cv.THRESH_OTSU);
+    cv.morphologyEx(m3,m3,cv.MORPH_CLOSE,k); cv.morphologyEx(m3,m3,cv.MORPH_OPEN,k); masks.push(m3);
+    // Método 4: la tarjeta tiene MUCHO detalle interno (texto, foto, QR) y la piel/pared casi no.
+    // Se funden todos esos bordes en una sola mancha: sirve aunque el contorno claro casi no contraste.
+    var kb=cv.getStructuringElement(cv.MORPH_ELLIPSE,new cv.Size(11,11));
+    var kc=cv.getStructuringElement(cv.MORPH_ELLIPSE,new cv.Size(25,25));
+    var m4=new cv.Mat(); cv.Canny(blur,m4,20,70);
+    cv.dilate(m4,m4,kb); cv.morphologyEx(m4,m4,cv.MORPH_CLOSE,kc); cv.morphologyEx(m4,m4,cv.MORPH_OPEN,kb); masks.push(m4);
+    // Método 5: la tarjeta es clara y de baja saturación (blanca/gris), la piel es más saturada.
+    var rgb=new cv.Mat(), hsv=new cv.Mat(), m5=new cv.Mat();
+    cv.cvtColor(big,rgb,cv.COLOR_RGBA2RGB); cv.cvtColor(rgb,hsv,cv.COLOR_RGB2HSV);
+    var lo=new cv.Mat(hsv.rows,hsv.cols,hsv.type(),new cv.Scalar(0,0,120,0));
+    var hi=new cv.Mat(hsv.rows,hsv.cols,hsv.type(),new cv.Scalar(180,60,255,255));
+    cv.inRange(hsv,lo,hi,m5);
+    cv.morphologyEx(m5,m5,cv.MORPH_CLOSE,kc); cv.morphologyEx(m5,m5,cv.MORPH_OPEN,kb); masks.push(m5);
+    rgb.delete();hsv.delete();lo.delete();hi.delete();kb.delete();kc.delete();
+    k.delete();
+    masks.forEach(function(mask){
+      var contours=new cv.MatVector(), hier=new cv.Mat();
+      cv.findContours(mask,contours,hier,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE);
+      for(var i=0;i<contours.size();i++){
+        var c=contours.get(i), area=cv.contourArea(c);
+        if(area>(rw*S)*(rh*S)*0.02 && area<(rw*S)*(rh*S)*0.9){
+          var rr=cv.minAreaRect(c), w=rr.size.width, h=rr.size.height;
+          var hi=Math.max(w,h), lo=Math.min(w,h);
+          if(lo>0){
+            var ratio=hi/lo, fill=area/(w*h), wpx=hi/S;
+            // forma de tarjeta, bien rellena y de tamaño coherente con la cara
+            if(ratio>1.3&&ratio<2.0&&fill>0.6&&wpx>0.8*pd&&wpx<2.4*pd){
+              // preferir el candidato centrado sobre la frente (entre los ojos), no uno al costado
+              var cxp=rr.center.x/S+left, dxn=Math.abs(cxp-mx)/pd;
+              var score=fill*area*Math.exp(-(dxn*dxn)/0.8);
+              if(score>bestScore){bestScore=score;best={rect:rr,wpx:wpx};}
+            }
+          }
+        }
+        c.delete();
+      }
+      contours.delete();hier.delete();mask.delete();
+    });
+  }catch(e){ statusEl.textContent='Error en detección: '+(e.message||e); }
+  var wpx=0;
+  if(best){
+    wpx=best.wpx;
+    var pts=cv.RotatedRect.points(best.rect);
+    // ángulo del lado largo de la tarjeta (para exigir que esté paralela a la línea de los ojos)
+    var e1=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y), e2=Math.hypot(pts[2].x-pts[1].x,pts[2].y-pts[1].y);
+    lastCardAngle=(e1>=e2)?Math.atan2(pts[1].y-pts[0].y,pts[1].x-pts[0].x)*180/Math.PI:Math.atan2(pts[2].y-pts[1].y,pts[2].x-pts[1].x)*180/Math.PI;
+    ctx.strokeStyle='#1a9c6b';ctx.lineWidth=3;ctx.beginPath();
+    for(var m=0;m<4;m++){var px=(pts[m].x/S+left)*sx, py=(pts[m].y/S+top)*sy; if(m===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+    ctx.closePath();ctx.stroke();
+  }
+  document.getElementById('c-card').classList.toggle('on',!!best);
+  if(src)src.delete();if(roi)roi.delete();big.delete();gray.delete();blur.delete();
+  return wpx;
+}
+
+</script>
+</body>
+</html>

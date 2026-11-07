@@ -2174,6 +2174,7 @@ function App() {
                 maxDeliveryDays: delTime.maxDays,
                 minDeliveryDays: delTime.maxDays
               });
+              setIsCartOpen(true);
               return;
             }
 
@@ -2189,13 +2190,16 @@ function App() {
             if (config.etiqueta) {
               configText += `• ${config.etiqueta} · índice ${config.indice}\n`;
             }
+            if (config.tratamientoNombre && config.tratamiento && config.tratamiento !== 'none') {
+              configText += `• Tratamiento: ${config.tratamientoNombre}\n`;
+            }
             if (config.montaje && config.montaje !== 'completo') {
               const montLabel = config.montaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire';
               configText += `• Montaje: ${montLabel}\n`;
             }
             
             const pvp = config.pvp || 0;
-            const total = pvp + productPrice;
+            const finalUnitPrice = config.total || (pvp + productPrice);
 
             configText += `• Precio micas (el par): $${Math.round(pvp).toLocaleString('es-MX')}\n`;
             configText += `• Precio armazón: $${Math.round(productPrice).toLocaleString('es-MX')}\n`;
@@ -2209,7 +2213,11 @@ function App() {
               return txt;
             };
 
-            if (config.od || config.oi) {
+            if (config.rxMethod === 'photo') {
+              configText += `\n*Nota: Receta adjunta (${config.photoName || 'foto/PDF'}).*\n`;
+            } else if (config.rxMethod === 'later') {
+              configText += `\n*Nota: Receta pendiente — el cliente la enviará por WhatsApp.*\n`;
+            } else if (config.od || config.oi) {
               const odStr = formatRx(config.od);
               const oiStr = formatRx(config.oi);
               if (odStr !== 'Esf +0.00' || oiStr !== 'Esf +0.00' || config.od?.cil || config.oi?.cil) {
@@ -2221,18 +2229,19 @@ function App() {
                if (typeof config.pd === 'object') {
                   configText += `  DI/PD: OD ${config.pd.od || '?'} mm / OI ${config.pd.oi || '?'} mm\n`;
                } else {
-                  configText += `  DI/PD: ${config.pd} mm\n`;
+                  configText += `  DI/PD: ${config.pd}\n`;
                }
             }
 
-            configText += `\n*Precio Estimado Total:* $${Math.round(total).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
+            configText += `\n*Precio Estimado Total:* $${Math.round(finalUnitPrice).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
+            config.rxText = configText;
             
             const delTime = calculateDeliveryTime(product, config);
             addItem({
               type: 'frame_with_lenses',
               title: formatProductTitle(product, 'Lentes'),
               quantity: 1,
-              unit_price: productPrice + pvp,
+              unit_price: finalUnitPrice,
               product: product,
               lensConfig: config,
               image: product.image || (product.images && product.images[0]?.image_url),
@@ -2241,6 +2250,7 @@ function App() {
               maxDeliveryDays: delTime.maxDays,
               minDeliveryDays: delTime.maxDays
             });
+            setIsCartOpen(true);
           }}
         />
       )}

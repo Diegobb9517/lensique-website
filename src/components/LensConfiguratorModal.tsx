@@ -1,9 +1,206 @@
-import React, { useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
-import './LensConfiguratorModal.css';
+import { X, ChevronLeft, Camera, Upload, AlertTriangle, ShieldCheck, Check, Truck, Info, HelpCircle } from 'lucide-react';
 import { resolveImageUrl } from '../App';
+import { getDisplayName, formatBrandName } from '../lib/format';
+import './LensConfiguratorModal.css';
 
+// ==========================================
+// 1. CONSTANTES & MOTOR ZEISS (PROTOTIPO LENSIQUE)
+// ==========================================
+export const RANGES: Record<string, [number, number, number]> = {
+  '1.5': [-7, 6, 4],
+  '1.6': [-10, 6, 6],
+  '1.67': [-12, 8, 6],
+  '1.74': [-20, 16, 6]
+};
+
+export const ORDER = ['1.5', '1.6', '1.67', '1.74'];
+
+// PLACEHOLDER DE PRECIOS MICA (MOTOR PROTOTIPO LENSIQUE / MIENTRAS SE CONECTA EL ENDPOINT EN VIVO DEL COTIZADOR POS)
+// Estos precios se sustituirán por la respuesta del endpoint del cotizador ZEISS.
+// Formato: precio completo de la mica configurada (por par, IVA, AR+UV+armado incl.)
+export const MICA_PLACEHOLDER_PRICES: Record<'mono' | 'prog', Record<string, Record<'none' | 'azul' | 'foto', number>>> = {
+  mono: {
+    '1.5': { none: 1200, azul: 1500, foto: 3600 },
+    '1.6': { none: 1800, azul: 2100, foto: 4200 },
+    '1.67': { none: 4300, azul: 4600, foto: 5400 },
+    '1.74': { none: 6100, azul: 6400, foto: 7000 }
+  },
+  prog: {
+    '1.5': { none: 4500, azul: 4800, foto: 6600 },
+    '1.6': { none: 5400, azul: 5700, foto: 7400 },
+    '1.67': { none: 6400, azul: 6700, foto: 8200 },
+    '1.74': { none: 7400, azul: 7700, foto: 9000 }
+  }
+};
+
+export function getMicaPrice(type: 'mono' | 'prog', index: string, trat: 'none' | 'azul' | 'foto'): number {
+  const group = MICA_PLACEHOLDER_PRICES[type]?.[index] || MICA_PLACEHOLDER_PRICES[type]?.['1.5'];
+  if (!group) return 1200;
+  return group[trat] != null ? group[trat] : group.none;
+}
+
+export function recommend(e: number, c: number): string | null {
+  const pot = Math.max(Math.abs(e), Math.abs(e + c));
+  const a = pot < 3 ? 1 : pot < 5 ? 2 : pot < 8 ? 3 : 4;
+  let m = 5;
+  for (let i = 0; i < 4; i++) {
+    const r = RANGES[ORDER[i]];
+    if (e >= r[0] && e <= r[1] && Math.abs(c) <= r[2]) {
+      m = i + 1;
+      break;
+    }
+  }
+  const rk = Math.max(a, m);
+  return rk >= 5 ? null : ORDER[rk - 1];
+}
+
+export function getFeasibleIndices(odSph: number, odCyl: number, oiSph: number, oiCyl: number): string[] {
+  const eMin = Math.min(odSph, oiSph);
+  const eMax = Math.max(odSph, oiSph);
+  const cMax = Math.max(Math.abs(odCyl), Math.abs(oiCyl));
+  const out: string[] = [];
+  ORDER.forEach(k => {
+    const r = RANGES[k];
+    if (eMin >= r[0] && eMax <= r[1] && cMax <= r[2]) {
+      out.push(k);
+    }
+  });
+  return out;
+}
+
+export function getRecommendation(odSph: number, odCyl: number, oiSph: number, oiCyl: number): string | null {
+  const r1 = recommend(odSph, odCyl);
+  const r2 = recommend(oiSph, oiCyl);
+  if (r1 === null || r2 === null) return null;
+  return ORDER.indexOf(r1) >= ORDER.indexOf(r2) ? r1 : r2;
+}
+
+// Comisiones Mercado Pago y precio psicológico
+export const MP_BASE = 0.04;
+export const MSI_RATE3 = 0.0469;
+export const MSI_RATE6 = 0.0769;
+export const MSI_T3 = 2500;
+export const MSI_T6 = 4000;
+
+export function charm(n: number): number {
+  return Math.round(n / 100) * 100 - 1;
+}
+
+export function priceWithMP(net: number): { price: number; n: number; monthly: number } {
+  const p0 = net / (1 - MP_BASE);
+  const n = (p0 >= MSI_T6) ? 6 : (p0 >= MSI_T3) ? 3 : 0;
+  const rate = MP_BASE + (n === 6 ? MSI_RATE6 : n === 3 ? MSI_RATE3 : 0);
+  const price = charm(net / (1 - rate));
+  const monthly = n > 0 ? Math.round(price / n) : price;
+  return { price, n, monthly };
+}
+
+export function idxLabel(i: string): string {
+  return i === '1.5' ? '1.50' : i === '1.6' ? '1.60' : i;
+}
+
+// ==========================================
+// 2. COMPONENTE DROPDOWN CONTROLADO (.dd)
+// ==========================================
+interface CustomDropdownProps {
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  centerZero?: boolean;
+}
+
+function CustomDropdown({ options, value, onChange, placeholder, centerZero }: CustomDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isUp, setIsUp] = useState(false);
+  const ddRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const selectedOpt = options.find(o => String(o.value) === String(value));
+  const displayLabel = selectedOpt ? selectedOpt.label : (placeholder || 'Elige');
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isOpen) {
+      if (ddRef.current) {
+        const rect = ddRef.current.getBoundingClientRect();
+        setIsUp(window.innerHeight - rect.bottom < 250);
+      }
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const timer = setTimeout(() => {
+      if (!listRef.current) return;
+      if (!value || value === '') {
+        if (centerZero) {
+          const zeroItem = listRef.current.querySelector('[data-val="0.00"]') as HTMLElement;
+          if (zeroItem) {
+            zeroItem.scrollIntoView({ block: 'center' });
+            return;
+          }
+        }
+      }
+      const selItem = listRef.current.querySelector('.lsq-dd-opt.sel') as HTMLElement;
+      if (selItem) {
+        selItem.scrollIntoView({ block: 'nearest' });
+      }
+    }, 20);
+
+    const handleClickOutside = (ev: MouseEvent) => {
+      if (ddRef.current && !ddRef.current.contains(ev.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isOpen, value, centerZero]);
+
+  return (
+    <div className={`lsq-dd ${isOpen ? 'open' : ''} ${isUp ? 'up' : ''}`} ref={ddRef}>
+      <div className="lsq-dd-btn" onClick={handleToggle}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayLabel}</span>
+        <span className="lsq-dd-caret">▾</span>
+      </div>
+      {isOpen && (
+        <div className="lsq-dd-list" ref={listRef}>
+          {options.map((opt, idx) => {
+            const isSel = String(opt.value) === String(value);
+            return (
+              <div
+                key={`${opt.value}-${idx}`}
+                data-val={opt.value}
+                className={`lsq-dd-opt ${isSel ? 'sel' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+              >
+                {opt.label}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==========================================
+// 3. PROPS DEL MODAL
+// ==========================================
 interface LensConfiguratorModalProps {
   product: any;
   catalogData?: any[];
@@ -18,127 +215,1056 @@ export default function LensConfiguratorModal({
   onClose,
   onComplete
 }: LensConfiguratorModalProps) {
-  const hasProcessed = React.useRef(false);
-  const [iframeLoaded, setIframeLoaded] = React.useState(false);
+  // Datos dinámicos del producto (armazón)
+  const framePrice = useMemo(() => {
+    return Number(product?.price_incl_tax || product?.price || 500);
+  }, [product]);
 
+  const frameImg = useMemo(() => {
+    return resolveImageUrl(
+      (product?.images && product.images.length > 0) ? product.images[0].image_url : product?.image_url,
+      product?.image
+    );
+  }, [product]);
+
+  const frameDisplayName = useMemo(() => {
+    return getDisplayName(product) || product?.name || 'Armazón';
+  }, [product]);
+
+  const frameBrand = useMemo(() => {
+    return formatBrandName(product?.brand || '');
+  }, [product]);
+
+  // Aptitud para progresivo (aro >= 30 mm)
+  const isAptoProg = useMemo(() => {
+    if (product?.apto_progresivo === false) return false;
+    if (product?.aro != null && Number(product.aro) > 0 && Number(product.aro) < 30) return false;
+    return true;
+  }, [product]);
+
+  // Estados principales del flujo
+  const [step, setStep] = useState<1 | 2 | 3>(() => {
+    if (initialSection === '2' || initialSection === 'rx' || initialSection === '3') return 2;
+    return 1;
+  });
+
+  const [need, setNeed] = useState<'mono' | 'prog' | 'frame'>('mono');
+  const [tab, setTab] = useState<'rx' | 'photo' | 'later'>('rx');
+
+  // Graduación (campos arrancan VACÍOS 'Elige', NO en 0.00)
+  const [odSph, setOdSph] = useState<string>('');
+  const [odCyl, setOdCyl] = useState<string>('0.00');
+  const [odAxis, setOdAxis] = useState<string>('');
+
+  const [oiSph, setOiSph] = useState<string>('');
+  const [oiCyl, setOiCyl] = useState<string>('0.00');
+  const [oiAxis, setOiAxis] = useState<string>('');
+
+  const [sameEye, setSameEye] = useState<boolean>(false);
+  const [add, setAdd] = useState<string>('');
+
+  const [showGuide, setShowGuide] = useState<boolean>(false);
+  const [rxPhotoFile, setRxPhotoFile] = useState<File | null>(null);
+  const [rxPhotoName, setRxPhotoName] = useState<string>('');
+
+  // Distancia pupilar (DP)
+  const [dp, setDp] = useState<{ mm: number; conf: string; method: string } | null>(null);
+  const [showManualDp, setShowManualDp] = useState<boolean>(false);
+  const [dpManualValue, setDpManualValue] = useState<string>('');
+  const [altPhotoName, setAltPhotoName] = useState<string>('');
+
+  // Mensaje de validación
+  const [rxError, setRxError] = useState<string>('');
+
+  // Índice y tratamientos (Paso 3)
+  const [selectedIdx, setSelectedIdx] = useState<string>('1.5');
+  const [selectedTrat, setSelectedTrat] = useState<'none' | 'azul' | 'foto'>('none');
+
+  // Opciones de desplegables
+  const powerOptions = useMemo(() => {
+    const a = [{ value: '', label: 'Elige' }];
+    for (let p = 16; p >= -20; p -= 0.25) {
+      const v = p.toFixed(2);
+      a.push({ value: v, label: (p > 0 ? '+' : '') + v });
+    }
+    return a;
+  }, []);
+
+  const cylOptions = useMemo(() => {
+    const a = [{ value: '0.00', label: '0.00' }];
+    for (let p = -0.25; p >= -6; p -= 0.25) {
+      const v = p.toFixed(2);
+      a.push({ value: v, label: v });
+    }
+    return a;
+  }, []);
+
+  const addOptions = useMemo(() => {
+    const a = [{ value: '', label: 'Elige' }];
+    for (let p = 0.75; p <= 3.5; p += 0.25) {
+      const v = p.toFixed(2);
+      a.push({ value: v, label: '+' + v });
+    }
+    return a;
+  }, []);
+
+  const dpOptions = useMemo(() => {
+    const a = [{ value: '', label: 'Elige tu DP' }];
+    for (let i = 46; i <= 78; i++) {
+      a.push({ value: String(i), label: `${i} mm` });
+    }
+    return a;
+  }, []);
+
+  // Sincronización "Mi graduación es la misma en ambos ojos"
+  const copyOdToOi = useCallback(() => {
+    setOiSph(odSph);
+    setOiCyl(odCyl);
+    setOiAxis(odAxis);
+  }, [odSph, odCyl, odAxis]);
+
+  const handleToggleSameEye = (checked: boolean) => {
+    setSameEye(checked);
+    if (checked) {
+      setOiSph(odSph);
+      setOiCyl(odCyl);
+      setOiAxis(odAxis);
+    }
+  };
+
+  const handleOdSphChange = (val: string) => {
+    setOdSph(val);
+    if (sameEye) setOiSph(val);
+  };
+
+  const handleOdCylChange = (val: string) => {
+    setOdCyl(val);
+    if (sameEye) setOiCyl(val);
+  };
+
+  const handleOdAxisChange = (val: string) => {
+    setOdAxis(val);
+    if (sameEye) setOiAxis(val);
+  };
+
+  // Escuchar mensaje de la cámara de medición DP (demo-dp-automatica.html)
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      // Allow messages from the same origin iframe
-      if (event.origin !== window.location.origin) return;
+    const handleMsg = (e: MessageEvent) => {
+      const d = e.data;
+      if (!d || d.type !== 'lensique-dp' || !d.use || !d.mm) return;
+      setDp({
+        mm: d.mm,
+        conf: d.conf || 'aproximada',
+        method: d.method || 'iris'
+      });
+      setDpManualValue('');
+      setShowManualDp(false);
+    };
+    window.addEventListener('message', handleMsg);
+    return () => window.removeEventListener('message', handleMsg);
+  }, []);
 
-      if (event.data?.type === 'lensique-lead') {
-        if ((window as any).fbq) {
-          (window as any).fbq('track', 'Lead');
+  const openCam = () => {
+    const camWin = window.open('/demo-dp-automatica.html', 'lensiqueDP', 'width=520,height=900');
+    if (!camWin) {
+      alert('El navegador bloqueó la ventana emergente. Por favor permítela para medir tu DP con la cámara.');
+      return;
+    }
+  };
+
+  const handleManualDpChange = (v: string) => {
+    setDpManualValue(v);
+    if (!v) {
+      setDp(null);
+    } else {
+      setDp({ mm: Number(v), conf: 'manual', method: 'manual' });
+    }
+  };
+
+  // Subida de receta foto/PDF
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setRxPhotoFile(file);
+      setRxPhotoName(file.name);
+      setRxError('');
+    }
+  };
+
+  const handleAltPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAltPhotoName(e.target.files[0].name);
+    }
+  };
+
+  // Helper numérico para Rx
+  const numVal = (str: string) => parseFloat(str || '0');
+
+  // Factibilidad de índices
+  const feasibleIndices = useMemo(() => {
+    if (need === 'frame' || tab !== 'rx') return ['1.5', '1.6', '1.67', '1.74'];
+    return getFeasibleIndices(numVal(odSph), numVal(odCyl), numVal(oiSph), numVal(oiCyl));
+  }, [need, tab, odSph, odCyl, oiSph, oiCyl]);
+
+  // Cálculo de adelgazamiento y opciones ofrecidas
+  const thinningOffer = useMemo(() => {
+    if (need === 'frame' || tab !== 'rx') return null;
+    if (feasibleIndices.length === 0) return null;
+
+    const base = feasibleIndices[0]; // Estándar: mínimo fabricable
+    const rec = getRecommendation(numVal(odSph), numVal(odCyl), numVal(oiSph), numVal(oiCyl));
+    const recIndex = (rec && feasibleIndices.includes(rec)) ? rec : base;
+    const worth = ORDER.indexOf(recIndex) > ORDER.indexOf(base);
+
+    const pot = Math.max(
+      Math.abs(numVal(odSph)),
+      Math.abs(numVal(odSph) + numVal(odCyl)),
+      Math.abs(numVal(oiSph)),
+      Math.abs(numVal(oiSph) + numVal(oiCyl))
+    );
+
+    const OPT_MIN = 2.0; // Debajo de ±2.00 no tiene sentido adelgazar
+    let offer: string | null = null;
+    let optional = false;
+
+    if (worth) {
+      offer = recIndex;
+      optional = false;
+    } else {
+      offer = (pot >= OPT_MIN && feasibleIndices.length > 1) ? feasibleIndices[1] : null;
+      optional = true;
+    }
+
+    if (!offer) {
+      return { base, offer: null, optional: false };
+    }
+    return { base, offer, optional };
+  }, [need, tab, feasibleIndices, odSph, odCyl, oiSph, oiCyl]);
+
+  // Sincronizar índice seleccionado con base/oferta cuando cambie la graduación
+  useEffect(() => {
+    if (!thinningOffer) {
+      setSelectedIdx('1.5');
+      return;
+    }
+    const { base, offer } = thinningOffer;
+    if (selectedIdx !== base && selectedIdx !== offer) {
+      setSelectedIdx(base);
+    }
+  }, [thinningOffer, selectedIdx]);
+
+  // Navegación
+  const handlePickNeed = (n: 'mono' | 'prog' | 'frame') => {
+    if (n === 'prog' && !isAptoProg) return;
+    setNeed(n);
+  };
+
+  const handleGoto2 = () => {
+    if (need === 'frame') {
+      setStep(3);
+      return;
+    }
+    setStep(2);
+  };
+
+  const handleGoto3 = () => {
+    // Validaciones estrictas del Paso 2
+    if (tab === 'rx') {
+      const faltan: string[] = [];
+      if (!odSph) faltan.push('od-sph');
+      if (!oiSph) faltan.push('oi-sph');
+      if (need === 'prog' && !add) faltan.push('add');
+      if (odCyl !== '0.00' && (!odAxis || Number(odAxis) < 1 || Number(odAxis) > 180)) faltan.push('od-axis');
+      if (oiCyl !== '0.00' && (!oiAxis || Number(oiAxis) < 1 || Number(oiAxis) > 180)) faltan.push('oi-axis');
+
+      if (faltan.length > 0) {
+        const parts: string[] = [];
+        if (!odSph || !oiSph) parts.push('la <b>esfera</b> de ambos ojos');
+        if (need === 'prog' && !add) parts.push('la <b>ADD</b> (progresivo)');
+        if ((odCyl !== '0.00' && (!odAxis || Number(odAxis) < 1 || Number(odAxis) > 180)) ||
+            (oiCyl !== '0.00' && (!oiAxis || Number(oiAxis) < 1 || Number(oiAxis) > 180))) {
+          parts.push('el <b>eje</b> cuando hay cilindro');
         }
+        setRxError(`⚠ Completa tu graduación para continuar: ${parts.join(' · ')}.`);
         return;
       }
+      setRxError('');
+    } else if (tab === 'photo' && !rxPhotoFile) {
+      setRxError('⚠ Sube la <b>foto o PDF</b> de tu receta para continuar, o elige "La envío después".');
+      return;
+    } else {
+      setRxError('');
+    }
 
-      if (event.data?.source === 'lensique-asesor' && event.data?.type === 'ready') {
-        setIframeLoaded(true);
-      }
-      if (event.data?.type === 'lensique-mica') {
-        if (hasProcessed.current) return;
-        
-        const payload = event.data.payload;
-        if (payload) {
-          hasProcessed.current = true;
-          if (!payload.montaje && product?.montaje) {
-            payload.montaje = product.montaje;
-          }
-          // Pass both the ZEISS payload and the original product being purchased
-          onComplete({
-            ...payload,
-            originalProduct: product
-          });
-        }
-      }
+    setStep(3);
+  };
+
+  const handleBack = () => {
+    if (step === 3) {
+      if (need === 'frame') setStep(1);
+      else setStep(2);
+    } else if (step === 2) {
+      setStep(1);
+    }
+  };
+
+  const handleSwitchTab = (newTab: 'rx' | 'photo' | 'later') => {
+    setTab(newTab);
+    setRxError('');
+  };
+
+  // Precios dinámicos y totales
+  const lowestMonoPrice = useMemo(() => {
+    const net = framePrice + getMicaPrice('mono', '1.5', 'none');
+    return priceWithMP(net).price;
+  }, [framePrice]);
+
+  const lowestProgPrice = useMemo(() => {
+    const net = framePrice + getMicaPrice('prog', '1.5', 'none');
+    return priceWithMP(net).price;
+  }, [framePrice]);
+
+  const currentSummaryPricing = useMemo(() => {
+    if (need === 'frame') {
+      return { price: framePrice, n: 0, monthly: framePrice, micaNet: 0 };
+    }
+    const micaNet = getMicaPrice(need, selectedIdx, selectedTrat);
+    const net = framePrice + micaNet;
+    const mp = priceWithMP(net);
+    return { ...mp, micaNet };
+  }, [need, framePrice, selectedIdx, selectedTrat]);
+
+  // Diferencia de precio de tratamientos adicionales al índice actual
+  const diffAzul = useMemo(() => {
+    if (need === 'frame') return 0;
+    return getMicaPrice(need, selectedIdx, 'azul') - getMicaPrice(need, selectedIdx, 'none');
+  }, [need, selectedIdx]);
+
+  const diffFoto = useMemo(() => {
+    if (need === 'frame') return 0;
+    return getMicaPrice(need, selectedIdx, 'foto') - getMicaPrice(need, selectedIdx, 'none');
+  }, [need, selectedIdx]);
+
+  // Finalizar configuración y enviar al carrito
+  const handleAddToCart = () => {
+    if (need === 'frame') {
+      onComplete({
+        originalProduct: product,
+        onlyFrame: true,
+        unit_price: framePrice
+      });
+      return;
+    }
+
+    const etiqueta = need === 'mono' ? 'ZEISS Visión Sencilla' : 'ZEISS Progresivo Light';
+    const tipoFab = selectedIdx === '1.5' ? 'Estándar' : (selectedIdx === '1.74' ? 'Ultra delgada' : 'Adelgazada');
+    const tratNombre = selectedTrat === 'azul'
+      ? 'Filtro luz azul (BlueGuard)'
+      : (selectedTrat === 'foto' ? 'Fotocromático (PhotoFusion)' : 'Antirreflejante estándar');
+
+    const configPayload = {
+      originalProduct: product,
+      onlyFrame: false,
+      tipo: need,
+      etiqueta,
+      indice: idxLabel(selectedIdx),
+      tipoFab,
+      isZeiss: true,
+      proveedor: 'ZEISS',
+      montaje: product?.montaje || 'completo',
+      tratamiento: selectedTrat,
+      tratamientoNombre: tratNombre,
+      pvp: currentSummaryPricing.price - framePrice,
+      framePrice,
+      total: currentSummaryPricing.price,
+      mpRate: currentSummaryPricing.n === 6 ? MSI_RATE6 : (currentSummaryPricing.n === 3 ? MSI_RATE3 : 0),
+      msiCount: currentSummaryPricing.n,
+      msiMonthly: currentSummaryPricing.monthly,
+      rxMethod: tab,
+      prescriptionPending: tab === 'later',
+      photoName: rxPhotoName || undefined,
+      od: tab === 'rx' ? {
+        esf: Number(odSph),
+        cil: Number(odCyl),
+        eje: odAxis ? Number(odAxis) : undefined,
+        add: need === 'prog' && add ? Number(add) : undefined
+      } : undefined,
+      oi: tab === 'rx' ? {
+        esf: Number(oiSph),
+        cil: Number(oiCyl),
+        eje: oiAxis ? Number(oiAxis) : undefined,
+        add: need === 'prog' && add ? Number(add) : undefined
+      } : undefined,
+      esfera: tab === 'rx' ? Number(odSph) : undefined,
+      cilindro: tab === 'rx' ? Number(odCyl) : undefined,
+      add: (need === 'prog' && tab === 'rx' && add) ? Number(add) : undefined,
+      pd: dp ? (dp.mm ? `${Math.round(dp.mm)} mm (${dp.conf})` : `${dp} mm`) : undefined,
+      altPhotoName: altPhotoName || undefined
     };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [onComplete, product]);
-
-  const frameImg = resolveImageUrl(
-    (product?.images && product.images.length > 0) ? product.images[0].image_url : product?.image_url,
-    product?.image
-  );
-  const queryParams = new URLSearchParams({
-    v: '1.0.6',
-    framePrice: String(product?.price_incl_tax || product?.price || 0),
-    isPreorder: (product?.stock != null && product.stock !== '' && Number(product.stock) <= 0) ? 'true' : 'false'
-  });
-  if (frameImg) {
-    queryParams.set('frameImage', frameImg);
-  }
-  if (initialSection) {
-    queryParams.set('section', initialSection);
-  }
-  if (product?.montaje) {
-    queryParams.set('montaje', product.montaje);
-  }
-  const iframeSrc = `/asesor_zeiss.html?${queryParams.toString()}`;
+    onComplete(configPayload);
+  };
 
   return (
     <AnimatePresence>
-      <motion.div 
-        className="config-modal-overlay"
+      <motion.div
+        className="lsq-modal-overlay"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        style={{ zIndex: 9999 }}
       >
-        <motion.div 
-          className="config-modal-container"
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        <motion.div
+          className="lsq-modal-container"
+          initial={{ opacity: 0, scale: 0.96, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          exit={{ opacity: 0, scale: 0.96, y: 16 }}
           onClick={(e) => e.stopPropagation()}
-          style={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            overflow: 'hidden',
-            position: 'relative',
-            background: '#ffffff',
-            padding: 0
-          }}
         >
-          <button 
-            className="config-modal-close-btn"
+          {/* Botón de cierre superior derecho */}
+          <button
+            className="lsq-close-btn"
             aria-label="Cerrar modal"
-            onClick={onClose} 
-            style={{ 
-              position: 'fixed', 
-              top: '8px', 
-              right: '16px', 
-              zIndex: 1000, 
-              background: '#ffffff', 
-              borderRadius: '50%', 
-              padding: '8px', 
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              border: '1px solid #e2e8f0',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '38px',
-              height: '38px'
-            }}
+            onClick={onClose}
           >
-            <X size={20} color="#1b2436" />
+            <X size={20} />
           </button>
-          
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: iframeLoaded ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 1, backgroundColor: '#f8fafc' }}>
-             <div className="spinner" style={{ width: '40px', height: '40px', border: '4px solid #e2e8f0', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-             <p style={{ marginTop: '16px', color: '#64748b', fontWeight: 500 }}>Cargando configurador...</p>
-          </div>
 
-          <iframe 
-            src={iframeSrc}
-            title="Asesor Visual ZEISS"
-            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'inherit', position: 'relative', zIndex: 2, opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
-            onLoad={() => setIframeLoaded(true)}
-          />
+          <div className="lsq-layout">
+            {/* PANEL IZQUIERDO: Armazón, Imagen y Precio Dinámico "Desde" */}
+            <div className="lsq-left">
+              <div className="lsq-pic-wrapper">
+                {frameImg ? (
+                  <img src={frameImg} alt={frameDisplayName} className="lsq-pic-img" />
+                ) : (
+                  <div style={{ color: 'var(--lsq-grey)', fontSize: '14px' }}>Sin imagen disponible</div>
+                )}
+                <div className="lsq-lbl-head">
+                  {need === 'mono' ? 'UNA DISTANCIA' : (need === 'prog' ? 'TODO EN UNO (PROGRESIVO)' : 'SOLO EL ARMAZÓN')}
+                </div>
+              </div>
+
+              <div className="lsq-pic-cap">
+                {need === 'mono' ? 'Una distancia' : (need === 'prog' ? 'Todo en uno · progresivo' : 'Solo el armazón')}
+              </div>
+
+              {frameBrand && <div className="lsq-prod-brand">{frameBrand}</div>}
+              <h1 className="lsq-prod-title">{frameDisplayName}</h1>
+
+              <div className="lsq-price-box">
+                {need === 'frame' ? (
+                  <>
+                    <b className="lsq-price-val">${framePrice.toLocaleString('es-MX')}</b>
+                    <div className="lsq-pnote">solo el armazón</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="lsq-pdesde">Desde</div>
+                    <b className="lsq-price-val">
+                      ${(need === 'mono' ? lowestMonoPrice : lowestProgPrice).toLocaleString('es-MX')}
+                    </b>
+                    <div className="lsq-pnote">con micas incluidas</div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* PANEL DERECHO: Flujo de 3 Pasos */}
+            <div className="lsq-right">
+              {/* ============================================================ */}
+              {/* PASO 1: ¿QUÉ NECESITAS? */}
+              {/* ============================================================ */}
+              {step === 1 && (
+                <div className="lsq-step-content">
+                  <div className="lsq-step-tag">Paso 1 de 3</div>
+                  <h2 className="lsq-title">¿Qué necesitas?</h2>
+                  <p className="lsq-sub">Elige una opción.</p>
+
+                  <div
+                    className={`lsq-opt-card ${need === 'mono' ? 'lsq-opt-sel' : ''}`}
+                    onClick={() => handlePickNeed('mono')}
+                  >
+                    <div className="lsq-opt-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="8.2" />
+                      </svg>
+                    </div>
+                    <div className="lsq-opt-body">
+                      <div className="lsq-opt-name">Una distancia</div>
+                      <div className="lsq-opt-desc">Para ver de lejos, o solo para leer de cerca.</div>
+                    </div>
+                    <div className="lsq-opt-radio">{need === 'mono' ? '✓' : ''}</div>
+                  </div>
+
+                  <div
+                    className={`lsq-opt-card ${need === 'prog' ? 'lsq-opt-sel' : ''} ${!isAptoProg ? 'lsq-opt-off' : ''}`}
+                    onClick={() => handlePickNeed('prog')}
+                  >
+                    <div className="lsq-opt-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="8.2" />
+                        <line x1="4.5" y1="12" x2="19.5" y2="12" />
+                      </svg>
+                    </div>
+                    <div className="lsq-opt-body">
+                      <div className="lsq-opt-name">Todo en uno (progresivo)</div>
+                      <div className="lsq-opt-desc">
+                        {isAptoProg
+                          ? 'Lejos, intermedio y cerca en un lente, sin línea.'
+                          : 'No disponible en este armazón (altura insuficiente). Elige otro modelo.'}
+                      </div>
+                    </div>
+                    <div className="lsq-opt-radio">{need === 'prog' ? '✓' : ''}</div>
+                  </div>
+
+                  <div
+                    className={`lsq-opt-card ${need === 'frame' ? 'lsq-opt-sel' : ''}`}
+                    onClick={() => handlePickNeed('frame')}
+                  >
+                    <div className="lsq-opt-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2.5" y="8" width="8" height="7" rx="3" />
+                        <rect x="13.5" y="8" width="8" height="7" rx="3" />
+                        <path d="M10.5 11h3" />
+                      </svg>
+                    </div>
+                    <div className="lsq-opt-body">
+                      <div className="lsq-opt-name">Solo el armazón</div>
+                      <div className="lsq-opt-desc">Sin micas graduadas.</div>
+                    </div>
+                    <div className="lsq-opt-radio">{need === 'frame' ? '✓' : ''}</div>
+                  </div>
+
+                  <button className="lsq-btn-cta" onClick={handleGoto2}>
+                    Continuar
+                  </button>
+                </div>
+              )}
+
+              {/* ============================================================ */}
+              {/* PASO 2: TU GRADUACIÓN */}
+              {/* ============================================================ */}
+              {step === 2 && (
+                <div className="lsq-step-content">
+                  <div className="lsq-step-tag">
+                    <button className="lsq-back-btn" onClick={handleBack}>
+                      <ChevronLeft size={14} /> Volver
+                    </button>
+                    <span>· Paso 2 de 3</span>
+                  </div>
+                  <h2 className="lsq-title">Tu graduación</h2>
+                  <p className="lsq-sub">Elige cómo ingresar tu receta.</p>
+
+                  {/* Pestañas */}
+                  <div className="lsq-tabs">
+                    <div
+                      className={`lsq-tab ${tab === 'rx' ? 'lsq-tab-on' : ''}`}
+                      onClick={() => handleSwitchTab('rx')}
+                    >
+                      Escribir mi receta
+                    </div>
+                    <div
+                      className={`lsq-tab ${tab === 'photo' ? 'lsq-tab-on' : ''}`}
+                      onClick={() => handleSwitchTab('photo')}
+                    >
+                      Subir mi receta (foto o PDF)
+                    </div>
+                    <div
+                      className={`lsq-tab ${tab === 'later' ? 'lsq-tab-on' : ''}`}
+                      onClick={() => handleSwitchTab('later')}
+                    >
+                      La envío después
+                    </div>
+                  </div>
+
+                  {/* Tab 1: Escribir mi receta */}
+                  {tab === 'rx' && (
+                    <div>
+                      <div className="lsq-rx-grid">
+                        <div />
+                        <div className="lsq-rx-lbl">Esfera</div>
+                        <div className="lsq-rx-lbl">Cilindro</div>
+                        <div className="lsq-rx-lbl">Eje</div>
+
+                        {/* Ojo Derecho (OD) */}
+                        <div className="lsq-rx-eye">OD</div>
+                        <CustomDropdown
+                          options={powerOptions}
+                          value={odSph}
+                          onChange={handleOdSphChange}
+                          placeholder="Elige"
+                          centerZero={true}
+                        />
+                        <CustomDropdown
+                          options={cylOptions}
+                          value={odCyl}
+                          onChange={handleOdCylChange}
+                          placeholder="0.00"
+                        />
+                        <input
+                          type="number"
+                          min={1}
+                          max={180}
+                          placeholder="1–180"
+                          className="lsq-axis-input"
+                          value={odAxis}
+                          onChange={(e) => handleOdAxisChange(e.target.value)}
+                        />
+
+                        {/* Ojo Izquierdo (OI) */}
+                        {!sameEye ? (
+                          <>
+                            <div className="lsq-rx-eye">OI</div>
+                            <CustomDropdown
+                              options={powerOptions}
+                              value={oiSph}
+                              onChange={setOiSph}
+                              placeholder="Elige"
+                              centerZero={true}
+                            />
+                            <CustomDropdown
+                              options={cylOptions}
+                              value={oiCyl}
+                              onChange={setOiCyl}
+                              placeholder="0.00"
+                            />
+                            <input
+                              type="number"
+                              min={1}
+                              max={180}
+                              placeholder="1–180"
+                              className="lsq-axis-input"
+                              value={oiAxis}
+                              onChange={(e) => setOiAxis(e.target.value)}
+                            />
+                          </>
+                        ) : (
+                          <div style={{ gridColumn: '1 / 5', fontSize: '13px', color: 'var(--lsq-grey)', padding: '6px 0' }}>
+                            OI · igual que el ojo derecho (OD)
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Casilla: Mi graduación es la misma en ambos ojos */}
+                      <label className="lsq-same-eye-label">
+                        <input
+                          type="checkbox"
+                          checked={sameEye}
+                          onChange={(e) => handleToggleSameEye(e.target.checked)}
+                          style={{ width: '16px', height: '16px' }}
+                        />
+                        Mi graduación es la misma en ambos ojos
+                      </label>
+
+                      {/* Fila de ADD (solo progresivos) */}
+                      {need === 'prog' && (
+                        <div style={{ marginTop: '12px', borderTop: '1px solid var(--lsq-line)', paddingTop: '10px' }}>
+                          <div className="lsq-rx-grid">
+                            <div className="lsq-rx-eye">ADD</div>
+                            <div>
+                              <CustomDropdown
+                                options={addOptions}
+                                value={add}
+                                onChange={setAdd}
+                                placeholder="Elige"
+                              />
+                            </div>
+                            <div style={{ gridColumn: '3 / 5', fontSize: '12px', color: 'var(--lsq-grey)' }}>
+                              adición · solo progresivos
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Guía interactiva desplegable */}
+                      <span className="lsq-link" onClick={() => setShowGuide(!showGuide)}>
+                        {showGuide ? 'Ocultar ejemplo de receta' : '¿No sabes leer tu receta? Mira un ejemplo'}
+                      </span>
+
+                      {showGuide && (
+                        <div className="lsq-rx-guide">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th>ESFERA</th>
+                                <th>CILINDRO</th>
+                                <th>EJE</th>
+                                <th>ADD</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td><b>OD</b></td>
+                                <td><span className="lsq-hl">-2.00</span></td>
+                                <td><span className="lsq-hl">-0.50</span></td>
+                                <td><span className="lsq-hl">90</span></td>
+                                <td rowSpan={2} style={{ verticalAlign: 'middle' }}><span className="lsq-hl">+2.00</span></td>
+                              </tr>
+                              <tr>
+                                <td><b>OI</b></td>
+                                <td><span className="lsq-hl">-1.75</span></td>
+                                <td>—</td>
+                                <td>—</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee', textAlign: 'center', fontSize: '12.5px' }}>
+                            <b>DP</b> &nbsp;<span className="lsq-hl">62 mm</span>&nbsp;
+                            <span style={{ color: '#7b7b7b' }}>· a veces "DIP" o por ojo (31/31)</span>
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '5px 16px', color: '#7b7b7b', fontSize: '12px', marginTop: '8px' }}>
+                            <span><b>OD</b> = ojo derecho</span>
+                            <span><b>OI</b> = ojo izquierdo</span>
+                            <span><b>ADD</b> = adición para cerca</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Tab 2: Subir foto o PDF */}
+                  {tab === 'photo' && (
+                    <div>
+                      <label className="lsq-upl-zone">
+                        <Upload size={32} color="var(--lsq-navy)" />
+                        <b>Sube una foto o PDF de tu receta</b>
+                        <span>Toma una foto o adjunta el archivo. Un optometrista la lee por ti y confirma los valores.</span>
+                        <input
+                          type="file"
+                          accept="image/*,application/pdf,.pdf"
+                          style={{ display: 'none' }}
+                          onChange={handlePhotoUpload}
+                        />
+                      </label>
+                      {rxPhotoName && (
+                        <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '13.5px', color: 'var(--lsq-green)', fontWeight: 600 }}>
+                          ✓ Archivo recibido: {rxPhotoName}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Tab 3: La envío después */}
+                  {tab === 'later' && (
+                    <div className="lsq-info" style={{ marginTop: '6px' }}>
+                      <p style={{ margin: 0, fontWeight: 500 }}>
+                        <b>Sin problema.</b> Sigue con tu compra y manda tu receta por WhatsApp o foto más tarde; un optometrista la valida antes de fabricar.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Bloque: Distancia pupilar (DP) */}
+                  <div className="lsq-card">
+                    <h3>Distancia pupilar (DP)</h3>
+                    <p className="lsq-note">
+                      Es la distancia entre tus pupilas. La mayoría de las recetas <b>no la traen</b>: si la tuya no la incluye, mídela aquí con la cámara.
+                    </p>
+                    <button className="lsq-dp-btn" onClick={openCam}>
+                      <Camera size={16} /> Medir con la cámara
+                    </button>
+                    <span className="lsq-link" onClick={() => setShowManualDp(!showManualDp)}>
+                      {showManualDp ? 'Ocultar selector manual de DP' : 'Mi receta sí la trae, la escribo'}
+                    </span>
+
+                    {showManualDp && (
+                      <div style={{ marginTop: '8px' }}>
+                        <CustomDropdown
+                          options={dpOptions}
+                          value={dpManualValue}
+                          onChange={handleManualDpChange}
+                          placeholder="Elige tu DP"
+                        />
+                      </div>
+                    )}
+
+                    {dp && (
+                      <div className={`lsq-chip ${dp.conf}`}>
+                        <b>DP {Math.round(dp.mm)} mm</b> · {dp.conf === 'manual' ? 'Escrita por ti' : 'Medida lista'}
+                        <br />
+                        <small>Un optometrista la confirma antes de fabricar.</small>
+                      </div>
+                    )}
+
+                    {need === 'prog' && (
+                      <div className="lsq-note" style={{ marginTop: '10px', borderTop: '1px solid var(--lsq-line)', paddingTop: '8px' }}>
+                        <b>Altura de montaje:</b> la define tu optometrista según tu armazón.
+                        <div style={{ marginTop: '4px' }}>
+                          <label className="lsq-link">
+                            + Subir foto con tus lentes actuales puestos (opcional)
+                            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAltPhotoUpload} />
+                          </label>
+                          {altPhotoName && (
+                            <div style={{ fontSize: '12px', color: 'var(--lsq-green)', marginTop: '2px' }}>
+                              ✓ Foto de lentes actuales: {altPhotoName}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Aviso de error de validación */}
+                  {rxError && (
+                    <div
+                      className="lsq-warn"
+                      style={{ marginTop: '14px' }}
+                      dangerouslySetInnerHTML={{ __html: rxError }}
+                    />
+                  )}
+
+                  <button className="lsq-btn-cta" onClick={handleGoto3}>
+                    Continuar
+                  </button>
+                </div>
+              )}
+
+              {/* ============================================================ */}
+              {/* PASO 3: RESUMEN */}
+              {/* ============================================================ */}
+              {step === 3 && (
+                <div className="lsq-step-content">
+                  <div className="lsq-step-tag">
+                    <button className="lsq-back-btn" onClick={handleBack}>
+                      <ChevronLeft size={14} /> Volver
+                    </button>
+                    <span>· Paso 3 de 3</span>
+                  </div>
+                  <h2 className="lsq-title">Resumen</h2>
+                  <p className="lsq-sub">Revisa tu configuración.</p>
+
+                  {/* Alerta de prescripción fuera de rango en línea */}
+                  {tab === 'rx' && feasibleIndices.length === 0 && (
+                    <div className="lsq-warn">
+                      <b>Esta graduación necesita valoración.</b>
+                      <br />
+                      Queda fuera del rango que fabricamos en línea. Agenda tu cita o escríbenos por WhatsApp.
+                    </div>
+                  )}
+
+                  {/* Aviso informativo de validación por optometrista */}
+                  {need !== 'frame' && feasibleIndices.length > 0 && (
+                    <div className="lsq-info">
+                      {(need === 'prog' || selectedIdx === '1.67' || selectedIdx === '1.74') ? (
+                        <span>
+                          <b>Validación obligatoria.</b> Un optometrista confirma tus medidas antes de fabricar. Te escribimos si hace falta ajustar algo.
+                        </span>
+                      ) : (
+                        <span>Un optometrista revisa tus medidas antes de fabricar.</span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Caja de lo que incluye el paquete */}
+                  <div className="lsq-pkg-box">
+                    <div className="lsq-pkg-title">
+                      {need === 'frame'
+                        ? 'Solo el armazón'
+                        : `Incluye · ${need === 'mono' ? 'lentes de una distancia' : 'lentes progresivos'}`}
+                    </div>
+                    <div className="lsq-feat">✓ Armazón {frameDisplayName}</div>
+
+                    {need !== 'frame' && (
+                      <>
+                        <div className="lsq-feat">✓ Micas ZEISS con capa antirreflejante y protección UV</div>
+                        <div className="lsq-feat">
+                          {tab === 'rx'
+                            ? (feasibleIndices.length === 0 ? '⚠ Requiere valoración médica' : '✓ Grosor de mica ideal para tu graduación')
+                            : '✓ Grosor de mica: se confirma con tu receta'}
+                        </div>
+                        <div className="lsq-feat">
+                          {tab === 'rx'
+                            ? '✓ Graduación capturada'
+                            : (tab === 'photo' ? (rxPhotoName ? `✓ Foto de tu receta recibida (${rxPhotoName})` : '• Falta subir la foto de tu receta') : '• Receta pendiente: la envías después')}
+                        </div>
+                        <div className="lsq-feat">
+                          {dp
+                            ? `✓ DP ${Math.round(dp.mm)} mm (${dp.conf === 'manual' ? 'escrita por ti' : 'medida lista'})`
+                            : '• DP pendiente: la confirma tu optometrista'}
+                          {need === 'prog' && ' · altura de montaje: la define tu optometrista'}
+                        </div>
+
+                        {/* Sello ZEISS discreto y minimal */}
+                        <div className="lsq-zeiss-seal">
+                          <div className="lsq-zlogo-wrap">
+                            <span className="lsq-zlbl">Micas</span>
+                            <img src="/zeiss-logo.png" alt="ZEISS" style={{ height: '22px', width: 'auto', display: 'block' }} />
+                          </div>
+                          <a
+                            href="https://www.zeiss.com.mx/vision-care/necesitas-lentes-nuevos.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="lsq-link"
+                            style={{ fontSize: '12px' }}
+                          >
+                            ¿Qué son las micas ZEISS?
+                          </a>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Opciones de adelgazamiento (Grosor de la mica) */}
+                  {need !== 'frame' && tab === 'rx' && thinningOffer && thinningOffer.offer && (
+                    <div style={{ marginBottom: '14px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--lsq-grey)', fontWeight: 600, marginBottom: '6px' }}>
+                        Grosor de la mica
+                      </div>
+
+                      {/* Opción Base (Estándar incluida) */}
+                      <div
+                        className={`lsq-addon-item ${selectedIdx === thinningOffer.base ? 'lsq-addon-on' : ''}`}
+                        onClick={() => setSelectedIdx(thinningOffer.base)}
+                      >
+                        <div className="lsq-addon-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M4 7h16M6 12h12M9 17h6" />
+                          </svg>
+                        </div>
+                        <div className="lsq-addon-body">
+                          <div className="lsq-addon-name">Grosor estándar ({idxLabel(thinningOffer.base)})</div>
+                          <div className="lsq-addon-desc">El grosor que ya incluye tu lente.</div>
+                        </div>
+                        <span className="lsq-addon-pr">incluida</span>
+                      </div>
+
+                      {/* Opción Adelgazada recomendada u opcional */}
+                      {(() => {
+                        const offer = thinningOffer.offer;
+                        const diff = getMicaPrice(need, offer, selectedTrat) - getMicaPrice(need, thinningOffer.base, selectedTrat);
+                        const offerNames: Record<string, string> = {
+                          '1.6': 'Más delgada (1.60)',
+                          '1.67': 'Más delgada y ligera (1.67)',
+                          '1.74': 'Ultra delgada · la más delgada (1.74)'
+                        };
+                        return (
+                          <div
+                            className={`lsq-addon-item ${selectedIdx === offer ? 'lsq-addon-on' : ''}`}
+                            onClick={() => setSelectedIdx(offer)}
+                          >
+                            <div className="lsq-addon-icon">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M4 7h16M6 12h12M9 17h6" />
+                              </svg>
+                            </div>
+                            <div className="lsq-addon-body">
+                              <div className="lsq-addon-name">
+                                {offerNames[offer] || 'Más delgada'}
+                                {!thinningOffer.optional && <span className="lsq-recbadge">Recomendada</span>}
+                              </div>
+                              <div className="lsq-addon-desc">
+                                {thinningOffer.optional
+                                  ? 'Opcional: si la prefieres un poco más delgada y ligera.'
+                                  : 'Para tu graduación, una mica notablemente más delgada y ligera.'}
+                              </div>
+                            </div>
+                            <span className="lsq-addon-pr">+${diff.toLocaleString('es-MX')}</span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+
+                  {/* Tratamientos adicionales (opcional · elige uno) */}
+                  {need !== 'frame' && (
+                    <div style={{ marginBottom: '14px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--lsq-grey)', fontWeight: 600, marginBottom: '6px' }}>
+                        Tratamientos adicionales (opcional · elige uno)
+                      </div>
+
+                      {/* Filtro Luz Azul */}
+                      <div
+                        className={`lsq-addon-item ${selectedTrat === 'azul' ? 'lsq-addon-on' : ''}`}
+                        onClick={() => setSelectedTrat(selectedTrat === 'azul' ? 'none' : 'azul')}
+                      >
+                        <div className="lsq-addon-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="2.5" y="4" width="19" height="12" rx="2" />
+                            <path d="M8.5 20h7M12 16v4" />
+                          </svg>
+                        </div>
+                        <div className="lsq-addon-body">
+                          <div className="lsq-addon-name">Filtro luz azul</div>
+                          <div className="lsq-addon-desc">
+                            Reduce el cansancio visual de pantallas (celular, computadora). Ideal si pasas muchas horas frente a ellas.
+                          </div>
+                        </div>
+                        <span className="lsq-addon-pr">+${diffAzul.toLocaleString('es-MX')}</span>
+                      </div>
+
+                      {/* Fotocromático */}
+                      <div
+                        className={`lsq-addon-item ${selectedTrat === 'foto' ? 'lsq-addon-on' : ''}`}
+                        onClick={() => setSelectedTrat(selectedTrat === 'foto' ? 'none' : 'foto')}
+                      >
+                        <div className="lsq-addon-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="4" />
+                            <path d="M12 2v2M12 20v2M3 12H1m22 0h-2M5.3 5.3 4 4m16 16-1.3-1.3M18.7 5.3 20 4M4 20l1.3-1.3" />
+                          </svg>
+                        </div>
+                        <div className="lsq-addon-body">
+                          <div className="lsq-addon-name">Fotocromático</div>
+                          <div className="lsq-addon-desc">
+                            Se oscurece con el sol y se aclara en interiores: tus lentes y lentes de sol en uno solo.
+                          </div>
+                        </div>
+                        <span className="lsq-addon-pr">+${diffFoto.toLocaleString('es-MX')}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Envío */}
+                  <div className="lsq-ship-box">
+                    <Truck size={20} className="lsq-ship-icon" />
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--lsq-navy)' }}>Envío</div>
+                      <div className="lsq-note" style={{ marginTop: '2px' }}>
+                        Se calcula según tu ciudad en el siguiente paso —lo ves <b>antes de pagar</b>. O recoge en tu óptica de Guadalajara, <b>sin costo</b>.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Subtotal Total */}
+                  <div className="lsq-total-row">
+                    <span className="lsq-total-label">Subtotal · productos</span>
+                    <b className="lsq-total-val">${currentSummaryPricing.price.toLocaleString('es-MX')}</b>
+                  </div>
+
+                  {/* Banner de Meses Sin Intereses (MSI) */}
+                  {currentSummaryPricing.n > 0 && (
+                    <div className="lsq-msi-banner">
+                      <div className="lsq-msi-text">
+                        PÁGALO A MESES<br />
+                        <span>{currentSummaryPricing.n} meses sin intereses</span>
+                      </div>
+                      <div className="lsq-msi-amount">
+                        ${currentSummaryPricing.monthly.toLocaleString('es-MX')}
+                        <span>/mes</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Botón de acción */}
+                  {tab === 'rx' && feasibleIndices.length === 0 ? (
+                    <a
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, quise cotizar el armazón ${frameDisplayName} pero mi graduación requiere valoración médica especial. ¿Me podrían asesorar?`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="lsq-btn-cta"
+                      style={{ textDecoration: 'none', background: '#b7791f', color: '#ffffff' }}
+                    >
+                      Agendar valoración por WhatsApp
+                    </a>
+                  ) : (
+                    <button className="lsq-btn-cta" onClick={handleAddToCart}>
+                      Agregar al carrito
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>

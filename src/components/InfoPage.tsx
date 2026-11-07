@@ -5,6 +5,7 @@ import './InfoPage.css';
 
 export interface InfoPageData {
   title: string;
+  subtitle?: React.ReactNode;
   layout?: 'default' | 'grid';
   sections: {
     heading?: string;
@@ -55,6 +56,11 @@ export default function InfoPage({ isOpen, onClose, data }: InfoPageProps) {
           </div>
 
           <div className="ip-content-wrapper">
+            {data.subtitle && (
+              <div className="ip-subtitle-block" style={{ fontSize: '18px', color: '#4b5563', marginBottom: '36px', lineHeight: 1.6, textAlign: 'center' }}>
+                {data.subtitle}
+              </div>
+            )}
             <div className={`ip-sections ${data.layout === 'grid' ? 'ip-grid' : ''}`}>
               {data.sections.map((section, index) => (
                 <div key={index} className="ip-section">

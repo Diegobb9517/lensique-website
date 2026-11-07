@@ -5,7 +5,7 @@ import {
   Search, Menu, X, MapPin, MessageCircle,
   Calendar, Clock, ChevronLeft, ChevronRight, User, Heart, ShoppingBag,
   Maximize, Camera, Trash2, Sliders, Shield, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope, AlertTriangle,
-  Eye, Sun, Laptop, Layers
+  Eye, Sun, Laptop, Layers, CheckCircle2
 } from 'lucide-react';
 import ProductCarousel from './components/ProductCarousel';
 import TechnologyInfoPage from './components/TechnologyInfoPage';
@@ -781,23 +781,52 @@ function AppWrapper() {
 }
 
 const warrantyData: InfoPageData = {
-  title: 'Garantías',
+  title: 'Garantía Lensique',
+  subtitle: (
+    <>
+      <strong style={{ display: 'block', fontSize: '20px', color: '#111827', marginBottom: '8px' }}>Compra con confianza</strong>
+      Antes de fabricar, un optometrista valida tu pedido. Y cada una de tus micas ZEISS cuenta con el respaldo de nuestra garantía:
+    </>
+  ),
   layout: 'grid',
   sections: [
     {
-      heading: 'Garantía de Armazones',
-      icon: ShieldCheck,
-      content: <p>Nuestros armazones cuentan con 1 año de garantía contra defectos de fabricación. Esto incluye problemas en bisagras, soldaduras y recubrimientos (siempre que no sea por mal uso, caídas o productos químicos).</p>
+      heading: '1. Graduación exacta',
+      icon: CheckCircle2,
+      content: <p>Tus micas se fabrican con los estándares de precisión alemana ZEISS. Si por algún error de laboratorio se elaboran fuera de norma respecto a tu receta, las <strong>rehacemos sin costo</strong>.</p>
     },
     {
-      heading: 'Garantía de Adaptación',
-      icon: Glasses,
-      content: <p>Entendemos que adaptarse a una nueva graduación puede tomar tiempo. Si después de 15 días sientes molestias o no logras adaptarte a tus nuevas micas, te ofrecemos una revisión con nuestro oftalmólogo y, de ser necesario, un cambio de graduación respaldado por nuestra garantía.</p>
+      heading: '2. Ajuste de graduación — 30 días',
+      icon: Clock,
+      content: <p>Si en tus primeros <strong>30 días</strong> notas que tu vista cambió o requieres un ajuste fino respecto a tu receta inicial, tráenos tu <strong>receta nueva válida</strong> y las micas anteriores, y rehacemos tu trabajo.</p>
     },
     {
-      heading: 'Garantía en Tratamientos',
+      heading: '3. Adaptación a tus progresivos',
+      icon: Layers,
+      content: <p>Adaptarse a un lente progresivo toma unos días y nosotros te acompañamos en el proceso. Si aun así sientes incomodidad, evaluamos tu caso: podemos escalar al siguiente diseño ZEISS de mayor campo visual cubriendo únicamente la <strong>diferencia de precio</strong>, o cambiar tu graduación a lentes de <strong>visión sencilla</strong>.</p>
+    },
+    {
+      heading: '4. Tratamientos y defectos de fábrica — 1 año',
       icon: Sparkles,
-      content: <p>Los tratamientos antirreflejantes y fotocromáticos tienen una garantía de 90 días contra desprendimiento o manchas anormales que no sean causadas por rayones o limpieza inadecuada.</p>
+      content: <p>Tus tratamientos ZEISS (antirreflejante DuraVision®, fotocromático PhotoFusion® y recubrimientos) y armazones cuentan con <strong>1 año de garantía</strong> contra defectos de fabricación como desprendimiento o craquelado bajo uso normal.</p>
+    },
+    {
+      heading: '5. Revisión al recibir — 24 horas',
+      icon: MessageCircle,
+      content: <p>Revisa tus lentes en cuanto los recibas. Si detectas cualquier detalle estético o de empaque, repórtanoslo dentro de las primeras <strong>24 horas</strong> por WhatsApp con foto de tu pedido.</p>
+    },
+    {
+      heading: 'Condiciones de garantía',
+      icon: ShieldCheck,
+      content: (
+        <ul style={{ paddingLeft: '20px', margin: 0 }}>
+          <li>Aplica <strong>un rehacer por caso</strong> de garantía y es indispensable entregar las micas anteriores.</li>
+          <li>Válida con <strong>uso normal</strong>. No cubre: caídas, golpes, rayones por uso o limpieza en seco, exposición a calor excesivo (tableros de auto, vapor), ni químicos abrasivos (alcohol, acetona).</li>
+          <li>Para ajustes de graduación se requiere una receta nueva vigente emitida por optometrista u oftalmólogo.</li>
+          <li>En compras en línea fuera de Guadalajara/Zapopan: Lensique cubre el envío si se trata de un defecto de fábrica o error de laboratorio; en ajustes de graduación externa, el paciente cubre los costos de envío.</li>
+          <li>Los tiempos de entrega de cualquier garantía dependen de los tiempos de producción del laboratorio.</li>
+        </ul>
+      )
     },
     {
       heading: 'Montaje en Armazones Propios',
@@ -839,15 +868,15 @@ const returnsData: InfoPageData = {
     },
     {
       heading: 'Lentes graduados (armazón + micas)',
-      content: <ul><li><strong>Cambio o devolución:</strong> tienes <strong>30 días naturales</strong> desde que recibes tus lentes para cambiar de modelo o color, o para devolverlos y recibir tu reembolso, siempre que estén sin uso y con sus accesorios.</li><li><strong>Garantía de adaptación:</strong> si la graduación no se siente bien, tienes <strong>30 días</strong> para traer tus lentes. Verificamos que tus micas coincidan exactamente con la receta con la que se fabricaron:<ul><li><strong>Si hay error de laboratorio</strong> (las micas no coinciden con tu receta): <strong>rehacemos tus micas una vez sin costo</strong>, y si después de rehacerlas sigues sin adaptarte, te reembolsamos.</li><li><strong>Si tu receta la hicimos nosotros</strong> (examen en Lensique): la ajustamos y rehacemos tus micas <strong>sin costo</strong>.</li><li><strong>Si tu receta es de otro consultorio</strong> y las micas coinciden con ella, la graduación es responsabilidad de quien la emitió y <strong>no aplica esta garantía</strong>. Con gusto te hacemos un examen de la vista en Lensique y te cotizamos micas nuevas.</li></ul></li></ul>
+      content: <ul><li><strong>Cambio o devolución de armazón:</strong> tienes <strong>30 días naturales</strong> desde que recibes tus lentes para cambiar de modelo o color, siempre que esté sin uso y con sus accesorios.</li><li><strong>Garantía de graduación y adaptación (micas ZEISS):</strong> si la graduación no se siente bien, tienes <strong>30 días</strong> para reportar o traer tus lentes:<ul><li><strong>Si hay error de laboratorio</strong> (las micas no coinciden con tu receta): <strong>rehacemos tus micas sin costo</strong>.</li><li><strong>Si tu receta la hicimos en Lensique</strong>: realizamos una revisión clínica sin costo y ajustamos tus micas.</li><li><strong>Si requieres ajuste de graduación con receta externa</strong>: con tu receta nueva válida emitida por optometrista u oftalmólogo y entregando tus micas anteriores, rehacemos tu trabajo respaldado por nuestra garantía (un rehacer por caso).</li><li><strong>En lentes progresivos</strong>: te acompañamos en tu proceso de adaptación. Si requieres mayor campo visual puedes subir al siguiente diseño ZEISS cubriendo solo la diferencia de precio, o cambiar tu graduación a lentes de visión sencilla.</li></ul></li></ul>
     },
     {
       heading: 'Nota sobre receta externa',
       content: <p><em>Al comprar con receta externa: fabricamos tus micas exactamente según la receta que nos proporcionas; la exactitud de esa graduación es responsabilidad de quien la emitió. Conservamos tu receta junto con tu pedido.</em></p>
     },
     {
-      heading: 'Garantía contra rayaduras',
-      content: <p>Hasta <strong>90 días naturales</strong> para reponer micas rayadas (aplica a micas monofocales).</p>
+      heading: 'Tratamientos y defectos de fábrica (1 año)',
+      content: <p>Tus tratamientos ZEISS (antirreflejante DuraVision®, fotocromático PhotoFusion® y recubrimientos) y armazones cuentan con <strong>1 año de garantía</strong> contra defectos de fabricación como desprendimiento o craquelado bajo uso normal. No cubre rayones por uso o limpieza en seco, caídas, golpes ni químicos abrasivos (alcohol, acetona).</p>
     },
     {
       heading: 'Lentes de contacto',
@@ -862,16 +891,16 @@ const returnsData: InfoPageData = {
       content: <p>Al <strong>mismo método de pago</strong> (Mercado Pago o tarjeta). Si el pedido aún no se fabricó, de inmediato; si ya recibiste el producto, en un máximo de <strong>10 días hábiles</strong> después de recibirlo de vuelta.</p>
     },
     {
-      heading: 'Envíos de devolución',
-      content: <ul><li>Si el error es nuestro (graduación equivocada, defecto o producto distinto): <strong>Lensique cubre el envío</strong>, siempre.</li><li>Cambios o devoluciones por gusto: <strong>sin costo si lo entregas en nuestra óptica en Zapopan</strong>; si lo envías por paquetería, el envío corre por cuenta del cliente.</li></ul>
+      heading: 'Envíos de devolución y garantía',
+      content: <ul><li>Si el motivo es defecto de fábrica, error de graduación o producto distinto: <strong>Lensique cubre el 100% de los envíos</strong>.</li><li>En cambios por gusto o ajustes de graduación por receta externa fuera de Guadalajara/Zapopan: el envío corre por cuenta del paciente (o sin costo entregando directamente en nuestra sucursal).</li></ul>
     },
     {
-      heading: 'No aplica devolución',
-      content: <p>Lentes de contacto abiertos, micas con daños por mal uso, y productos fuera de los plazos indicados.</p>
+      heading: 'No aplica devolución ni garantía',
+      content: <p>Lentes de contacto abiertos o manipulados, micas o armazones con daños por mal uso, caídas, rayones por limpieza en seco, exposición a calor excesivo o solventes abrasivos, y productos reportados fuera de los plazos indicados.</p>
     },
     {
       heading: 'Cómo solicitarlo',
-      content: <p>Escríbenos por WhatsApp o correo con tu número de pedido. Te respondemos en horario de tienda.</p>
+      content: <p>Escríbenos por WhatsApp o correo con tu número de pedido y fotos de tu producto si aplica. Te respondemos y damos seguimiento personalizado en horario de tienda.</p>
     }
   ]
 };

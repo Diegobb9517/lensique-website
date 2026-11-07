@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     question: "¿Tienen garantía?",
-    answer: "Sí, todos nuestros lentes cuentan con garantía de adaptación (si no te acostumbras a la graduación te los cambiamos) y garantía contra defectos de fábrica en micas y armazones."
+    answer: "Sí, tus micas ZEISS y armazones cuentan con garantía de graduación exacta, 30 días para ajustes de graduación y adaptación en progresivos, y 1 año contra defectos de fabricación en tratamientos y armazones."
   },
   {
     question: "¿Aceptan receta de otro lugar?",

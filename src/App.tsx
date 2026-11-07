@@ -2072,7 +2072,7 @@ function App() {
             let configText = `¡Hola! Me interesa comprar lentes de contacto: ${contactConfiguratorProduct.name}${brandText}.\n\nEsta es mi receta:\n`;
             
             const formatEye = (eye: any) => {
-              if (eye.sph === 'NA') return '📋 Receta pendiente — el cliente la enviará por WhatsApp (7 días)';
+              if (eye.sph === 'NA' || eye.sph === 'FOTO' || eye.sph === 'PENDIENTE') return '📋 Receta pendiente — el cliente la enviará por WhatsApp (7 días)';
               let text = `Esfera: ${eye.sph}`;
               if (eye.cyl && eye.axis) text += ` | Cilindro: ${eye.cyl} | Eje: ${eye.axis}`;
               if (eye.add) text += ` | ADD: ${eye.add}`;
@@ -2093,8 +2093,8 @@ function App() {
                 configText += `- Ojo Izquierdo (OS):\n  ${formatEye(clConfig.prescriptionOS)}\n`;
               }
             }
-            configText += `- Curva Base (BC): 8.6\n`;
-            configText += `- Diámetro (DIA): 14.5\n`;
+            configText += `- Curva Base (BC): ${clConfig.prescriptionOD.bc || '8.6'}\n`;
+            configText += `- Diámetro (DIA): ${clConfig.prescriptionOD.dia || '14.5'}\n`;
             configText += `- Cantidad: ${clConfig.quantityOD} OD / ${clConfig.quantityOS} OS\n`;
             
             if (clConfig.hasPhoto) {
@@ -2102,22 +2102,26 @@ function App() {
             }
             
             const totalQty = clConfig.quantityOD + clConfig.quantityOS;
-            const totalPrice = (contactConfiguratorProduct.price_incl_tax || 0) * (totalQty > 0 ? totalQty : 1);
+            const totalPrice = clConfig.totalPrice || ((contactConfiguratorProduct.price_incl_tax || 0) * (totalQty > 0 ? totalQty : 1));
             configText += `\n*Precio Estimado Total:* $${Math.round(totalPrice).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
             const colorTitle = clConfig.selectedColor ? ` (Color: ${clConfig.selectedColor})` : '';
+            const unitPrice = clConfig.totalPrice 
+              ? Math.round(clConfig.totalPrice / (totalQty > 0 ? totalQty : 1)) 
+              : (contactConfiguratorProduct.price_incl_tax || 0);
+
             addItem({
               type: 'product',
               title: `Lentes de contacto ${contactConfiguratorProduct.name}${colorTitle}`,
               quantity: totalQty > 0 ? totalQty : 1,
-              unit_price: contactConfiguratorProduct.price_incl_tax || 0,
+              unit_price: unitPrice,
               product: contactConfiguratorProduct,
               image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url),
               lensConfig: clConfig,
               // @ts-ignore
-              receta: clConfig.prescriptionOD.sph === 'NA' ? 'PENDIENTE' : undefined,
+              receta: clConfig.prescriptionOD.sph === 'NA' || clConfig.prescriptionPending ? 'PENDIENTE' : undefined,
               // @ts-ignore
-              receta_origen: clConfig.prescriptionOD.sph !== 'NA' ? 'EXTERNA' : undefined,
+              receta_origen: clConfig.prescriptionOD.sph !== 'NA' && !clConfig.prescriptionPending ? 'EXTERNA' : undefined,
               rxText: configText
             });
             if (checkoutNow) {

@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { X, CheckCircle, Upload, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 import { toTitleCase } from '../lib/format';
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
-import { WPSelect } from './WPSelect';
 import contactLensesImg from '../assets/contact_lenses.png';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
@@ -29,6 +27,28 @@ const resolveImageUrl = (url: any, fallback?: any) => {
   return '';
 };
 
+// ==========================================
+// PRECIOS MERCADO PAGO, MSI Y CHARM (termina en 99)
+// ==========================================
+export const MP_BASE = 0.04;
+export const MSI_RATE3 = 0.0469;
+export const MSI_RATE6 = 0.0769;
+export const MSI_T3 = 2500;
+export const MSI_T6 = 4000;
+
+export function charm(n: number): number {
+  return Math.round(n / 100) * 100 - 1;
+}
+
+export function priceWithMP(net: number): { price: number; n: number; monthly: number } {
+  const p0 = net / (1 - MP_BASE);
+  const n = (p0 >= MSI_T6) ? 6 : (p0 >= MSI_T3) ? 3 : 0;
+  const rate = MP_BASE + (n === 6 ? MSI_RATE6 : n === 3 ? MSI_RATE3 : 0);
+  const price = charm(net / (1 - rate));
+  const monthly = n > 0 ? Math.round(price / n) : price;
+  return { price, n, monthly };
+}
+
 interface ContactLensConfiguratorModalProps {
   product: any;
   onClose: () => void;
@@ -37,48 +57,83 @@ interface ContactLensConfiguratorModalProps {
 
 export default function ContactLensConfiguratorModal({ product, onClose, onComplete }: ContactLensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   
-  const [quantityOD, setQuantityOD] = useState(1);
-  const [quantityOS, setQuantityOS] = useState(1);
-  
+  // Step 1: Cantidad por ojo
+  const [od, setOd] = useState(1);
+  const [oi, setOi] = useState(1);
+  const [odOn, setOdOn] = useState(true);
+  const [oiOn, setOiOn] = useState(true);
+
+  // Step 2: Graduación
+  const [tab, setTab] = useState<'rx' | 'photo' | 'later'>('rx');
   const [samePrescription, setSamePrescription] = useState<boolean>(true);
   const [showRxGuide, setShowRxGuide] = useState(false);
-  
-  const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', cyl: '', axis: '', add: '' });
-  const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', cyl: '', axis: '', add: '' });
-  const [prescriptionPending, setPrescriptionPending] = useState(false);
-  
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const [prescriptionOD, setPrescriptionOD] = useState({ sph: '', bc: '', dia: '', cyl: '', axis: '', add: '' });
+  const [prescriptionOS, setPrescriptionOS] = useState({ sph: '', bc: '', dia: '', cyl: '', axis: '', add: '' });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const productName = (product?.name ? product.name.toString() : '').toUpperCase();
   const isToric = productName.includes('ASTIGMATISMO') || productName.includes('TORIC') || productName.includes('ASTIGMATISM');
   const isMultifocal = productName.includes('MULTIFOCAL') || productName.includes('PRESBICIA') || productName.includes('PRESBYOPIA');
 
-  const getAvailableColors = () => {
+  // Colores para cosméticos
+  const availableColors = useMemo(() => {
     const n = productName;
     if (n.includes('AIR OPTIX')) return ['Gris Intenso (Sterling Gray)', 'Gris (Gray)', 'Verde Gema (Gemstone Green)', 'Verde (Green)', 'Azul Brillante (Brilliant Blue)', 'Azul (Blue)', 'Miel (Pure Hazel)', 'Café (Honey)'];
     if (n.includes('FRESHLOOK')) return ['Verde (Green)', 'Azul (Blue)', 'Gris (Gray)', 'Pure Hazel (Miel)'];
     if (n.includes('LUNARE')) return ['Blue (Azul)', 'Green (Verde)', 'Gray (Gris)', 'Hazel (Miel)', 'Dark Green (Verde Oscuro)', 'Light Blue (Azul Claro)', 'Violet (Violeta)'];
     if (n.includes('STARS') || n.includes('SOFLENS')) return ['Blue (Azul)', 'Dark Blue (Azul Oscuro)', 'Green (Verde)', 'Amazon Green (Verde Amazona)', 'Gray (Gris)', 'Hazel (Miel)'];
     return [];
-  };
+  }, [productName]);
 
-  const availableColors = useMemo(() => getAvailableColors(), [productName]);
   const [selectedColor, setSelectedColor] = useState<string>(availableColors[0] || '');
 
   useEffect(() => {
     if (availableColors.length > 0 && !selectedColor) {
       setSelectedColor(availableColors[0]);
     }
-  }, [availableColors]);
-  
-  const [prescriptionPhotoFile, setPrescriptionPhotoFile] = useState<File | null>(null);
+  }, [availableColors, selectedColor]);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Cerrar con Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setPrescriptionPhotoFile(e.target.files[0]);
+      setPhotoFile(e.target.files[0]);
+      setValidationError(null);
     }
+  };
+
+  const cleanName = useMemo(() => {
+    let n = product?.name || 'Lentes de contacto';
+    if (n === 'LC-BIOTRUEONEDAY') return 'Biotrue ONEday';
+    if (n.startsWith('LC-')) n = n.substring(3).replace(/-/g, ' ');
+    return toTitleCase(n);
+  }, [product]);
+
+  const getUsageType = () => {
+    const n = productName;
+    if (n.includes('COLOR') || n.includes('LUNARE') || n.includes('STARS') || n.includes('AIR OPTIX COLORS') || n.includes('FRESHLOOK')) {
+      if (n.includes('AIR OPTIX')) return 'Caja con 2 lentes · uso mensual por lente';
+      if (n.includes('FRESHLOOK')) return 'Caja con 10 lentes · uso diario';
+      if (n.includes('LUNARE') || n.includes('STARS')) return 'Lente individual · uso anual';
+      return 'Lentes de contacto cosméticos de color';
+    }
+    if (n.includes('SENSE') || n.includes('ANUAL') || n.includes('LIBERTI') || n.includes('OPTIMA 38')) return 'Lente individual · uso anual';
+    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Caja con 30 lentes · uso diario';
+    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Caja con 6 lentes · uso quincenal';
+    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Caja con 6 lentes · uso mensual';
+    return 'Caja con 6 lentes · uso mensual';
   };
 
   const getProductImage = () => {
@@ -120,430 +175,125 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return contactLensesImg;
   };
 
-  // Memoize options to avoid recreating large arrays on every render
-  const spmOptions = useMemo(() => {
-    const opts = [];
-    for (let i = 0.25; i <= 10; i += 0.25) {
-      opts.push(`-${i.toFixed(2)}`);
-      opts.push(`+${i.toFixed(2)}`);
+  // Opciones de graduación
+  const sphOptions = useMemo(() => {
+    const opts = [{ value: '', label: 'Elige' }];
+    for (let p = -0.25; p >= -12.00; p -= 0.25) {
+      opts.push({ value: p.toFixed(2), label: p.toFixed(2) });
     }
+    opts.push({ value: '0.00', label: '0.00' });
+    for (let p = 0.25; p <= 8.00; p += 0.25) {
+      opts.push({ value: `+${p.toFixed(2)}`, label: `+${p.toFixed(2)}` });
+    }
+    return opts;
+  }, []);
+
+  const bcOptions = useMemo(() => {
+    const opts = [{ value: '', label: 'BC' }];
+    ['8.3', '8.4', '8.5', '8.6', '8.7', '8.8', '8.9', '9.0'].forEach(v => {
+      opts.push({ value: v, label: v });
+    });
+    return opts;
+  }, []);
+
+  const diaOptions = useMemo(() => {
+    const opts = [{ value: '', label: 'DIA' }];
+    ['13.8', '14.0', '14.1', '14.2', '14.3', '14.4', '14.5'].forEach(v => {
+      opts.push({ value: v, label: v });
+    });
     return opts;
   }, []);
 
   const cylOptions = useMemo(() => {
-    const opts = [];
-    for (let i = -0.25; i >= -6; i -= 0.25) {
-      opts.push(i.toFixed(2));
-    }
+    const opts = [{ value: '', label: 'CYL' }];
+    ['-0.75', '-1.25', '-1.75', '-2.25', '-2.75', '-0.50', '-1.00', '-1.50', '-2.00', '-2.50'].forEach(v => {
+      opts.push({ value: v, label: v });
+    });
     return opts;
   }, []);
 
   const axisOptions = useMemo(() => {
-    const opts = [];
-    for (let i = 10; i <= 180; i += 10) {
-      opts.push(i.toString());
+    const opts = [{ value: '', label: 'Eje' }];
+    for (let a = 10; a <= 180; a += 10) {
+      opts.push({ value: String(a), label: `${a}°` });
     }
     return opts;
   }, []);
 
   const addOptions = useMemo(() => {
-    const opts = ['LOW', 'MED', 'HIGH'];
-    for (let i = 0.75; i <= 3.50; i += 0.25) {
-      opts.push(`+${i.toFixed(2)}`);
-    }
+    const opts = [{ value: '', label: 'ADD' }];
+    ['LOW', 'MED', 'HIGH', '+0.75', '+1.00', '+1.25', '+1.50', '+1.75', '+2.00', '+2.25', '+2.50'].forEach(v => {
+      opts.push({ value: v, label: v });
+    });
     return opts;
   }, []);
 
-  const changeStep = (newStep: number) => {
-    setIsTransitioning(true);
-    // Let the browser paint the spinner before heavy React transitions
-    setTimeout(() => {
-      setStep(newStep);
-      setIsTransitioning(false);
-    }, 10);
-  };
+  // Precios y total con Mercado Pago + MSI
+  const boxPrice = useMemo(() => {
+    return Number(product?.price_incl_tax || product?.price || 1200);
+  }, [product]);
 
-  const isPrescriptionComplete = () => {
-    const checkEye = (eye: any) => {
-      if (eye.sph === '') return false;
-      if (isToric && (eye.cyl === '' || eye.axis === '')) return false;
-      if (isMultifocal && eye.add === '') return false;
-      return true;
+  const totalBoxes = useMemo(() => {
+    return (odOn ? od : 0) + (oiOn ? oi : 0);
+  }, [odOn, oiOn, od, oi]);
+
+  const totalPricing = useMemo(() => {
+    const net = boxPrice * Math.max(1, totalBoxes);
+    return priceWithMP(net);
+  }, [boxPrice, totalBoxes]);
+
+  // Completar y enviar al carrito
+  const handleAddToCart = () => {
+    const configData = {
+      ...product,
+      contactLensConfig: {
+        quantityOD: odOn ? od : 0,
+        quantityOS: oiOn ? oi : 0,
+        selectedColor,
+        samePrescription,
+        tab,
+        prescriptionOD: tab === 'rx' 
+          ? prescriptionOD 
+          : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: prescriptionOD.bc || '8.6', dia: prescriptionOD.dia || '14.5', cyl: '', axis: '', add: '' },
+        prescriptionOS: tab === 'rx' 
+          ? (samePrescription ? prescriptionOD : prescriptionOS) 
+          : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: prescriptionOS.bc || '8.6', dia: prescriptionOS.dia || '14.5', cyl: '', axis: '', add: '' },
+        prescriptionPending: tab === 'later',
+        hasPhoto: tab === 'photo' && !!photoFile,
+        photoFileName: photoFile ? photoFile.name : null,
+        totalPrice: totalPricing.price,
+        monthly: totalPricing.monthly,
+        msi: totalPricing.n
+      }
     };
-
-    if (samePrescription) {
-      return checkEye(prescriptionOD);
-    } else {
-      const odOk = quantityOD === 0 || checkEye(prescriptionOD);
-      const osOk = quantityOS === 0 || checkEye(prescriptionOS);
-      return odOk && osOk;
-    }
+    onComplete(configData, true);
   };
 
-  const handleComplete = (checkoutNow: boolean) => {
-    setIsTransitioning(true);
-    // Simulating processing for checkout/adding
-    setTimeout(() => {
-      onComplete({
-        ...product,
-        contactLensConfig: {
-          quantityOD,
-          quantityOS,
-          selectedColor,
-          samePrescription,
-          prescriptionOD: samePrescription ? prescriptionOD : prescriptionOD,
-          prescriptionOS: samePrescription ? prescriptionOD : prescriptionOS,
-          prescriptionPending,
-          prescription_pending: prescriptionPending,
-          hasPhoto: !!prescriptionPhotoFile
-        }
-      }, checkoutNow);
-      setIsTransitioning(false);
-    }, 10);
-  };
+  const isSingle = getUsageType().includes('individual');
+  const unit = isSingle ? 'lente' : 'caja';
+  const unitPlural = isSingle ? 'lentes' : 'cajas';
 
-  const renderPrescriptionForm = (eye: 'OD' | 'OS', label: string) => {
-    const values = eye === 'OD' ? prescriptionOD : prescriptionOS;
-    const setValues = eye === 'OD' ? setPrescriptionOD : setPrescriptionOS;
-    const isComplex = isToric || isMultifocal;
-
-    return (
-      <div className="cl-prescription-column">
-        <h4>{label}</h4>
-        <div 
-          className="cl-prescription-grid"
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: samePrescription && isComplex ? '1fr 1fr' : '1fr', 
-            gap: '12px 14px' 
-          }}
-        >
-          <div style={{ gridColumn: samePrescription && isComplex ? 'span 1' : '1 / -1' }}>
-            <WPSelect 
-              label="Esfera (SPH/PWR)"
-              value={values.sph}
-              options={spmOptions}
-              onChange={(val: string) => setValues({ ...values, sph: val })}
-              zeroValue="0.00"
-            />
-          </div>
-
-          {isToric && (
-            <>
-              <WPSelect 
-                label="Cilindro (CYL)"
-                value={values.cyl}
-                options={cylOptions}
-                onChange={(val: string) => setValues({ ...values, cyl: val })}
-              />
-
-              <WPSelect 
-                label="Eje (Axis)"
-                value={values.axis}
-                options={axisOptions}
-                onChange={(val: string) => setValues({ ...values, axis: val })}
-              />
-            </>
-          )}
-
-          {isMultifocal && (
-            <WPSelect 
-              label="Adición (ADD)"
-              value={values.add}
-              options={addOptions}
-              onChange={(val: string) => setValues({ ...values, add: val })}
-            />
-          )}
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', gridColumn: '1 / -1' }}>
-            <div className="cl-wp-input-wrapper is-readonly" style={{ marginBottom: 0 }}>
-              <label>Curva Base (BC)</label>
-              <input type="text" value="8.6" readOnly />
-            </div>
-
-            <div className="cl-wp-input-wrapper is-readonly" style={{ marginBottom: 0 }}>
-              <label>Diámetro (DIA)</label>
-              <input type="text" value="14.5" readOnly />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderStepContent = () => {
-    if (isTransitioning) {
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', width: '100%' }}>
-          <Loader2 className="spinner-animation" size={48} color="#1a4cd2" />
-          <p style={{ marginTop: '1rem', color: '#64748b', fontWeight: 500 }}>Cargando...</p>
-        </div>
-      );
-    }
-
-    switch (step) {
-      case 1:
-        return (
-          <div className="contact-lens-content-panel">
-            <div className="contact-lens-step-header">
-              <span className="contact-lens-step-indicator">Paso 1 de 3</span>
-            </div>
-            
-            <h2 className="contact-lens-title">Selecciona la cantidad</h2>
-            <p style={{ color: '#64748b', marginBottom: '0.75rem', fontSize: '0.85rem' }}>Elige cuántas cajas deseas para cada ojo.</p>
-            
-            <div className="cl-qty-container">
-              <div className="cl-qty-label">
-                <input type="checkbox" checked readOnly style={{ width: '16px', height: '16px', accentColor: '#1a4cd2' }} />
-                <span>Ojo Derecho (OD)</span>
-              </div>
-              <div className="cl-qty-controls">
-                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{quantityOD} {quantityOD === 1 ? 'caja' : 'cajas'}</span>
-                <button className="cl-qty-btn" onClick={() => setQuantityOD(Math.max(0, quantityOD - 1))} disabled={quantityOD <= 0}>-</button>
-                <button className="cl-qty-btn" onClick={() => setQuantityOD(quantityOD + 1)}>+</button>
-              </div>
-            </div>
-
-            <div className="cl-qty-container">
-              <div className="cl-qty-label">
-                <input type="checkbox" checked readOnly style={{ width: '16px', height: '16px', accentColor: '#1a4cd2' }} />
-                <span>Ojo Izquierdo (OS)</span>
-              </div>
-              <div className="cl-qty-controls">
-                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{quantityOS} {quantityOS === 1 ? 'caja' : 'cajas'}</span>
-                <button className="cl-qty-btn" onClick={() => setQuantityOS(Math.max(0, quantityOS - 1))} disabled={quantityOS <= 0}>-</button>
-                <button className="cl-qty-btn" onClick={() => setQuantityOS(quantityOS + 1)}>+</button>
-              </div>
-            </div>
-
-            {availableColors.length > 0 && (
-              <div style={{ marginTop: '0.5rem', padding: '0.45rem 0.75rem', border: '1px solid #e2e8f0', borderRadius: '0.625rem', backgroundColor: '#f8fafc' }}>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.25rem' }}>
-                  🎨 Selecciona el color de tus lentes:
-                </label>
-                <select 
-                  value={selectedColor} 
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  style={{ width: '100%', padding: '0.35rem 0.5rem', borderRadius: '0.375rem', border: '1px solid #cbd5e1', fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a', backgroundColor: '#ffffff' }}
-                >
-                  {availableColors.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <button 
-              className="cl-btn-primary" 
-              style={{ marginTop: '0.875rem' }}
-              disabled={quantityOD === 0 && quantityOS === 0}
-              onClick={() => changeStep(2)}
-            >
-              Continuar
-            </button>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="contact-lens-content-panel">
-            <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => changeStep(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 2 de 3</span>
-            </div>
-            
-            <h2 className="contact-lens-title">Ingresa tu receta</h2>
-            
-            <div style={{ marginTop: '0.2rem', marginBottom: '0.625rem' }}>
-              <button 
-                onClick={() => setShowRxGuide(!showRxGuide)}
-                style={{ 
-                  background: 'none', border: 'none', padding: 0, 
-                  color: '#b48c36', fontSize: '12px', fontWeight: 600, 
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' 
-                }}
-              >
-                {showRxGuide ? '▼' : '▶'} ¿Cómo leer mi receta?
-              </button>
-            </div>
-            
-            <AnimatePresence>
-              {showRxGuide && (
-                <motion.div
-                  key="rxguide"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <RxGuide isToric={isToric} isMultifocal={isMultifocal} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div style={{ marginBottom: '0.625rem', padding: '0.45rem 0.75rem', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, color: '#0f172a', fontSize: '0.8125rem' }}>
-                <input 
-                  type="checkbox" 
-                  checked={samePrescription}
-                  onChange={(e) => setSamePrescription(e.target.checked)}
-                  style={{ width: '16px', height: '16px', accentColor: '#1a4cd2' }}
-                />
-                Tengo la misma graduación en ambos ojos
-              </label>
-            </div>
-            
-            <div className="cl-prescription-container">
-              <div className="cl-prescription-columns">
-                {samePrescription ? (
-                  renderPrescriptionForm('OD', 'Ambos ojos')
-                ) : (
-                  <>
-                    {quantityOD > 0 && renderPrescriptionForm('OD', 'Ojo Derecho (OD)')}
-                    {quantityOS > 0 && renderPrescriptionForm('OS', 'Ojo Izquierdo (OS)')}
-                  </>
-                )}
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem' }}>
-                <button 
-                  className="cl-btn-primary" 
-                  disabled={!isPrescriptionComplete()}
-                  onClick={() => changeStep(3)}
-                  style={{ flex: 1 }}
-                >
-                  Continuar
-                </button>
-                <button 
-                  className="cl-btn-secondary" 
-                  onClick={() => {
-                    setPrescriptionOD({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
-                    setPrescriptionOS({ sph: 'NA', cyl: 'NA', axis: 'NA', add: 'NA' });
-                    setPrescriptionPending(true);
-                    changeStep(3);
-                  }}
-                  style={{ flex: 1 }}
-                >
-                  No la tengo ahora (Enviar después)
-                </button>
-              </div>
-              <div style={{ marginTop: '8px', fontSize: '11px', color: '#64748b', textAlign: 'center', lineHeight: 1.35 }}><em>Fabricamos según la receta que nos proporcionas; su exactitud es responsabilidad de quien la emitió.</em></div>
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="contact-lens-content-panel">
-            <div className="contact-lens-step-header">
-              <button className="contact-lens-step-indicator" onClick={() => {
-                  setPrescriptionPending(false);
-                  changeStep(2);
-                }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>← Volver</button>
-              <span className="contact-lens-step-indicator">Paso 3 de 3</span>
-            </div>
-            
-            <h2 className="contact-lens-title">Resumen y Verificación</h2>
-            <p style={{ color: '#64748b', marginBottom: '0.75rem', fontSize: '0.85rem' }}>Por último, si gustas puedes adjuntar una foto de tu receta para que nuestro equipo la valide.</p>
-
-            {prescriptionPending && (
-              <div style={{ backgroundColor: '#fff7ed', border: '1px solid #fdba74', borderRadius: '8px', padding: '8px 12px', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#c2410c', fontSize: '0.8125rem' }}>
-                <span style={{ fontSize: '1.15rem' }}>📋</span>
-                <span style={{ fontWeight: '600' }}>Receta pendiente — la enviarás por WhatsApp</span>
-              </div>
-            )}
-
-            <div 
-              className="cl-file-upload" 
-              onClick={() => fileInputRef.current?.click()}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '0.625rem 1rem', marginTop: '0.25rem', borderRadius: '10px' }}
-            >
-              <Upload size={18} color="#1a4cd2" />
-              <span style={{ fontSize: '0.8125rem', color: '#475569', fontWeight: 500 }}>
-                {prescriptionPhotoFile ? prescriptionPhotoFile.name : 'Subir foto de tu receta (Opcional)'}
-              </span>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                accept="image/*,.pdf" 
-              />
-            </div>
-
-            <div style={{ marginTop: '0.75rem', textAlign: 'center' }}>
-              <div className="config-success-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', marginBottom: '0.25rem' }}>
-                <CheckCircle size={20} />
-              </div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: '600', marginBottom: '0.15rem' }}>¡Todo listo!</h3>
-              <p style={{ color: '#64748b', marginBottom: '0.5rem', fontSize: '0.8125rem' }}>Tu pedido de lentes de contacto será procesado.</p>
-              
-              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem 0.75rem', marginBottom: '0.75rem', textAlign: 'left' }}>
-                <p style={{ fontSize: '0.8125rem', color: '#334155', margin: 0, lineHeight: 1.4 }}>
-                  <strong>🔒 Compra segura:</strong> nosotros validamos tu graduación; todos los pedidos los revisa nuestro optometrista. Si tu receta no procede, te reembolsamos al 100%.
-                </p>
-              </div>
-              
-              <div className="cl-step3-actions">
-                <button 
-                  className="cl-btn-primary" 
-                  onClick={() => handleComplete(true)}
-                  style={{ flex: 1 }}
-                >
-                  Comprar ahora
-                </button>
-                <button 
-                  className="cl-btn-secondary" 
-                  onClick={() => handleComplete(false)}
-                  style={{ flex: 1 }}
-                >
-                  Agregar y seguir comprando
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-    }
-  };
-
-  const totalQuantity = quantityOD + quantityOS;
-  const totalPrice = (product?.price_incl_tax || 0) * (totalQuantity > 0 ? totalQuantity : 1);
-
-  const isSinglePiece = productName.includes('LUNARE') || productName.includes('STARS') || productName.includes('SENSE') || productName.includes('LIBERTI') || productName.includes('OPTIMA 38');
-
-  const getUsageType = () => {
-    const n = productName;
-    if (n.includes('COLOR') || n.includes('LUNARE') || n.includes('STARS') || n.includes('AIR OPTIX COLORS') || n.includes('FRESHLOOK')) {
-      if (n.includes('AIR OPTIX')) return 'Formato: Caja con 2 lentes · Duración: 1 mes de uso por lente';
-      if (n.includes('FRESHLOOK')) return 'Formato: Caja con 10 lentes diarios · Uso ocasional / eventos';
-      if (n.includes('LUNARE') || n.includes('STARS')) return 'Formato: Lente Individual (Pieza) · Duración: 1 año de uso por lente';
-      return 'Formato: Lentes de Contacto Cosméticos de Color';
-    }
-    if (n.includes('SENSE') || n.includes('ANUAL') || n.includes('LIBERTI') || n.includes('OPTIMA 38')) return 'Formato: Lente Individual (Pieza) · Duración: 1 año de uso por lente';
-    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Formato: Caja con 30 lentes diarios · Uso diario';
-    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Formato: Caja con 6 lentes (Uso quincenal)';
-    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Formato: Caja con 6 lentes (Uso mensual)';
-    return 'Lentes de Contacto';
-  };
+  const odText = odOn ? `${od} ${od === 1 ? unit : unitPlural} (OD)` : '—';
+  const oiText = oiOn ? `${oi} ${oi === 1 ? unit : unitPlural} (OI)` : '—';
 
   return (
-    <div className="contact-lens-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <motion.div 
-        className="contact-lens-modal"
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-      >
-        <button className="contact-lens-modal-close" onClick={onClose} aria-label="Cerrar modal">
-          <X size={20} />
+    <div 
+      className="cl-modal-overlay" 
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="cl-modal-container">
+        <button className="cl-modal-close" onClick={onClose} aria-label="Cerrar modal">
+          <X size={18} />
         </button>
 
-        <div className="contact-lens-summary-panel">
-          <div className="contact-lens-summary-card">
-            <div className="contact-lens-summary-image-wrapper">
+        <div className="cl-wrap">
+          {/* PANEL IZQUIERDO (Fijo, centrado verticalmente) */}
+          <div className="cl-left">
+            <div className="cl-pbox">
               <img 
                 src={getProductImage()} 
-                alt={product?.name || 'Lente de contacto'} 
-                className="contact-lens-summary-image" 
+                alt={cleanName} 
+                className="cl-pbox-img"
                 onError={(e) => {
                   const target = e.currentTarget as HTMLImageElement;
                   if (target.src !== contactLensesImg) {
@@ -552,57 +302,578 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                 }}
               />
             </div>
-            
-            <div className="contact-lens-summary-info">
-              <span className="contact-lens-summary-brand">
-                {product?.brand ? product.brand : (product?.name?.toUpperCase().includes('BIOTRUE') ? 'Bausch+Lomb' : 'Lentes de Contacto')}
-              </span>
-              <h3 className="contact-lens-summary-name">
-                {toTitleCase(product?.name === 'LC-BIOTRUEONEDAY' ? 'Biotrue One Day' : (product?.name?.startsWith('LC-') ? product.name.substring(3).replace(/-/g, ' ') : (product?.name || '')))}
-              </h3>
-              <p className="contact-lens-summary-usage">{getUsageType()}</p>
+
+            <div className="cl-cat">Lentes de contacto</div>
+            <h2 className="cl-pname">{cleanName}</h2>
+            <p className="cl-pform">{getUsageType()}</p>
+            <div className="cl-divider"></div>
+
+            <div className="cl-qsel">
+              Cantidad: <b>{odText} · {oiText}</b>
             </div>
 
-            <div className="contact-lens-mobile-total">
-              ${Math.round(totalPrice).toLocaleString('es-MX')}
+            <div className="cl-total">
+              <span className="cl-tl">Total estimado</span>
+              <span className="cl-tv">${totalPricing.price.toLocaleString('es-MX')}</span>
+              {totalPricing.n > 0 && (
+                <span className="cl-msi">
+                  o ${totalPricing.monthly.toLocaleString('es-MX')}/mes a {totalPricing.n} MSI
+                </span>
+              )}
             </div>
-            
-            <div className="contact-lens-summary-extra">
-              <div className="contact-lens-summary-qty-box">
-                <p className="contact-lens-summary-qty-label">
-                  Cantidad seleccionada:
-                </p>
-                <p className="contact-lens-summary-qty-value">
-                  {quantityOD} {quantityOD === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OD) • {quantityOS} {quantityOS === 1 ? (isSinglePiece ? 'lente individual' : 'caja') : (isSinglePiece ? 'lentes individuales' : 'cajas')} (OS)
-                </p>
-              </div>
 
-              <div className="contact-lens-summary-price">
-                <span>Total Estimado</span>
-                <span>${Math.round(totalPrice).toLocaleString('es-MX')}</span>
+            <div className="cl-guar">
+              <span>🔒</span>
+              <div>
+                <b>Garantía Lensique:</b> devolución de cajas selladas hasta 15 días · validación por optometrista.{' '}
+                <a href="/devoluciones" target="_blank" rel="noopener noreferrer">Ver política</a>
               </div>
-              
-              <div className="contact-lens-summary-warranty">
-                <b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank">Devolución de cajas selladas hasta 15 días · Validación por optometrista</a>
-              </div>
+            </div>
 
-              <div className="contact-lens-summary-whatsapp">
-                <a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20sobre%20lentes%20de%20contacto." target="_blank" onClick={() => { if(window.fbq) window.fbq('track', 'Lead'); }}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                  ¿Dudas? Escríbenos por WhatsApp
-                </a>
-              </div>
+            <a 
+              className="cl-wa" 
+              href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${cleanName}.`)}`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
+            >
+              <span className="cl-d"></span> ¿Dudas? Escríbenos por WhatsApp
+            </a>
+          </div>
+
+          {/* PANEL DERECHO (Solo este scrollea internamente si hace falta) */}
+          <div className="cl-right" id="cl-right-panel">
+            <div className="cl-right-inner">
+              {step === 1 && (
+                <div>
+                  <div className="cl-step">Paso 1 de 3</div>
+                  <h1>Selecciona la cantidad</h1>
+                  <p className="cl-sub">Elige cuántas cajas deseas para cada ojo.</p>
+
+                  {/* Tarjeta Ojo Derecho */}
+                  <div className={`cl-eye ${odOn ? 'on' : 'off'}`}>
+                    <div 
+                      className="cl-chk" 
+                      onClick={() => {
+                        if (odOn && !oiOn) return; // no desmarcar ambos
+                        setOdOn(!odOn);
+                      }}
+                    >
+                      {odOn ? '✓' : ''}
+                    </div>
+                    <div 
+                      className="cl-en"
+                      onClick={() => {
+                        if (odOn && !oiOn) return;
+                        setOdOn(!odOn);
+                      }}
+                    >
+                      Ojo derecho (OD)
+                      <small>Mismo producto para ambos ojos</small>
+                    </div>
+                    <div className="cl-stp">
+                      <button 
+                        type="button" 
+                        className="cl-rnd" 
+                        onClick={() => {
+                          if (!odOn) setOdOn(true);
+                          setOd(prev => Math.max(1, prev - 1));
+                        }}
+                        disabled={!odOn && od <= 1}
+                      >
+                        −
+                      </button>
+                      <span className="cl-q">
+                        {od} {od === 1 ? unit : unitPlural}
+                      </span>
+                      <button 
+                        type="button" 
+                        className="cl-rnd" 
+                        onClick={() => {
+                          if (!odOn) setOdOn(true);
+                          setOd(prev => prev + 1);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tarjeta Ojo Izquierdo */}
+                  <div className={`cl-eye ${oiOn ? 'on' : 'off'}`}>
+                    <div 
+                      className="cl-chk" 
+                      onClick={() => {
+                        if (oiOn && !odOn) return; // no desmarcar ambos
+                        setOiOn(!oiOn);
+                      }}
+                    >
+                      {oiOn ? '✓' : ''}
+                    </div>
+                    <div 
+                      className="cl-en"
+                      onClick={() => {
+                        if (oiOn && !odOn) return;
+                        setOiOn(!oiOn);
+                      }}
+                    >
+                      Ojo izquierdo (OI)
+                      <small>Desmárcalo si solo necesitas un ojo</small>
+                    </div>
+                    <div className="cl-stp">
+                      <button 
+                        type="button" 
+                        className="cl-rnd" 
+                        onClick={() => {
+                          if (!oiOn) setOiOn(true);
+                          setOi(prev => Math.max(1, prev - 1));
+                        }}
+                        disabled={!oiOn && oi <= 1}
+                      >
+                        −
+                      </button>
+                      <span className="cl-q">
+                        {oi} {oi === 1 ? unit : unitPlural}
+                      </span>
+                      <button 
+                        type="button" 
+                        className="cl-rnd" 
+                        onClick={() => {
+                          if (!oiOn) setOiOn(true);
+                          setOi(prev => prev + 1);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Selector de color si es cosmético */}
+                  {availableColors.length > 0 && (
+                    <div className="cl-color-box">
+                      <label>🎨 Selecciona el color de tus lentes:</label>
+                      <select value={selectedColor} onChange={(e) => setSelectedColor(e.target.value)}>
+                        {availableColors.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <button 
+                    type="button" 
+                    className="cl-cta" 
+                    onClick={() => {
+                      setStep(2);
+                      const el = document.getElementById('cl-right-panel');
+                      if (el) el.scrollTop = 0;
+                    }}
+                  >
+                    Continuar
+                  </button>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div>
+                  <button 
+                    type="button" 
+                    className="cl-back" 
+                    onClick={() => {
+                      setValidationError(null);
+                      setStep(1);
+                      const el = document.getElementById('cl-right-panel');
+                      if (el) el.scrollTop = 0;
+                    }}
+                  >
+                    ‹ volver
+                  </button>
+                  <div className="cl-step">Paso 2 de 3</div>
+                  <h1>Tu graduación</h1>
+                  <p className="cl-sub">Los datos vienen en tu caja actual o en tu receta.</p>
+
+                  <div className="cl-tabs">
+                    <button 
+                      type="button" 
+                      className={`cl-tab ${tab === 'rx' ? 'on' : ''}`}
+                      onClick={() => { setTab('rx'); setValidationError(null); }}
+                    >
+                      Escribir mis datos
+                    </button>
+                    <button 
+                      type="button" 
+                      className={`cl-tab ${tab === 'photo' ? 'on' : ''}`}
+                      onClick={() => { setTab('photo'); setValidationError(null); }}
+                    >
+                      Subir caja o receta
+                    </button>
+                    <button 
+                      type="button" 
+                      className={`cl-tab ${tab === 'later' ? 'on' : ''}`}
+                      onClick={() => { setTab('later'); setValidationError(null); }}
+                    >
+                      La envío después
+                    </button>
+                  </div>
+
+                  {tab === 'rx' && (
+                    <div>
+                      <div style={{ marginBottom: '10px', textAlign: 'right' }}>
+                        <button 
+                          type="button"
+                          onClick={() => setShowRxGuide(!showRxGuide)}
+                          style={{ 
+                            background: 'none', border: 'none', padding: 0, 
+                            color: 'var(--lsq-gold)', fontSize: '12.5px', fontWeight: 600, 
+                            cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' 
+                          }}
+                        >
+                          {showRxGuide ? '▼' : '▶'} ¿Cómo leer mi receta?
+                        </button>
+                      </div>
+                      
+                      {showRxGuide && (
+                        <div style={{ marginBottom: '14px' }}>
+                          <RxGuide isToric={isToric} isMultifocal={isMultifocal} />
+                        </div>
+                      )}
+
+                      <div className={`cl-rxgrid ${isToric ? 'toric' : isMultifocal ? 'multifocal' : ''}`}>
+                        <div></div>
+                        <div className="cl-lb">Esfera (PWR)</div>
+                        {isToric && <div className="cl-lb">Cilindro</div>}
+                        {isToric && <div className="cl-lb">Eje</div>}
+                        {isMultifocal && <div className="cl-lb">Adición</div>}
+                        <div className="cl-lb">Curva (BC)</div>
+                        <div className="cl-lb">Diámetro (DIA)</div>
+
+                        {/* Fila OD */}
+                        {odOn && (
+                          <>
+                            <div className="cl-rl">OD</div>
+                            <select 
+                              value={prescriptionOD.sph} 
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setValidationError(null);
+                                setPrescriptionOD(prev => ({ ...prev, sph: val }));
+                                if (samePrescription) setPrescriptionOS(prev => ({ ...prev, sph: val }));
+                              }}
+                            >
+                              {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+
+                            {isToric && (
+                              <>
+                                <select 
+                                  value={prescriptionOD.cyl} 
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setPrescriptionOD(prev => ({ ...prev, cyl: val }));
+                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, cyl: val }));
+                                  }}
+                                >
+                                  {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                                <select 
+                                  value={prescriptionOD.axis} 
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setPrescriptionOD(prev => ({ ...prev, axis: val }));
+                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, axis: val }));
+                                  }}
+                                >
+                                  {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                              </>
+                            )}
+
+                            {isMultifocal && (
+                              <select 
+                                value={prescriptionOD.add} 
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setPrescriptionOD(prev => ({ ...prev, add: val }));
+                                  if (samePrescription) setPrescriptionOS(prev => ({ ...prev, add: val }));
+                                }}
+                              >
+                                {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                              </select>
+                            )}
+
+                            <select 
+                              value={prescriptionOD.bc} 
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setValidationError(null);
+                                setPrescriptionOD(prev => ({ ...prev, bc: val }));
+                                if (samePrescription) setPrescriptionOS(prev => ({ ...prev, bc: val }));
+                              }}
+                            >
+                              {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+
+                            <select 
+                              value={prescriptionOD.dia} 
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setValidationError(null);
+                                setPrescriptionOD(prev => ({ ...prev, dia: val }));
+                                if (samePrescription) setPrescriptionOS(prev => ({ ...prev, dia: val }));
+                              }}
+                            >
+                              {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+                          </>
+                        )}
+
+                        {/* Fila OI */}
+                        {oiOn && (
+                          <>
+                            <div className="cl-rl">OI</div>
+                            <select 
+                              value={samePrescription ? prescriptionOD.sph : prescriptionOS.sph} 
+                              disabled={samePrescription}
+                              onChange={(e) => setPrescriptionOS(prev => ({ ...prev, sph: e.target.value }))}
+                            >
+                              {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+
+                            {isToric && (
+                              <>
+                                <select 
+                                  value={samePrescription ? prescriptionOD.cyl : prescriptionOS.cyl} 
+                                  disabled={samePrescription}
+                                  onChange={(e) => setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }))}
+                                >
+                                  {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                                <select 
+                                  value={samePrescription ? prescriptionOD.axis : prescriptionOS.axis} 
+                                  disabled={samePrescription}
+                                  onChange={(e) => setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }))}
+                                >
+                                  {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                              </>
+                            )}
+
+                            {isMultifocal && (
+                              <select 
+                                value={samePrescription ? prescriptionOD.add : prescriptionOS.add} 
+                                disabled={samePrescription}
+                                onChange={(e) => setPrescriptionOS(prev => ({ ...prev, add: e.target.value }))}
+                              >
+                                {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                              </select>
+                            )}
+
+                            <select 
+                              value={samePrescription ? prescriptionOD.bc : prescriptionOS.bc} 
+                              disabled={samePrescription}
+                              onChange={(e) => setPrescriptionOS(prev => ({ ...prev, bc: e.target.value }))}
+                            >
+                              {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+
+                            <select 
+                              value={samePrescription ? prescriptionOD.dia : prescriptionOS.dia} 
+                              disabled={samePrescription}
+                              onChange={(e) => setPrescriptionOS(prev => ({ ...prev, dia: e.target.value }))}
+                            >
+                              {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                            </select>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Casilla Mis datos son los mismos en ambos ojos */}
+                      {odOn && oiOn && (
+                        <label className="cl-same">
+                          <input 
+                            type="checkbox" 
+                            checked={samePrescription} 
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setSamePrescription(checked);
+                              if (checked) {
+                                setPrescriptionOS({ ...prescriptionOD });
+                              }
+                            }}
+                          />
+                          Mis datos son los mismos en ambos ojos
+                        </label>
+                      )}
+                    </div>
+                  )}
+
+                  {tab === 'photo' && (
+                    <div>
+                      <label 
+                        className="cl-upl"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <input 
+                          type="file" 
+                          ref={fileInputRef}
+                          accept="image/*,.pdf" 
+                          style={{ display: 'none' }} 
+                          onChange={handleFileChange}
+                        />
+                        <span style={{ fontSize: '36px' }}>📄</span>
+                        {photoFile ? (
+                          <>
+                            <b style={{ color: 'var(--lsq-navy)', fontSize: '15px' }}>{photoFile.name}</b>
+                            <span style={{ color: 'var(--lsq-green)', fontSize: '13px', fontWeight: 600 }}>✓ Archivo listo (clic para cambiar)</span>
+                          </>
+                        ) : (
+                          <>
+                            <b style={{ color: 'var(--lsq-navy)', fontSize: '16px' }}>Sube una foto de tu caja o tu receta</b>
+                            <span style={{ color: 'var(--lsq-grey)', fontSize: '13px' }}>Imagen o PDF. Un optometrista confirma los valores.</span>
+                            <span className="cl-upl-btn">Seleccionar archivo</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  )}
+
+                  {tab === 'later' && (
+                    <div className="cl-warn">
+                      Sin problema. Completa tu compra y mándanos los datos por foto o WhatsApp; un optometrista los valida antes de surtir.
+                    </div>
+                  )}
+
+                  {validationError && (
+                    <div className="cl-warn cl-warn-error">
+                      {validationError}
+                    </div>
+                  )}
+
+                  <div className="cl-warn cl-warn-info">
+                    Un optometrista revisa tus datos antes de surtir tu pedido.
+                  </div>
+
+                  <button 
+                    type="button" 
+                    className="cl-cta" 
+                    onClick={() => {
+                      if (tab === 'photo') {
+                        if (!photoFile) {
+                          setValidationError('Por favor selecciona una foto de tu caja o receta para continuar.');
+                          return;
+                        }
+                      } else if (tab === 'rx') {
+                        const checkEye = (eye: typeof prescriptionOD) => {
+                          if (!eye.sph || !eye.bc || !eye.dia) return false;
+                          if (isToric && (!eye.cyl || !eye.axis)) return false;
+                          if (isMultifocal && !eye.add) return false;
+                          return true;
+                        };
+                        const odOk = !odOn || checkEye(prescriptionOD);
+                        const oiOk = !oiOn || checkEye(samePrescription ? prescriptionOD : prescriptionOS);
+                        if (!odOk || !oiOk) {
+                          setValidationError('Por favor completa todos los campos de tu graduación (o elige la pestaña "Subir caja o receta" o "La envío después").');
+                          return;
+                        }
+                      }
+                      setValidationError(null);
+                      setStep(3);
+                      const el = document.getElementById('cl-right-panel');
+                      if (el) el.scrollTop = 0;
+                    }}
+                  >
+                    Continuar
+                  </button>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div>
+                  <button 
+                    type="button" 
+                    className="cl-back" 
+                    onClick={() => {
+                      setStep(2);
+                      const el = document.getElementById('cl-right-panel');
+                      if (el) el.scrollTop = 0;
+                    }}
+                  >
+                    ‹ volver
+                  </button>
+                  <div className="cl-step">Paso 3 de 3</div>
+                  <h1>Resumen</h1>
+                  <p className="cl-sub">Revisa tu pedido antes de pagar.</p>
+
+                  <div className="cl-summary-card">
+                    <div className="cl-sumrow">
+                      <span className="cl-k">Producto</span>
+                      <span className="cl-v">
+                        {cleanName}
+                        <br />
+                        <small style={{ fontWeight: 400, color: 'var(--lsq-grey)' }}>
+                          {getUsageType()}{selectedColor ? ` · Color: ${selectedColor}` : ''}
+                        </small>
+                      </span>
+                    </div>
+
+                    <div className="cl-sumrow">
+                      <span className="cl-k">Cantidad</span>
+                      <span className="cl-v">
+                        {odOn && `${od} ${od === 1 ? unit : unitPlural} (OD)`}
+                        {odOn && oiOn && ' · '}
+                        {oiOn && `${oi} ${oi === 1 ? unit : unitPlural} (OI)`}
+                      </span>
+                    </div>
+
+                    <div className="cl-sumrow">
+                      <span className="cl-k">Datos</span>
+                      <span className="cl-v">
+                        {tab === 'rx' 
+                          ? 'Capturados' 
+                          : tab === 'photo' 
+                          ? `Por foto/receta (${photoFile?.name || 'Archivo adjunto'})` 
+                          : 'Los envías después'}
+                      </span>
+                    </div>
+
+                    <div className="cl-feat">✓ Validación por optometrista antes de surtir</div>
+                    <div className="cl-feat">✓ Devolución de cajas selladas hasta 15 días</div>
+                  </div>
+
+                  <div className="cl-sumrow" style={{ border: 'none', paddingTop: '4px', paddingBottom: '4px' }}>
+                    <span className="cl-k">Envío</span>
+                    <span className="cl-v" style={{ fontWeight: 400, color: 'var(--lsq-grey)' }}>
+                      {totalPricing.price >= 2500 ? 'Gratis' : 'Gratis en pedidos > $2,500 · o recoge en óptica'}
+                    </span>
+                  </div>
+
+                  <div className="cl-total-row">
+                    <div>
+                      <span style={{ color: 'var(--lsq-grey)', fontSize: '13px', display: 'block' }}>Total</span>
+                      {totalPricing.n > 0 && (
+                        <span style={{ color: 'var(--lsq-green)', fontSize: '12.5px', fontWeight: 600 }}>
+                          o ${totalPricing.monthly.toLocaleString('es-MX')}/mes a {totalPricing.n} MSI
+                        </span>
+                      )}
+                    </div>
+                    <b style={{ fontSize: '26px', color: 'var(--lsq-navy)' }}>
+                      ${totalPricing.price.toLocaleString('es-MX')}
+                    </b>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    className="cl-cta" 
+                    onClick={handleAddToCart}
+                  >
+                    Agregar al carrito
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        <div className="contact-lens-scroll-panel">
-          <div className="contact-lens-scroll-inner">
-            {renderStepContent()}
-          </div>
-        </div>
-
-      </motion.div>
+      </div>
     </div>
   );
 }

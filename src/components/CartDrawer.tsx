@@ -42,8 +42,12 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const [shippingQuoteLoading, setShippingQuoteLoading] = useState(false);
   const [shippingQuoteError, setShippingQuoteError] = useState('');
   
-  const shippingCost = deliveryMethod === 'HOME_DELIVERY' ? (shippingQuote?.cost ?? 150) : 0;
+  const isFreeShipping = total > 2500;
+  const shippingCost = deliveryMethod === 'HOME_DELIVERY' ? (isFreeShipping ? 0 : (shippingQuote?.cost ?? 150)) : 0;
   const finalTotal = total + shippingCost;
+
+  const msiMonths = finalTotal >= 4000 ? 6 : (finalTotal >= 2500 ? 3 : 0);
+  const msiMonthly = msiMonths > 0 ? Math.round(finalTotal / msiMonths) : 0;
 
   useEffect(() => {
     if (isCartOpen) {
@@ -81,7 +85,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Error cotizando envío');
-        setShippingQuote({ cost: data.cost, zone: data.zone, transitDays: data.transitDays });
+        setShippingQuote({ cost: isFreeShipping ? 0 : data.cost, zone: data.zone, transitDays: data.transitDays });
       } catch (err: any) {
         setShippingQuote(null);
         setShippingQuoteError(err.message);
@@ -92,7 +96,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
     
     const timeout = setTimeout(fetchShippingQuote, 500);
     return () => clearTimeout(timeout);
-  }, [deliveryMethod, addressDetails.zip, total]);
+  }, [deliveryMethod, addressDetails.zip, total, isFreeShipping]);
   
   // FEATURE FLAG: Mantener oculto del público por solicitud del usuario
   const ENABLE_SHIPPING_FEATURE = true;
@@ -146,7 +150,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
           setZipError('Ingresa un código postal válido de 5 dígitos.');
           return;
         }
-        if (shippingQuoteError || shippingQuote === null) {
+        if (!isFreeShipping && (shippingQuoteError || shippingQuote === null)) {
           setZipError('No se ha podido calcular el envío para ese CP. Por favor verifica e intenta de nuevo.');
           return;
         }
@@ -524,7 +528,9 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                               <input type="radio" name="deliveryMethodStep1" value="HOME_DELIVERY" checked={deliveryMethod === 'HOME_DELIVERY'} onChange={() => setDeliveryMethod('HOME_DELIVERY')} style={{ display: 'none' }} />
                               <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: '15px', fontWeight: deliveryMethod === 'HOME_DELIVERY' ? 700 : 500, color: deliveryMethod === 'HOME_DELIVERY' ? '#1e3a8a' : '#0f172a' }}>Envío a domicilio</div>
-                                <div style={{ fontSize: '13px', color: deliveryMethod === 'HOME_DELIVERY' ? '#2563eb' : '#64748b', marginTop: '2px' }}>desde $150</div>
+                                <div style={{ fontSize: '13px', color: isFreeShipping ? '#16a34a' : (deliveryMethod === 'HOME_DELIVERY' ? '#2563eb' : '#64748b'), fontWeight: isFreeShipping ? 600 : 400, marginTop: '2px' }}>
+                                  {isFreeShipping ? 'Gratis' : 'desde $150'}
+                                </div>
                               </div>
                               <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: deliveryMethod === 'HOME_DELIVERY' ? 'none' : '2px solid #cbd5e1', background: deliveryMethod === 'HOME_DELIVERY' ? '#3b82f6' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 {deliveryMethod === 'HOME_DELIVERY' && <Check size={14} color="#fff" />}
@@ -552,9 +558,14 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                                   {zipError}
                                 </div>
                               )}
-                              {shippingQuoteError && !zipError && (
+                              {shippingQuoteError && !zipError && !isFreeShipping && (
                                 <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px', fontWeight: 500 }}>
                                   {shippingQuoteError}
+                                </div>
+                              )}
+                              {isFreeShipping && addressDetails.zip.replace(/\D/g, '').length === 5 && (
+                                <div style={{ color: '#16a34a', fontSize: '12px', marginTop: '6px', fontWeight: 600 }}>
+                                  ✓ Envío gratis aplicado (pedido mayor a $2,500)
                                 </div>
                               )}
                             </div>
@@ -591,7 +602,9 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                 {deliveryMethod === 'HOME_DELIVERY' && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '15px', color: '#475569' }}>
                     <span>Envío a domicilio {shippingQuote?.zone && `(${shippingQuote.zone})`}</span>
-                    {shippingQuoteLoading ? (
+                    {isFreeShipping ? (
+                      <span style={{ color: '#16a34a', fontWeight: 600 }}>Gratis</span>
+                    ) : shippingQuoteLoading ? (
                       <span style={{ fontSize: '13px', color: '#94a3b8' }}>Calculando...</span>
                     ) : shippingQuote?.cost === 0 ? (
                       <span style={{ color: '#16a34a', fontWeight: 600 }}>Sin costo</span>
@@ -601,10 +614,15 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                   </div>
                 )}
                 <div style={{ borderTop: '1px solid #e2e8f0', margin: '8px 0' }} />
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: msiMonths > 0 ? '4px' : '16px', fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
                   <span>Total</span>
                   <span className="tabular-nums">${Math.round(finalTotal).toLocaleString('es-MX')}</span>
                 </div>
+                {msiMonths > 0 && (
+                  <div style={{ textAlign: 'right', marginTop: '-2px', marginBottom: '14px', fontSize: '13px', fontWeight: 600, color: '#16a34a' }}>
+                    o ${msiMonthly.toLocaleString('es-MX')}/mes a {msiMonths} MSI
+                  </div>
+                )}
                 
                 {showCheckoutForm && (
                   <p style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginBottom: '12px', lineHeight: '1.4' }}>
@@ -615,6 +633,34 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                   </p>
                 )}
                 
+                {/* Badge de Garantía Lensique */}
+                <div style={{ 
+                  margin: '0 0 12px 0', 
+                  padding: '10px 12px', 
+                  borderRadius: '10px', 
+                  background: '#f0fdf4', 
+                  border: '1px solid #bbf7d0', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  fontSize: '12px', 
+                  color: '#166534', 
+                  lineHeight: 1.35 
+                }}>
+                  <span style={{ fontSize: '15px', flexShrink: 0 }}>🔒</span>
+                  <div style={{ flex: 1 }}>
+                    <strong>Garantía Lensique:</strong> Cambio o devolución 30 días · Validación por optometrista.{' '}
+                    <a 
+                      href="/devoluciones" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      style={{ color: '#15803d', textDecoration: 'underline', fontWeight: 600 }}
+                    >
+                      Ver política
+                    </a>
+                  </div>
+                </div>
+
                 {/* Bloque de asistencia WhatsApp */}
                 <div style={{ margin: '0 0 14px 0', padding: '12px 14px', borderRadius: '12px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                   <div>
@@ -674,7 +720,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                   style={{ 
                     width: '100%', 
                     padding: '14px', 
-                    background: isProcessing ? '#94a3b8' : '#16a34a', 
+                    background: isProcessing ? '#94a3b8' : (!showCheckoutForm ? '#16223f' : '#16a34a'), 
                     color: '#fff', 
                     border: 'none', 
                     borderRadius: '50px', 

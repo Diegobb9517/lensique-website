@@ -2057,33 +2057,9 @@ function App() {
                       }
                     }}
                   >
-                    {isSun ? 'Comprar por WhatsApp' : 'Seleccionar micas y comprar'}
+                    {isSun ? 'Comprar por WhatsApp' : 'Agregar al carrito'}
                   </button>
 
-                  {!isSun && (
-                    <button
-                      type="button"
-                      className="product-detail-btn-secondary"
-                      onClick={() => {
-                        const delTime = calculateDeliveryTime(selectedProductDetail);
-                        addItem({
-                          type: 'product',
-                          title: formatProductTitle(selectedProductDetail, 'Armazón'),
-                          quantity: 1,
-                          unit_price: selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0,
-                          product: selectedProductDetail,
-                          image: selectedProductDetail.image || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url),
-                          estimatedDeliveryStr: delTime.label,
-                          estimatedDeliverySubtitle: delTime.subtitle,
-                          maxDeliveryDays: delTime.maxDays,
-                          minDeliveryDays: delTime.maxDays
-                        });
-                        setSelectedProductDetail(null);
-                      }}
-                    >
-                      Comprar solo armazón sin micas (${Math.round(selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0).toLocaleString('es-MX')})
-                    </button>
-                  )}
 
                   {/* Fila de confianza con separación */}
                   <div className="product-detail-trust">

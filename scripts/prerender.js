@@ -288,7 +288,7 @@ ${JSON.stringify(jsonLd, null, 2)}
       </div>
       <p style="font-size: 15px; color: #4b5563; line-height: 1.6;">${pageDesc}</p>
       <p style="font-size: 13px; color: #9ca3af; margin-top: 12px;">SKU: <strong>${p.sku || slug}</strong></p>
-      <a href="${canonicalUrl}" style="display: inline-block; margin-top: 20px; padding: 14px 28px; background: #1b2436; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600;">Seleccionar micas y comprar</a>
+      <a href="${canonicalUrl}" style="display: inline-block; margin-top: 20px; padding: 14px 28px; background: #1b2436; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600;">${isContact ? 'Comprar lentes de contacto' : 'Agregar al carrito'}</a>
     </div>
   `;
 

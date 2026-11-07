@@ -693,74 +693,160 @@
   transform: scale(0.99);
 }
 
+/* Topbar & Elements default hidden on desktop */
+.cl-mobile-topbar {
+  display: none;
+}
+
+.cl-mobile-trust-flow {
+  display: none;
+}
+
+.cl-rx-mobile-cards {
+  display: none;
+}
+
 /* RESPONSIVE MOBILE (<= 860px) */
 @media (max-width: 860px) {
-  .cl-wrap {
-    grid-template-columns: 1fr;
+  .cl-modal-overlay {
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .cl-modal-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+
+  .cl-modal-close {
+    display: none !important;
+  }
+
+  /* Encabezado compacto fijo arriba */
+  .cl-mobile-topbar {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 54px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--lsq-line);
+    padding: 0 16px;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 500;
+    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.05);
+  }
+
+  .cl-mobile-topbar-info {
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    height: 100%;
-    -webkit-overflow-scrolling: touch;
+    gap: 1px;
+    min-width: 0;
+    flex: 1;
+    padding-right: 12px;
   }
 
+  .cl-mobile-topbar-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--lsq-navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  .cl-mobile-topbar-total {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--lsq-navy);
+    line-height: 1.2;
+  }
+
+  .cl-mobile-topbar-msi {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--lsq-green);
+  }
+
+  .cl-mobile-topbar-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--lsq-line);
+    background: var(--lsq-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lsq-navy);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .cl-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Panel izquierdo oculto en móvil: reemplazado por la barra superior y bloques al final */
   .cl-left {
-    border-right: none;
-    border-bottom: 1px solid var(--lsq-line);
-    padding: 20px 16px 16px;
-    height: auto;
-    overflow: visible;
-    gap: 8px;
-  }
-
-  .cl-pbox {
-    max-width: 120px;
-    padding: 10px;
-    border-radius: 14px;
-    aspect-ratio: 1 / 1;
-  }
-
-  .cl-pname {
-    font-size: 20px;
-  }
-
-  .cl-pform {
-    font-size: 12.5px;
-  }
-
-  .cl-total .cl-tv {
-    font-size: 24px;
-  }
-
-  .cl-guar {
-    padding: 8px 12px;
-    font-size: 11.5px;
-    max-width: 100%;
-  }
-
-  .cl-wa {
-    padding: 8px 12px;
-    font-size: 12px;
-    max-width: 100%;
+    display: none !important;
   }
 
   .cl-right {
-    overflow-y: visible;
-    padding: 24px 16px 48px;
-    height: auto;
+    height: 100% !important;
+    overflow-y: auto !important;
+    padding: 68px 16px 96px !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
   }
 
   .cl-right-inner {
-    margin: 0;
+    margin: 0 !important;
+    max-width: 100% !important;
+    padding-bottom: 20px;
+  }
+
+  .cl-step {
+    font-size: 11px;
+    margin-bottom: 4px;
   }
 
   .cl-right h1 {
     font-size: 24px;
+    line-height: 1.2;
+    margin-bottom: 6px;
   }
 
+  .cl-sub {
+    font-size: 13.5px;
+    margin-bottom: 18px;
+  }
+
+  /* Tarjetas de ojo en Step 1 */
   .cl-eye {
-    padding: 14px 16px;
+    padding: 14px 14px;
     gap: 12px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+  }
+
+  .cl-eye .cl-chk {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
   }
 
   .cl-eye .cl-en {
@@ -768,6 +854,144 @@
   }
 
   .cl-eye .cl-en small {
+    font-size: 11.5px;
+  }
+
+  .cl-stp {
+    gap: 6px;
+  }
+
+  .cl-stp .cl-q {
+    min-width: 52px;
+    font-size: 13px;
+  }
+
+  /* Steppers cómodos para dedo */
+  .cl-rnd {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    font-size: 20px !important;
+    border-radius: 50% !important;
+  }
+
+  /* Paso 2: Pestañas */
+  .cl-tabs {
+    margin-bottom: 16px;
+  }
+
+  .cl-tab {
+    padding: 10px 4px;
+    font-size: 12.5px;
+  }
+
+  /* Rx Grid tabla se oculta en móvil; se usan tarjetas ordenadas por ojo */
+  .cl-rxgrid {
+    display: none !important;
+  }
+
+  .cl-rx-mobile-cards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .cl-rx-eye-card {
+    background: var(--lsq-soft);
+    border: 1px solid var(--lsq-line);
+    border-radius: 14px;
+    padding: 14px;
+  }
+
+  .cl-rx-eye-header {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--lsq-navy);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .cl-rx-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .cl-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cl-field-group label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--lsq-grey);
+    letter-spacing: 0.04em;
+  }
+
+  .cl-field-group select {
+    width: 100%;
+    min-height: 44px;
+    height: 44px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--lsq-line);
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--lsq-navy);
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  /* Bloque de confianza y WhatsApp al final del flujo */
+  .cl-mobile-trust-flow {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+
+  .cl-mobile-trust-flow .cl-guar {
+    max-width: 100%;
+    padding: 10px 14px;
     font-size: 12px;
+    border-radius: 12px;
+  }
+
+  .cl-mobile-trust-flow .cl-wa {
+    max-width: 100%;
+    padding: 12px 14px;
+    font-size: 13px;
+    border-radius: 12px;
+    min-height: 44px;
+  }
+
+  /* Botón principal fijo abajo en móvil */
+  .cl-cta-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: #ffffff !important;
+    border-top: 1px solid var(--lsq-line) !important;
+    padding: 12px 16px !important;
+    z-index: 500 !important;
+    box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.08) !important;
+  }
+
+  .cl-cta-container .cl-cta {
+    margin-top: 0 !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    border-radius: 999px !important;
   }
 }

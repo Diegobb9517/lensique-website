@@ -621,6 +621,21 @@ export default function LensConfiguratorModal({
           exit={{ opacity: 0, scale: 0.96, y: 16 }}
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Encabezado compacto móvil (fijo arriba en celular) */}
+          <div className="lsq-mobile-topbar">
+            <div className="lsq-mobile-topbar-info">
+              <span className="lsq-mobile-topbar-title">{frameDisplayName}</span>
+              <span className="lsq-mobile-topbar-total">
+                ${currentSummaryPricing.price.toLocaleString('es-MX')}
+                {currentSummaryPricing.n > 0 && (
+                  <span className="lsq-mobile-topbar-msi"> · ${currentSummaryPricing.monthly.toLocaleString('es-MX')}/mes a {currentSummaryPricing.n} MSI</span>
+                )}
+              </span>
+            </div>
+            <button className="lsq-mobile-topbar-close" onClick={onClose} aria-label="Cerrar modal">
+              <X size={20} />
+            </button>
+          </div>
           {/* Botón de cierre superior derecho */}
           <button
             className="lsq-close-btn"
@@ -735,9 +750,31 @@ export default function LensConfiguratorModal({
                     <div className="lsq-opt-radio">{need === 'frame' ? '✓' : ''}</div>
                   </div>
 
-                  <button className="lsq-btn-cta" onClick={handleGoto2}>
-                    Continuar
-                  </button>
+                  {/* Garantía y WhatsApp en el flujo en móvil */}
+                  <div className="lsq-mobile-trust-flow">
+                    <div className="lsq-guar-badge">
+                      <span>🔒</span>
+                      <div>
+                        <b>Garantía Lensique:</b> 30 días de adaptación · validación por optometrista.{' '}
+                        <a href="/devoluciones" target="_blank" rel="noopener noreferrer">Ver política</a>
+                      </div>
+                    </div>
+                    <a 
+                      className="lsq-wa-link" 
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${frameDisplayName}.`)}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
+                    >
+                      <span className="lsq-wa-dot"></span> ¿Dudas con tu graduación? Escríbenos por WhatsApp
+                    </a>
+                  </div>
+
+                  <div className="lsq-cta-container">
+                    <button className="lsq-btn-cta" onClick={handleGoto2}>
+                      Continuar
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -841,6 +878,91 @@ export default function LensConfiguratorModal({
                         ) : (
                           <div style={{ gridColumn: '1 / 5', fontSize: '13px', color: 'var(--lsq-grey)', padding: '6px 0' }}>
                             OI · igual que el ojo derecho (OD)
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Versión móvil de graduación (tarjetas ordenadas por ojo) */}
+                      <div className="lsq-rx-mobile-cards">
+                        <div className="lsq-rx-eye-card">
+                          <div className="lsq-rx-eye-header">👁️ Ojo derecho (OD)</div>
+                          <div className="lsq-rx-fields-row">
+                            <div className="lsq-rx-field">
+                              <label>Esfera</label>
+                              <CustomDropdown
+                                options={powerOptions}
+                                value={odSph}
+                                onChange={handleOdSphChange}
+                                placeholder="Elige"
+                                centerZero={true}
+                              />
+                            </div>
+                            <div className="lsq-rx-field">
+                              <label>Cilindro</label>
+                              <CustomDropdown
+                                options={cylOptions}
+                                value={odCyl}
+                                onChange={handleOdCylChange}
+                                placeholder="0.00"
+                              />
+                            </div>
+                            <div className="lsq-rx-field">
+                              <label>Eje</label>
+                              <input
+                                type="number"
+                                min={1}
+                                max={180}
+                                placeholder="1–180"
+                                className="lsq-axis-input"
+                                value={odAxis}
+                                onChange={(e) => handleOdAxisChange(e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {!sameEye ? (
+                          <div className="lsq-rx-eye-card">
+                            <div className="lsq-rx-eye-header">👁️ Ojo izquierdo (OI)</div>
+                            <div className="lsq-rx-fields-row">
+                              <div className="lsq-rx-field">
+                                <label>Esfera</label>
+                                <CustomDropdown
+                                  options={powerOptions}
+                                  value={oiSph}
+                                  onChange={setOiSph}
+                                  placeholder="Elige"
+                                  centerZero={true}
+                                />
+                              </div>
+                              <div className="lsq-rx-field">
+                                <label>Cilindro</label>
+                                <CustomDropdown
+                                  options={cylOptions}
+                                  value={oiCyl}
+                                  onChange={setOiCyl}
+                                  placeholder="0.00"
+                                />
+                              </div>
+                              <div className="lsq-rx-field">
+                                <label>Eje</label>
+                                <input
+                                  type="number"
+                                  min={1}
+                                  max={180}
+                                  placeholder="1–180"
+                                  className="lsq-axis-input"
+                                  value={oiAxis}
+                                  onChange={(e) => setOiAxis(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="lsq-rx-eye-card" style={{ padding: '12px 14px' }}>
+                            <div style={{ fontSize: '13px', color: 'var(--lsq-green)', fontWeight: 600 }}>
+                              ✓ OI · igual que el ojo derecho (OD)
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1013,9 +1135,31 @@ export default function LensConfiguratorModal({
                     />
                   )}
 
-                  <button className="lsq-btn-cta" onClick={handleGoto3}>
-                    Continuar
-                  </button>
+                  {/* Garantía y WhatsApp en el flujo en móvil */}
+                  <div className="lsq-mobile-trust-flow">
+                    <div className="lsq-guar-badge">
+                      <span>🔒</span>
+                      <div>
+                        <b>Garantía Lensique:</b> 30 días de adaptación · validación por optometrista.{' '}
+                        <a href="/devoluciones" target="_blank" rel="noopener noreferrer">Ver política</a>
+                      </div>
+                    </div>
+                    <a 
+                      className="lsq-wa-link" 
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${frameDisplayName}.`)}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
+                    >
+                      <span className="lsq-wa-dot"></span> ¿Dudas con tu graduación? Escríbenos por WhatsApp
+                    </a>
+                  </div>
+
+                  <div className="lsq-cta-container">
+                    <button className="lsq-btn-cta" onClick={handleGoto3}>
+                      Continuar
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -1246,21 +1390,35 @@ export default function LensConfiguratorModal({
                   )}
 
                   {/* Botón de acción */}
-                  {tab === 'rx' && feasibleIndices.length === 0 ? (
-                    <a
-                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, quise cotizar el armazón ${frameDisplayName} pero mi graduación requiere valoración médica especial. ¿Me podrían asesorar?`)}`}
-                      target="_blank"
+                  <div className="lsq-mobile-trust-flow">
+                    <a 
+                      className="lsq-wa-link" 
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${frameDisplayName}.`)}`}
+                      target="_blank" 
                       rel="noopener noreferrer"
-                      className="lsq-btn-cta"
-                      style={{ textDecoration: 'none', background: '#b7791f', color: '#ffffff' }}
+                      onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
                     >
-                      Agendar valoración por WhatsApp
+                      <span className="lsq-wa-dot"></span> ¿Dudas? Escríbenos por WhatsApp
                     </a>
-                  ) : (
-                    <button className="lsq-btn-cta" onClick={handleAddToCart}>
-                      Agregar al carrito
-                    </button>
-                  )}
+                  </div>
+
+                  <div className="lsq-cta-container">
+                    {tab === 'rx' && feasibleIndices.length === 0 ? (
+                      <a
+                        href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, quise cotizar el armazón ${frameDisplayName} pero mi graduación requiere valoración médica especial. ¿Me podrían asesorar?`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="lsq-btn-cta"
+                        style={{ textDecoration: 'none', background: '#b7791f', color: '#ffffff' }}
+                      >
+                        Agendar valoración por WhatsApp
+                      </a>
+                    ) : (
+                      <button className="lsq-btn-cta" onClick={handleAddToCart}>
+                        Agregar al carrito
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

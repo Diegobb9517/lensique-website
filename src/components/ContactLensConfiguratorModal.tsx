@@ -282,6 +282,21 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="cl-modal-container">
+        {/* Encabezado compacto móvil (fijo arriba en celular) */}
+        <div className="cl-mobile-topbar">
+          <div className="cl-mobile-topbar-info">
+            <span className="cl-mobile-topbar-title">{cleanName}</span>
+            <span className="cl-mobile-topbar-total">
+              ${totalPricing.price.toLocaleString('es-MX')}
+              {totalPricing.n > 0 && (
+                <span className="cl-mobile-topbar-msi"> · ${totalPricing.monthly.toLocaleString('es-MX')}/mes a {totalPricing.n} MSI</span>
+              )}
+            </span>
+          </div>
+          <button className="cl-mobile-topbar-close" onClick={onClose} aria-label="Cerrar modal">
+            <X size={20} />
+          </button>
+        </div>
         <button className="cl-modal-close" onClick={onClose} aria-label="Cerrar modal">
           <X size={18} />
         </button>
@@ -460,17 +475,39 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                     </div>
                   )}
 
-                  <button 
-                    type="button" 
-                    className="cl-cta" 
-                    onClick={() => {
-                      setStep(2);
-                      const el = document.getElementById('cl-right-panel');
-                      if (el) el.scrollTop = 0;
-                    }}
-                  >
-                    Continuar
-                  </button>
+                  {/* Garantía y WhatsApp en el flujo en móvil */}
+                  <div className="cl-mobile-trust-flow">
+                    <div className="cl-guar">
+                      <span>🔒</span>
+                      <div>
+                        <b>Garantía Lensique:</b> devolución de cajas selladas hasta 15 días · validación por optometrista.{' '}
+                        <a href="/devoluciones" target="_blank" rel="noopener noreferrer">Ver política</a>
+                      </div>
+                    </div>
+                    <a 
+                      className="cl-wa" 
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${cleanName}.`)}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
+                    >
+                      <span className="cl-d"></span> ¿Dudas? Escríbenos por WhatsApp
+                    </a>
+                  </div>
+
+                  <div className="cl-cta-container">
+                    <button 
+                      type="button" 
+                      className="cl-cta" 
+                      onClick={() => {
+                        setStep(2);
+                        const el = document.getElementById('cl-right-panel');
+                        if (el) el.scrollTop = 0;
+                      }}
+                    >
+                      Continuar
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -687,6 +724,183 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         )}
                       </div>
 
+                      {/* Versión móvil por tarjetas de ojo (adaptada a pantalla táctil) */}
+                      <div className="cl-rx-mobile-cards">
+                        {odOn && (
+                          <div className="cl-rx-eye-card">
+                            <div className="cl-rx-eye-header">👁️ Ojo derecho (OD)</div>
+                            <div className="cl-rx-fields-grid">
+                              <div className="cl-field-group">
+                                <label>Esfera (PWR)</label>
+                                <select 
+                                  value={prescriptionOD.sph} 
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setValidationError(null);
+                                    setPrescriptionOD(prev => ({ ...prev, sph: val }));
+                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, sph: val }));
+                                  }}
+                                >
+                                  {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                              </div>
+
+                              <div className="cl-field-group">
+                                <label>Curva base (BC)</label>
+                                <select 
+                                  value={prescriptionOD.bc} 
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setValidationError(null);
+                                    setPrescriptionOD(prev => ({ ...prev, bc: val }));
+                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, bc: val }));
+                                  }}
+                                >
+                                  {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                              </div>
+
+                              <div className="cl-field-group">
+                                <label>Diámetro (DIA)</label>
+                                <select 
+                                  value={prescriptionOD.dia} 
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setValidationError(null);
+                                    setPrescriptionOD(prev => ({ ...prev, dia: val }));
+                                    if (samePrescription) setPrescriptionOS(prev => ({ ...prev, dia: val }));
+                                  }}
+                                >
+                                  {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                              </div>
+
+                              {isToric && (
+                                <>
+                                  <div className="cl-field-group">
+                                    <label>Cilindro (CYL)</label>
+                                    <select 
+                                      value={prescriptionOD.cyl} 
+                                      onChange={(e) => {
+                                        setPrescriptionOD(prev => ({ ...prev, cyl: e.target.value }));
+                                        if (samePrescription) setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }));
+                                      }}
+                                    >
+                                      {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                    </select>
+                                  </div>
+                                  <div className="cl-field-group">
+                                    <label>Eje (AXIS)</label>
+                                    <select 
+                                      value={prescriptionOD.axis} 
+                                      onChange={(e) => {
+                                        setPrescriptionOD(prev => ({ ...prev, axis: e.target.value }));
+                                        if (samePrescription) setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }));
+                                      }}
+                                    >
+                                      {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                    </select>
+                                  </div>
+                                </>
+                              )}
+
+                              {isMultifocal && (
+                                <div className="cl-field-group">
+                                  <label>Adición (ADD)</label>
+                                  <select 
+                                    value={prescriptionOD.add} 
+                                    onChange={(e) => {
+                                      setPrescriptionOD(prev => ({ ...prev, add: e.target.value }));
+                                      if (samePrescription) setPrescriptionOS(prev => ({ ...prev, add: e.target.value }));
+                                    }}
+                                  >
+                                    {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {oiOn && (
+                          <div className="cl-rx-eye-card">
+                            <div className="cl-rx-eye-header">👁️ Ojo izquierdo (OI)</div>
+                            {samePrescription ? (
+                              <div style={{ fontSize: '13px', color: 'var(--lsq-green)', fontWeight: 600, padding: '4px 0' }}>
+                                ✓ Mismos datos que el ojo derecho
+                              </div>
+                            ) : (
+                              <div className="cl-rx-fields-grid">
+                                <div className="cl-field-group">
+                                  <label>Esfera (PWR)</label>
+                                  <select 
+                                    value={prescriptionOS.sph} 
+                                    onChange={(e) => setPrescriptionOS(prev => ({ ...prev, sph: e.target.value }))}
+                                  >
+                                    {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                </div>
+
+                                <div className="cl-field-group">
+                                  <label>Curva base (BC)</label>
+                                  <select 
+                                    value={prescriptionOS.bc} 
+                                    onChange={(e) => setPrescriptionOS(prev => ({ ...prev, bc: e.target.value }))}
+                                  >
+                                    {bcOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                </div>
+
+                                <div className="cl-field-group">
+                                  <label>Diámetro (DIA)</label>
+                                  <select 
+                                    value={prescriptionOS.dia} 
+                                    onChange={(e) => setPrescriptionOS(prev => ({ ...prev, dia: e.target.value }))}
+                                  >
+                                    {diaOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                </div>
+
+                                {isToric && (
+                                  <>
+                                    <div className="cl-field-group">
+                                      <label>Cilindro (CYL)</label>
+                                      <select 
+                                        value={prescriptionOS.cyl} 
+                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }))}
+                                      >
+                                        {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                      </select>
+                                    </div>
+                                    <div className="cl-field-group">
+                                      <label>Eje (AXIS)</label>
+                                      <select 
+                                        value={prescriptionOS.axis} 
+                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }))}
+                                      >
+                                        {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                      </select>
+                                    </div>
+                                  </>
+                                )}
+
+                                {isMultifocal && (
+                                  <div className="cl-field-group">
+                                    <label>Adición (ADD)</label>
+                                    <select 
+                                      value={prescriptionOS.add} 
+                                      onChange={(e) => setPrescriptionOS(prev => ({ ...prev, add: e.target.value }))}
+                                    >
+                                      {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                    </select>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
                       {/* Casilla Mis datos son los mismos en ambos ojos */}
                       {odOn && oiOn && (
                         <label className="cl-same">
@@ -753,37 +967,59 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                     Un optometrista revisa tus datos antes de surtir tu pedido.
                   </div>
 
-                  <button 
-                    type="button" 
-                    className="cl-cta" 
-                    onClick={() => {
-                      if (tab === 'photo') {
-                        if (!photoFile) {
-                          setValidationError('Por favor selecciona una foto de tu caja o receta para continuar.');
-                          return;
+                  {/* Garantía y WhatsApp en el flujo en móvil */}
+                  <div className="cl-mobile-trust-flow">
+                    <div className="cl-guar">
+                      <span>🔒</span>
+                      <div>
+                        <b>Garantía Lensique:</b> devolución de cajas selladas hasta 15 días · validación por optometrista.{' '}
+                        <a href="/devoluciones" target="_blank" rel="noopener noreferrer">Ver política</a>
+                      </div>
+                    </div>
+                    <a 
+                      className="cl-wa" 
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${cleanName}.`)}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
+                    >
+                      <span className="cl-d"></span> ¿Dudas? Escríbenos por WhatsApp
+                    </a>
+                  </div>
+
+                  <div className="cl-cta-container">
+                    <button 
+                      type="button" 
+                      className="cl-cta" 
+                      onClick={() => {
+                        if (tab === 'photo') {
+                          if (!photoFile) {
+                            setValidationError('Por favor selecciona una foto de tu caja o receta para continuar.');
+                            return;
+                          }
+                        } else if (tab === 'rx') {
+                          const checkEye = (eye: typeof prescriptionOD) => {
+                            if (!eye.sph || !eye.bc || !eye.dia) return false;
+                            if (isToric && (!eye.cyl || !eye.axis)) return false;
+                            if (isMultifocal && !eye.add) return false;
+                            return true;
+                          };
+                          const odOk = !odOn || checkEye(prescriptionOD);
+                          const oiOk = !oiOn || checkEye(samePrescription ? prescriptionOD : prescriptionOS);
+                          if (!odOk || !oiOk) {
+                            setValidationError('Por favor completa todos los campos de tu graduación (o elige la pestaña "Subir caja o receta" o "La envío después").');
+                            return;
+                          }
                         }
-                      } else if (tab === 'rx') {
-                        const checkEye = (eye: typeof prescriptionOD) => {
-                          if (!eye.sph || !eye.bc || !eye.dia) return false;
-                          if (isToric && (!eye.cyl || !eye.axis)) return false;
-                          if (isMultifocal && !eye.add) return false;
-                          return true;
-                        };
-                        const odOk = !odOn || checkEye(prescriptionOD);
-                        const oiOk = !oiOn || checkEye(samePrescription ? prescriptionOD : prescriptionOS);
-                        if (!odOk || !oiOk) {
-                          setValidationError('Por favor completa todos los campos de tu graduación (o elige la pestaña "Subir caja o receta" o "La envío después").');
-                          return;
-                        }
-                      }
-                      setValidationError(null);
-                      setStep(3);
-                      const el = document.getElementById('cl-right-panel');
-                      if (el) el.scrollTop = 0;
-                    }}
-                  >
-                    Continuar
-                  </button>
+                        setValidationError(null);
+                        setStep(3);
+                        const el = document.getElementById('cl-right-panel');
+                        if (el) el.scrollTop = 0;
+                      }}
+                    >
+                      Continuar
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -861,13 +1097,28 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                     </b>
                   </div>
 
-                  <button 
-                    type="button" 
-                    className="cl-cta" 
-                    onClick={handleAddToCart}
-                  >
-                    Agregar al carrito
-                  </button>
+                  {/* WhatsApp en el flujo en móvil */}
+                  <div className="cl-mobile-trust-flow">
+                    <a 
+                      className="cl-wa" 
+                      href={`https://wa.me/523316929111?text=${encodeURIComponent(`Hola, tengo una duda sobre ${cleanName}.`)}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={() => { if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead'); }}
+                    >
+                      <span className="cl-d"></span> ¿Dudas? Escríbenos por WhatsApp
+                    </a>
+                  </div>
+
+                  <div className="cl-cta-container">
+                    <button 
+                      type="button" 
+                      className="cl-cta" 
+                      onClick={handleAddToCart}
+                    >
+                      Agregar al carrito
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

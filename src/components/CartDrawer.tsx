@@ -248,6 +248,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
             }}
           />
           <motion.div
+            className="cart-drawer-panel"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -619,7 +620,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                           <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px', background: '#f8fafc' }}>
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity - 1)} 
-                              style={{ width: '26px', height: '26px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}
+                              style={{ minWidth: '36px', minHeight: '36px', width: '36px', height: '36px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}
                               aria-label="Disminuir cantidad"
                             >
                               -
@@ -629,7 +630,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             </span>
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity + 1)} 
-                              style={{ width: '26px', height: '26px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}
+                              style={{ minWidth: '36px', minHeight: '36px', width: '36px', height: '36px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}
                               aria-label="Aumentar cantidad"
                             >
                               +

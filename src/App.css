@@ -5798,3 +5798,30 @@ body.no-scroll .whatsapp-float {
     gap: 10px;
   }
 }
+
+
+/* Catalog Standalone Page Wrapper (Espacio superior para no quedar tapado por el header fijo) */
+.catalog-standalone-wrapper {
+  padding-top: 144px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.catalog-standalone-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0 20px 24px;
+  text-align: center;
+  line-height: 1.25;
+}
+
+@media (max-width: 768px) {
+  .catalog-standalone-wrapper {
+    padding-top: 148px !important;
+  }
+  .catalog-standalone-title {
+    margin: 0 16px 18px;
+  }
+}

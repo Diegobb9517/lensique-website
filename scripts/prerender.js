@@ -449,11 +449,21 @@ const micasBodyInjection = `
         </div>
       </div>
       <div class="mz-cta">
-        <a href="/armazones">Elegir mis micas</a>
-        <span class="mz-s">Todas las compras de armazón incluyen micas con graduación.</span>
+        <a href="#cotizador-micas">Elegir mis micas</a>
+        <span class="mz-s">Cotiza tus micas en menos de un minuto con tecnología ZEISS.</span>
       </div>
       <div class="mz-note">Imágenes y marca ZEISS usadas con autorización. © Carl Zeiss. Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.</div>
     </div>
+    <section id="cotizador-micas" class="mz-cotizador-section" style="padding: 72px 24px 96px; background-color: #f8fafc; border-top: 1px solid #e8eaed;">
+      <div class="mz-cotizador-header" style="text-align: center; max-width: 760px; margin: 0 auto 36px;">
+        <div class="mz-k" style="font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #2f6bff; font-weight: 700;">Cotizador Interactivo</div>
+        <h2 class="mz-cotizador-title" style="font-family: Georgia, serif; font-size: 32px; font-weight: 700; color: #16223f; margin: 8px 0 12px;">Cotiza tus micas en menos de un minuto</h2>
+        <p class="mz-cotizador-sub" style="color: #7b7b7b; font-size: 16px; margin: 0;">Descubre las opciones de micas monofocales, bifocales o progresivas con tecnología ZEISS y calcula el costo exacto según tu receta y necesidades.</p>
+      </div>
+      <div class="mz-cotizador-iframe-wrap" style="max-width: 1100px; margin: 0 auto; height: 90vh; min-height: 650px; border-radius: 24px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.1);">
+        <iframe src="/asesor_zeiss.html" title="Asesor Visual ZEISS · Cotizador de Micas" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </section>
   </div>
 `;
 let micasHtml = fs.readFileSync(templatePath, 'utf8').replace(/<title>.*<\/title>/, '');

@@ -1171,7 +1171,7 @@ function App() {
   const isInitialRender = useRef(true);
 
   useEffect(() => {
-    if (currentPath !== '/cotizador') return;
+    if (currentPath !== '/cotizador' && currentPath !== '/micas') return;
     
     const handleMessage = (event) => {
       if (event.data?.type === 'lensique-mica') {
@@ -1485,6 +1485,15 @@ function App() {
   
 
     useEffect(() => {
+    if (currentPath === '/micas' && typeof window !== 'undefined' && window.location.hash.includes('cotizador')) {
+      setTimeout(() => {
+        const el = document.getElementById('cotizador-micas');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    }
+  }, [currentPath]);
+
+  useEffect(() => {
     if (isCatalogOpen) {
       if (window.location.pathname !== '/catalogo' && !window.location.pathname.startsWith('/marca/') && window.location.pathname !== '/armazones' && window.location.pathname !== '/lentes-de-contacto') {
         setCurrentPath('/catalogo');
@@ -2545,7 +2554,7 @@ function App() {
         )}
       </AnimatePresence>
 
-      {currentPath !== '/catalogo' && !currentPath.startsWith('/marca/') && (
+      {!currentPath.startsWith('/marca/') && (
         <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="announcement-bar">
           Agenda tu examen de vista hoy. <strong>Atención personalizada en Zapopan.</strong>
@@ -2638,54 +2647,34 @@ function App() {
       )}
 
       <main>
-        {(currentPath === '/catalogo' || currentPath.startsWith('/marca/')) && (
-          <FullCatalog 
-            isOpen={true} 
-            isStandalone={false}
-            isPage={true}
-            onClose={() => {
-              setIsCatalogOpen(false);
-              setCurrentPath('/');
-              window.history.pushState(null, '', '/');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            catalogData={safeJsonParse(settings.full_catalog_data)}
-            initialFilter={catalogInitialFilter}
-            initialSearchQuery={catalogInitialSearchQuery}
-            initialBrand={catalogInitialBrand}
-            onViewProduct={(prod) => {
-              setSelectedProductDetail(prod);
-            }}
-            onConfigureProduct={(prod) => {
-              setConfiguratorProduct(prod);
-            }}
-            onTryOn={(prod) => {
-              setTryOnProduct(prod);
-              setIsTryOnOpen(true);
-            }}
-          />
-        )}
-        {currentPath === '/armazones' && (
-          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc' }}>
-            <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#1d1d1f', margin: '0 20px', textAlign: 'center', marginBottom: '20px' }}>Armazones y lentes graduados en Zapopan</h1>
+        {(currentPath === '/catalogo' || currentPath === '/armazones' || currentPath.startsWith('/marca/')) && (
+          <div className="catalog-standalone-wrapper">
+            <h1 className="catalog-standalone-title">
+              Armazones y lentes graduados en Zapopan
+            </h1>
             <FullCatalog 
               isOpen={true} 
               isStandalone={true}
-              onClose={() => {}} 
+              isPage={true}
+              onClose={() => {
+                setIsCatalogOpen(false);
+                setCurrentPath('/');
+                window.history.pushState(null, '', '/');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               catalogData={safeJsonParse(settings.full_catalog_data)}
-              initialFilter="Armazones"
+              initialFilter={currentPath === '/armazones' ? 'Armazones' : (catalogInitialFilter || 'Todas')}
+              initialSearchQuery={catalogInitialSearchQuery}
+              initialBrand={catalogInitialBrand}
               onViewProduct={(prod) => {
                 setSelectedProductDetail(prod);
-                setIsCatalogOpen(false);
               }}
               onConfigureProduct={(prod) => {
                 setConfiguratorProduct(prod);
-                setIsCatalogOpen(false);
               }}
               onTryOn={(prod) => {
                 setTryOnProduct(prod);
                 setIsTryOnOpen(true);
-                setIsCatalogOpen(false);
               }}
             />
             <section className="statement-banner-section" style={{ marginTop: '0' }}>
@@ -2746,15 +2735,7 @@ function App() {
 
         
         {currentPath === '/micas' && (
-          <MicasZeissPage
-            onSelectArmazones={() => {
-              setCatalogInitialFilter('Armazones');
-              setIsCatalogOpen(true);
-              setCurrentPath('/catalogo');
-              window.history.pushState(null, '', '/catalogo?tipo=armazones');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
+          <MicasZeissPage />
         )}
 
         {currentPath === '/nosotros' && (
@@ -3150,15 +3131,17 @@ function App() {
 
             <div className="zeiss-tech-cta-wrap">
               <a 
-                href="/armazones" 
+                href="/micas#cotizador-micas" 
                 className="wp-zeiss-cta-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  setCatalogInitialFilter('Armazones');
-                  setIsCatalogOpen(true);
-                  setCurrentPath('/armazones');
-                  window.history.pushState(null, '', '/armazones');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setCurrentPath('/micas');
+                  window.history.pushState(null, '', '/micas#cotizador-micas');
+                  window.scrollTo({ top: 0, behavior: 'instant' });
+                  setTimeout(() => {
+                    const el = document.getElementById('cotizador-micas');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 150);
                 }}
               >
                 Elegir mis micas

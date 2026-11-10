@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensique · Asesor visual</title>
+<!DOCTYPE html><html lang="es"><head><script src="/delivery.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensique · Asesor visual</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -70,12 +70,335 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 .muted{font-size:12.5px;color:var(--grey);line-height:1.55}
 .restart{display:flex;justify-content:center;align-items:center;text-align:center;padding:14px 32px 20px}.restart button{background:none;border:none;color:var(--grey);font-size:12.5px;cursor:pointer;text-decoration:underline;margin:0 auto}
 .center-narrow{max-width:600px;margin:0 auto}
-.stage{display:grid;grid-template-columns:1fr 440px;gap:46px;align-items:start}
-.stageVisual{position:sticky;top:104px;background:#ffffff}
-.stageBody{min-width:0}
-@media(max-width:880px){.stage{grid-template-columns:1fr;gap:14px}.stageVisual{position:static;max-width:560px;margin:0 auto;background:#ffffff}.heroStage{min-height:auto;padding:2px;background:#ffffff;border:none;box-shadow:none;border-radius:0}.frameWrap{max-width:400px;background:#ffffff;border:none;box-shadow:none;border-radius:0}.heroTag{margin-bottom:6px}.thDetail{margin-top:6px}.step{padding:12px 22px 105px}header{padding:20px 24px 14px}.prog{padding:16px 24px 4px}.nav{padding:10px 22px}.restart{padding:0 22px 10px}.secQ{font-size:22px}.secS{font-size:13.5px}.big{padding:15px 16px}.big .nm{font-size:16px}.big .ds{font-size:13px}.heroCap{margin-top:12px;font-size:13.5px}}
-@media(max-width:560px){.stageVisual{position:static;max-width:100%;margin:0 auto 14px;background:#ffffff;display:block}.frameWrap{max-width:320px;background:#ffffff;border:none;box-shadow:none;border-radius:0}.step{padding:12px 16px 105px}header{padding:14px 16px 12px}header .s{display:none}#closeBtnStandalone{margin-top:0}.prog{padding:12px 16px 4px}.logo{font-size:24px}.hcred{font-size:8px;letter-spacing:0.8px}.secQ{font-size:20px}.m-step{display:none}.m-step.m-active{display:block}.nav{display:none !important}.m-nav{display:flex;gap:12px;margin-top:24px;padding-bottom:24px}.sec{border-bottom:none !important;margin-bottom:0 !important}}
-@media(min-width:561px){.m-nav{display:none !important}}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #ffffff;
+  color: var(--navy);
+  display: flex;
+  flex-direction: column;
+}
+
+#top-price-bar {
+  flex: 0 0 auto;
+  min-height: 40px;
+  box-sizing: border-box;
+  background: #f8fafc;
+  color: var(--navy);
+  padding: 10px 60px 10px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 100;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  position: relative;
+  width: 100%;
+}
+
+.app {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  position: relative;
+  border-top: none;
+}
+
+.col-left {
+  flex: 0 0 44%;
+  min-width: 360px;
+  max-width: 480px;
+  height: 100%;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  background: #ffffff;
+  box-sizing: border-box;
+  padding: 2.5rem 1.5rem;
+}
+
+.col-left header {
+  flex: 0 0 auto;
+  padding: 0 0 1.25rem;
+  border-bottom: none;
+  background: #ffffff;
+  position: static;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.col-left-header-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+.col-left header .brandrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.col-left header .logo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.3px;
+  text-decoration: none;
+}
+
+.col-left header .hcred {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 2px;
+}
+
+.col-left header .s {
+  font-size: 13px;
+  color: var(--grey);
+  margin-top: 5px;
+}
+
+.col-left .stageVisual {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #ffffff;
+  position: static;
+  min-height: 0;
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+}
+
+.col-left .frameWrap {
+  max-width: 420px;
+}
+
+.col-right {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.stageBody-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 2.5rem 2rem 3rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stageBody-scroll .step {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.stageBody-scroll .stageBody {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.stageBody-scroll .restart {
+  width: 100%;
+  max-width: 520px;
+  margin: 1.5rem auto 0;
+  padding: 0;
+  text-align: center;
+}
+
+.nav {
+  flex: 0 0 auto;
+  border-top: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  padding: 14px 24px;
+  z-index: 50;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  position: static;
+}
+
+@media(max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+  .col-left {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: #ffffff;
+    z-index: 10;
+    overflow: hidden;
+  }
+  .col-left header {
+    padding: 0;
+    border-bottom: none;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+    text-align: left;
+  }
+  .col-left-header-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+    width: auto;
+  }
+  #closeBtnStandalone {
+    display: none !important;
+  }
+  .col-left header .brandrow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .col-left header .logo {
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  .col-left header .hcred {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  .col-left header .s {
+    display: none;
+  }
+  .col-left .stageVisual {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .col-left .heroStage {
+    padding: 0;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+  }
+  .col-left .heroTag {
+    display: none;
+  }
+  .col-left .frameWrap {
+    max-width: 85px;
+    max-height: 44px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .col-left .frameImg {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+  }
+  .col-left .heroCap {
+    display: block;
+    font-size: 10px;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    text-align: right;
+  }
+  .col-right {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .stageBody-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 14px 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .stageBody-scroll .step,
+  .stageBody-scroll .stageBody {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+  .nav {
+    display: block !important;
+    padding: 8px 12px;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+    z-index: 50;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .navBar {
+    width: 100%;
+    justify-content: center;
+  }
+  .m-step {
+    display: block !important;
+  }
+  .m-nav {
+    display: none !important;
+  }
+}
 .heroStage{background:#ffffff;border:none;border-radius:0;box-shadow:none;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:0;width:100%}
 .heroTag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
 .heroSvg{width:100%;max-width:760px;display:block;margin:0 auto;overflow:visible}
@@ -94,10 +417,14 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 .heroCap{margin-top:16px;font-size:14.5px;color:var(--grey);min-height:20px;line-height:1.6}.heroCap b{color:var(--navy);font-weight:600}
 .sec{padding:26px 0;border-top:1px solid var(--line)}
 .sec:first-child{padding-top:2px;border-top:none}
-.secK{font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.secK{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#fff;background:var(--navy);padding:5px 12px;border-radius:999px;margin-bottom:12px;box-shadow:0 1px 3px rgba(27,36,54,0.12)}
 .secQ{font-family:Georgia,'Times New Roman',serif;font-size:25px;font-weight:600;color:var(--navy);line-height:1.16;margin-bottom:6px;letter-spacing:.3px}
 .secS{font-size:14px;color:var(--grey);margin-bottom:15px;line-height:1.5}
-.navBar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:100%;margin:0 auto}
+.recBanner{margin:2px 0 14px;padding:10px 14px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:12.5px;line-height:1.5}
+.progZonesCard{display:flex;align-items:center;gap:18px;margin:12px 0 16px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fbfaf8}
+.modeSw{display:inline-flex;align-self:center;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#fff;margin:8px auto 0}.modeSw button{border:none;background:none;padding:7px 16px;font-size:12px;font-weight:700;color:var(--grey);cursor:pointer;font-family:inherit;letter-spacing:.3px;transition:.15s}.modeSw button.on{background:var(--navy);color:#fff}
+@media(max-width:560px){.progZonesCard{flex-direction:column;text-align:center;gap:12px}}
+.navBar{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;max-width:520px;margin:0 auto}
 .barPL{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .barPV{font-family:Georgia,'Times New Roman',serif;font-size:27px;font-weight:600;color:var(--navy);line-height:1;margin-top:3px}
 @keyframes fadeLayer{from{opacity:0}}
@@ -115,20 +442,30 @@ header h1{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:25px;fo
 ::-webkit-scrollbar-thumb:hover{background:rgba(118,114,107,.5)}
 </style></head><body>
 <div class="app firstload">
-<header>
-  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-    <div>
-      <div class="brandrow"><a href="/" target="_top" class="logo" style="text-decoration:none;">Lensique<sup>&reg;</sup></a><div class="hcred">Asesor&iacute;a &oacute;ptica profesional</div></div>
-      <div class="s">Encontremos el lente perfecto para ti</div>
+  <aside class="col-left" id="colLeft">
+    <header>
+      <div class="col-left-header-inner">
+        <div>
+          <div class="brandrow"><a href="/" target="_top" class="logo" style="text-decoration:none;">Lensique<sup>&reg;</sup></a><div class="hcred">Asesor&iacute;a &oacute;ptica profesional</div></div>
+          <div class="s">Encontremos el lente perfecto para ti</div>
+        </div>
+        <a href="/" target="_top" id="closeBtnStandalone" style="display:none; border-radius:30px; background:#f1f3f6; color:var(--navy); align-items:center; justify-content:center; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 14px; margin-top:0px; flex-shrink:0; border:1px solid #e2e6eb; gap:6px; letter-spacing:0.3px;" onmouseover="this.style.background='#e3e7ec'" onmouseout="this.style.background='#f1f3f6'">&#8592; Volver</a>
+      </div>
+      <script>try{if(window.self===window.top)document.getElementById("closeBtnStandalone").style.display="flex";}catch(e){}</script>
+    </header>
+    <div class="stageVisual" id="stageVisual"></div>
+  </aside>
+
+  <main class="col-right" id="colRight">
+    <div class="prog" id="prog" style="display:none"></div>
+    <div class="stageBody-scroll" id="stageBodyScroll">
+      <div class="step" id="step">
+        <div class="stageBody" id="stageBody"></div>
+      </div>
+      <div class="restart" id="restart" style="display:none"><button onclick="reset()">↻ Empezar de nuevo</button></div>
     </div>
-    <a href="/" target="_top" id="closeBtnStandalone" style="display:none; border-radius:30px; background:#f1f3f6; color:var(--navy); align-items:center; justify-content:center; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 14px; margin-top:0px; flex-shrink:0; border:1px solid #e2e6eb; gap:6px; letter-spacing:0.3px;" onmouseover="this.style.background='#e3e7ec'" onmouseout="this.style.background='#f1f3f6'">&#8592; Volver</a>
-  </div>
-  <script>try{if(window.self===window.top)document.getElementById("closeBtnStandalone").style.display="flex";}catch(e){}</script>
-</header>
-<div class="prog" id="prog"></div>
-<div class="step" id="step"></div>
-<div class="nav" id="nav"></div>
-<div class="restart" id="restart" style="display:none"><button onclick="reset()">↻ Empezar de nuevo</button></div>
+    <div class="nav" id="nav"></div>
+  </main>
 </div>
 <script>
 /* === IMÁGENES DEL ARMAZÓN (embebidas en base64) === */
@@ -161,7 +498,7 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
     silver:     { nm: 'Intermedio (Silver)', idx: { '1.6': { term: 700 } }, lad: ['1.6'] },
     verde:      { nm: 'AR verde', idx: { '1.5': { term: 747, proc: 1288 }, '1.6': { term: 829, proc: 1617 }, '1.67': { term: 922, proc: 2019 }, '1.74': { proc: 2857 } }, lad: ['1.5','1.6','1.67','1.74'] },
     azul:       { nm: 'AR azul',  idx: { '1.5': { term: 747, proc: 1288 }, '1.6': { term: 829, proc: 1694 }, '1.67': { term: 922, proc: 2019 }, '1.74': { proc: 2922 } }, lad: ['1.5','1.6','1.67','1.74'] },
-    foto:       { nm: 'Fotocromático', idx: { '1.6': { term: 1179, proc: 2755 }, '1.67': { proc: 2457 } }, lad: ['1.6','1.67'] },
+    foto:       { nm: 'Fotocromático', idx: { '1.5': { proc: 1679 }, '1.6': { term: 1179, proc: 1921 }, '1.67': { proc: 2416 } }, lad: ['1.5','1.6','1.67'] },
     polarizado: { nm: 'Polarizado (sol)', idx: { '1.5': { proc: 1514 }, '1.6': { proc: 1756 }, '1.67': { proc: 2251 } }, lad: ['1.5','1.6','1.67'], sun: 1 },
     tinte:      { nm: 'Sol con tinte', lad: ['1.5','1.6','1.67'], sun: 1 }
   };
@@ -177,6 +514,7 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
   // Progresivos
   var PROG = {
     precision:  { nm: 'Precision Classic', poli: 1, idx: { '1.5': { verde: 1968, azul: 2091, foto: 2277 }, '1.59': { verde: 2493, azul: 2611, foto: 2802 }, '1.67': { verde: 3435, azul: 3559, foto: 3745 } } },
+  '3dv':      { nm: 'ZEISS Light 3Dv', poli: 1, idx: { '1.5': { verde: 2129, azul: 2191, foto: 2439 } } },
     pure:       { nm: 'SmartLife Pure', base: { '1.5': 3662, '1.6': 4532, '1.67': 5124, '1.74': 5924 } },
     plus:       { nm: 'SmartLife Plus', base: { '1.5': 4383, '1.6': 4842, '1.67': 5547, '1.74': 6132 } },
     superb:     { nm: 'SmartLife Superb', base: { '1.5': 4964, '1.6': 5356, '1.67': 6283, '1.74': 6617 } },
@@ -267,7 +605,8 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
   function priceProg(lv, fin, ei, man) {
     var T = PROG[lv];
     var ak = fin === 'polar' ? Object.keys(POLAR_PROG[lv] || {}) : Object.keys(T.idx || T.base);
-    if (man && ei && ak.indexOf(ei) < 0) return { avail: 0, why: 'No se fabrica en ' + ei };
+    if (fin === 'foto') ak = ak.filter(function (k) { return k !== '1.74'; });
+    if (man && ei && ak.indexOf(ei) < 0) return { avail: 0, why: 'No se fabrica en ' + ei + (fin === 'foto' ? ' para fotocromático' : '') };
     if (fin === 'polar') {
       var o = POLAR_PROG[lv]; var ix = clampIdx(ei, Object.keys(o)); var cc = o[ix];
       return cc == null ? { avail: 0 } : { cost: cc, idx: ix, tipo: 'Procesado', entrega: ix === '1.74' ? '13 días' : '7 días', avail: 1 };
@@ -361,18 +700,20 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
     var ei = inp.indice || rec.recIndex;
     var p, label, z, color = null;
 
+    var isMan = inp.manual !== undefined ? !!inp.manual : !!inp.indice;
+
     if (tipo === 'mono') {
       if (inp.poli) {
         p = priceMonoPoly(inp.polyKey || 'z159', e, c, inp.arSynchrony);
         if (p.avail) { label = POLY_MONO[p.key].nm; z = (p.key === 'z159') ? 'ClearView 1.59 policarbonato (AR incluido)' : 'Synchrony SV 1.59 policarbonato + AR ZEISS (HM)'; }
       } else {
         var k = inp.opcion || 'verde';
-        p = priceMono(k, e, c, ei, !!inp.indice);
+        p = priceMono(k, e, c, ei, isMan);
         if (p.avail) { label = MONO[k].nm; z = zMono(k, p.idx); if (k === 'foto') color = inp.color || 'Gris'; }
       }
     } else if (tipo === 'prog') {
       var lv = inp.nivel || 'pure', fin = inp.opcion || 'verde';
-      p = priceProg(lv, fin, ei, !!inp.indice);
+      p = priceProg(lv, fin, ei, isMan);
       if (p.avail) { label = PROG[lv].nm + ' · ' + (FINNAME[fin] || fin); z = zProg(lv, fin); if (fin === 'foto') color = inp.color || 'Gris'; }
     } else if (tipo === 'bif') {
       var bk = inp.opcion || 'n7081';
@@ -414,8 +755,35 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
 var $=function(id){return document.getElementById(id);};
 var money=function(n){return "$"+Math.round(n).toLocaleString("es-MX");};
 var TOTAL_STEPS=5;
-function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:"1.50",poli:false,perfora:false,level:"pure",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
-var ST=fresh();var _pfPrev=null;var _thF=null;
+var urlParams = new URLSearchParams(window.location.search);
+var montajeParam = (urlParams.get('montaje') || '').toLowerCase().replace(/[\s\-]+/g, '_').trim();
+var frameMontaje = (montajeParam === 'al_aire' || montajeParam === 'semi_al_aire') ? montajeParam : 'completo';
+var isPoliRequired = (frameMontaje === 'al_aire' || frameMontaje === 'semi_al_aire');
+function fresh(){return {step:1,type:"mono",esf:0,cil:0,add:0,odE:0,odC:0,odAx:"",odAdd:0,oiE:0,oiC:0,oiAx:"",oiAdd:0,pd:"",pdAsym:false,pdR:"",pdL:"",treat:"ar",idx:isPoliRequired?"1.59":"1.50",poli:isPoliRequired,perfora:frameMontaje==="al_aire",level:"precision",fotoColor:"gris",tintColor:"cafe",tintInt:"media",upsOpen:false,rxOpen:false,rxGuide:false,arPremium:false,altura:""};}
+var ST=fresh();
+var initialType = urlParams.get('initialType');
+if (initialType) {
+  if (initialType === 'Progresivos') ST.type = 'prog';
+  else if (initialType === 'Bifocales') ST.type = 'bif';
+  else if (initialType.indexOf('Fotocrom') !== -1) {
+    ST.treat = 'foto';
+    if (!ST.poli) ST.idx = '1.60';
+  }
+}
+var framePrice = parseInt(urlParams.get('framePrice') || '0', 10);var _pfPrev=null;var _thF=null;
+var frameImageParam = urlParams.get('frameImage');
+var hasCustomFrame = false;
+var BASE_IMG_ARM = IMG_ARM;
+if (frameImageParam && frameImageParam !== 'null' && frameImageParam !== 'undefined') {
+  IMG_ARM = frameImageParam;
+  hasCustomFrame = true;
+}
+var heroView = 'frame';
+function setHeroView(v){
+  heroView = 'frame';
+  showFrontNow();
+  render();
+}
 var _s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 var IC={
  mono:_s+'<rect x="4.5" y="4" width="15" height="16" rx="7.5"/><path d="M8.5 8.6a4.3 4.3 0 0 0-1.3 3.4" stroke-opacity=".45"/></svg>',
@@ -443,17 +811,17 @@ var LEVEL_SUR={entrada:0,medio:100,premium:200};
 function baseCost(){
  var cyl=cylSur(ST.cil),perf=(ST.perfora&&ST.type!=="prog")?120:0,b=0;
  if(ST.poli){
-  if(ST.type==="mono")b=({ar:800,azul:800,foto:900,polar:850})[ST.treat||"ar"]||800;
+  if(ST.type==="mono")b=({ar:800,azul:800,foto:900})[ST.treat||"ar"]||800;
   else if(ST.type==="bif")b=({ar:420,foto:900})[ST.treat||"ar"]||420;
   else if(ST.type==="sinlinea")b=({ar:600,foto:900})[ST.treat||"ar"]||600;
   else b=((ST.perfora?{ar:2500,azul:2500,foto:3000}:{ar:1850,azul:1850,foto:2200})[ST.treat||"ar"]||(ST.perfora?2500:1850))+LEVEL_SUR[ST.level];
   b+=cyl;
  }else{
   var sur=IDX_SUR[ST.idx]||0;
-  if(ST.type==="mono")b=({ar:400,azul:650,foto:1100,polar:850,entintado:1000,espejo:1200})[ST.treat||"ar"]+cyl+sur;
-  else if(ST.type==="bif")b=({ar:750,azul:950,foto:1400,entintado:1000})[ST.treat||"ar"]+cyl+sur;
-  else if(ST.type==="sinlinea")b=({ar:850,azul:1050,foto:1500,entintado:1100})[ST.treat||"ar"]+cyl+sur;
-  else b=({ar:1250,azul:1500,foto:1850,entintado:1500})[ST.treat||"ar"]+LEVEL_SUR[ST.level]+cyl+sur;
+  if(ST.type==="mono")b=({ar:400,azul:650,foto:1100})[ST.treat||"ar"]+cyl+sur;
+  else if(ST.type==="bif")b=({ar:750,azul:950,foto:1400})[ST.treat||"ar"]+cyl+sur;
+  else if(ST.type==="sinlinea")b=({ar:850,azul:1050,foto:1500})[ST.treat||"ar"]+cyl+sur;
+  else b=({ar:1250,azul:1500,foto:1850})[ST.treat||"ar"]+LEVEL_SUR[ST.level]+cyl+sur;
  }
  return b+perf;
 }
@@ -473,41 +841,242 @@ function treatList(){
  if(ST.type==="prog")return [
   {k:"ar",nm:"Antirreflejante",ds:"Visión nítida en las 3 distancias, sin reflejos"},
   {k:"azul",nm:"Filtro de luz azul",ds:"Para mucho celular y computadora; menos cansancio"},
-  {k:"foto",nm:"Que se oscurezca al sol",ds:"Cómodo dentro y fuera, 2 en 1"},
-  {k:"polar",nm:"Polarizado (sol)",ds:"Sol sin reflejos, ideal para manejar"},
-  {k:"entintado",nm:"Entintado (color fijo)",ds:"Tono fijo de sol: gris, café o el que elijas"}
+  {k:"foto",nm:"Que se oscurezca al sol",ds:"Cómodo dentro y fuera, 2 en 1"}
  ];
  return [
   {k:"ar",nm:"Antirreflejante",ds:"Visión nítida, sin reflejos molestos"},
   {k:"azul",nm:"Filtro de luz azul",ds:"Para mucho celular y computadora; menos cansancio"},
-  {k:"foto",nm:"Que se oscurezca al sol",ds:"Lente diario y de sol en uno solo"},
-  {k:"polar",nm:"Polarizado (sol)",ds:"Sol sin reflejos, ideal para manejar"},
-  {k:"entintado",nm:"Entintado (color fijo)",ds:"Tono fijo de sol: gris, café o el que elijas"}
+  {k:"foto",nm:"Que se oscurezca al sol",ds:"Lente diario y de sol en uno solo"}
  ];
 }
-var MATS=[["1.50","Estándar"],["1.60","Delgado"],["1.67","Más delgado"],["1.74","Ultra delgado"]];
+var MATS=[["1.50","Delgadez estándar (1.50)"],["1.60","Más delgado (1.60)"],["1.67","Muy delgado (1.67)"],["1.74","Ultra delgado (1.74)"]];
 var LEVELS=[
- {k:"precision",nm:"Precision Classic",ds:"Progresivo de entrada, económico; buenos campos"},
- {k:"pure",nm:"SmartLife Pure",ds:"Campos cómodos para el día a día"},
- {k:"plus",nm:"SmartLife Plus",ds:"Campos más amplios; mejor pantalla y lectura"},
- {k:"superb",nm:"SmartLife Superb",ds:"Visión muy natural y amplia"},
- {k:"individual",nm:"SmartLife Individual 3",ds:"Lo más personalizado, amplio y natural"}
+ {k:"precision",nm:"Estándar",ds:"Progresivo ZEISS de precisión con antirreflejante Platinum. Buena opción para uso diario, a precio accesible."},
+ {k:"pure",nm:"Comfort",ds:"Se ajusta a la altura de tu armazón para aprovechar mejor el espacio. Excelente relación calidad-precio. En índice 1.5 y policarbonato 1.59."},
+ {k:"plus",nm:"Premium",ds:"Diseño digital pensado para el uso de pantallas y tu edad. Ideal para vida conectada: celular, compu y calle."}
 ];
-var LEVEL_Q={precision:0.30,pure:0.45,plus:0.62,superb:0.80,individual:0.95};
+var LEVEL_Q={precision:0.30,pure:0.55,plus:0.80,superb:0.80,individual:0.95};
 var MULT=2.2;var MSI=3;var MSI_MIN=3000;
-/* Multiplicador decreciente: micas baratas markup alto, micas caras markup menor */
-function multFor(c){c=c||0;return c<600?2.45:c<1500?2.2:c<3000?2.1:2.0;}
-function levelName(k){return ({precision:"Precision Classic",pure:"SmartLife Pure",plus:"SmartLife Plus",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
+var PRICING_CONFIG = {
+  optica: "Lensique",
+  tramos: [
+    { h: 600,   m: 2.45 },
+    { h: 1500,  m: 2.20 },
+    { h: 3000,  m: 1.85 },
+    { h: 5000,  m: 1.62 },
+    { h: 1e9,   m: 1.47 }
+  ]
+};
+
+function multFor(c){ c=c||0; var T=PRICING_CONFIG.tramos; for(var i=0;i<T.length;i++){ if(c<T[i].h) return T[i].m; } return 1.4; }
+
+/* ===== CONEXIÓN AL MOTOR DE PRECIOS DEL POS (UNA SOLA FUENTE DE LA VERDAD) ===== */
+var POS_API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://lensique-pos.onrender.com';
+
+window.__posPriceCache = window.__posPriceCache || {};
+var _posFetchDebounce = null;
+
+function getPosPayload(){
+  var isProg = ST.type === 'prog';
+  var trat = ST.treat === 'foto' ? 'fotocromatico' : (ST.treat === 'azul' ? 'filtro_azul' : 'ninguno');
+  var p = {
+    tipo: isProg ? 'progresivo' : 'monofocal',
+    esfera: ST.esf || 0,
+    cilindro: ST.cil || 0,
+    adicion: isProg ? (ST.add || 0) : 0,
+    indice: ST.poli ? '1.59' : engIdx(ST.idx),
+    tratamiento: trat,
+    color: ST.fotoColor === 'cafe' ? 'Café' : 'Gris'
+  };
+  if (ST.odE != null || ST.odC != null) {
+    p.od = { esfera: ST.odE || 0, cilindro: ST.odC || 0, eje: ST.odAx || 0, adicion: ST.odAdd || 0 };
+  }
+  if (ST.oiE != null || ST.oiC != null) {
+    p.oi = { esfera: ST.oiE || 0, cilindro: ST.oiC || 0, eje: ST.oiAx || 0, adicion: ST.oiAdd || 0 };
+  }
+  return p;
+}
+
+function getPosCacheKey(p){
+  return [
+    p.tipo, p.indice, p.tratamiento, p.esfera, p.cilindro, p.adicion,
+    p.od ? (p.od.esfera + '/' + p.od.cilindro) : '',
+    p.oi ? (p.oi.esfera + '/' + p.oi.cilindro) : ''
+  ].join(':');
+}
+
+function fetchPosQuoteAsync(){
+  if (_posFetchDebounce) clearTimeout(_posFetchDebounce);
+  _posFetchDebounce = setTimeout(function(){
+    var payload = getPosPayload();
+    var key = getPosCacheKey(payload);
+    if (window.__posPriceCache[key]) return;
+
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var to = controller ? setTimeout(function(){ controller.abort(); }, 4000) : null;
+
+    fetch(POS_API_BASE + '/api/precio-mica', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller ? controller.signal : undefined
+    })
+    .then(function(res){
+      if (to) clearTimeout(to);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data){
+      if (data && (data.disponible != null || data.factible != null)) {
+        window.__posPriceCache[key] = data;
+        var currentKey = getPosCacheKey(getPosPayload());
+        if (currentKey === key) {
+          updatePriceDisplayFromPos(data);
+        }
+      }
+    })
+    .catch(function(err){
+      if (to) clearTimeout(to);
+      console.warn('[Asesor ZEISS] Cotización remota degradada a motor local:', err.message);
+    });
+  }, 120);
+}
+
+function updatePriceDisplayFromPos(posData){
+  var tot = (window.framePrice || 0) + (posData.disponible ? posData.precio : 0);
+  var priceEl = document.querySelector('.sec .tabular-nums') || document.querySelector('.sec [style*="font-family:Georgia"]');
+  if (priceEl && posData.disponible) {
+    priceEl.textContent = money(tot);
+  }
+  var subEl = document.getElementById('priceSubtotal');
+  if (subEl && posData.disponible) {
+    subEl.textContent = money(posData.precio);
+  }
+}
+function levelName(k){return ({precision:"Estándar",pure:"Comfort",plus:"Premium",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
+function recLevel(){
+  if(ST.poli||ST.perfora) return {k:'precision', why:['policarbonato resistente']};
+  var add = Math.abs(parseFloat(ST.add)||0);
+  var pv = potVal();
+  if(add >= 2.5 || pv >= 6) return {k:'plus', why:['adición ' + (add?'+'+add.toFixed(2):'alta') + ' — campos más amplios para fácil adaptación']};
+  if(add >= 1.75 || pv >= 3) return {k:'pure', why:['adición ' + (add?'+'+add.toFixed(2):'media') + ' — confort digital en pantallas']};
+  return {k:'precision', why:['graduación accesible para uso diario']};
+}
+function levelRecBlock(){
+  if(ST.type!=='prog') return '';
+  var r=recLevel();
+  var L=(LEVELS.filter(function(l){return l.k===r.k;})[0])||LEVELS[0];
+  var nm=L.nm;
+  var why=r.why.length?' por '+r.why.join(' y '):'';
+  return '<div class="recBanner">★ Para tu graduación te recomendamos el <b>'+nm+'</b>'+why+'.</div>';
+}
+function progZonesBlock(){
+  return '';
+}
 function engIdx(i){return i==="1.50"?"1.5":(i==="1.60"?"1.6":i);}
-function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polarizado",entintado:"tinte"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto",polar:"polar",entintado:"tinte"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
-function zeissQuote(){var inp={tipo:ST.type,esf:ST.esf||0,cil:ST.cil||0,add:(ST.type!=="mono"?(ST.add||0):0),pd:(ST.pdAsym?"":ST.pd),multiplicador:MULT};inp.opcion=engOpcion();if(ST.type==="mono"){if(ST.poli){inp.poli=true;inp.polyKey="z159";}else{inp.indice=engIdx(ST.idx);if(ST.treat==="ar"&&!ST.arPremium&&engIdx(ST.idx)==="1.5"){var _ch=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"});if(_ch&&_ch.disponible)inp.opcion="chrome";}}if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}else if(ST.type==="prog"){inp.nivel=ST.level;if(ST.poli||ST.perfora){inp.nivel="precision";inp.indice="1.59";}else inp.indice=engIdx(ST.idx);if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}var q=(typeof ZeissEngine!=="undefined"&&ZeissEngine)?ZeissEngine.cotizar(inp):{disponible:false,motivo:"Motor de precios no cargado"};if(q&&q.disponible){var m=multFor(q.costoLista);q.costoIva=Math.round(q.costoLista*1.16);q.pvp=Math.round(q.costoLista*1.16*m/50)*50;q.utilidad=q.pvp-q.costoIva;q.margen=Math.round(q.utilidad/q.pvp*100);q.mult=m;if(ST.type==="mono"&&ST.treat==="ar")q.etiqueta=ST.arPremium?"Antirreflejante premium":"Antirreflejante";if(ST.type==="bif"&&q.entrega==="Consultar")q.entrega="Consultar en tienda";}return q;}
-function priceSection(){var q=zeissQuote();if(!q||!q.disponible){return '<section class="sec"><div class="secK">05 — Tu inversión</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">⚠ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:right"><div class="secK">05 — Tu inversión</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px">'+money(q.pvp)+'</div>'+(q.pvp>=MSI_MIN?'<div style="display:inline-block;margin-top:10px;padding:8px 16px;border-radius:22px;background:var(--gold);color:#fff;font-size:14.5px;font-weight:700;letter-spacing:.2px">'+MSI+' meses sin intereses · '+money(Math.round(q.pvp/MSI))+'/mes</div>':'')+'<div class="muted" style="margin-top:8px">'+q.etiqueta+' · índice '+q.indice+'</div><div class="muted" style="margin-top:2px">Incluye armado y protección UV · entrega '+q.entrega+' ('+q.tipoFab+')</div>'+abbe+'</section>';}
+function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
+function zeissQuote(){
+  var payload = getPosPayload();
+  var cacheKey = getPosCacheKey(payload);
+  var fromServer = window.__posPriceCache ? window.__posPriceCache[cacheKey] : null;
+
+  if (!fromServer) {
+    fetchPosQuoteAsync();
+  }
+
+  // Si el servidor del POS ya respondió para esta combinación exacta:
+  if (fromServer) {
+    if (!fromServer.disponible || !fromServer.factible) {
+      return { disponible: false, motivo: fromServer.motivo || 'No disponible para esta graduación' };
+    }
+  }
+
+  // Motor local (mismas fórmulas L5 y tramos que el POS como fallback instantáneo)
+  var inp = { tipo: ST.type, esf: ST.esf || 0, cil: ST.cil || 0, add: (ST.type !== "mono" ? (ST.add || 0) : 0), pd: (ST.pdAsym ? "" : ST.pd), multiplicador: MULT };
+  inp.opcion = engOpcion();
+  inp.manual = !!ST.idxManual;
+  if (ST.type === "mono") {
+    if (ST.poli) {
+      inp.poli = true; inp.polyKey = "z159";
+    } else {
+      inp.indice = engIdx(ST.idx);
+      if (ST.treat === "ar" && !ST.arPremium && engIdx(ST.idx) === "1.5") {
+        var _ch = ZeissEngine.cotizar({ tipo: "mono", esf: ST.esf || 0, cil: ST.cil || 0, opcion: "chrome", indice: "1.5" });
+        if (_ch && _ch.disponible) inp.opcion = "chrome";
+      }
+    }
+    if (ST.treat === "foto") inp.color = (ST.fotoColor === "cafe" ? "Café" : "Gris");
+  } else if (ST.type === "prog") {
+    inp.nivel = ST.level;
+    if (ST.poli || ST.perfora) {
+      inp.nivel = "precision"; inp.indice = "1.59";
+    } else {
+      inp.indice = engIdx(ST.idx);
+    }
+    if (ST.treat === "foto") inp.color = (ST.fotoColor === "cafe" ? "Café" : "Gris");
+  }
+
+  var q = (typeof ZeissEngine !== "undefined" && ZeissEngine) ? ZeissEngine.cotizar(inp) : { disponible: false, motivo: "Motor de precios no cargado" };
+  if (q && q.disponible) {
+    var m = multFor(q.costoLista);
+    q.costoIva = Math.round(q.costoLista * 1.16);
+    // Base mostrador redondeada a $100
+    q.pvp = Math.round(q.costoLista * 1.16 * m / 100) * 100;
+    
+    // Si el POS respondió, usar el precio devuelto por el POS con máxima prioridad
+    if (fromServer && fromServer.precio) {
+      q.pvp = fromServer.precio;
+      q.precio = fromServer.precio;
+      q.fromPos = true;
+      if (fromServer.detalles && fromServer.detalles.entrega) q.entrega = fromServer.detalles.entrega;
+    }
+
+    q.utilidad = q.pvp - q.costoIva;
+    q.margen = Math.round(q.utilidad / q.pvp * 100);
+    q.mult = m;
+
+    var isPreorder = false;
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('isPreorder') === 'true') { isPreorder = true; }
+    var frameAvail = isPreorder ? 'preorder' : 'instock';
+    var lType = 'mono_basic';
+    if (inp.tipo === 'prog' || inp.tipo === 'bif' || inp.tipo === 'ocupacional') {
+      lType = 'progressive_bifocal';
+    } else if (ST.treat === 'foto') {
+      lType = 'photochromic';
+    } else if (ST.poli) {
+      lType = 'special';
+    } else if (inp.indice === '1.67' || inp.indice === '1.74' || inp.indice === '1.60' || inp.indice === '1.59') {
+      lType = 'mono_complex';
+    }
+
+    if (typeof getDeliveryEstimate === 'function') {
+      var est = getDeliveryEstimate(frameAvail, lType, 'pickup');
+      q.entrega = est.dateRange;
+    } else {
+      q.entrega = "Consultar en tienda";
+    }
+
+    if (ST.type === "mono" && ST.treat === "ar") {
+      q.etiqueta = ST.arPremium ? "Antirreflejante premium" : "Antirreflejante";
+    }
+    if (ST.type === "bif" && q.entrega === "Consultar") {
+      q.entrega = "Consultar en tienda";
+    }
+  }
+  return q;
+}
+function priceSection(){var q=zeissQuote();if(!q||!q.disponible){if(!ST.rxMethod){return '<section class="sec" style="padding-top:24px"><div class="secK">05 — Tu total</div><div style="margin-top:8px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#faf9f6;color:var(--grey);font-size:13.5px;line-height:1.5">Indica tu graduación en el <b>Paso 02</b> para calcular el total exacto.</div></section>';}return '<section class="sec" style="padding-top:24px"><div class="secK">05 — Tu total</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">ℹ️ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:left; padding-top:28px"><div class="secK">05 — Tu total</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px" class="tabular-nums">'+money(framePrice + (q?q.pvp:0)) +'</div>'+'<div class="lentname" style="margin-top:8px;font-size:15px;color:var(--navy);font-weight:700;">'+clientFriendlySummary()+'</div><div class="muted" style="margin-top:2px;font-size:12px;">ZEISS '+(ST.type==="prog"?levelName(ST.level):"Monofocal")+' · índice '+(ST.poli?'1.59':ST.idx)+'</div><div class="muted" style="margin-top:2px">Incluye armado, protección UV y garantía de adaptación de 30 días</div><div class="muted" style="margin-top:4px;color:#16a34a;font-weight:500;">'+q.entrega+'</div>'+abbe+'<div style="margin-top:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;color:#334155;line-height:1.4"><b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style="color:#0ea5e9;text-decoration:none">Cambio o devolución en 30 días · Validación por optometrista</a></div><div style="margin-top:8px;font-size:12.5px;color:#64748b;text-align:center;">Formas de pago: Tarjeta · OXXO · SPEI</div></section>';}
 
   function rxBlock(){
-    var h = '<div class="opts" style="margin-bottom: 24px;">';
+    var h = '';
+
+    h += '<div class="opts" style="margin-bottom: 24px;">';
     h += bigOpt(ST.rxMethod === 'upload', IC.ar || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>', 'Subir mi receta', 'Sube una foto o PDF y nosotros nos encargamos', 'onclick="pick(\'rxMethod\',\'upload\')"');
     h += bigOpt(ST.rxMethod === 'manual', IC.foto || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>', 'Ingresar datos', 'Copia los datos de tu receta manualmente', 'onclick="pick(\'rxMethod\',\'manual\')"');
-    h += bigOpt(ST.rxMethod === 'contact', IC.entintado || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 'Asesoría / Agendar cita', 'Te contactaremos para guiarte o agendar cita', 'onclick="pick(\'rxMethod\',\'contact\')"');
+    h += bigOpt(ST.rxMethod === 'contact', IC.entintado || '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', 'No la tengo ahora (Enviar después)', 'Puedes completar tu compra igual y nos la envías por WhatsApp', 'onclick="pick(\'rxMethod\',\'contact\')"');
     h += '</div>';
 
     if (ST.rxMethod === 'upload') {
@@ -517,15 +1086,30 @@ function priceSection(){var q=zeissQuote();if(!q||!q.disponible){return '<sectio
       h += '<button onclick="document.getElementById(\'rxUploadInput\').click()" style="background: var(--navy); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">Seleccionar archivo</button>';
       h += '</div>';
     } else if (ST.rxMethod === 'manual') {
+      h += '<div style="margin-bottom: 16px; text-align: left;">';
+      h += '<button type="button" onclick="toggleRxGuide(event)" style="background:#f1f5f9;color:var(--navy);border:1px solid #cbd5e1;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span id="rxGuideLabel">'+(ST.rxGuide?"Ocultar guía para leer receta":"Guía: ¿Cómo leer mi receta?")+'</span></button>';
+      h += '</div>';
+      h += '<div id="rxGuideWrapper" style="display:'+(ST.rxGuide?'block':'none')+'">';
+      h += rxGuide();
+      h += '</div>';
+
       var st="style='display:block'";
       h += "<div "+st+"><details style='margin-bottom:14px' open><summary class='upToggle'><div class='uplbl'>Tu receta</div><div style='font-size:13.5px'>Ingresa los valores (opcional afinar)</div></summary>";
       h += dataBlock();
       h += "</details></div>";
+      
     } else if (ST.rxMethod === 'contact') {
       h += '<div style="margin-bottom: 24px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #f0fdf4; color: #166534; font-size: 14px; line-height: 1.5;">';
       h += '<strong>¡Excelente elección!</strong> Puedes continuar con tu compra ahora mismo. Nuestro equipo se pondrá en contacto contigo muy pronto para agendar tu cita o ayudarte a obtener tu graduación.';
       h += '</div>';
     }
+
+    h += '<div style="margin-top: 18px; margin-bottom: 10px; padding: 16px; border-radius: 12px; background: #eff6ff; display: flex; align-items: center; justify-content: space-between;">';
+    h += '<div><div style="font-weight:600; color:#1e3a8a; font-size:14px;">¿Dudas con tu graduación o tu talla? Escríbenos</div><div style="font-size:13px; color:#3b82f6; margin-top:2px;">Te asesoramos paso a paso</div></div>';
+    h += '<a href="https://wa.me/523316929111?text=Hola,%20tengo%20una%20duda%20con%20mi%20graduaci%C3%B3n%20para%20los%20lentes." target="_blank" onclick="window.parent.postMessage({ type: \'lensique-lead\', source: \'asesor-zeiss\', product: \'lentes_oftalmicos\' }, window.location.origin)" style="background: #25d366; color: #fff; padding: 10px 16px; border-radius: 20px; font-weight: 600; text-decoration: none; font-size: 14px; white-space: nowrap; margin-left: 12px; display:inline-flex; align-items:center; gap:6px;">';
+    h += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> WhatsApp';
+    h += '</a>';
+    h += '</div>';
 
     return h;
   }
@@ -558,7 +1142,7 @@ function dataBlock(){
  h+='<div class="muted" style="margin:4px 0 14px;cursor:pointer" onclick="togglePD()"><span style="text-decoration:underline">'+(ST.pdAsym?"Usar un solo PD (simétrico)":"¿PD diferente por ojo? Márcalo")+'</span></div>';
  return h;
 }
-function syncRx(){var odP=Math.max(Math.abs(ST.odE||0),Math.abs((ST.odE||0)+(ST.odC||0)));var oiP=Math.max(Math.abs(ST.oiE||0),Math.abs((ST.oiE||0)+(ST.oiC||0)));if(odP>=oiP){ST.esf=ST.odE||0;ST.cil=ST.odC||0;}else{ST.esf=ST.oiE||0;ST.cil=ST.oiC||0;}ST.add=Math.max(ST.odAdd||0,ST.oiAdd||0);}
+function syncRx(){var odP=Math.max(Math.abs(ST.odE||0),Math.abs((ST.odE||0)+(ST.odC||0)));var oiP=Math.max(Math.abs(ST.oiE||0),Math.abs((ST.oiE||0)+(ST.oiC||0)));if(odP>=oiP){ST.esf=ST.odE||0;ST.cil=ST.odC||0;}else{ST.esf=ST.oiE||0;ST.cil=ST.oiC||0;}ST.add=Math.max(ST.odAdd||0,ST.oiAdd||0);ST.idxManual=false;}
 function togglePD(){ST.pdAsym=!ST.pdAsym;render();}
 function rxText(){var t="Esf "+(ST.esf>=0?"+":"")+(ST.esf||0).toFixed(2)+" · Cil "+(ST.cil||0).toFixed(2);if(ST.type!=="mono"&&ST.add)t+=" · Add +"+Number(ST.add).toFixed(2);if(ST.pdAsym){if(ST.pdR||ST.pdL)t+=" · PD "+(ST.pdR||"?")+"/"+(ST.pdL||"?")+" mm";}else if(ST.pd)t+=" · PD "+ST.pd+" mm";return t;}
 function rxGrid(){var cells=[["Esfera",(ST.esf>=0?"+":"")+(ST.esf||0).toFixed(2)],["Cilindro",(ST.cil||0).toFixed(2)]];if(ST.type!=="mono"&&ST.add)cells.push(["Adición","+"+Number(ST.add).toFixed(2)]);var pd=ST.pdAsym?((ST.pdR||"?")+"/"+(ST.pdL||"?")):(ST.pd||"");if(pd)cells.push(["DIP",pd+" mm"]);var h='<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:13px;padding-top:13px">';cells.forEach(function(c,i){h+='<div style="flex:1;min-width:62px;text-align:center;padding:0 6px;'+(i>0?"border-left:1px solid var(--line)":"")+'"><div style="font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">'+c[0]+'</div><div style="font-family:Georgia,serif;font-size:18px;color:var(--navy);margin-top:5px">'+c[1]+'</div></div>';});h+='</div>';return h;}
@@ -593,53 +1177,39 @@ function zonesSVG(q){
 }
 function heroSVG(){
  var t=ST.treat,tintFill="#000",tintOp=0;
- if(t==="entintado"){tintFill=TINTS[ST.tintColor][1];tintOp=TINT_A[ST.tintInt];}
- else if(t==="foto"){tintFill=ST.fotoColor==="cafe"?"#6e4720":"#3f4a5e";tintOp=0.6;}
- else if(t==="polar"){tintFill="#2b2f36";tintOp=0.72;}
- else if(t==="espejo"){tintFill="#c4ccd6";tintOp=0.3;}
- var blueOp=t==="azul"?0.16:0,mirOp=t==="espejo"?0.85:0,arOp=t==="ar"?1:0,sunOp=t==="foto"?1:0;
+ if(t==="foto"){tintFill=ST.fotoColor==="cafe"?"#6e4720":"#3f4a5e";tintOp=0.6;}
+ var blueOp=t==="azul"?0.16:0,mirOp=0,arOp=t==="ar"?1:0,sunOp=t==="foto"?1:0;
  var progOp=ST.type==="prog"?1:0,bifOp=(ST.type==="bif"||ST.type==="sinlinea")?1:0;
  var rw=ST.poli?5:(({"1.50":7,"1.60":6,"1.67":4.5,"1.74":3.5})[ST.idx]||6);
  var A="",AT=11,isFoto=(t==="foto");
- function lens(g){
-  var ox=g.x-AT,oy=g.y-AT,ow=g.w+2*AT,oh=g.h+2*AT,orx=g.rx+AT;
-  var Rn='x="'+g.x+'" y="'+g.y+'" width="'+g.w+'" height="'+g.h+'"',Rr=Rn+' rx="'+g.rx+'" ry="'+g.rx+'"';
-  var cx=g.x+g.w/2,cy=g.y+g.h/2,rx=g.w/2,ry=g.h/2,by=cy+ry*0.32;
-  var pq=(ST.type==="prog"&&LEVEL_Q[ST.level]!=null)?LEVEL_Q[ST.level]:0.6,wf=0.26+pq*0.5,wingOp=(0.84-pq*0.22).toFixed(2);
-  var dark=(tintOp>0.45||mirOp>0),labCol=dark?"#f0f2f5":"#2c3543",wingCol=dark?"#cfd4da":"#54616f";
-  var hxx=cx-rx*0.34,hyy=cy-ry*0.36;
-  var tintSty=isFoto?('fill:'+tintFill+';animation:photoDark 4.4s ease-in-out infinite'):('opacity:'+tintOp+';'+A);
-  var rvx=(g.id==="L")?(ox+12):(ox+ow-12);
-  var plate='';
-  var glass='<g clip-path="url(#hc'+g.id+')">'
-   +'<rect '+Rn+' fill="url(#lensG)"/>'
-   +'<rect '+Rn+' fill="'+tintFill+'" style="'+tintSty+'"/>'
-   +'<rect '+Rn+' fill="#3b6fd0" style="opacity:'+blueOp+';'+A+'"/>'
-   +'<rect '+Rn+' fill="url(#hMirrorG)" style="opacity:'+mirOp+';'+A+'"/>'
-   +'<rect '+Rn+' fill="url(#hVig)"/>'
-   +'<ellipse cx="'+hxx+'" cy="'+hyy+'" rx="'+(rx*0.46)+'" ry="'+(ry*0.25)+'" fill="url(#hHi)" transform="rotate(-20 '+hxx+' '+hyy+')" style="opacity:'+(t==="ar"?0.4:0.54)+';'+A+'"/>'
-   +'<g style="opacity:'+progOp+';'+A+'"><path d="M'+(cx-rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx-rx*wf)+' '+(cy+ry*0.32)+' '+(cx-rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx-rx*wf)+' '+(cy+ry*1.05)+' L'+(cx-rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><path d="M'+(cx+rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx+rx*wf)+' '+(cy+ry*0.32)+' '+(cx+rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx+rx*wf)+' '+(cy+ry*1.05)+' L'+(cx+rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><text x="'+cx+'" y="'+(cy-ry*0.44)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.8" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">LEJOS</text><text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-size="8.5" font-weight="500" letter-spacing="1.2" fill="'+labCol+'" opacity=".55" font-family="-apple-system,Segoe UI,sans-serif">INTERMEDIO</text><text x="'+cx+'" y="'+(cy+ry*0.54)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.8" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">CERCA</text></g>'
-   +'<g style="opacity:'+bifOp+';'+A+'">'+(ST.treat==="invisible"?'<path d="M'+(cx-rx*0.8)+' '+(by+ry*0.04)+' H'+(cx+rx*0.8)+' L'+(cx+rx*0.6)+' '+(cy+ry*0.92)+' Q'+cx+' '+(cy+ry*1.0)+' '+(cx-rx*0.6)+' '+(cy+ry*0.92)+' Z" fill="'+wingCol+'" opacity=".34" filter="url(#pblur)"/><path d="M'+(cx-rx*0.8)+' '+(by+ry*0.02)+' H'+(cx+rx*0.8)+'" stroke="'+(dark?"#e8ebef":"#16223f")+'" stroke-width="1.1" opacity=".14"/>':'<path d="M'+(cx-rx*0.84)+' '+by+' H'+(cx+rx*0.84)+' L'+(cx+rx*0.62)+' '+(cy+ry*0.94)+' Q'+cx+' '+(cy+ry*1.02)+' '+(cx-rx*0.62)+' '+(cy+ry*0.94)+' Z" fill="'+wingCol+'" opacity=".14"/><path d="M'+(cx-rx*0.82)+' '+by+' H'+(cx+rx*0.82)+'" stroke="'+(dark?"#dfe3e8":"#2c3543")+'" stroke-width="1.5" opacity=".5"/>')+'<text x="'+cx+'" y="'+(cy-ry*0.08)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.6" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">LEJOS</text><text x="'+cx+'" y="'+(cy+ry*0.66)+'" text-anchor="middle" font-size="10" font-weight="500" letter-spacing="1.6" fill="'+labCol+'" opacity=".6" font-family="-apple-system,Segoe UI,sans-serif">CERCA</text></g>'
-   +'</g>'
-   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+rx+'" fill="none" stroke="url(#metalBk)" stroke-width="4.6"/>'
-   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+(rx-2.7)+'" fill="none" stroke="#454850" stroke-width="0.8" opacity=".5"/>';
-  return plate+glass;
- }
+ function progGroup(g){
+   if(ST.type!=="prog"||g.id!=="R")return "";
+   var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry;
+   var dark=(tintOp>0.45||mirOp>0);
+   var labCol=dark?"#f8fafc":"#0f172a",lineCol=dark?"rgba(248,250,252,0.38)":"rgba(15,23,42,0.22)";
+   var textStyle='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;font-weight:700;';
+   var yLejos=cy-ry*0.44,yDiv1=cy-ry*0.13,yInter=cy+12,yDiv2=cy+ry*0.28,yCerca=cy+ry*0.54;
+   var div1='<line x1="'+(cx-210)+'" y1="'+yDiv1+'" x2="'+(cx+210)+'" y2="'+yDiv1+'" stroke="'+lineCol+'" stroke-width="1.5" stroke-linecap="round"/>';
+   var div2='<line x1="'+(cx-180)+'" y1="'+yDiv2+'" x2="'+(cx+180)+'" y2="'+yDiv2+'" stroke="'+lineCol+'" stroke-width="1.5" stroke-linecap="round"/>';
+   return '<g style="opacity:'+progOp+';'+A+'">'
+    +div1+div2
+    +'<text x="'+cx+'" y="'+yLejos+'" text-anchor="middle" font-size="48" letter-spacing="4.5" fill="'+labCol+'" opacity="'+(dark?0.95:0.88)+'" style="'+textStyle+'">LEJOS</text>'
+    +'<text x="'+cx+'" y="'+yInter+'" text-anchor="middle" font-size="38" letter-spacing="3.5" fill="'+labCol+'" opacity="'+(dark?0.95:0.88)+'" style="'+textStyle+'">INTERMEDIO</text>'
+    +'<text x="'+cx+'" y="'+yCerca+'" text-anchor="middle" font-size="48" letter-spacing="4.5" fill="'+labCol+'" opacity="'+(dark?0.95:0.88)+'" style="'+textStyle+'">CERCA</text>'
+    +'</g>';
+  }
  var LENS=[{cx:841,cy:818,rx:398,ry:372,id:"L"},{cx:1974,cy:820,rx:397,ry:374,id:"R"}];
  function fx(g){
-  var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry,by=cy+ry*0.3,hxx=cx-rx*0.3,hyy=cy-ry*0.34;
-  var pq=(ST.type==="prog"&&LEVEL_Q[ST.level]!=null)?LEVEL_Q[ST.level]:0.6,wf=0.26+pq*0.5,wingOp=(0.84-pq*0.22).toFixed(2);
-  var dark=(tintOp>0.45||mirOp>0),labCol=dark?"#f0f2f5":"#2c3543",wingCol=dark?"#cfd4da":"#54616f";
+  var cx=g.cx,cy=g.cy,rx=g.rx,ry=g.ry,by=cy+ry*0.3;
+  var dark=(tintOp>0.45||mirOp>0),wingCol=dark?"#cfd4da":"#54616f";
   var R='x="'+(cx-rx)+'" y="'+(cy-ry)+'" width="'+(2*rx)+'" height="'+(2*ry)+'"';
   var tintSty=isFoto?('mix-blend-mode:multiply;animation:photoDark 4.4s ease-in-out infinite'):('opacity:'+tintOp+';mix-blend-mode:multiply;'+A);
-  var lf=' font-weight="500" fill="'+labCol+'" opacity=".62" font-family="-apple-system,Segoe UI,sans-serif"';
   return '<g>'
    +'<rect class="tintRect" '+R+' fill="'+tintFill+'" style="'+tintSty+'"/>'
    +'<rect '+R+' fill="#3b6fd0" style="opacity:'+blueOp+';mix-blend-mode:multiply;'+A+'"/>'
    +'<rect '+R+' fill="url(#fMir)" style="opacity:'+(mirOp?0.6:0)+';mix-blend-mode:screen;'+A+'"/>'
-   +''
-   +'<g style="opacity:'+progOp+';'+A+'"><path d="M'+(cx-rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx-rx*wf)+' '+(cy+ry*0.32)+' '+(cx-rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx-rx*wf)+' '+(cy+ry*1.05)+' L'+(cx-rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><path d="M'+(cx+rx*1.04)+' '+(cy-ry*0.05)+' C'+(cx+rx*wf)+' '+(cy+ry*0.32)+' '+(cx+rx*(wf-0.1))+' '+(cy+ry*0.78)+' '+(cx+rx*wf)+' '+(cy+ry*1.05)+' L'+(cx+rx*1.04)+' '+(cy+ry*1.05)+' Z" fill="'+wingCol+'" style="opacity:'+wingOp+'" filter="url(#pblur)"/><text x="'+cx+'" y="'+(cy-ry*0.42)+'" text-anchor="middle" font-size="40" letter-spacing="5"'+lf+'>LEJOS</text><text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="40" letter-spacing="5"'+lf+'>INTERMEDIO</text><text x="'+cx+'" y="'+(cy+ry*0.54)+'" text-anchor="middle" font-size="40" letter-spacing="5"'+lf+'>CERCA</text></g>'
-   +'<g style="opacity:'+bifOp+';'+A+'">'+(ST.type==="sinlinea"?'<rect x="'+(cx-rx*1.18)+'" y="'+by+'" width="'+(rx*2.36)+'" height="'+(ry*1.3)+'" fill="'+wingCol+'" opacity=".22" filter="url(#pblur)"/>':'<rect x="'+(cx-rx*1.18)+'" y="'+by+'" width="'+(rx*2.36)+'" height="'+(ry*1.3)+'" fill="'+wingCol+'" opacity=".13"/><path d="M'+(cx-rx*1.18)+' '+by+' H'+(cx+rx*1.18)+'" stroke="'+(dark?"#dfe3e8":"#2c3543")+'" stroke-width="5" opacity=".5"/>')+'<text x="'+cx+'" y="'+(cy-ry*0.06)+'" text-anchor="middle" font-size="44" letter-spacing="5"'+lf+'>LEJOS</text><text x="'+cx+'" y="'+(cy+ry*0.66)+'" text-anchor="middle" font-size="44" letter-spacing="5"'+lf+'>CERCA</text></g>'
+   +progGroup(g)
+   +'<g style="opacity:'+bifOp+';'+A+'">'+(ST.type==="sinlinea"?'<rect x="'+(cx-rx*1.18)+'" y="'+by+'" width="'+(rx*2.36)+'" height="'+(ry*1.3)+'" fill="'+wingCol+'" opacity=".22" filter="url(#pblur)"/>':'<rect x="'+(cx-rx*1.18)+'" y="'+by+'" width="'+(rx*2.36)+'" height="'+(ry*1.3)+'" fill="'+wingCol+'" opacity=".13"/><path d="M'+(cx-rx*1.18)+' '+by+' H'+(cx+rx*1.18)+'" stroke="'+(dark?"#dfe3e8":"#2c3543")+'" stroke-width="5" opacity=".5"/>')+'</g>'
    +'</g>';
  }
  var sunRays='';for(var sa=0;sa<360;sa+=30){var sr=sa*Math.PI/180;sunRays+='<line x1="'+(Math.cos(sr)*58).toFixed(1)+'" y1="'+(Math.sin(sr)*58).toFixed(1)+'" x2="'+(Math.cos(sr)*84).toFixed(1)+'" y2="'+(Math.sin(sr)*84).toFixed(1)+'"/>';}
@@ -665,17 +1235,26 @@ function heroSVG(){
    +'<text x="'+(xr+len/2)+'" y="'+(cy+Math.max(hFront,hTip)+42)+'" text-anchor="middle" font-size="23" font-weight="600" fill="#46638f" '+ff+'>Índice '+_idxv+(_red>0?' · −'+_red+'% más delgado que 1.50':'')+'</text>'
    +'</svg>';
  }
- var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" src="'+(ST.perfora?IMG_AIRE:IMG_ARM)+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+'<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
-  +'<mask id="lensMask"><image href="'+IMG_MASK+'" x="0" y="0" width="2816" height="1536"/></mask>'
-  +'<radialGradient id="sunGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f8cf57" stop-opacity=".5"/><stop offset=".45" stop-color="#f2b63f" stop-opacity=".2"/><stop offset="1" stop-color="#f2b63f" stop-opacity="0"/></radialGradient>'
-  +'<radialGradient id="sunDisk" cx=".42" cy=".4" r=".62"><stop offset="0" stop-color="#fff3cf"/><stop offset=".55" stop-color="#f6c44e"/><stop offset="1" stop-color="#e89a2a"/></radialGradient>'
-  +'<linearGradient id="fMir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd0e6"/><stop offset=".4" stop-color="#b89cf0"/><stop offset=".7" stop-color="#f0a6c8"/><stop offset="1" stop-color="#f3d9a0"/></linearGradient>'
-  +'<filter id="pblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="42"/></filter>'
-  +'</defs><g mask="url(#lensMask)">'+fx(LENS[0])+fx(LENS[1])+'</g>'+sun+'</svg></div>'+heroSideHTML()+'</div>';
- var parts=[],trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[t]||"";
+ var currentArmImg = hasCustomFrame ? IMG_ARM : (ST.perfora ? IMG_AIRE : IMG_ARM);
+ var frameStyle = hasCustomFrame ? 'style="object-fit:contain;max-height:280px;margin:0 auto;background:#ffffff;border:none;box-shadow:none;"' : '';
+ var overlayHtml = '';
+ if (!hasCustomFrame) {
+  overlayHtml = '<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
+   +'<mask id="lensMask"><image href="'+IMG_MASK+'" x="0" y="0" width="2816" height="1536"/></mask>'
+   +'<radialGradient id="sunGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f8cf57" stop-opacity=".5"/><stop offset=".45" stop-color="#f2b63f" stop-opacity=".2"/><stop offset="1" stop-color="#f2b63f" stop-opacity="0"/></radialGradient>'
+   +'<radialGradient id="sunDisk" cx=".42" cy=".4" r=".62"><stop offset="0" stop-color="#fff3cf"/><stop offset=".55" stop-color="#f6c44e"/><stop offset="1" stop-color="#e89a2a"/></radialGradient>'
+   +'<linearGradient id="fMir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd0e6"/><stop offset=".4" stop-color="#b89cf0"/><stop offset=".7" stop-color="#f0a6c8"/><stop offset="1" stop-color="#f3d9a0"/></linearGradient>'
+   +'<filter id="pblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="42"/></filter>'
+   +'</defs><g mask="url(#lensMask)">'+fx(LENS[0])+fx(LENS[1])+'</g>'+sun+'</svg>';
+ } else if (ST.type === 'prog') {
+  overlayHtml = '<svg class="frameOverlay" id="frameOverlay" viewBox="0 0 2816 1536"><defs>'
+   +'<filter id="pblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="42"/></filter>'
+   +'</defs>'+progGroup(LENS[0])+progGroup(LENS[1])+'</svg>';
+ }
+ var svg='<div class="frameWrap"><div class="heroFront" id="heroFront"><img class="frameImg" '+frameStyle+' src="'+currentArmImg+'" alt="Armazón"/>'+(swap?'<img class="frameImg fimgOut" '+frameStyle+' src="'+(ST.perfora?IMG_ARM:IMG_AIRE)+'" alt="" style="animation:fadeOut .65s ease forwards"/>':'')+overlayHtml+'</div>'+heroSideHTML()+'</div>';
+ var parts=[],trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",invisible:"Sin línea"}[t]||"";
  if(trn)parts.push(trn);
  if(t==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");
- if(t==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt.charAt(0).toUpperCase()+ST.tintInt.slice(1));
  parts.push(ST.poli?"Policarbonato":"Índice "+ST.idx);
  if(ST.type==="prog")parts.push(levelName(ST.level));
  if(ST.perfora)parts.push("Al aire");
@@ -685,7 +1264,7 @@ function heroSVG(){
 }
 function thProfile(minus){var cx=60,top=24,bot=136,cyy=80,edge=minus?20:9,ctr=minus?9:20;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
 function thDetailSVG(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfile(minus);return '<div class="thDetail"><svg viewBox="0 0 120 160" width="52" height="69" style="overflow:visible;flex-shrink:0"><defs><linearGradient id="thDg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe0f3"/><stop offset="1" stop-color="#5b7da6"/></linearGradient></defs><path id="thGhost" d="'+P+'" fill="none" stroke="#c2cad6" stroke-width="2.4" stroke-dasharray="3 3"/><g id="thActive" style="transform:scaleX('+ratio+')"><path id="thActPath" d="'+P+'" fill="url(#thDg)" stroke="#27405f" stroke-width="2.4" stroke-opacity=".55"/></g></svg><div style="line-height:1.2;text-align:left;white-space:nowrap"><div class="matlbl" style="margin:0;font-size:10px" id="thLbl">Grosor del borde</div><div style="font-size:21px;font-weight:700;color:var(--navy);font-family:Georgia,serif;margin-top:1px" id="thMm">—</div><div style="font-size:11.5px;color:var(--gold);font-weight:600" id="thPct">—</div></div></div>';}
-function recIdx(){var e=ST.esf||0,c=ST.cil||0,pot=Math.max(Math.abs(e),Math.abs(e+c));return pot<=2?"1.50":pot<=4?"1.60":pot<=6?"1.67":"1.74";}
+function recIdx(){var g=getGrad();return dispIdx(recIndexForGrad(g));}
 function deliveryTime(){var q=zeissQuote();return (q&&q.disponible)?q.entrega:"—";}
 function materialBlock(){
  var rec=recIdx();
@@ -704,7 +1283,7 @@ function miniLens(pot,minus,mm,sel){var cx=24,topY=6,botY=78,cyY=42,thin=3,thick
 function bigCross(eT,minus){var cx=70,topY=18,botY=162,cyY=90,thin=9;var edge=minus?eT:thin,ctr=minus?thin:eT,cl=cx+(edge-2*ctr),cr=cx-(edge-2*ctr);var p="M"+(cx-edge)+" "+topY+" L"+(cx+edge)+" "+topY+" Q"+cr+" "+cyY+" "+(cx+edge)+" "+botY+" L"+(cx-edge)+" "+botY+" Q"+cl+" "+cyY+" "+(cx-edge)+" "+topY+" Z";return '<ellipse cx="'+cx+'" cy="170" rx="'+(edge+8)+'" ry="4" fill="#16223f" opacity=".1"/><path d="'+p+'" fill="url(#thG)" stroke="#0f1a30" stroke-width="1.4"/><path d="M'+(cx-edge*0.45)+' '+(topY+12)+' Q'+(cx-edge*0.95)+' '+cyY+' '+(cx-edge*0.45)+' '+(botY-12)+'" stroke="#fff" stroke-width="2" fill="none" opacity=".28" stroke-linecap="round"/>';}
 function thickPreview(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P);var idx=ST.poli?"1.59":ST.idx,mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var lbl=pot<0.5?'<span class="muted">Pon tu graduación arriba para ver el grosor.</span>':'Grosor del borde <b style="color:var(--navy)">≈ '+mm.toFixed(1)+' mm</b>'+(red>0?'<br><b style="color:var(--gold)">−'+red+'% más delgado que 1.50</b>':'');var leyenda=pot>=5?'<div style="margin-top:9px;padding:8px 11px;border-radius:9px;background:#f4efe2;color:#8a6d2f;font-size:12.5px;font-weight:600;line-height:1.45">Tu graduación es alta — sí hay maneras de adelgazarla: sube de índice (1.67/1.74) y suma antirreflejante para una mica más fina y ligera.</div>':'';return '<div style="margin:10px 0 4px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.5;color:var(--grey)">Al elegir el índice, la imagen muestra <b style="color:var(--navy)">tu mica de perfil</b> con el grosor.<br>'+lbl+leyenda+'<div style="display:flex;gap:8px;margin-top:10px"><button onclick="showFrontNow()" style="flex:1;padding:8px 6px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer">Ver armazón</button><button onclick="showSide()" style="flex:1;padding:8px 6px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer">Ver grosor de mica</button></div></div>';}
 function lensCompare(){var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0,rec=recIdx();var list=["1.50","1.60","1.67","1.74"];var base=mmFor(pot,"1.50");var h='<div class="matlbl">Material e índice</div><div class="muted" style="margin-top:3px">Toca el grosor que prefieras · ★ recomendado para tu graduación</div>'+thickPreview()+'<div style="display:flex;gap:7px;margin:8px 0 2px">';list.forEach(function(ix){var sel=(!ST.poli&&ST.idx===ix),mm=mmFor(pot,ix),red=pot>=0.5?Math.round((1-mm/base)*100):0;h+='<div onclick="setMat(\''+ix+'\')" style="flex:1;cursor:pointer;text-align:center;padding:17px 4px;border:1px solid '+(sel?"var(--navy)":"var(--line)")+';border-radius:10px;background:'+(sel?"#faf9f6":"#fff")+';transition:border-color .15s"><div style="font-size:18px;font-weight:700;color:var(--navy);letter-spacing:.3px">'+ix+(ix===rec?' <span style="color:var(--gold)">★</span>':'')+'</div></div>';});h+='</div>';return h;}
-function poliPerfBlock(){var h='<div class="matlbl" style="margin-top:22px">Otras opciones</div><div class="chips"><span class="chip'+(ST.poli?" on":"")+'" onclick="setPoli()">Policarbonato · resistente al impacto</span></div>';h+='<div class="toggle'+(ST.perfora?" on":"")+'" onclick="togglePerf()"><span class="sw"></span><div><div class="tt">Armazón al aire / 3 piezas</div><div class="td">Perforado · look ligero (usa policarbonato)</div></div></div>';return h;}
+function poliPerfBlock(){return "";}
 function fotoColorBlock(){if(ST.treat!=="foto")return "";var cs=[["gris","Gris","#e8ecf2","#46566e"],["cafe","Café","#f4ecdb","#8f5e1e"]];var nm={gris:"Gris",cafe:"Café"}[ST.fotoColor]||"";var h='<div id="fotoBlock" style="margin:-4px 0 4px;padding:18px 20px;border:1px solid var(--navy);border-top:none;border-radius:0 0 12px 12px;background:#faf9f6">';h+='<div class="matlbl" style="margin-top:0">Color<span style="text-transform:none;letter-spacing:0;font-weight:600;color:var(--navy);margin-left:7px;font-size:13px">'+nm+'</span></div><div style="display:flex;gap:14px;margin-top:14px">';cs.forEach(function(co){var sel=ST.fotoColor===co[0];h+='<div onclick="setFColor(\''+co[0]+'\')" title="'+co[1]+'" style="width:40px;height:40px;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,'+co[2]+' 0%,'+co[3]+' 100%);box-shadow:'+(sel?'0 0 0 2.5px #faf9f6,0 0 0 4px var(--navy)':'inset 0 0 0 1px rgba(0,0,0,.16)')+';transition:box-shadow .15s ease"></div>';});h+='</div><div class="muted" style="margin-top:11px;font-size:11.5px">El tono va de claro (interior) a oscuro (exterior). Otros colores bajo pedido en línea premium.</div></div>';return h;}
 function setFColor(c){ST.fotoColor=c;var ov=document.getElementById("frameOverlay"),fb=document.getElementById("fotoBlock");if(ov&&fb&&ST.treat==="foto"){var col=ST.fotoColor==="cafe"?"#6e4720":"#3f4a5e";var rects=ov.querySelectorAll(".tintRect");for(var i=0;i<rects.length;i++){rects[i].style.fill=col;}var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var cap=document.getElementById("heroCap"),nc=tmp.querySelector(".heroCap");if(cap&&nc&&cap.parentNode)cap.parentNode.replaceChild(nc,cap);fb.outerHTML=fotoColorBlock();}else{render();}if(ST.step===TOTAL_STEPS)renderUps();}
 var TINTS={cafe:["Café","#9c6b2e"],azul:["Azul","#2d5b9e"],amarillo:["Amarillo","#d9b125"],naranja:["Naranja","#d97a1e"],rojo:["Rojo","#b53030"]};
@@ -716,46 +1295,142 @@ function liveOverlay(){var live=document.getElementById("frameOverlay"),cap=docu
 function setTint(f,v){ST[f]=v;var ov=document.getElementById("frameOverlay"),tb=document.getElementById("tintBlock");if(ov&&tb&&ST.treat==="entintado"){var col=TINTS[ST.tintColor][1],op=TINT_A[ST.tintInt];var rects=ov.querySelectorAll(".tintRect");for(var i=0;i<rects.length;i++){rects[i].style.fill=col;rects[i].style.opacity=op;}var tmp=document.createElement("div");tmp.innerHTML=heroSVG();var cap=document.getElementById("heroCap"),nc=tmp.querySelector(".heroCap");if(cap&&nc&&cap.parentNode)cap.parentNode.replaceChild(nc,cap);tb.outerHTML=tintBlock();}else{render();}if(ST.step===TOTAL_STEPS)renderUps();}
 
 /* ===== Render ===== */
-var STEP_LABELS=["Tipo","Tratamiento","Medidas","Resumen"];
+var STEP_LABELS=["Tipo","Receta","Material","Tratamiento","Tu lente"];
 function renderProg(){var h="";for(var i=1;i<=TOTAL_STEPS;i++){var on=i<=ST.step,cur=i===ST.step;h+='<div class="seg'+(on?" on":"")+(cur?" cur":"")+'"><div class="bar"></div><div class="pl">'+STEP_LABELS[i-1]+'</div></div>';}$("prog").innerHTML=h;}
-function bigOpt(sel,ic,nm,ds,attr){return '<div class="big'+(sel?" sel":"")+'" '+attr+'>'+(ic?'<div class="ic">'+ic+'</div>':'')+'<div><div class="nm">'+nm+'</div><div class="ds">'+ds+'</div></div><div class="ck">'+(sel?"✓":"")+'</div></div>';}
+function bigOpt(sel,ic,nm,ds,attr,pTag){return '<div class="big'+(sel?" sel":"")+'" '+attr+'>'+(ic?'<div class="ic">'+ic+'</div>':'')+'<div style="flex:1"><div class="nm">'+nm+'</div><div class="ds">'+ds+'</div></div>'+(pTag?'<div style="margin-left:auto">'+pTag+'</div>':'')+'<div class="ck" style="margin-left:'+(pTag?'10px':'auto')+'">'+(sel?"✓":"")+'</div></div>';}
 
 function secHead(k,q,sub){return '<div class="secK">'+k+'</div><div class="secQ">'+q+'</div>'+(sub?'<div class="secS">'+sub+'</div>':'');}
 function crossfadeFrame(oldSrc){var hf=document.getElementById("heroFront");if(!hf)return;var ov=hf.querySelector(".frameOverlay");var c=document.createElement("img");c.className="frameImg";c.setAttribute("src",oldSrc);c.style.cssText="position:absolute;left:0;top:0;width:100%;pointer-events:none;animation:fadeOut .75s ease forwards";if(ov)hf.insertBefore(c,ov);else hf.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},820);}
-function updateHeroPieces(){var tmp=document.createElement("div");tmp.innerHTML=heroSVG();[".heroCap",".heroTag"].forEach(function(s){var live=document.querySelector(s),nn=tmp.querySelector(s);if(live&&nn&&live.parentNode)live.parentNode.replaceChild(nn,live);});var liveOv=document.getElementById("frameOverlay"),nOv=tmp.querySelector("#frameOverlay");if(liveOv&&nOv&&liveOv.parentNode){if(liveOv.innerHTML!==nOv.innerHTML){nOv.style.opacity="0";nOv.style.transition="opacity .45s ease";liveOv.removeAttribute("id");nOv.setAttribute("id","frameOverlay");liveOv.style.transition="opacity .45s ease";liveOv.parentNode.appendChild(nOv);requestAnimationFrame(function(){requestAnimationFrame(function(){nOv.style.opacity="1";liveOv.style.opacity="0";});});var dead=liveOv;setTimeout(function(){if(dead.parentNode)dead.parentNode.removeChild(dead);},520);}}var img=document.querySelector("#heroFront .frameImg"),nImg=tmp.querySelector("#heroFront .frameImg");if(img&&nImg&&img.getAttribute("src")!==nImg.getAttribute("src"))img.setAttribute("src",nImg.getAttribute("src"));var oldTh=document.getElementById("thCal");if(oldTh&&oldTh.parentNode)oldTh.parentNode.removeChild(oldTh);var nTh=tmp.querySelector("#thCal"),rotor=document.getElementById("rotor");if(nTh&&rotor)rotor.appendChild(nTh);}
+function updateHeroPieces(){var tmp=document.createElement("div");tmp.innerHTML=heroSVG();[".heroCap",".heroTag"].forEach(function(s){var live=document.querySelector(s),nn=tmp.querySelector(s);if(live&&nn&&live.parentNode)live.parentNode.replaceChild(nn,live);});var liveOv=document.getElementById("frameOverlay"),nOv=tmp.querySelector("#frameOverlay"),hf=document.getElementById("heroFront");if(liveOv&&nOv&&liveOv.parentNode){if(liveOv.innerHTML!==nOv.innerHTML){nOv.style.opacity="0";nOv.style.transition="opacity .45s ease";liveOv.removeAttribute("id");nOv.setAttribute("id","frameOverlay");liveOv.style.transition="opacity .45s ease";liveOv.parentNode.appendChild(nOv);requestAnimationFrame(function(){requestAnimationFrame(function(){nOv.style.opacity="1";liveOv.style.opacity="0";});});var dead=liveOv;setTimeout(function(){if(dead.parentNode)dead.parentNode.removeChild(dead);},520);}}else if(!liveOv&&nOv&&hf){hf.appendChild(nOv);}else if(liveOv&&!nOv&&liveOv.parentNode){liveOv.parentNode.removeChild(liveOv);}var img=document.querySelector("#heroFront .frameImg"),nImg=tmp.querySelector("#heroFront .frameImg");if(img&&nImg&&img.getAttribute("src")!==nImg.getAttribute("src"))img.setAttribute("src",nImg.getAttribute("src"));var oldTh=document.getElementById("thCal");if(oldTh&&oldTh.parentNode)oldTh.parentNode.removeChild(oldTh);var nTh=tmp.querySelector("#thCal"),rotor=document.getElementById("rotor");if(nTh&&rotor)rotor.appendChild(nTh);}
 function thProfileSide(minus){var cx=80,top=22,bot=338,cyy=180,edge=minus?44:13,ctr=minus?13:44;return "M"+(cx-edge)+" "+top+" L"+(cx+edge)+" "+top+" Q"+(cx+2*ctr-edge)+" "+cyy+" "+(cx+edge)+" "+bot+" L"+(cx-edge)+" "+bot+" Q"+(cx-2*ctr+edge)+" "+cyy+" "+(cx-edge)+" "+top+" Z";}
 function heroSideHTML(){var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=(0.5/(n-1)).toFixed(3);var e=ST.esf||0,c=ST.cil||0,Pp=Math.abs(e)>=Math.abs(e+c)?e:(e+c),minus=Pp<0;var P=thProfileSide(minus);return '<div class="heroSide" id="heroSide"><div class="lensStage"><svg class="lensSvg" viewBox="0 0 160 360" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;overflow:visible"><defs><linearGradient id="thSg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7fbff"/><stop offset=".5" stop-color="#d3e4f3"/><stop offset="1" stop-color="#f7fbff"/></linearGradient><linearGradient id="thEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".7"/><stop offset=".26" stop-color="#ffffff" stop-opacity="0"/><stop offset=".74" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity=".5"/></linearGradient><filter id="lensSoft" x="-40%" y="-15%" width="180%" height="130%"><feGaussianBlur stdDeviation="1.7"/></filter></defs><path id="sideGhost" d="'+P+'" fill="#dbe6f1" opacity=".28"/><g id="sideActive" style="transform:scaleX('+ratio+')"><path id="sideActPath" d="'+P+'" fill="url(#thSg)" fill-opacity=".55" stroke="#7e9cbd" stroke-width="1.1" stroke-opacity=".42"/><path id="sideEdge" d="'+P+'" fill="url(#thEdge)"/><path d="M74 62 Q63 180 74 298" stroke="#ffffff" stroke-width="6.5" fill="none" opacity=".42" stroke-linecap="round" filter="url(#lensSoft)"/><path d="M88 96 Q82 180 88 264" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".3" stroke-linecap="round" filter="url(#lensSoft)"/></g><g id="sideCota" style="opacity:0;transition:opacity .4s ease"><line id="cotaL" stroke="#15223e" stroke-width="1.3"/><line id="cotaT1" stroke="#15223e" stroke-width="1.3"/><line id="cotaT2" stroke="#15223e" stroke-width="1.3"/><text id="cotaTxt" text-anchor="middle" font-size="15" font-weight="700" fill="#15223e" font-family="Georgia,serif">—</text></g></svg></div><div class="lensLabels"><div class="ll1">Grosor de la mica</div><div class="ll2" id="sideMm">—</div><div class="ll3" id="sidePct">—</div></div></div>';}
-function updateSideTh(){var g=document.getElementById("sideActive");if(!g)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);g.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfileSide(minus),gh=document.getElementById("sideGhost"),ap=document.getElementById("sideActPath"),ed=document.getElementById("sideEdge");if(gh)gh.setAttribute("d",d);if(ap)ap.setAttribute("d",d);if(ed)ed.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("sideMm"),pctEl=document.getElementById("sidePct");if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Índice base · sube para adelgazar");var hw=44*ratio,cy=minus?28:180,ty=minus?17:171,cL=document.getElementById("cotaL"),cT1=document.getElementById("cotaT1"),cT2=document.getElementById("cotaT2"),cTx=document.getElementById("cotaTxt"),cota=document.getElementById("sideCota");if(cL&&cTx){cL.setAttribute("x1",80-hw);cL.setAttribute("x2",80+hw);cL.setAttribute("y1",cy);cL.setAttribute("y2",cy);cT1.setAttribute("x1",80-hw);cT1.setAttribute("x2",80-hw);cT1.setAttribute("y1",cy-4);cT1.setAttribute("y2",cy+4);cT2.setAttribute("x1",80+hw);cT2.setAttribute("x2",80+hw);cT2.setAttribute("y1",cy-4);cT2.setAttribute("y2",cy+4);cTx.setAttribute("x",80);cTx.setAttribute("y",ty);cTx.textContent="≈ "+mm.toFixed(1)+" mm";}if(cota)cota.style.opacity=pot>=0.5?"1":"0";}
-function showSide(){var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(!hf||!hs)return;updateSideTh();hf.style.opacity="0";hf.style.transform="scale(1.4)";hs.style.opacity="1";hs.style.transform="translateY(-50%) scale(1)";}
-function showFrontNow(){if(window._sideT)clearTimeout(window._sideT);var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(hf){hf.style.opacity="1";hf.style.transform="scale(1)";}if(hs){hs.style.opacity="0";hs.style.transform="translateY(-50%) scale(.9)";}}
-function updateThickness(){var el=document.getElementById("thActive");if(!el)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);el.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfile(minus),g=document.getElementById("thGhost"),ap=document.getElementById("thActPath");if(g)g.setAttribute("d",d);if(ap)ap.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("thMm"),pctEl=document.getElementById("thPct"),lbl=document.getElementById("thLbl");if(lbl)lbl.textContent=minus?"Grosor del borde":"Grosor del centro";if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Índice base · sube para adelgazar");}
+function updateSideTh(){var g=document.getElementById("sideActive");if(!g)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);g.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfileSide(minus),gh=document.getElementById("sideGhost"),ap=document.getElementById("sideActPath"),ed=document.getElementById("sideEdge");if(gh)gh.setAttribute("d",d);if(ap)ap.setAttribute("d",d);if(ed)ed.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("sideMm"),pctEl=document.getElementById("sidePct");if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Delgadez estándar · sube para adelgazar");var hw=44*ratio,cy=minus?28:180,ty=minus?17:171,cL=document.getElementById("cotaL"),cT1=document.getElementById("cotaT1"),cT2=document.getElementById("cotaT2"),cTx=document.getElementById("cotaTxt"),cota=document.getElementById("sideCota");if(cL&&cTx){cL.setAttribute("x1",80-hw);cL.setAttribute("x2",80+hw);cL.setAttribute("y1",cy);cL.setAttribute("y2",cy);cT1.setAttribute("x1",80-hw);cT1.setAttribute("x2",80-hw);cT1.setAttribute("y1",cy-4);cT1.setAttribute("y2",cy+4);cT2.setAttribute("x1",80+hw);cT2.setAttribute("x2",80+hw);cT2.setAttribute("y1",cy-4);cT2.setAttribute("y2",cy+4);cTx.setAttribute("x",80);cTx.setAttribute("y",ty);cTx.textContent="≈ "+mm.toFixed(1)+" mm";}if(cota)cota.style.opacity=pot>=0.5?"1":"0";}
+function showSide(){showFrontNow();}
+function showFrontNow(){if(window._sideT)clearTimeout(window._sideT);heroView='frame';var hf=document.getElementById("heroFront"),hs=document.getElementById("heroSide");if(hf){hf.style.opacity="1";hf.style.transform="scale(1)";}if(hs){hs.style.opacity="0";hs.style.transform="translateY(-50%) scale(.9)";}}
+function updateThickness(){var el=document.getElementById("thActive");if(!el)return;var IDX={"1.50":1.5,"1.59":1.59,"1.60":1.6,"1.67":1.67,"1.74":1.74};var idx=ST.poli?"1.59":ST.idx,n=IDX[idx]||1.6,ratio=0.5/(n-1);el.style.transform="scaleX("+ratio.toFixed(3)+")";var e=ST.esf||0,c=ST.cil||0,P=Math.abs(e)>=Math.abs(e+c)?e:(e+c),pot=Math.abs(P),minus=P<0;var d=thProfile(minus),g=document.getElementById("thGhost"),ap=document.getElementById("thActPath");if(g)g.setAttribute("d",d);if(ap)ap.setAttribute("d",d);var mm=mmFor(pot,idx),base=mmFor(pot,"1.50"),red=pot>=0.5?Math.round((1-mm/base)*100):0;var mmEl=document.getElementById("thMm"),pctEl=document.getElementById("thPct"),lbl=document.getElementById("thLbl");if(lbl)lbl.textContent=minus?"Grosor del borde":"Grosor del centro";if(mmEl)mmEl.textContent=pot>=0.5?mm.toFixed(1)+" mm":"—";if(pctEl)pctEl.textContent=pot<0.5?"Pon tu graduación arriba":(red>0?"−"+red+"% más delgado que 1.50":"Delgadez estándar · sube para adelgazar");}
 function potVal(){var e=ST.esf||0,c=ST.cil||0;return Math.max(Math.abs(e),Math.abs(e+c));}
 function dispIdx(k){return k==="1.5"?"1.50":k==="1.6"?"1.60":k;}
-function materialSimple(){
- var pot=potVal();
- if(pot<4){
-  if(!ST.poli){
-   if(ST.type==="mono"&&ST.treat==="foto")ST.idx="1.60";
-   else ST.idx="1.50";
-  }
-  return '<div style="margin:6px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Tu graduación es ligera, así que va en <b style="color:var(--navy)">material estándar'+(ST.idx==="1.60"?" (1.60)":"")+'</b> — ya es delgado y ligero. No necesitas pagar de más por adelgazar.</div>';
- }
- var _r=ZeissEngine.recomendarIndice(ST.esf||0,ST.cil||0).recIndex||"1.74",_o=["1.5","1.6","1.67","1.74"];if(!ST.poli&&_o.indexOf(engIdx(ST.idx))<_o.indexOf(_r))ST.idx=dispIdx(_r);
- return thinOptions();
+
+function getGrad(){
+  if(!ST.rxMethod || ST.rxMethod === 'contact' || ST.rxMethod === 'upload') return 0;
+  var odE = Math.abs(parseFloat(ST.odE) || 0);
+  var odC = Math.abs(parseFloat(ST.odC) || 0);
+  var oiE = Math.abs(parseFloat(ST.oiE) || 0);
+  var oiC = Math.abs(parseFloat(ST.oiC) || 0);
+  var g = Math.max(odE, odC, oiE, oiC);
+  if(g > 0) return g;
+  var e = Math.abs(parseFloat(ST.esf) || 0);
+  var c = Math.abs(parseFloat(ST.cil) || 0);
+  return Math.max(e, c);
 }
-function thinOptions(){
- var pot=potVal(),e=ST.esf||0,c=ST.cil||0;
- var recI=ZeissEngine.recomendarIndice(e,c).recIndex||"1.74";
- var NAMES={"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
- var order=["1.5","1.6","1.67","1.74"],recPos=order.indexOf(recI);if(recPos<0)recPos=2;
- var base=mmFor(pot,"1.5");
- var cards=order.filter(function(k,i){return i>=recPos;}).map(function(ix){
-  var sel=(!ST.poli&&engIdx(ST.idx)===ix);
-  var mm=mmFor(pot,ix),red=Math.round((1-mm/base)*100);
-  var star=(ix===recI)?' <span style="color:var(--gold)">★</span>':'';
-  return '<div onclick="setMat(\''+dispIdx(ix)+'\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid '+(sel?'var(--navy)':'var(--line)')+';border-radius:11px;background:'+(sel?'#faf9f6':'#fff')+'"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+NAMES[ix]+star+'</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">'+(red>0?'−'+red+'% más delgado':'base')+'</div></div>';
- }).join('');
- return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+cards+'</div>'+thickPreview();
+
+function recIndexForGrad(g){
+  if(g <= 2.00) return "1.5";
+  if(g <= 4.00) return "1.6";
+  if(g <= 6.00) return "1.67";
+  return "1.74";
+}
+
+function getThinOrder(g){
+  if(g <= 2.00) return [];
+  if(g <= 4.00) return ["1.5", "1.6"];
+  if(g <= 6.00) return ["1.5", "1.6", "1.67"];
+  return ["1.5", "1.6", "1.67", "1.74"];
+}
+
+function normalizeST() {
+  var okTreat = treatList().some(function(t){ return t.k === ST.treat; });
+  if (!okTreat) ST.treat = "ar";
+  var grad = getGrad();
+  if(!ST.rxMethod){
+    if(!ST.poli){
+      if(ST.treat === 'foto' && ST.type === 'mono' && !ST.idxManual){
+        ST.idx = "1.60";
+      } else if(!ST.idxManual){
+        ST.idx = "1.50";
+      }
+    }
+    return;
+  }
+  if(grad <= 2.00){
+    if(!ST.poli){
+      if(ST.treat === 'foto' && ST.type === 'mono' && !ST.idxManual){
+        ST.idx = "1.60";
+      } else if(!ST.idxManual){
+        ST.idx = "1.50";
+      }
+    }
+    return;
+  }
+  var recI = recIndexForGrad(grad);
+  var allowed = getThinOrder(grad);
+  if(ST.treat === 'foto'){
+    if(ST.type === 'mono'){
+      if(recI === '1.5') recI = '1.6';
+      if(recI === '1.74') recI = '1.67';
+    } else if(ST.type === 'prog'){
+      if(recI === '1.74') recI = '1.67';
+    }
+  }
+  if(!ST.poli){
+    if(!ST.idxManual){
+      ST.idx = dispIdx(recI);
+    } else {
+      var currentEng = engIdx(ST.idx);
+      if(allowed.indexOf(currentEng) === -1){
+        ST.idx = dispIdx(recI);
+      }
+    }
+  }
+}
+
+function materialSimple(){
+  if(isPoliRequired || ST.poli){
+    var tipoArmTxt = frameMontaje === 'al_aire' ? 'al aire (3 piezas)' : 'semi al aire (ranurado)';
+    return '<div style="margin:6px 0 12px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;font-size:13.5px;line-height:1.55;color:#334155;">'
+      + '<div style="font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px;margin-bottom:4px;">'
+      + '<span>🛡️</span> Material incluido para tu armazón'
+      + '</div>'
+      + 'Por el diseño de tu armazón (' + tipoArmTxt + '), tus lentes incluyen automáticamente <b style="color:var(--navy)">policarbonato resistente de alto impacto (índice 1.59)</b> para máxima seguridad y durabilidad en el montaje.'
+      + '</div>';
+  }
+  if(!ST.rxMethod){
+    return '<div onclick="scrollToRx()" style="cursor:pointer;margin:6px 0 10px;padding:14px 16px;border:1px solid #fde68a;border-radius:12px;background:#fef3c7;color:#92400e;font-size:13.5px;line-height:1.5"><div style="font-weight:700;display:flex;align-items:center;gap:6px"><span>⚠️</span> Falta elegir tu graduación</div><div style="margin-top:4px;color:#78350f;font-size:13px">Indica tu graduación en el <span style="text-decoration:underline;font-weight:600">Paso 02</span> para recomendarte el grosor ideal de tu mica.</div></div>';
+  }
+  var grad = getGrad();
+  if(grad <= 2.00){
+    if(ST.treat === 'foto' && ST.type === 'mono'){
+      return '<div style="margin:6px 0 10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Material delgado (1.60), recomendado para fotocromático en tu graduación.</div>';
+    }
+    return '<div style="margin:6px 0 10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fbfaf8;font-size:13px;line-height:1.55;color:var(--grey)">Material estándar (1.50), ideal para tu graduación.</div>';
+  }
+  return thinOptions(grad);
+}
+
+function thinOptions(grad){
+  if(typeof grad !== 'number') grad = getGrad();
+  var pot = potVal();
+  if(pot < grad) pot = grad;
+  var recI = recIndexForGrad(grad);
+  if(ST.treat === 'foto'){
+    if(ST.type === 'mono'){
+      if(recI === '1.5') recI = '1.6';
+      if(recI === '1.74') recI = '1.67';
+    } else if(ST.type === 'prog'){
+      if(recI === '1.74') recI = '1.67';
+    }
+  }
+  var NAMES = {"1.5":"Estándar","1.6":"Delgado","1.67":"Más delgado","1.74":"Ultra delgado"};
+  var order = getThinOrder(grad);
+  var base = mmFor(pot, "1.5");
+  var cards = order.map(function(ix){
+     var sel = (!ST.poli && engIdx(ST.idx) === ix);
+     var mm = mmFor(pot, ix), red = Math.round((1 - mm/base) * 100);
+     var star = (ix === recI) ? ' <span style="color:var(--gold)">★</span>' : '';
+     var pTag = '<div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 6px;border-radius:12px;display:inline-block">' + getPriceTag('mat', dispIdx(ix)) + '</div>';
+     return '<div onclick="setMat(\'' + dispIdx(ix) + '\')" style="flex:1;min-width:88px;cursor:pointer;text-align:center;padding:14px 8px;border:1px solid ' + (sel ? 'var(--navy)' : 'var(--line)') + ';border-radius:11px;background:' + (sel ? '#faf9f6' : '#fff') + '"><div style="font-size:14px;font-weight:700;color:var(--navy)">' + NAMES[ix] + star + '</div><div style="font-size:11px;color:var(--navy);font-weight:600;margin-top:2px">Índice ' + dispIdx(ix) + '</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:3px">' + (red > 0 ? '▼ ' + red + '% más delgado' : 'base') + '</div>' + pTag + '</div>';
+  }).join('');
+  return '<div class="matlbl">Qué tan delgada la quieres</div><div class="muted" style="margin-top:3px;margin-bottom:9px">Una mica más delgada se ve mejor y pesa menos. La ★ es la recomendada para tu graduación.</div><div style="display:flex;gap:8px;flex-wrap:wrap">' + cards + '</div>' + thickPreview();
 }
 
 function arUpgradeBlock(){
@@ -764,20 +1439,21 @@ function arUpgradeBlock(){
  if(!chromeOK)return '';
  function pv(op){var r=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:op,indice:"1.5"});return r.disponible?Math.round(r.costoLista*1.16*multFor(r.costoLista)/50)*50:0;}
  var d=pv("verde")-pv("chrome"),on=ST.arPremium;
- return '<div class="toggle'+(on?' on':'')+'" style="margin-top:10px" onclick="ST.arPremium=!ST.arPremium;render()"><span class="sw"></span><div><div class="tt">Mejorar a AR premium</div><div class="td">Repele agua y grasa · más resistente a rayas · se limpia más fácil'+(d>0?' · +'+money(d):'')+'</div></div></div>';
+ return '<div class="toggle'+(on?' on':'')+'" style="margin-top:10px" onclick="ST.arPremium=!ST.arPremium;render()"><span class="sw"></span><div style="flex:1"><div class="tt">Mejorar a AR premium</div><div class="td">Repele agua y grasa · más resistente a rayas · se limpia más fácil</div></div>'+(d>0?'<div style="margin-left:auto"><span class="priceTag" style="font-size:12px;color:#16a34a;font-weight:700;background:#f0fdf4;padding:3px 8px;border-radius:12px;display:inline-block;white-space:nowrap">+'+money(d)+'</span></div>':'')+'</div>';
 }
 function waText(){
  var q=zeissQuote();if(!q||!q.disponible)return '';
  var L=[];
  L.push('Hola, vengo del asesor de Lensique. Me interesa esta cotización:');
  L.push('• '+q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' ('+TYPES[ST.type].nm+')');
+ if(frameMontaje && frameMontaje !== 'completo') { L.push('• Montaje armazón: ' + (frameMontaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire (ranurado)')); }
  var pl='• Precio aprox: '+money(q.pvp);
  if(q.pvp>=MSI_MIN)pl+=' ('+MSI+' meses sin intereses de '+money(Math.round(q.pvp/MSI))+')';
  L.push(pl);
  var od={E:ST.odE||0,C:ST.odC||0,Ax:ST.odAx,Ad:ST.odAdd||0},oi={E:ST.oiE||0,C:ST.oiC||0,Ax:ST.oiAx,Ad:ST.oiAdd||0};
  function nz(o){return (o.E||o.C||o.Ax||o.Ad);}
  function fmt(o){return 'Esf '+(o.E>=0?'+':'')+(o.E).toFixed(2)+' Cil '+(o.C).toFixed(2)+(o.Ax?(' Eje '+o.Ax+'°'):'')+(o.Ad?(' Add +'+Number(o.Ad).toFixed(2)):'');}
- if(nz(od)||nz(oi)){L.push('Mi graduación:');L.push('  OD: '+fmt(od));L.push('  OI: '+fmt(oi));}
+ if(ST.rxMethod === 'contact'){L.push('📋 Receta pendiente — el cliente la enviará por WhatsApp');}else if(nz(od)||nz(oi)){L.push('Mi graduación:');L.push('  OD: '+fmt(od));L.push('  OI: '+fmt(oi));}
  if(ST.pd)L.push('• DI/PD: '+ST.pd+' mm');
  L.push('¿Me ayudan a agendar?');
  return L.join('\n');
@@ -889,6 +1565,7 @@ function waLabText(){
  var q=zeissQuote();if(!q||!q.disponible)return '';
  var lines=['ORDEN LENSIQUE → laboratorio'];
  lines.push(q.productoZEISS+(q.color?' · color '+q.color:'')+' · índice '+q.indice+' · '+q.tipoFab);
+  if(frameMontaje && frameMontaje !== 'completo') { lines.push('Montaje: ' + (frameMontaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire (ranurado)')); }
  lines.push('OD: '+rxLine({E:ST.odE,C:ST.odC,Ax:ST.odAx,Ad:ST.odAdd}));
  lines.push('OI: '+rxLine({E:ST.oiE,C:ST.oiC,Ax:ST.oiAx,Ad:ST.oiAdd}));
  var foot='DI/PD: '+(ST.pd||'—')+' mm';
@@ -899,75 +1576,193 @@ function waLabText(){
 }
 function sendWALab(){var t=waLabText();if(!t){alert('Configura el lente primero.');return;}window.open('https://wa.me/'+LAB_WA+'?text='+encodeURIComponent(t),'_blank');}
 
-
-
-function stepWrap(stepNum, content) {
-  var isMobile = window.innerWidth <= 560;
-  if(!isMobile) return content;
-  var on = ST.step === stepNum ? ' m-active' : '';
-  var btns = '<div class="m-nav">';
-  if(stepNum > 1) btns += '<button class="btn" style="background:#f1f5f9;color:#0f172a;border:1px solid #cbd5e1;flex:1;padding:12px;border-radius:30px;font-weight:600;" onclick="go(-1)">Volver</button>';
-  
-  var disabledNext = false;
-  if(stepNum === 3 && !ST.rxMethod) disabledNext = true;
-  
-  if(stepNum < TOTAL_STEPS) {
-    btns += '<button class="btn next" style="flex:1;padding:12px;border-radius:30px;font-weight:600;border:none;background:' + (disabledNext ? '#d8d4ca' : '#15223e') + ';color:#fff;" onclick="if(!' + disabledNext + ') go(1)" ' + (disabledNext ? 'disabled' : '') + '>Continuar</button>';
-  } else {
-    if (ST.rxMethod === 'contact') {
-      btns += '<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Agendar por WhatsApp</button>';
-    } else {
-      var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}
-      if(_frame){
-        btns += '<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#16a34a;color:#fff;">Agregar al carrito</button>';
-      } else if(isOptica()){
-        btns += '<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar orden por WhatsApp</button>';
-      } else {
-        btns += '<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:1.5;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;">Enviar mi cotización por WhatsApp</button>';
-      }
-    }
-  }
-  btns += '</div>';
-  return '<div class="m-step m-step-' + stepNum + on + '">' + content + btns + '</div>';
+function toggleRxGuide(e) {
+  if (e) e.preventDefault();
+  ST.rxGuide = !ST.rxGuide;
+  render();
 }
 
 
+function scrollToRx() {
+  ST.step = 2;
+  render();
+  setTimeout(function() {
+    var el = document.getElementById("sec-02");
+    if (!el) el = document.getElementById("sec-rx");
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.style.transition = 'background 0.5s ease';
+      var oldBg = el.style.background || '';
+      el.style.background = '#fef3c7';
+      setTimeout(function() { el.style.background = oldBg; }, 1800);
+    }
+  }, 100);
+}
 
+function buyFrameOnly() {
+  var payload = {
+    onlyFrame: true,
+    pvp: 0,
+    etiqueta: 'Solo armazón',
+    montaje: frameMontaje
+  };
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: "lensique-mica", payload: payload }, "*");
+      window.parent.postMessage({ source: "lensique-asesor", type: "add-to-cart", payload: payload }, "*");
+    }
+  } catch(e) {}
+}
+
+function stepWrap(stepNum, content) {
+  return '<div class="step-card" id="sec-step-' + stepNum + '">' + content + '</div>';
+}
+
+function renderTopBar() {
+  var topBar = document.getElementById("top-price-bar");
+  if (!topBar) {
+    topBar = document.createElement("div");
+    topBar.id = "top-price-bar";
+    topBar.style.cssText = "flex:0 0 auto;min-height:40px;box-sizing:border-box;background:#f8fafc;color:var(--navy);padding:10px 60px 10px 16px;text-align:center;font-size:14px;font-weight:600;z-index:100;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative;width:100%;";
+    document.body.insertBefore(topBar, document.body.firstChild);
+  }
+  var q = zeissQuote();
+  var micas = q && q.disponible ? q.pvp : 0;
+  var total = framePrice + micas;
+  if (framePrice > 0) {
+    var lbl = "";
+    if (micas <= 1200) {
+      lbl = "Micas incluidas";
+    } else {
+      var t = ST.type === "prog" ? "Progresivo" : (ST.type === "bif" ? "Bifocal" : "");
+      var tr = "";
+      if (ST.treat === "ar" && !ST.arPremium) tr = "antirreflejante";
+      if (ST.treat === "ar" && ST.arPremium) tr = "antirreflejante premium";
+      if (ST.treat === "azul") tr = "filtro de luz azul";
+      if (ST.treat === "foto") tr = "fotocromático";
+      if (t) {
+         lbl = t + (tr ? " + " + tr : "");
+      } else {
+         lbl = "Incluye " + tr;
+      }
+    }
+    topBar.innerHTML = "Total " + money(total) + " &middot; " + lbl;
+  } else {
+    topBar.style.display = 'none';
+  }
+}
+function getPriceTag(field, val) {
+  var oldState = Object.assign({}, ST);
+  normalizeST();
+  var qOld = zeissQuote();
+  var pvpCurrent = qOld && qOld.disponible ? qOld.pvp : 0;
+  
+  if (field === 'mat') {
+     ST.poli = (val === 'poli');
+     ST.idx = val === 'poli' ? '1.59' : val;
+     ST.idxManual = true;
+  } else {
+     ST[field] = val;
+  }
+  normalizeST();
+  var qNew = zeissQuote();
+  var pvpNew = qNew && qNew.disponible ? qNew.pvp : 0;
+  
+  Object.assign(ST, oldState);
+  
+  var isSelected = false;
+  if (field === 'mat') {
+    isSelected = val === 'poli' ? oldState.poli : (!oldState.poli && engIdx(oldState.idx) === engIdx(val));
+  } else {
+    isSelected = oldState[field] === val;
+  }
+  
+  if (isSelected) return 'Incluido';
+  if (!qNew || !qNew.disponible) return 'No disponible';
+  var diff = pvpNew - pvpCurrent;
+  if (diff > 0) return '+$' + diff.toLocaleString('en-US');
+  if (diff < 0) return '-$' + Math.abs(diff).toLocaleString('en-US');
+  return 'Incluido';
+}
+function pt(f,v){return '<span class="priceTag" style="font-size:12px;color:#16a34a;font-weight:700;background:#f0fdf4;padding:3px 8px;border-radius:12px;display:inline-block;white-space:nowrap">'+getPriceTag(f,v)+'</span>';}
 function render(){
- TOTAL_STEPS = ST.rxMethod === 'contact' ? 3 : 5;
+ normalizeST();
+ renderTopBar();
  $("prog").style.display="none";
  var R="";
  // 01 Tipo
- var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"');});o1+='</div>';
- R+=stepWrap(1, '<section class="sec">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
- // 02 Tratamiento
- var o2='<div class="opts">';treatList().forEach(function(t){o2+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"');if(t.k==="ar"&&ST.treat==="ar")o2+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o2+=fotoColorBlock();if(t.k==="entintado"&&ST.treat==="entintado")o2+=tintBlock();});o2+='</div>';
- R+=stepWrap(2, '<section class="sec">'+secHead("02 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o2+'</section>');
- // 03 Medidas y material
- var o3=rxBlock();
- if(ST.rxMethod === 'contact') {
-  R+=stepWrap(3, '<section class="sec">'+secHead("03 — Agendar cita","Reserva tu examen visual","Déjanos tus datos y te contactaremos para agendar.")+o3+'<div style="margin-top:24px"><button class="btn" onclick="sendWA()" style="width:100%;padding:14px;border-radius:30px;font-weight:700;border:none;background:#25D366;color:#fff;font-size:16px;">Agendar examen por WhatsApp</button></div></section>');
- } else {
-  if(ST.type==="prog"){o3+='<div class="muted" style="margin:2px 0 14px">La zona clara se ensancha de Estándar a Premium — mírala en el lente.</div><div class="opts">';LEVELS.forEach(function(l){o3+=bigOpt(ST.level===l.k,"",l.nm,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"');});o3+='</div>';}
-  o3+=materialSimple();
-  R+=stepWrap(3, '<section class="sec">'+secHead("03 — Material y grosor","Tu lente: material y grosor","Es OBLIGATORIO indicar tu graduación o cómo la obtendremos para poder elaborar tus lentes.")+o3+'</section>');
-  // 04 Beneficios
-  var o4="";benefitsList().forEach(function(b){o4+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
-  o4+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
-  R+=stepWrap(4, '<section class="sec">'+secHead("04 — Tu lente","Lo que hace por ti","")+o4+'</section>');
-  // 05 Inversión
-  R+=stepWrap(5, priceSection()+labPanel());
+ var o1='<div class="opts">';["mono","prog","bif"].forEach(function(k){o1+=bigOpt(ST.type===k,IC[TYPES[k].ic],TYPES[k].nm,TYPES[k].ds,'onclick="pick(\'type\',\''+k+'\')"',pt('type',k));});o1+='</div>';
+ R+=stepWrap(1, '<section class="sec" id="sec-01">'+secHead("01 — Tipo","¿Qué necesitas ver?","Cuéntame cómo usas tus lentes y te muestro la mejor opción.")+o1+'</section>');
+ 
+ // 02 Receta y graduación
+ var o2r=rxBlock();
+ R+=stepWrap(2, '<section class="sec" id="sec-02">'+secHead("02 — Receta y graduación","¿Tienes tu graduación a la mano?","Indica cómo la obtendremos para fabricar tus lentes según tu prescripción.")+o2r+'</section>');
+
+ // 03 Material y grosor
+ var o3='';
+ if(ST.type==="prog"){
+   o3 += levelRecBlock();
+   o3 += '<div class="matlbl" style="margin-top:10px">Nivel del progresivo</div>';
+   o3 += '<div class="opts" style="margin-bottom:18px;">';
+   var _rlv=recLevel().k;
+   LEVELS.forEach(function(l){
+     var star=(l.k===_rlv)?' <span style="color:var(--gold)">★</span>':'';
+     o3 += bigOpt(ST.level===l.k,"",l.nm+star,l.ds,'onclick="pick(\'level\',\''+l.k+'\')"',pt('level',l.k));
+   });
+   o3 += '</div>';
  }
- var _sb=document.getElementById("stageBody");
- if(_sb){var _ap=document.querySelector(".app");if(_ap)_ap.classList.remove("firstload");_sb.innerHTML=R;updateHeroPieces();}
- else{$("step").innerHTML='<div class="stage"><div class="stageVisual">'+heroSVG()+'</div><div class="stageBody" id="stageBody">'+R+'</div></div>';}
+ o3 += materialSimple();
+ R+=stepWrap(3, '<section class="sec" id="sec-03">'+secHead("03 — Material y grosor","Tu mica: diseño, material y grosor","Elige qué tan delgada y resistente quieres tu mica.")+o3+'</section>');
+
+ // 04 Tratamiento
+ var o4t='<div class="opts">';treatList().forEach(function(t){o4t+=bigOpt(ST.treat===t.k,IC[t.k],t.nm,t.ds,'onclick="pick(\'treat\',\''+t.k+'\')"',pt('treat',t.k));if(t.k==="ar"&&ST.treat==="ar")o4t+=arUpgradeBlock();if(t.k==="foto"&&ST.treat==="foto")o4t+=fotoColorBlock();});o4t+='</div>';
+ o4t+='<div style="margin-top:14px;text-align:center;font-size:12.5px;color:var(--grey);line-height:1.4;">¿Buscas polarizado o entintado de sol? <a href="https://wa.me/523316929111?text=Hola,%20me%20interesa%20cotizar%20micas%20con%20polarizado%20o%20entintado%20de%20sol." target="_blank" style="color:var(--navy);font-weight:600;text-decoration:underline;">Escríbenos por WhatsApp y lo cotizamos</a>.</div>';
+ R+=stepWrap(4, '<section class="sec" id="sec-04">'+secHead("04 — Tratamiento","¿Qué quieres que haga tu lente?","Elige según tu día a día. Esto hace tus lentes mucho más cómodos.")+o4t+'</section>');
+
+ // 05 Tu lente e inversión
+ var o5b="";benefitsList().forEach(function(b){o5b+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
+ o5b+='<div style="margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
+ var sec05TuLente = '<section class="sec" id="sec-05">'+secHead("05 — Tu lente","Lo que hace por ti","")+o5b+'</section>';
+ R+=stepWrap(5, sec05TuLente + priceSection() + labPanel());
+
+ var _sv = document.getElementById("stageVisual");
+ if (_sv) {
+   if (!_sv.innerHTML || !document.getElementById("heroStage")) {
+     _sv.innerHTML = heroSVG();
+   } else {
+     updateHeroPieces();
+   }
+ }
+ var _sb = document.getElementById("stageBody");
+ if (_sb) {
+   var _ap = document.querySelector(".app");
+   if (_ap) _ap.classList.remove("firstload");
+   _sb.innerHTML = R;
+ } else {
+   var _st = $("step");
+   if (_st) _st.innerHTML = '<div class="stageBody" id="stageBody">' + R + '</div>';
+ }
  updateSideTh();
- var _frame=true;try{_frame=(window.self!==window.top);}catch(e){_frame=true;}
- var _btn;
- if(ST.rxMethod === 'contact'){
-  _btn='<button class="btn next" id="cartBtn" onclick="sendWA()" style="flex:0 0 auto;min-width:230px;padding:12px 26px;background:#25D366;color:white;font-weight:700;border:none;border-radius:30px;">Agendar por WhatsApp</button>';
- } else if(_frame){
-  _btn='<button class="btn next" id="cartBtn" onclick="addToCart()" style="flex:0 0 auto;min-width:230px;padding:12px 26px">Agregar al carrito</button>';
+ var _frame=true;try{_frame=(window.self!==window.top)||(window.framePrice>0);}catch(e){_frame=true;}var _btn;
+ if(_frame){
+  var _micas=0;var _q=zeissQuote();if(_q&&_q.disponible)_micas=_q.pvp;var _tot=(window.framePrice||0)+_micas;
+  var hasRx=!!ST.rxMethod;
+  var _bTxt=hasRx?(_tot>0?"Comprar ahora — $"+_tot.toLocaleString("en-US"):"Agregar al carrito"):"Continuar";
+  var _bg=hasRx?"#16a34a":"#cbd5e1";
+  var _col=hasRx?"#fff":"#475569";
+  var _cursor=hasRx?"pointer":"not-allowed";
+  var _btnAction=hasRx?'addToCart()':'scrollToRx()';
+  var _btnDis=hasRx?'':'disabled';
+  
+  var noticeHtml=!hasRx
+    ?'<div onclick="scrollToRx()" onmouseover="this.style.background=\'#fef08a\'" onmouseout="this.style.background=\'#fef9c3\'" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 13px;background:#fef9c3;color:#854d0e;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid #fef08a;line-height:1.3;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,0.03);user-select:none;transition:background 0.15s ease;"><span style="font-size:12px;">⚠️</span> Falta tu graduación — <span style="text-decoration:underline;margin-left:2px;">Ir a sección 02 &darr;</span></div>'
+    :'<div style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#f0fdf4;color:#166534;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid #bbf7d0;line-height:1.3;white-space:nowrap;">✓ Graduación elegida</div>';
+
+  var frameOnlyHtml=(window.framePrice>0)
+    ?'<button type="button" onclick="buyFrameOnly()" style="background:none;border:none;color:#64748b;font-size:11.5px;text-decoration:underline;cursor:pointer;margin:0;padding:2px 4px;text-align:right;">Comprar solo armazón sin micas ('+money(window.framePrice||framePrice||0)+')</button>'
+    :'';
+
+  _btn='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;">'+noticeHtml+'<button class="btn next" id="cartBtn" onclick="'+_btnAction+'" '+_btnDis+' style="flex:0 0 auto;min-width:180px;padding:12px 26px;background:'+_bg+';color:'+_col+';font-weight:700;border:none;border-radius:30px;cursor:'+_cursor+';">'+_bTxt+'</button></div>'+frameOnlyHtml+'</div>';
  }else if(isOptica()){
   _btn='<button class="btn next" id="cartBtn" onclick="sendWALab()" style="flex:0 0 auto;min-width:250px;padding:12px 26px;background:#25D366">Enviar orden por WhatsApp</button>';
  }else{
@@ -985,7 +1780,7 @@ function render(){
  if($("pdR"))$("pdR").addEventListener("input",function(){ST.pdR=this.value;});
  if($("pdL"))$("pdL").addEventListener("input",function(){ST.pdL=this.value;});
  if($("altura"))$("altura").addEventListener("change",function(){ST.altura=this.value;render();});
-}
+ }
 
 function benefitsList(){
  var arr=[];
@@ -995,14 +1790,10 @@ function benefitsList(){
  if(ST.type==="mono")arr.push({ic:"mono",t:"Visión clara a tu distancia",d:"Optimizado para lo que más usas."});
  var tr={ar:{ic:"ar",t:"Antirreflejante",d:"Adiós reflejos: ves más nítido y tus lentes se ven más limpios."},
   azul:{ic:"azul",t:"Filtro de luz azul",d:"Menos cansancio visual con tanto celular y computadora."},
-  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."},
-  polar:{ic:"polar",t:"Polarizado",d:"Sol sin reflejos, perfecto para manejar y exteriores."},
-  invisible:{ic:"invisible",t:"Sin línea visible",d:"Bifocal más estético, sin la rayita a la vista."},
-  entintado:{ic:"entintado",t:"Entintado",d:"Tono fijo tipo lentes de sol, en el color que prefieras."},
-  espejo:{ic:"espejo",t:"Espejo",d:"Acabado espejado para sol; estético y de moda."}}[ST.treat||"ar"];
+  foto:{ic:"foto",t:"Se oscurece al sol",d:"Cómodo dentro y fuera. Tus lentes y tus lentes de sol en uno."}}[ST.treat||"ar"];
  if(tr)arr.push(tr);
  if(ST.poli)arr.push({ic:"shield",t:"Policarbonato resistente",d:"Aguanta golpes; ideal para niños, deporte y armazón al aire."});
- else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado y ligero (1.74)":"Más delgado y ligero (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
+ else if(ST.idx==="1.67"||ST.idx==="1.74")arr.push({ic:"thin",t:(ST.idx==="1.74"?"Ultra delgado (1.74)":"Muy delgado (1.67)"),d:"Se ve mejor en tu armazón y lo sientes más cómodo todo el día."});
  if(ST.perfora)arr.push({ic:"ring",t:"Armazón al aire (3 piezas)",d:"Montaje perforado, look ligero y minimalista."});
  if(ST.type==="prog"&&ST.level!=="precision")arr.push({ic:"comfort",t:((ST.level==="individual"||ST.level==="superb")?"Máxima comodidad":"Campos más amplios"),d:"Zonas nítidas más anchas y adaptación más natural."});
  arr.push({ic:"uv",t:"Protección UV",d:"Cuida tus ojos del sol todos los días."});
@@ -1012,17 +1803,15 @@ function matLabel(){
  if(ST.poli)return "Policarbonato";
  return ({"1.50":"Estándar","1.60":"Delgado","1.67":"Índice 1.67","1.74":"Índice 1.74"})[ST.idx];
 }
+function clientFriendlySummary(){var t=ST.type==="mono"?"Una distancia":(ST.type==="prog"?"Progresivo":(ST.type==="bif"?"Bifocal":""));if(ST.type==="prog"&&ST.level==="pure")t="Progresivo cómodo para todo el día";if(ST.type==="prog"&&ST.level==="precision")t="Progresivo de entrada";if(ST.type==="prog"&&(ST.level==="plus"||ST.level==="superb"))t="Progresivo con campos amplios";if(ST.type==="prog"&&ST.level==="individual")t="Progresivo personalizado";var tr="";if(ST.treat==="ar"&&!ST.arPremium)tr="Antirreflejante";if(ST.treat==="ar"&&ST.arPremium)tr="Antirreflejante premium";if(ST.treat==="azul")tr="Filtro de luz azul";if(ST.treat==="foto")tr="Fotocromático";var idx=ST.poli?"Policarbonato resistente":(ST.idx==="1.50"?"Delgadez estándar":(ST.idx==="1.60"?"Más delgado":(ST.idx==="1.67"?"Muy delgado":"Ultra delgado")));var parts=[];if(t)parts.push(t);if(tr)parts.push(tr);if(idx)parts.push(idx);return parts.join(" · ");}
 function renderSummary(){
- var name=TYPES[ST.type].nm;
- var trn={ar:"con antirreflejante",azul:"con filtro de luz azul",foto:"fotocromático",polar:"polarizado",invisible:"sin línea",entintado:"entintado",espejo:"espejo"}[ST.treat||"ar"];
- var extra=" · "+matLabel()+(ST.type==="prog"?" · "+levelName(ST.level):"")+(ST.perfora?" · perforado":"");
- var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+name+' '+trn+'</div><div class="muted" style="margin-bottom:8px">'+matLabel()+(ST.type==="prog"?" · nivel "+levelName(ST.level):"")+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.treat==="entintado"?" · "+TINTS[ST.tintColor][0]+" intensidad "+ST.tintInt:"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
+ var h='<div class="kick">Tu lente recomendado</div><div class="card"><div class="lentname">'+clientFriendlySummary()+'</div><div class="muted" style="margin-bottom:8px;font-size:12px">ZEISS '+(ST.type==="prog"?levelName(ST.level):"Monofocal")+' · índice '+(ST.poli?'1.59':ST.idx)+(ST.treat==="foto"?" · color "+(ST.fotoColor==="cafe"?"Café":"Gris"):"")+(ST.perfora?" · armazón al aire":"")+'</div>'+rxGrid();
  if(ST.type==="prog")h+=zonesSVG(LEVEL_Q[ST.level]);else h+=thickSVG();
  h+='</div><div class="card"><div class="cardh">Lo que hace por ti</div>';
  benefitsList().forEach(function(b){h+='<div class="benefit"><div class="bi">'+IC[b.ic]+'</div><div><div class="bt">'+b.t+'</div><div class="bd">'+b.d+'</div></div></div>';});
  h+='</div>';
  var pr=clientPrice();
- h+='<div class="priceBox"><div><div class="pl">Tu inversión (el par)</div><div class="pv">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
+ h+='<div class="priceBox"><div><div class="pl">Tu total (el par)</div><div class="pv tabular-nums">'+money(pr)+'</div></div><div class="pn">Incluye armado y protección UV · IVA incluido</div></div>';
  h+='<div style="margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-size:14px;font-weight:600;color:var(--navy)">Entrega estimada: '+deliveryTime()+'</div><div class="muted" style="font-size:12px;margin-top:2px">Sujeta a tiempos del laboratorio</div></div>';
  h+='<div style="margin-top:16px"><div id="up"></div></div>';
  return h;
@@ -1034,39 +1823,73 @@ function renderUps(){
  var h='<div class="upToggle" onclick="ST.upsOpen=!ST.upsOpen;renderUps()">'+(ST.upsOpen?"▾":"▸")+' Ajustar opciones de mi lente</div>';
  if(ST.upsOpen){
   if(ST.type==="prog")h+=upSec("Nivel del progresivo",LEVELS.map(function(l){return chipUp(ST.level===l.k,l.nm,"pick('level','"+l.k+"')");}));
-  var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});mh.push(chipUp(ST.poli,"Policarbonato","setPoli()"));
-  h+=upSec("Delgadez y material",mh);
+  if(!isPoliRequired){
+   var mh=MATS.map(function(m){return chipUp(!ST.poli&&ST.idx===m[0],m[1],"setMat('"+m[0]+"')");});
+   h+=upSec("Delgadez y material",mh);
+  }
   h+=upSec("Tratamiento",treatList().map(function(t){return chipUp(ST.treat===t.k,t.nm,"pick('treat','"+t.k+"')");}));
  }
  box.innerHTML=h;
 }
 
-function pick(field,val){ST[field]=val;if(field==="type"){var ok=treatList().some(function(t){return t.k===ST.treat;});if(!ok)ST.treat="ar";}render();if(ST.step===TOTAL_STEPS)renderUps();showFrontNow();}
-function setMat(idx){ST.idx=idx;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
-function setPoli(){ST.poli=!ST.poli;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
+function pick(field,val){
+ ST[field]=val;
+ if(field==="type"){
+  var ok=treatList().some(function(t){return t.k===ST.treat;});
+  if(!ok)ST.treat="ar";
+  if(val==="prog"){
+   var r=recLevel();
+   ST.level=r.k||"precision";
+  }
+ }
+ if(field==="treat" && val==="foto"){
+  if(ST.type==="mono" && engIdx(ST.idx)==="1.5"){
+   ST.idx = "1.60";
+   ST.idxManual = false;
+  }
+  if(ST.type==="prog" && engIdx(ST.idx)==="1.74"){
+   ST.idx = "1.67";
+   ST.idxManual = false;
+  }
+ }
+ render();
+ if(ST.step===TOTAL_STEPS)renderUps();
+ showFrontNow();
+ if(window.innerWidth<=880&&ST.step===1)setTimeout(function(){go(1);},300);
+}
+function setMat(idx){if(isPoliRequired)return;ST.idx=idx;ST.idxManual=true;ST.poli=false;ST.perfora=false;render();if(ST.step===TOTAL_STEPS)renderUps();requestAnimationFrame(showSide);}
+function setPoli(){if(isPoliRequired)return;ST.poli=!ST.poli;ST.idxManual=true;if(!ST.poli)ST.perfora=false;render();requestAnimationFrame(showSide);}
 var _rotAF=null,ROT_N=30;
 function _ease(x){return x<0.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
 function playRotor(){var r=document.getElementById("rotor"),hf=document.getElementById("heroFront"),tc=document.getElementById("thCal");if(!r)return;if(_rotAF)cancelAnimationFrame(_rotAF);var fwd=820,hold=2200,back=720,t0=null;function sf(i){i=i<0?0:(i>ROT_N-1?ROT_N-1:i);r.style.backgroundPositionY=(i/(ROT_N-1)*100)+"%";}sf(0);if(hf)hf.style.opacity="0";r.style.opacity="1";if(tc)tc.style.opacity="0";function st(ts){if(t0===null)t0=ts;var e=ts-t0;if(e<fwd){sf(Math.round(_ease(e/fwd)*(ROT_N-1)));}else if(e<fwd+hold){sf(ROT_N-1);if(tc)tc.style.opacity="1";}else if(e<fwd+hold+back){if(tc)tc.style.opacity="0";sf(Math.round((1-_ease((e-fwd-hold)/back))*(ROT_N-1)));}else{sf(0);r.style.opacity="0";if(hf)hf.style.opacity="1";_rotAF=null;return;}_rotAF=requestAnimationFrame(st);}_rotAF=requestAnimationFrame(st);}
-function togglePerf(){ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
+function togglePerf(){if(isPoliRequired)return;ST.perfora=!ST.perfora;if(ST.perfora)ST.poli=true;render();if(ST.step===TOTAL_STEPS)renderUps();}
 function go(dir){
  if(dir>0){
   if(ST.step===1&&!ST.type)return;
-  if(ST.step===2&&!ST.treat)return;
+  if(ST.step===2&&!ST.rxMethod)return;
   ST.step=Math.min(TOTAL_STEPS,ST.step+1);
  }else ST.step=Math.max(1,ST.step-1);
  render();if(ST.step===TOTAL_STEPS)renderUps();
  window.scrollTo({top:0,behavior:'smooth'});
 }
 function reset(){ST=fresh();render();}
-function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",polar:"Polarizado",invisible:"Sin línea",entintado:"Entintado",espejo:"Espejo"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");if(ST.treat==="entintado")parts.push(TINTS[ST.tintColor][0]+" "+ST.tintInt);parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
+function specLabel(){var parts=[TYPES[ST.type].nm];var trn={ar:"Antirreflejante",azul:"Filtro azul",foto:"Fotocromático",invisible:"Sin línea"}[ST.treat||"ar"];parts.push(trn);if(ST.treat==="foto")parts.push(ST.fotoColor==="cafe"?"Café":"Gris");parts.push(ST.poli?"Policarbonato":("Índice "+ST.idx));if(ST.type==="prog")parts.push(levelName(ST.level));if(ST.perfora)parts.push("Al aire");return parts.join(" · ");}
 function addToCart(){
+ if(!ST.rxMethod){
+  scrollToRx();
+  return;
+ }
  var q=zeissQuote();
  var b=$("cartBtn");
  if(!q||!q.disponible){if(b){b.textContent="No disponible — ajusta opciones";setTimeout(function(){b.textContent="Agregar al carrito";},1800);}return;}
- var payload={etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText()};
+ var payload={receta: (ST.rxMethod === 'contact' ? 'PENDIENTE' : undefined), receta_origen: (ST.rxMethod === 'upload' || ST.rxMethod === 'manual' ? 'EXTERNA' : undefined), etiqueta:q.etiqueta,indice:q.indice,tipoFab:q.tipoFab,entrega:q.entrega,costoLista:q.costoLista,pvp:q.pvp,ordenZEISS:q.ordenZEISS,productoZEISS:q.productoZEISS,color:q.color,esfera:ST.esf,cilindro:ST.cil,adicion:(ST.type!=="mono"?ST.add:null),pd:(ST.pdAsym?{od:ST.pdR,oi:ST.pdL}:ST.pd),od:{esf:ST.odE,cil:ST.odC,eje:ST.odAx,add:ST.odAdd},oi:{esf:ST.oiE,cil:ST.oiC,eje:ST.oiAx,add:ST.oiAdd},rxMethod:ST.rxMethod,rxFileName:ST.rxFileName,rxFileBase64:ST.rxFileBase64,rxText:rxText(),montaje:frameMontaje};
  try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:"lensique-mica",payload:payload},"*");window.parent.postMessage({source:"lensique-asesor",type:"add-to-cart",payload:payload},"*");}}catch(e){}
  if(b){b.textContent="✓ Agregado al carrito";b.disabled=true;setTimeout(function(){b.textContent="Agregar al carrito";b.disabled=false;},1800);}
 }
 render();
+var initialSection = urlParams.get('section');
+if(initialSection === '2' || initialSection === '02' || initialSection === '3' || initialSection === '03'){
+ setTimeout(scrollToRx, 250);
+}
 try{if(window.parent&&window.parent!==window)window.parent.postMessage({source:"lensique-asesor",type:"ready"},"*");}catch(e){}
 </script></body></html>

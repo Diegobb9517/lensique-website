@@ -498,7 +498,7 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
     silver:     { nm: 'Intermedio (Silver)', idx: { '1.6': { term: 700 } }, lad: ['1.6'] },
     verde:      { nm: 'AR verde', idx: { '1.5': { term: 747, proc: 1288 }, '1.6': { term: 829, proc: 1617 }, '1.67': { term: 922, proc: 2019 }, '1.74': { proc: 2857 } }, lad: ['1.5','1.6','1.67','1.74'] },
     azul:       { nm: 'AR azul',  idx: { '1.5': { term: 747, proc: 1288 }, '1.6': { term: 829, proc: 1694 }, '1.67': { term: 922, proc: 2019 }, '1.74': { proc: 2922 } }, lad: ['1.5','1.6','1.67','1.74'] },
-    foto:       { nm: 'Fotocromático', idx: { '1.6': { term: 1179, proc: 2755 }, '1.67': { proc: 2457 } }, lad: ['1.6','1.67'] },
+    foto:       { nm: 'Fotocromático', idx: { '1.5': { proc: 1679 }, '1.6': { term: 1179, proc: 1921 }, '1.67': { proc: 2416 } }, lad: ['1.5','1.6','1.67'] },
     polarizado: { nm: 'Polarizado (sol)', idx: { '1.5': { proc: 1514 }, '1.6': { proc: 1756 }, '1.67': { proc: 2251 } }, lad: ['1.5','1.6','1.67'], sun: 1 },
     tinte:      { nm: 'Sol con tinte', lad: ['1.5','1.6','1.67'], sun: 1 }
   };
@@ -514,6 +514,7 @@ var IMG_MASK="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYAAAAMACAAAAAC4WpwQ
   // Progresivos
   var PROG = {
     precision:  { nm: 'Precision Classic', poli: 1, idx: { '1.5': { verde: 1968, azul: 2091, foto: 2277 }, '1.59': { verde: 2493, azul: 2611, foto: 2802 }, '1.67': { verde: 3435, azul: 3559, foto: 3745 } } },
+  '3dv':      { nm: 'ZEISS Light 3Dv', poli: 1, idx: { '1.5': { verde: 2129, azul: 2191, foto: 2439 } } },
     pure:       { nm: 'SmartLife Pure', base: { '1.5': 3662, '1.6': 4532, '1.67': 5124, '1.74': 5924 } },
     plus:       { nm: 'SmartLife Plus', base: { '1.5': 4383, '1.6': 4842, '1.67': 5547, '1.74': 6132 } },
     superb:     { nm: 'SmartLife Superb', base: { '1.5': 4964, '1.6': 5356, '1.67': 6283, '1.74': 6617 } },
@@ -856,8 +857,104 @@ var LEVELS=[
 ];
 var LEVEL_Q={precision:0.30,pure:0.55,plus:0.80,superb:0.80,individual:0.95};
 var MULT=2.2;var MSI=3;var MSI_MIN=3000;
-/* Multiplicador decreciente: micas baratas markup alto, micas caras markup menor */
-function multFor(c){c=c||0;return c<600?2.45:c<1500?2.2:c<3000?2.1:2.0;}
+var PRICING_CONFIG = {
+  optica: "Lensique",
+  tramos: [
+    { h: 600,   m: 2.45 },
+    { h: 1500,  m: 2.20 },
+    { h: 3000,  m: 1.85 },
+    { h: 5000,  m: 1.62 },
+    { h: 1e9,   m: 1.47 }
+  ]
+};
+
+function multFor(c){ c=c||0; var T=PRICING_CONFIG.tramos; for(var i=0;i<T.length;i++){ if(c<T[i].h) return T[i].m; } return 1.4; }
+
+/* ===== CONEXIÓN AL MOTOR DE PRECIOS DEL POS (UNA SOLA FUENTE DE LA VERDAD) ===== */
+var POS_API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://lensique-pos.onrender.com';
+
+window.__posPriceCache = window.__posPriceCache || {};
+var _posFetchDebounce = null;
+
+function getPosPayload(){
+  var isProg = ST.type === 'prog';
+  var trat = ST.treat === 'foto' ? 'fotocromatico' : (ST.treat === 'azul' ? 'filtro_azul' : 'ninguno');
+  var p = {
+    tipo: isProg ? 'progresivo' : 'monofocal',
+    esfera: ST.esf || 0,
+    cilindro: ST.cil || 0,
+    adicion: isProg ? (ST.add || 0) : 0,
+    indice: ST.poli ? '1.59' : engIdx(ST.idx),
+    tratamiento: trat,
+    color: ST.fotoColor === 'cafe' ? 'Café' : 'Gris'
+  };
+  if (ST.odE != null || ST.odC != null) {
+    p.od = { esfera: ST.odE || 0, cilindro: ST.odC || 0, eje: ST.odAx || 0, adicion: ST.odAdd || 0 };
+  }
+  if (ST.oiE != null || ST.oiC != null) {
+    p.oi = { esfera: ST.oiE || 0, cilindro: ST.oiC || 0, eje: ST.oiAx || 0, adicion: ST.oiAdd || 0 };
+  }
+  return p;
+}
+
+function getPosCacheKey(p){
+  return [
+    p.tipo, p.indice, p.tratamiento, p.esfera, p.cilindro, p.adicion,
+    p.od ? (p.od.esfera + '/' + p.od.cilindro) : '',
+    p.oi ? (p.oi.esfera + '/' + p.oi.cilindro) : ''
+  ].join(':');
+}
+
+function fetchPosQuoteAsync(){
+  if (_posFetchDebounce) clearTimeout(_posFetchDebounce);
+  _posFetchDebounce = setTimeout(function(){
+    var payload = getPosPayload();
+    var key = getPosCacheKey(payload);
+    if (window.__posPriceCache[key]) return;
+
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var to = controller ? setTimeout(function(){ controller.abort(); }, 4000) : null;
+
+    fetch(POS_API_BASE + '/api/precio-mica', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller ? controller.signal : undefined
+    })
+    .then(function(res){
+      if (to) clearTimeout(to);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data){
+      if (data && (data.disponible != null || data.factible != null)) {
+        window.__posPriceCache[key] = data;
+        var currentKey = getPosCacheKey(getPosPayload());
+        if (currentKey === key) {
+          updatePriceDisplayFromPos(data);
+        }
+      }
+    })
+    .catch(function(err){
+      if (to) clearTimeout(to);
+      console.warn('[Asesor ZEISS] Cotización remota degradada a motor local:', err.message);
+    });
+  }, 120);
+}
+
+function updatePriceDisplayFromPos(posData){
+  var tot = (window.framePrice || 0) + (posData.disponible ? posData.precio : 0);
+  var priceEl = document.querySelector('.sec .tabular-nums') || document.querySelector('.sec [style*="font-family:Georgia"]');
+  if (priceEl && posData.disponible) {
+    priceEl.textContent = money(tot);
+  }
+  var subEl = document.getElementById('priceSubtotal');
+  if (subEl && posData.disponible) {
+    subEl.textContent = money(posData.precio);
+  }
+}
 function levelName(k){return ({precision:"Estándar",pure:"Comfort",plus:"Premium",superb:"SmartLife Superb",individual:"SmartLife Individual 3"})[k]||k;}
 function recLevel(){
   if(ST.poli||ST.perfora) return {k:'precision', why:['policarbonato resistente']};
@@ -880,7 +977,97 @@ function progZonesBlock(){
 }
 function engIdx(i){return i==="1.50"?"1.5":(i==="1.60"?"1.6":i);}
 function engOpcion(){var t=ST.treat;if(ST.type==="mono")return ({ar:"verde",azul:"azul",foto:"foto"})[t]||"verde";if(ST.type==="prog")return ({ar:"verde",azul:"azul",foto:"foto"})[t]||"verde";if(ST.poli)return "n7086";return t==="foto"?"n7082":"n7081";}
-function zeissQuote(){var inp={tipo:ST.type,esf:ST.esf||0,cil:ST.cil||0,add:(ST.type!=="mono"?(ST.add||0):0),pd:(ST.pdAsym?"":ST.pd),multiplicador:MULT};inp.opcion=engOpcion();inp.manual=!!ST.idxManual;if(ST.type==="mono"){if(ST.poli){inp.poli=true;inp.polyKey="z159";}else{inp.indice=engIdx(ST.idx);if(ST.treat==="ar"&&!ST.arPremium&&engIdx(ST.idx)==="1.5"){var _ch=ZeissEngine.cotizar({tipo:"mono",esf:ST.esf||0,cil:ST.cil||0,opcion:"chrome",indice:"1.5"});if(_ch&&_ch.disponible)inp.opcion="chrome";}}if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}else if(ST.type==="prog"){inp.nivel=ST.level;if(ST.poli||ST.perfora){inp.nivel="precision";inp.indice="1.59";}else inp.indice=engIdx(ST.idx);if(ST.treat==="foto")inp.color=(ST.fotoColor==="cafe"?"Café":"Gris");}var q=(typeof ZeissEngine!=="undefined"&&ZeissEngine)?ZeissEngine.cotizar(inp):{disponible:false,motivo:"Motor de precios no cargado"};if(q&&q.disponible){var m=multFor(q.costoLista);q.costoIva=Math.round(q.costoLista*1.16);q.pvp=Math.round(q.costoLista*1.16*m/50)*50;q.utilidad=q.pvp-q.costoIva;q.margen=Math.round(q.utilidad/q.pvp*100);q.mult=m; var isPreorder = false; var params = new URLSearchParams(window.location.search); if (params.get('isPreorder') === 'true') { isPreorder = true; } var frameAvail = isPreorder ? 'preorder' : 'instock'; var lType = 'mono_basic'; if (inp.tipo === 'prog' || inp.tipo === 'bif' || inp.tipo === 'ocupacional') { lType = 'progressive_bifocal'; } else if (ST.treat === 'foto') { lType = 'photochromic'; } else if (ST.poli) { lType = 'special'; } else if (inp.indice === '1.67' || inp.indice === '1.74' || inp.indice === '1.60' || inp.indice === '1.59') { lType = 'mono_complex'; } if (typeof getDeliveryEstimate === 'function') { var est = getDeliveryEstimate(frameAvail, lType, 'pickup'); q.entrega = est.dateRange; } else { q.entrega = "Consultar en tienda"; }if(ST.type==="mono"&&ST.treat==="ar")q.etiqueta=ST.arPremium?"Antirreflejante premium":"Antirreflejante";if(ST.type==="bif"&&q.entrega==="Consultar")q.entrega="Consultar en tienda";}return q;}
+function zeissQuote(){
+  var payload = getPosPayload();
+  var cacheKey = getPosCacheKey(payload);
+  var fromServer = window.__posPriceCache ? window.__posPriceCache[cacheKey] : null;
+
+  if (!fromServer) {
+    fetchPosQuoteAsync();
+  }
+
+  // Si el servidor del POS ya respondió para esta combinación exacta:
+  if (fromServer) {
+    if (!fromServer.disponible || !fromServer.factible) {
+      return { disponible: false, motivo: fromServer.motivo || 'No disponible para esta graduación' };
+    }
+  }
+
+  // Motor local (mismas fórmulas L5 y tramos que el POS como fallback instantáneo)
+  var inp = { tipo: ST.type, esf: ST.esf || 0, cil: ST.cil || 0, add: (ST.type !== "mono" ? (ST.add || 0) : 0), pd: (ST.pdAsym ? "" : ST.pd), multiplicador: MULT };
+  inp.opcion = engOpcion();
+  inp.manual = !!ST.idxManual;
+  if (ST.type === "mono") {
+    if (ST.poli) {
+      inp.poli = true; inp.polyKey = "z159";
+    } else {
+      inp.indice = engIdx(ST.idx);
+      if (ST.treat === "ar" && !ST.arPremium && engIdx(ST.idx) === "1.5") {
+        var _ch = ZeissEngine.cotizar({ tipo: "mono", esf: ST.esf || 0, cil: ST.cil || 0, opcion: "chrome", indice: "1.5" });
+        if (_ch && _ch.disponible) inp.opcion = "chrome";
+      }
+    }
+    if (ST.treat === "foto") inp.color = (ST.fotoColor === "cafe" ? "Café" : "Gris");
+  } else if (ST.type === "prog") {
+    inp.nivel = ST.level;
+    if (ST.poli || ST.perfora) {
+      inp.nivel = "precision"; inp.indice = "1.59";
+    } else {
+      inp.indice = engIdx(ST.idx);
+    }
+    if (ST.treat === "foto") inp.color = (ST.fotoColor === "cafe" ? "Café" : "Gris");
+  }
+
+  var q = (typeof ZeissEngine !== "undefined" && ZeissEngine) ? ZeissEngine.cotizar(inp) : { disponible: false, motivo: "Motor de precios no cargado" };
+  if (q && q.disponible) {
+    var m = multFor(q.costoLista);
+    q.costoIva = Math.round(q.costoLista * 1.16);
+    // Base mostrador redondeada a $100
+    q.pvp = Math.round(q.costoLista * 1.16 * m / 100) * 100;
+    
+    // Si el POS respondió, usar el precio devuelto por el POS con máxima prioridad
+    if (fromServer && fromServer.precio) {
+      q.pvp = fromServer.precio;
+      q.precio = fromServer.precio;
+      q.fromPos = true;
+      if (fromServer.detalles && fromServer.detalles.entrega) q.entrega = fromServer.detalles.entrega;
+    }
+
+    q.utilidad = q.pvp - q.costoIva;
+    q.margen = Math.round(q.utilidad / q.pvp * 100);
+    q.mult = m;
+
+    var isPreorder = false;
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('isPreorder') === 'true') { isPreorder = true; }
+    var frameAvail = isPreorder ? 'preorder' : 'instock';
+    var lType = 'mono_basic';
+    if (inp.tipo === 'prog' || inp.tipo === 'bif' || inp.tipo === 'ocupacional') {
+      lType = 'progressive_bifocal';
+    } else if (ST.treat === 'foto') {
+      lType = 'photochromic';
+    } else if (ST.poli) {
+      lType = 'special';
+    } else if (inp.indice === '1.67' || inp.indice === '1.74' || inp.indice === '1.60' || inp.indice === '1.59') {
+      lType = 'mono_complex';
+    }
+
+    if (typeof getDeliveryEstimate === 'function') {
+      var est = getDeliveryEstimate(frameAvail, lType, 'pickup');
+      q.entrega = est.dateRange;
+    } else {
+      q.entrega = "Consultar en tienda";
+    }
+
+    if (ST.type === "mono" && ST.treat === "ar") {
+      q.etiqueta = ST.arPremium ? "Antirreflejante premium" : "Antirreflejante";
+    }
+    if (ST.type === "bif" && q.entrega === "Consultar") {
+      q.entrega = "Consultar en tienda";
+    }
+  }
+  return q;
+}
 function priceSection(){var q=zeissQuote();if(!q||!q.disponible){if(!ST.rxMethod){return '<section class="sec" style="padding-top:24px"><div class="secK">05 — Tu total</div><div style="margin-top:8px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#faf9f6;color:var(--grey);font-size:13.5px;line-height:1.5">Indica tu graduación en el <b>Paso 02</b> para calcular el total exacto.</div></section>';}return '<section class="sec" style="padding-top:24px"><div class="secK">05 — Tu total</div><div style="margin-top:8px;padding:14px 16px;border:1px solid #e7d6b0;border-radius:10px;background:#faf4e6;color:#8a6d2f;font-size:13.5px;line-height:1.5"><b>Esta combinación no está disponible</b><br>'+((q&&q.motivo)||'Ajusta el índice o el tratamiento.')+'</div></section>';}var abbe=q.avisoAbbe?'<div class="muted" style="margin-top:10px;font-size:12px;color:#8a6d2f;text-align:left">ℹ️ '+q.avisoAbbe+'</div>':'';return '<section class="sec" style="text-align:left; padding-top:28px"><div class="secK">05 — Tu total</div><div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin:4px 0 6px">El par · IVA incluido</div><div style="font-family:Georgia,serif;font-size:42px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.5px" class="tabular-nums">'+money(framePrice + (q?q.pvp:0)) +'</div>'+'<div class="lentname" style="margin-top:8px;font-size:15px;color:var(--navy);font-weight:700;">'+clientFriendlySummary()+'</div><div class="muted" style="margin-top:2px;font-size:12px;">ZEISS '+(ST.type==="prog"?levelName(ST.level):"Monofocal")+' · índice '+(ST.poli?'1.59':ST.idx)+'</div><div class="muted" style="margin-top:2px">Incluye armado, protección UV y garantía de adaptación de 30 días</div><div class="muted" style="margin-top:4px;color:#16a34a;font-weight:500;">'+q.entrega+'</div>'+abbe+'<div style="margin-top:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:12.5px;color:#334155;line-height:1.4"><b>🔒 Garantía Lensique:</b> <a href="/devoluciones" target="_blank" style="color:#0ea5e9;text-decoration:none">Cambio o devolución en 30 días · Validación por optometrista</a></div><div style="margin-top:8px;font-size:12.5px;color:#64748b;text-align:center;">Formas de pago: Tarjeta · OXXO · SPEI</div></section>';}
 
   function rxBlock(){

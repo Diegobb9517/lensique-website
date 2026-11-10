@@ -40,6 +40,7 @@ import { calculateDeliveryTime, getDeliveryEstimate } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';
 import { TriageModal } from './components/TriageModal';
 import OrderTracking from './components/OrderTracking';
+import { MicasZeissPage } from './components/MicasZeissPage';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
   const clean = waStr.replace(/\D/g, '');
@@ -1140,12 +1141,15 @@ function App() {
     } else if (currentPath === '/lentes-de-contacto') {
       title = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Compra | Lensique";
       desc = "Descubre cómo usar, ponerte y cuidar tus lentes de contacto en Zapopan y Guadalajara. Guía paso a paso, validación por optometrista y marcas líderes originales.";
+    } else if (currentPath === '/micas') {
+      title = "Micas ZEISS · Lensique";
+      desc = "Todas nuestras micas son ZEISS: tecnología óptica alemana de precisión, diseñada para cada necesidad de tu vista.";
     } else if (currentPath === '/seguimiento' || currentPath.startsWith('/p/')) {
       title = "Seguimiento de Pedido | Óptica Lensique";
       desc = "Consulta el estado en tiempo real de tu pedido en Óptica Lensique.";
     }
 
-    if (['/armazones', '/cotizador', '/lentes-de-contacto', '/', '/catalogo', '/seguimiento'].includes(currentPath) || currentPath.startsWith('/blog/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/p/')) {
+    if (['/armazones', '/micas', '/cotizador', '/lentes-de-contacto', '/', '/catalogo', '/seguimiento'].includes(currentPath) || currentPath.startsWith('/blog/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/p/')) {
         document.title = title;
         let descEl = document.querySelector('meta[name="description"]');
         if (descEl) descEl.setAttribute('content', desc);
@@ -2737,198 +2741,15 @@ function App() {
 
         
         {currentPath === '/micas' && (
-          <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
-            <section id="micas" className="wp-micas-lifestyle-section" style={{ padding: '80px 40px 80px', backgroundColor: '#f8fafc', minHeight: 'calc(100vh - 160px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div className="wp-section-header" style={{ marginBottom: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 40px' }}>
-                <h1 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Tecnologías de visión</h1>
-                <p style={{ margin: '8px 0 0', color: '#6e6e73', fontSize: '16px', textAlign: 'center' }}>Elige el tipo de mica; los tratamientos los decides al configurar.</p>
-              </div>
-              
-              <div style={{ maxWidth: 'var(--max-width)', margin: '0 auto', width: '100%' }}>
-                <div className="wp-micas-lifestyle-grid" ref={micasSliderRef}>
-                  {[
-                    { id: 'm1', title: 'Monofocales', description: 'Visión nítida en una sola distancia.', image: premiumMonofocal },
-                    { id: 'm2', title: 'Bifocales', description: 'Visión de cerca y de lejos en un solo lente.', image: premiumBifocal },
-                    { id: 'm4', title: 'Progresivos', description: 'Visión fluida en todas las distancias.', image: premiumProgressive },
-                    { id: 'm5', title: 'Fotocromático', description: 'Lentes que se adaptan a la luz solar.', image: premiumPhotochromic }
-                  ].map((brick: any, idx: number) => (
-                    <div key={`mica-ls-${idx}-${brick.id}`} className="wp-mica-wrapper">
-                      <Reveal 
-                        className="wp-mica-lifestyle-card"
-                        delay={idx * 0.1}
-                        onClick={(e: any) => { 
-                          e.preventDefault(); 
-                          setSelectedMicaCard(brick);
-                        }}
-                      >
-                        <div 
-                          className="wp-mica-bg" 
-                          style={{ backgroundImage: `url(${brick.image})` }}
-                        />
-                        <div className="wp-mica-action-pill">{brick.title}</div>
-                      </Reveal>
-                      <p className="wp-mica-desc-outside">{brick.description}</p>
-                    </div>
-                  ))}
-                </div>
-                
-                <div style={{ marginTop: '48px', textAlign: 'center' }}>
-                  <p style={{ fontSize: '15px', color: '#6e6e73', margin: '0 0 32px' }}>Antirreflejante, filtro de luz azul, polarizado y adelgazado se eligen al configurar tus micas, con su precio a la vista.</p>
-                  <a 
-                    href="/cotizador" 
-                    onClick={(e) => { 
-                      e.preventDefault(); 
-                      window.history.pushState({}, '', '/cotizador'); window.dispatchEvent(new PopStateEvent('popstate')); 
-                    }}
-                    style={{
-                      display: 'inline-block',
-                      background: '#1d1d1f',
-                      color: '#ffffff',
-                      padding: '16px 40px',
-                      borderRadius: '980px',
-                      fontSize: '17px',
-                      fontWeight: 600,
-                      textDecoration: 'none',
-                      transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-                    }}
-                  >
-                    Cotizar mis micas
-                  </a>
-                </div>
-              </div>
-            </section>
-
-            {/* Sección educativa detallada: Calidad y Tecnología ZEISS */}
-            <section className="micas-zeiss-detail-section">
-              <div className="micas-zeiss-container">
-                <div className="micas-zeiss-intro-block">
-                  <span className="micas-zeiss-eyebrow">Precisión Óptica y Bienestar Visual</span>
-                  <h2 className="micas-zeiss-headline">La diferencia de unas micas con tecnología ZEISS</h2>
-                  <p className="micas-zeiss-lead">
-                    El armazón define tu estilo personal, pero son las micas las que determinan tu bienestar visual todos los días. Una óptica de alta precisión permite que la luz entre de forma limpia a tu retina, reduciendo la fatiga ocular y ofreciendo nitidez en todo el campo visual.
-                  </p>
-                  <p className="micas-zeiss-backing-text">
-                    Por eso en Lensique trabajamos con micas elaboradas con tecnología <strong>ZEISS</strong>, referente internacional en óptica de precisión. Esto se traduce en lentes calibrados con tolerancias milimétricas para tu graduación exacta, brindándote una experiencia visual transparente, cómoda y duradera.
-                  </p>
-                </div>
-
-                {/* Los 4 pilares de una mica premium */}
-                <div className="micas-pillars-grid">
-                  <div className="micas-pillar-item">
-                    <div className="micas-pillar-header">
-                      <div className="micas-pillar-icon"><Eye size={22} /></div>
-                      <h3 className="micas-pillar-title">Claridad óptica de borde a borde</h3>
-                    </div>
-                    <p className="micas-pillar-desc">
-                      Las micas convencionales suelen perder definición hacia los costados. Con tecnología ZEISS, el cálculo de curvatura optimiza la superficie para mantener una imagen nítida sin distorsiones periféricas en cualquier dirección hacia la que mires.
-                    </p>
-                  </div>
-
-                  <div className="micas-pillar-item">
-                    <div className="micas-pillar-header">
-                      <div className="micas-pillar-icon"><Sun size={22} /></div>
-                      <h3 className="micas-pillar-title">Tratamiento antirreflejante de alto desempeño</h3>
-                    </div>
-                    <p className="micas-pillar-desc">
-                      Disminuye los reflejos parásitos que provocan deslumbramiento al manejar de noche o trabajar bajo luces artificiales. Al permitir que el máximo de luz útil ingrese al ojo, tus lentes lucen transparentes y tus ojos se aprecian limpios en fotos y videollamadas.
-                    </p>
-                  </div>
-
-                  <div className="micas-pillar-item">
-                    <div className="micas-pillar-header">
-                      <div className="micas-pillar-icon"><Laptop size={22} /></div>
-                      <h3 className="micas-pillar-title">Filtro de luz azul especializado</h3>
-                    </div>
-                    <p className="micas-pillar-desc">
-                      La exposición continua a computadoras, tabletas y teléfonos provoca sobreesfuerzo y ardor ocular. Nuestras opciones con filtro azul atenúan selectivamente la luz de alta energía para que disfrutes de jornadas digitales más confortables y descansadas.
-                    </p>
-                  </div>
-
-                  <div className="micas-pillar-item">
-                    <div className="micas-pillar-header">
-                      <div className="micas-pillar-icon"><ShieldCheck size={22} /></div>
-                      <h3 className="micas-pillar-title">Resistencia a rayaduras y fácil limpieza</h3>
-                    </div>
-                    <p className="micas-pillar-desc">
-                      Capas protectoras endurecidas que mejoran la durabilidad ante la fricción y el uso diario. Además, su acabado suave y antiestático repele polvo, gotas de agua y marcas de grasa, haciendo que limpiarlas requiera mucho menos esfuerzo.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Opciones y tratamientos disponibles en Lensique */}
-                <div className="micas-treatments-overview">
-                  <h3 className="micas-treatments-title">Opciones y tratamientos para cada necesidad</h3>
-                  <p className="micas-treatments-subtitle">
-                    Encuentra la configuración que mejor se adapte a tus actividades cotidianas y a tu receta óptica:
-                  </p>
-
-                  <div className="micas-treatments-list">
-                    <div className="micas-treatment-box">
-                      <div className="micas-treatment-badge">Tipo de visión</div>
-                      <h4 className="micas-treatment-name">Monofocales</h4>
-                      <p className="micas-treatment-desc">
-                        Enfoque óptimo en una distancia específica (lejos o lectura). Corrigen miopía, hipermetropía o astigmatismo con máxima claridad.
-                      </p>
-                    </div>
-
-                    <div className="micas-treatment-box">
-                      <div className="micas-treatment-badge">Tipo de visión</div>
-                      <h4 className="micas-treatment-name">Progresivos</h4>
-                      <p className="micas-treatment-desc">
-                        Transición suave y continua entre visión lejana, intermedia (pantallas) y cercana, sin saltos de imagen ni líneas visibles en el lente.
-                      </p>
-                    </div>
-
-                    <div className="micas-treatment-box">
-                      <div className="micas-treatment-badge">Tipo de visión</div>
-                      <h4 className="micas-treatment-name">Bifocales</h4>
-                      <p className="micas-treatment-desc">
-                        Dos campos visuales claramente diferenciados en un solo lente para quienes buscan alternar cómodamente entre lejos y cerca.
-                      </p>
-                    </div>
-
-                    <div className="micas-treatment-box">
-                      <div className="micas-treatment-badge">Tratamiento</div>
-                      <h4 className="micas-treatment-name">Fotocromático</h4>
-                      <p className="micas-treatment-desc">
-                        Micas inteligentes que se oscurecen al contacto con el sol y vuelven a aclararse en interiores, con protección UV total.
-                      </p>
-                    </div>
-
-                    <div className="micas-treatment-box">
-                      <div className="micas-treatment-badge">Tratamiento</div>
-                      <h4 className="micas-treatment-name">Antirreflejante y Filtro Azul</h4>
-                      <p className="micas-treatment-desc">
-                        Tratamientos esenciales para eliminar reflejos molestos y proteger la vista de pantallas digitales durante todo el día.
-                      </p>
-                    </div>
-
-                    <div className="micas-treatment-box">
-                      <div className="micas-treatment-badge">Material y grosor</div>
-                      <h4 className="micas-treatment-name">Micas Adelgazadas (Alto Índice)</h4>
-                      <p className="micas-treatment-desc">
-                        Índices 1.59 (policarbonato resistente), 1.60, 1.67 y 1.74 para graduaciones medias y altas: lentes hasta un 40% más delgados y ligeros.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: '36px', textAlign: 'center' }}>
-                    <a
-                      href="/cotizador"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        window.history.pushState({}, '', '/cotizador');
-                        window.dispatchEvent(new PopStateEvent('popstate'));
-                      }}
-                      className="wp-zeiss-cta-btn"
-                    >
-                      Configurar y cotizar mis micas &rarr;
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
+          <MicasZeissPage
+            onSelectArmazones={() => {
+              setCatalogInitialFilter('Armazones');
+              setIsCatalogOpen(true);
+              setCurrentPath('/catalogo');
+              window.history.pushState(null, '', '/catalogo?tipo=armazones');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
         )}
 
         {currentPath === '/nosotros' && (

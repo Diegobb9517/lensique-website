@@ -400,8 +400,8 @@ console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /di
 
 
 // Generate /micas prerender
-const micasTitle = "Micas y Tecnologías de Visión | Óptica Lensique Zapopan";
-const micasDesc = "Conoce nuestras opciones de micas: monofocales, progresivos, antirreflejante y más. Calcula el costo en nuestro cotizador de micas.";
+const micasTitle = "Micas ZEISS · Lensique";
+const micasDesc = "Todas nuestras micas son ZEISS: tecnología óptica alemana de precisión, diseñada para cada necesidad de tu vista.";
 const micasCanonical = "https://www.lensique.com.mx/micas";
 
 const micasHeadInjection = `
@@ -413,8 +413,56 @@ const micasHeadInjection = `
     <meta property="og:url" content="${micasCanonical}" />
     <meta property="og:type" content="website" />
 `;
+
+const micasBodyInjection = `
+  <div class="micas-zeiss-page">
+    <div class="mz-hero">
+      <img class="mz-zl" src="/assets/zeiss_logo.png" alt="ZEISS" />
+      <h1>Micas ZEISS</h1>
+      <p>Todas nuestras micas son ZEISS: tecnología óptica alemana de precisión, diseñada para cada necesidad de tu vista.</p>
+    </div>
+    <div class="mz-wrap">
+      <div class="mz-lead">
+        <div class="mz-k">Tecnología ZEISS</div>
+        <h2>Elige la mica según tu día a día</h2>
+      </div>
+      <div class="mz-grid">
+        <div class="mz-card">
+          <div class="mz-imgwrap"><img src="/assets/premium_bluelight_v2_1785866269289.jpg" alt="ZEISS BlueGuard" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS BlueGuard</div><div class="mz-cb">Filtra la luz azul de pantallas y reduce la fatiga visual.</div></div>
+        </div>
+        <div class="mz-card">
+          <div class="mz-imgwrap"><img src="/assets/premium_antireflective_1785865428939.jpg" alt="ZEISS Antirreflejante" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS Antirreflejante</div><div class="mz-cb">Visión limpia, sin reflejos molestos y fácil de limpiar.</div></div>
+        </div>
+        <div class="mz-card">
+          <div class="mz-imgwrap"><img src="/assets/premium_photochromic_1785865389796.jpg" alt="ZEISS Fotocromáticas (PhotoFusion X)" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS Fotocromáticas (PhotoFusion X)</div><div class="mz-cb">Se oscurecen con el sol y se aclaran en interiores.</div></div>
+        </div>
+        <div class="mz-card">
+          <div class="mz-imgwrap"><img src="/assets/premium_monofocal_1785865329187.jpg" alt="ZEISS Monofocal" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS Monofocal</div><div class="mz-cb">Graduación precisa para ver de lejos o para leer.</div></div>
+        </div>
+        <div class="mz-card">
+          <div class="mz-imgwrap"><img src="/assets/premium_bifocal_v2_1785866208612.jpg" alt="ZEISS Bifocal" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS Bifocal</div><div class="mz-cb">Dos campos visuales (lejos y cerca) con división visible.</div></div>
+        </div>
+        <div class="mz-card">
+          <div class="mz-imgwrap"><img src="/assets/premium_progressive_v2_1785866839561.jpg" alt="ZEISS Progresivas" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS Progresivas</div><div class="mz-cb">Transición suave entre lejos, intermedio y cerca, sin líneas.</div></div>
+        </div>
+      </div>
+      <div class="mz-cta">
+        <a href="/armazones">Elegir armazón con micas ZEISS</a>
+        <span class="mz-s">Todas las compras de armazón incluyen micas con graduación.</span>
+      </div>
+      <div class="mz-note">Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.</div>
+    </div>
+  </div>
+`;
 let micasHtml = fs.readFileSync(templatePath, 'utf8').replace(/<title>.*<\/title>/, '');
 micasHtml = micasHtml.replace('</head>', micasHeadInjection + '</head>');
+micasHtml = micasHtml.replace('<div id="root"></div>', `<div id="root">${micasBodyInjection}</div>`);
 const micasDir = path.join(distDir, 'micas');
 if (!fs.existsSync(micasDir)) fs.mkdirSync(micasDir, { recursive: true });
 fs.writeFileSync(path.join(micasDir, 'index.html'), micasHtml, 'utf8');

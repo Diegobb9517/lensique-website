@@ -1,0 +1,208 @@
+.micas-zeiss-page {
+  --navy: #16223f;
+  --line: #e8eaed;
+  --grey: #7b7b7b;
+  --blue: #2f6bff;
+  --soft: #f6f7f8;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--navy);
+  background: #fff;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.micas-zeiss-page *,
+.micas-zeiss-page *::before,
+.micas-zeiss-page *::after {
+  box-sizing: border-box;
+}
+
+.micas-zeiss-page .mz-hero {
+  position: relative;
+  text-align: center;
+  padding: 130px 24px 40px;
+  background: linear-gradient(180deg, #f4f7fb, #fff);
+  margin-top: 0;
+  height: auto;
+  min-height: auto;
+  display: block;
+}
+
+.micas-zeiss-page .mz-hero::before {
+  display: none !important;
+  content: none !important;
+}
+
+.micas-zeiss-page .mz-hero img.mz-zl {
+  height: 30px;
+  width: auto;
+  margin-bottom: 18px;
+  display: inline-block;
+  object-fit: contain;
+}
+
+.micas-zeiss-page .mz-hero h1 {
+  font-family: Georgia, serif;
+  font-size: 40px;
+  margin: 0 0 10px;
+  color: var(--navy);
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.micas-zeiss-page .mz-hero p {
+  color: var(--grey);
+  font-size: 17px;
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.micas-zeiss-page .mz-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 36px 24px 72px;
+}
+
+.micas-zeiss-page .mz-lead {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.micas-zeiss-page .mz-lead .mz-k {
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.micas-zeiss-page .mz-lead h2 {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  margin: 8px 0 0;
+  color: var(--navy);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.micas-zeiss-page .mz-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+@media (max-width: 900px) {
+  .micas-zeiss-page .mz-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .micas-zeiss-page .mz-hero {
+    padding: 124px 20px 32px;
+  }
+  .micas-zeiss-page .mz-hero h1 {
+    font-size: 32px;
+  }
+  .micas-zeiss-page .mz-hero p {
+    font-size: 15px;
+  }
+  .micas-zeiss-page .mz-wrap {
+    padding: 24px 16px 56px;
+  }
+  .micas-zeiss-page .mz-lead h2 {
+    font-size: 24px;
+  }
+  .micas-zeiss-page .mz-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.micas-zeiss-page .mz-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.micas-zeiss-page .mz-card:hover {
+  box-shadow: 0 12px 30px rgba(16, 24, 40, .12);
+  transform: translateY(-2px);
+}
+
+.micas-zeiss-page .mz-imgwrap {
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: var(--soft);
+}
+
+.micas-zeiss-page .mz-imgwrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.micas-zeiss-page .mz-cbody {
+  padding: 16px 18px 18px;
+}
+
+.micas-zeiss-page .mz-ct {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--navy);
+}
+
+.micas-zeiss-page .mz-cb {
+  color: var(--grey);
+  font-size: 13.5px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.micas-zeiss-page .mz-cta {
+  text-align: center;
+  margin-top: 44px;
+}
+
+.micas-zeiss-page .mz-cta a {
+  display: inline-block;
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 16px 38px;
+  border-radius: 999px;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+
+.micas-zeiss-page .mz-cta a:hover {
+  background: #0f182c;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(22, 34, 63, 0.25);
+}
+
+.micas-zeiss-page .mz-cta .mz-s {
+  display: block;
+  color: var(--grey);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.micas-zeiss-page .mz-note {
+  text-align: center;
+  color: #b7bcc4;
+  font-size: 12px;
+  margin-top: 40px;
+  line-height: 1.4;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}

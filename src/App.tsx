@@ -87,6 +87,11 @@ import styleAviator from './assets/style_aviator.png';
 import styleCateye from './assets/style_cateye.png';
 import styleRectangular from './assets/style_rectangular.png';
 import styleRound from './assets/style_round.png';
+import zeissBlueGuardImg from './assets/zeiss/blueguard.jpg';
+import zeissPhotoFusionImg from './assets/zeiss/photofusion.jpg';
+import zeissDuraVisionImg from './assets/zeiss/duravision.jpg';
+import zeissSmartLifeImg from './assets/zeiss/smartlife.jpg';
+import zeissUVProtectImg from './assets/zeiss/uvprotect.jpg';
 import './App.css';
 
 if (typeof window !== 'undefined') {
@@ -3091,62 +3096,78 @@ function App() {
               Por eso trabajamos con micas <strong>ZEISS</strong>, tecnología óptica alemana de precisión diseñada para ofrecer máxima transparencia y confort visual.
             </p>
 
-            <div className="wp-zeiss-benefits-grid">
-              <div className="wp-zeiss-benefit-card">
-                <div className="wp-zeiss-icon-circle">
-                  <Eye size={22} />
+            <div className="zeiss-tech-grid">
+              <div className="zeiss-tech-card">
+                <div className="zeiss-tech-imgwrap">
+                  <img src={zeissBlueGuardImg} alt="ZEISS BlueGuard" loading="lazy" />
                 </div>
-                <h3 className="wp-zeiss-benefit-title">Nitidez y claridad</h3>
-                <p className="wp-zeiss-benefit-text">
-                  Superficies ópticas de precisión para una visión natural y definida, reduciendo distorsiones en cualquier ángulo.
-                </p>
+                <div className="zeiss-tech-cbody">
+                  <h3 className="zeiss-tech-title">ZEISS BlueGuard</h3>
+                  <p className="zeiss-tech-desc">Filtra la luz azul de pantallas; menos fatiga visual.</p>
+                </div>
               </div>
 
-              <div className="wp-zeiss-benefit-card">
-                <div className="wp-zeiss-icon-circle">
-                  <Sun size={22} />
+              <div className="zeiss-tech-card">
+                <div className="zeiss-tech-imgwrap">
+                  <img src={zeissPhotoFusionImg} alt="ZEISS PhotoFusion X" loading="lazy" />
                 </div>
-                <h3 className="wp-zeiss-benefit-title">Antirreflejante avanzado</h3>
-                <p className="wp-zeiss-benefit-text">
-                  Elimina reflejos parásitos de pantallas, lámparas y faros de noche. Tus ojos descansan y lucen transparentes.
-                </p>
+                <div className="zeiss-tech-cbody">
+                  <h3 className="zeiss-tech-title">ZEISS PhotoFusion X</h3>
+                  <p className="zeiss-tech-desc">Fotocromático: se oscurece al sol y se aclara en interiores.</p>
+                </div>
               </div>
 
-              <div className="wp-zeiss-benefit-card">
-                <div className="wp-zeiss-icon-circle">
-                  <Laptop size={22} />
+              <div className="zeiss-tech-card">
+                <div className="zeiss-tech-imgwrap">
+                  <img src={zeissDuraVisionImg} alt="ZEISS DuraVision" loading="lazy" />
                 </div>
-                <h3 className="wp-zeiss-benefit-title">Filtro de luz azul</h3>
-                <p className="wp-zeiss-benefit-text">
-                  Protección contra la sobreexposición a computadoras y celulares, aliviando el cansancio y el ardor ocular.
-                </p>
+                <div className="zeiss-tech-cbody">
+                  <h3 className="zeiss-tech-title">ZEISS DuraVision</h3>
+                  <p className="zeiss-tech-desc">Antirreflejante premium: más nitidez, menos reflejos, más resistencia.</p>
+                </div>
               </div>
 
-              <div className="wp-zeiss-benefit-card">
-                <div className="wp-zeiss-icon-circle">
-                  <ShieldCheck size={22} />
+              <div className="zeiss-tech-card">
+                <div className="zeiss-tech-imgwrap">
+                  <img src={zeissSmartLifeImg} alt="ZEISS SmartLife" loading="lazy" />
                 </div>
-                <h3 className="wp-zeiss-benefit-title">Durabilidad y resistencia</h3>
-                <p className="wp-zeiss-benefit-text">
-                  Capas endurecidas que protegen contra rayaduras cotidianas y repelen polvo y huellas para una limpieza más fácil.
-                </p>
+                <div className="zeiss-tech-cbody">
+                  <h3 className="zeiss-tech-title">ZEISS SmartLife</h3>
+                  <p className="zeiss-tech-desc">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</p>
+                </div>
+              </div>
+
+              <div className="zeiss-tech-card">
+                <div className="zeiss-tech-imgwrap">
+                  <img src={zeissUVProtectImg} alt="ZEISS UVProtect" loading="lazy" />
+                </div>
+                <div className="zeiss-tech-cbody">
+                  <h3 className="zeiss-tech-title">ZEISS UVProtect</h3>
+                  <p className="zeiss-tech-desc">Protección UV total en lentes transparentes.</p>
+                </div>
               </div>
             </div>
 
-            <div>
+            <div className="zeiss-tech-cta-wrap">
               <a 
-                href="/micas" 
+                href="/armazones" 
                 className="wp-zeiss-cta-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  setCurrentPath('/micas');
-                  window.history.pushState(null, '', '/micas');
+                  setCatalogInitialFilter('Armazones');
+                  setIsCatalogOpen(true);
+                  setCurrentPath('/armazones');
+                  window.history.pushState(null, '', '/armazones');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               >
-                Conoce más &rarr;
+                Elegir mis micas
               </a>
             </div>
+
+            <p className="zeiss-tech-credit">
+              Imágenes y marca ZEISS usadas con autorización. © Carl Zeiss.
+            </p>
           </div>
         </section>
 

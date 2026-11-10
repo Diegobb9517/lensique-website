@@ -2,12 +2,11 @@ import React from 'react';
 import './MicasZeissPage.css';
 
 import zeissLogo from '../assets/zeiss_logo.png';
-import imgBlueGuard from '../assets/premium_bluelight_v2_1785866269289.jpg';
-import imgAntireflective from '../assets/premium_antireflective_1785865428939.jpg';
-import imgPhotochromic from '../assets/premium_photochromic_1785865389796.jpg';
-import imgMonofocal from '../assets/premium_monofocal_1785865329187.jpg';
-import imgBifocal from '../assets/premium_bifocal_v2_1785866208612.jpg';
-import imgProgressive from '../assets/premium_progressive_v2_1785866839561.jpg';
+import imgBlueGuard from '../assets/zeiss/blueguard.jpg';
+import imgPhotoFusion from '../assets/zeiss/photofusion.jpg';
+import imgDuraVision from '../assets/zeiss/duravision.jpg';
+import imgSmartLife from '../assets/zeiss/smartlife.jpg';
+import imgUVProtect from '../assets/zeiss/uvprotect.jpg';
 
 interface MicasZeissPageProps {
   onSelectArmazones: () => void;
@@ -35,57 +34,47 @@ export const MicasZeissPage: React.FC<MicasZeissPageProps> = ({ onSelectArmazone
             </div>
             <div className="mz-cbody">
               <div className="mz-ct">ZEISS BlueGuard</div>
-              <div className="mz-cb">Filtra la luz azul de pantallas y reduce la fatiga visual.</div>
+              <div className="mz-cb">Filtra la luz azul de pantallas; menos fatiga visual.</div>
             </div>
           </div>
 
           <div className="mz-card">
             <div className="mz-imgwrap">
-              <img src={imgAntireflective} alt="ZEISS Antirreflejante" loading="lazy" />
+              <img src={imgPhotoFusion} alt="ZEISS PhotoFusion X" loading="lazy" />
             </div>
             <div className="mz-cbody">
-              <div className="mz-ct">ZEISS Antirreflejante</div>
-              <div className="mz-cb">Visión limpia, sin reflejos molestos y fácil de limpiar.</div>
+              <div className="mz-ct">ZEISS PhotoFusion X</div>
+              <div className="mz-cb">Fotocromático: se oscurece al sol y se aclara en interiores.</div>
             </div>
           </div>
 
           <div className="mz-card">
             <div className="mz-imgwrap">
-              <img src={imgPhotochromic} alt="ZEISS Fotocromáticas (PhotoFusion X)" loading="lazy" />
+              <img src={imgDuraVision} alt="ZEISS DuraVision" loading="lazy" />
             </div>
             <div className="mz-cbody">
-              <div className="mz-ct">ZEISS Fotocromáticas (PhotoFusion X)</div>
-              <div className="mz-cb">Se oscurecen con el sol y se aclaran en interiores.</div>
+              <div className="mz-ct">ZEISS DuraVision</div>
+              <div className="mz-cb">Antirreflejante premium: más nitidez, menos reflejos, más resistencia.</div>
             </div>
           </div>
 
           <div className="mz-card">
             <div className="mz-imgwrap">
-              <img src={imgMonofocal} alt="ZEISS Monofocal" loading="lazy" />
+              <img src={imgSmartLife} alt="ZEISS SmartLife" loading="lazy" />
             </div>
             <div className="mz-cbody">
-              <div className="mz-ct">ZEISS Monofocal</div>
-              <div className="mz-cb">Graduación precisa para ver de lejos o para leer.</div>
+              <div className="mz-ct">ZEISS SmartLife</div>
+              <div className="mz-cb">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</div>
             </div>
           </div>
 
           <div className="mz-card">
             <div className="mz-imgwrap">
-              <img src={imgBifocal} alt="ZEISS Bifocal" loading="lazy" />
+              <img src={imgUVProtect} alt="ZEISS UVProtect" loading="lazy" />
             </div>
             <div className="mz-cbody">
-              <div className="mz-ct">ZEISS Bifocal</div>
-              <div className="mz-cb">Dos campos visuales (lejos y cerca) con división visible.</div>
-            </div>
-          </div>
-
-          <div className="mz-card">
-            <div className="mz-imgwrap">
-              <img src={imgProgressive} alt="ZEISS Progresivas" loading="lazy" />
-            </div>
-            <div className="mz-cbody">
-              <div className="mz-ct">ZEISS Progresivas</div>
-              <div className="mz-cb">Transición suave entre lejos, intermedio y cerca, sin líneas.</div>
+              <div className="mz-ct">ZEISS UVProtect</div>
+              <div className="mz-cb">Protección UV total en lentes transparentes.</div>
             </div>
           </div>
         </div>
@@ -98,13 +87,13 @@ export const MicasZeissPage: React.FC<MicasZeissPageProps> = ({ onSelectArmazone
               onSelectArmazones();
             }}
           >
-            Elegir armazón con micas ZEISS
+            Elegir mis micas
           </a>
           <span className="mz-s">Todas las compras de armazón incluyen micas con graduación.</span>
         </div>
 
         <div className="mz-note">
-          Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.
+          Imágenes y marca ZEISS usadas con autorización. © Carl Zeiss. Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.
         </div>
       </div>
     </div>

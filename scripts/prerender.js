@@ -428,35 +428,31 @@ const micasBodyInjection = `
       </div>
       <div class="mz-grid">
         <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/premium_bluelight_v2_1785866269289.jpg" alt="ZEISS BlueGuard" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS BlueGuard</div><div class="mz-cb">Filtra la luz azul de pantallas y reduce la fatiga visual.</div></div>
+          <div class="mz-imgwrap"><img src="/assets/zeiss/blueguard.jpg" alt="ZEISS BlueGuard" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS BlueGuard</div><div class="mz-cb">Filtra la luz azul de pantallas; menos fatiga visual.</div></div>
         </div>
         <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/premium_antireflective_1785865428939.jpg" alt="ZEISS Antirreflejante" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS Antirreflejante</div><div class="mz-cb">Visión limpia, sin reflejos molestos y fácil de limpiar.</div></div>
+          <div class="mz-imgwrap"><img src="/assets/zeiss/photofusion.jpg" alt="ZEISS PhotoFusion X" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS PhotoFusion X</div><div class="mz-cb">Fotocromático: se oscurece al sol y se aclara en interiores.</div></div>
         </div>
         <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/premium_photochromic_1785865389796.jpg" alt="ZEISS Fotocromáticas (PhotoFusion X)" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS Fotocromáticas (PhotoFusion X)</div><div class="mz-cb">Se oscurecen con el sol y se aclaran en interiores.</div></div>
+          <div class="mz-imgwrap"><img src="/assets/zeiss/duravision.jpg" alt="ZEISS DuraVision" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS DuraVision</div><div class="mz-cb">Antirreflejante premium: más nitidez, menos reflejos, más resistencia.</div></div>
         </div>
         <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/premium_monofocal_1785865329187.jpg" alt="ZEISS Monofocal" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS Monofocal</div><div class="mz-cb">Graduación precisa para ver de lejos o para leer.</div></div>
+          <div class="mz-imgwrap"><img src="/assets/zeiss/smartlife.jpg" alt="ZEISS SmartLife" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS SmartLife</div><div class="mz-cb">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</div></div>
         </div>
         <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/premium_bifocal_v2_1785866208612.jpg" alt="ZEISS Bifocal" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS Bifocal</div><div class="mz-cb">Dos campos visuales (lejos y cerca) con división visible.</div></div>
-        </div>
-        <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/premium_progressive_v2_1785866839561.jpg" alt="ZEISS Progresivas" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS Progresivas</div><div class="mz-cb">Transición suave entre lejos, intermedio y cerca, sin líneas.</div></div>
+          <div class="mz-imgwrap"><img src="/assets/zeiss/uvprotect.jpg" alt="ZEISS UVProtect" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS UVProtect</div><div class="mz-cb">Protección UV total en lentes transparentes.</div></div>
         </div>
       </div>
       <div class="mz-cta">
-        <a href="/armazones">Elegir armazón con micas ZEISS</a>
+        <a href="/armazones">Elegir mis micas</a>
         <span class="mz-s">Todas las compras de armazón incluyen micas con graduación.</span>
       </div>
-      <div class="mz-note">Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.</div>
+      <div class="mz-note">Imágenes y marca ZEISS usadas con autorización. © Carl Zeiss. Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.</div>
     </div>
   </div>
 `;

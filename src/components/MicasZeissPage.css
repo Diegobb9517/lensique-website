@@ -90,13 +90,40 @@
 
 .micas-zeiss-page .mz-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 22px;
+}
+
+.micas-zeiss-page .mz-card:nth-child(1),
+.micas-zeiss-page .mz-card:nth-child(2),
+.micas-zeiss-page .mz-card:nth-child(3) {
+  grid-column: span 2;
+}
+
+.micas-zeiss-page .mz-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.micas-zeiss-page .mz-card:nth-child(5) {
+  grid-column: 4 / span 2;
 }
 
 @media (max-width: 900px) {
   .micas-zeiss-page .mz-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .micas-zeiss-page .mz-card:nth-child(1),
+  .micas-zeiss-page .mz-card:nth-child(2),
+  .micas-zeiss-page .mz-card:nth-child(3),
+  .micas-zeiss-page .mz-card:nth-child(4),
+  .micas-zeiss-page .mz-card:nth-child(5) {
+    grid-column: auto;
+  }
+  .micas-zeiss-page .mz-card:nth-child(5) {
+    grid-column: span 2;
+    max-width: 420px;
+    margin: 0 auto;
+    width: 100%;
   }
 }
 
@@ -119,6 +146,11 @@
   .micas-zeiss-page .mz-grid {
     grid-template-columns: 1fr;
     gap: 18px;
+  }
+  .micas-zeiss-page .mz-card:nth-child(5) {
+    grid-column: auto;
+    max-width: none;
+    margin: 0;
   }
 }
 

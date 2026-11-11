@@ -260,17 +260,26 @@ var st = {
 
 function $(id){ return document.getElementById(id); }
 function val(id){
+  if (st.same && (id === 'oi-sph' || id === 'oi-cyl' || id === 'oi-axis')) {
+    id = id.replace('oi-', 'od-');
+  }
   var e = $(id);
   var v = (e && e.value !== '') ? e.value : (st.rx[id] != null ? st.rx[id] : '');
   return v === '' ? 0 : parseFloat(v);
 }
+function getEffRx(){
+  var odE = val('od-sph'), odC = val('od-cyl');
+  var oiE = val('oi-sph'), oiC = val('oi-cyl');
+  var odP = Math.max(Math.abs(odE), Math.abs(odE + odC));
+  var oiP = Math.max(Math.abs(oiE), Math.abs(oiE + oiC));
+  var effE = odP >= oiP ? odE : oiE;
+  var effC = odP >= oiP ? odC : oiC;
+  var add = (st.need === 'prog') ? val('add') : 0;
+  return { e: effE, c: effC, add: add, odE: odE, odC: odC, oiE: oiE, oiC: oiC };
+}
 function potVal(){
-  return Math.max(
-    Math.abs(val('od-sph')),
-    Math.abs(val('od-sph') + val('od-cyl')),
-    Math.abs(val('oi-sph')),
-    Math.abs(val('oi-sph') + val('oi-cyl'))
-  );
+  var rx = getEffRx();
+  return Math.max(Math.abs(rx.e), Math.abs(rx.e + rx.c));
 }
 
 function saveRx(){
@@ -306,17 +315,18 @@ function feasIdx(tratOverride){
 }
 
 function recIdx(){
-  var r1 = recommend(val('od-sph'), val('od-cyl')), r2 = recommend(val('oi-sph'), val('oi-cyl'));
-  if (r1 === null || r2 === null) return null;
-  return ORDER.indexOf(r1) >= ORDER.indexOf(r2) ? r1 : r2;
+  var rx = getEffRx();
+  return recommend(rx.e, rx.c);
 }
 
-function chosenIdx(){
+function currentIdx(){
   var feas = feasIdx();
   if (!feas.length) return '1.5';
   var base = feas[0];
   var rec = recIdx();
-  if (rec && feas.indexOf(rec) >= 0 && ORDER.indexOf(rec) > ORDER.indexOf(base)) return rec;
+  if (rec && feas.indexOf(rec) < 0) rec = null;
+  var worth = !!(rec && ORDER.indexOf(rec) > ORDER.indexOf(base) && potVal() >= 2);
+  if (st.thin && worth) return rec;
   return base;
 }
 
@@ -327,33 +337,31 @@ function idxLabel(i){
 /* Consulta asíncrona de precio al POS */
 function queryPosPrice(idxOverride, tratOverride, callback){
   var need = st.need;
-  var curIdx = idxOverride || st.idx || '1.5';
+  var curIdx = idxOverride || currentIdx();
   var trat = tratOverride != null ? tratOverride : st.trat;
-  var odE = val('od-sph'), odC = val('od-cyl'), odAx = val('od-axis'), odAd = need === 'prog' ? val('add') : 0;
-  var oiE = st.same ? odE : val('oi-sph');
-  var oiC = st.same ? odC : val('oi-cyl');
-  var oiAx = st.same ? odAx : val('oi-axis');
-  var oiAd = odAd;
+  var rx = getEffRx();
+  var odAx = $('od-axis') ? parseFloat($('od-axis').value || '0') : 0;
+  var oiAx = st.same ? odAx : ($('oi-axis') ? parseFloat($('oi-axis').value || '0') : 0);
 
-  var cacheKey = [need, curIdx, trat, odE, odC, odAx, odAd, oiE, oiC, oiAx, oiAd].join('|');
+  var cacheKey = [need, curIdx, trat, rx.odE, rx.odC, odAx, rx.add, rx.oiE, rx.oiC, oiAx, rx.add].join('|');
   if (_posPriceCache[cacheKey]) {
     return callback(_posPriceCache[cacheKey]);
   }
 
-  var effE = Math.max(Math.abs(odE), Math.abs(odE + odC)) >= Math.max(Math.abs(oiE), Math.abs(oiE + oiC)) ? odE : oiE;
-  var effC = Math.max(Math.abs(odE), Math.abs(odE + odC)) >= Math.max(Math.abs(oiE), Math.abs(oiE + oiC)) ? odC : oiC;
-  var localFallback = calcLocalZeiss(need, curIdx, trat, effE, effC, odAd);
+  var effE = rx.e;
+  var effC = rx.c;
+  var localFallback = calcLocalZeiss(need, curIdx, trat, effE, effC, rx.add);
 
   var payload = {
     tipo: need === 'prog' ? 'progresivo' : 'monofocal',
     esfera: effE,
     cilindro: effC,
     eje: odAx || 0,
-    adicion: odAd || 0,
+    adicion: rx.add || 0,
     indice: curIdx === '1.5' ? '1.50' : curIdx === '1.6' ? '1.60' : curIdx,
     tratamiento: trat === 'foto' ? 'fotocromatico' : (trat === 'azul' ? 'filtro_azul' : 'ninguno'),
-    od: { esfera: odE, cilindro: odC, eje: odAx || 0, adicion: odAd },
-    oi: { esfera: oiE, cilindro: oiC, eje: oiAx || 0, adicion: oiAd }
+    od: { esfera: rx.odE, cilindro: rx.odC, eje: odAx || 0, adicion: rx.add },
+    oi: { esfera: rx.oiE, cilindro: rx.oiC, eje: oiAx || 0, adicion: rx.add }
   };
 
   var done = false;
@@ -403,21 +411,19 @@ function updateLeft(){
   }
   $('l-cat').textContent = typeLabel[st.need];
 
-  if (st.ok && st.idx === '') {
+  if (st.step === 3 && st.ok && st.idx === '') {
     $('l-d').textContent = 'Tu mica ZEISS';
     $('l-v').textContent = '—';
     if ($('l-msi')) { $('l-msi').textContent = ''; $('l-msi').style.display = 'none'; }
     return;
   }
 
-  var idx = st.ok ? st.idx : (st.step === 2 ? chosenIdx() : '1.5');
-  if (!idx) idx = '1.5';
+  var idx = currentIdx();
+  st.idx = idx;
+  var rx = getEffRx();
+  var basePrice = calcLocalZeiss(st.need, idx, st.trat, rx.e, rx.c, rx.add);
 
-  var effE = Math.max(Math.abs(val('od-sph')), Math.abs(val('oi-sph')));
-  var effC = Math.max(Math.abs(val('od-cyl')), Math.abs(val('oi-cyl')));
-  var basePrice = calcLocalZeiss(st.need, idx, st.trat, effE, effC, val('add'));
-
-  $('l-d').textContent = st.ok ? 'Tu mica ZEISS' : (st.step === 2 ? 'Estimado' : 'Desde');
+  $('l-d').textContent = (st.step === 3 && st.ok) ? 'Tu mica ZEISS' : (st.step === 2 ? 'Estimado' : 'Desde');
   $('l-v').textContent = money(basePrice);
 
   function applyMsi(p) {
@@ -434,24 +440,27 @@ function updateLeft(){
   }
   applyMsi(basePrice);
 
-  if (st.step === 3 && st.ok) {
+  var hasRx = (st.step === 3 && st.ok) || (st.step === 2 && $('od-sph') && $('od-sph').value !== '');
+  if (hasRx) {
     queryPosPrice(idx, st.trat, function(livePrice){
       if ($('l-v')) $('l-v').textContent = money(livePrice);
       applyMsi(livePrice);
-      if ($('mainPrice')) $('mainPrice').textContent = money(livePrice);
+      if (st.step === 3 && st.ok) {
+        if ($('mainPrice')) $('mainPrice').textContent = money(livePrice);
 
-      var mLive = getMsiInfo(livePrice);
-      var msiBox = $('msiContainer');
-      if (msiBox) {
-        if (mLive) {
-          msiBox.innerHTML = '<div class="msibox">'
-            + '<span class="l">PÁGALO A MESES<br><span>' + mLive.n + ' meses sin intereses</span></span>'
-            + '<span class="v" id="msiMonthly">' + money(mLive.monthly) + '<small>/mes</small></span>'
-            + '</div>';
-          msiBox.style.display = '';
-        } else {
-          msiBox.innerHTML = '';
-          msiBox.style.display = 'none';
+        var mLive = getMsiInfo(livePrice);
+        var msiBox = $('msiContainer');
+        if (msiBox) {
+          if (mLive) {
+            msiBox.innerHTML = '<div class="msibox">'
+              + '<span class="l">PÁGALO A MESES<br><span>' + mLive.n + ' meses sin intereses</span></span>'
+              + '<span class="v" id="msiMonthly">' + money(mLive.monthly) + '<small>/mes</small></span>'
+              + '</div>';
+            msiBox.style.display = '';
+          } else {
+            msiBox.innerHTML = '';
+            msiBox.style.display = 'none';
+          }
         }
       }
     });
@@ -581,7 +590,15 @@ function copyOI(){
   });
   $('oi-axis').value = $('od-axis').value;
 }
-function go(s){ st.step = s; render(); $('right').scrollTop = 0; }
+function go(s){
+  if (s <= 2) {
+    st.thin = false;
+    st.trat = 'none';
+  }
+  st.step = s;
+  render();
+  $('right').scrollTop = 0;
+}
 
 function toResult(){
   var faltan = [], ejeFalta = false;
@@ -688,7 +705,7 @@ function render(){
     h += '<button class="cta" onclick="toResult()">Ver precio de mis micas</button>';
   } else {
     h += '<button class="back" onclick="go(2)">‹ volver</button>';
-    h += '<div class="step">Paso 3 de 3</div><h1>Tu cotización</h1><p class="sub">Precio por el par de micas (antirreflejante DuraVision Platinum incluido). Un optometrista valida tu graduación antes de fabricar.</p>';
+    h += '<div class="step">Paso 3 de 3</div><h1>Tu cotización</h1><p class="sub">Precio por el par de micas. Un optometrista valida tu graduación antes de fabricar.</p>';
     var feas = feasIdx();
     if (!feas.length) {
       if (st.trat === 'foto' && feasIdx('none').length) {
@@ -705,12 +722,11 @@ function render(){
       if (rec && feas.indexOf(rec) < 0) rec = null;
       var worth = !!(rec && ORDER.indexOf(rec) > ORDER.indexOf(base) && potVal() >= 2);
       if (st.thin && !worth) st.thin = false;
-      var curIdx = (worth && st.thin) ? rec : base;
+      var curIdx = currentIdx();
       st.idx = curIdx;
 
-      var effE = Math.max(Math.abs(val('od-sph')), Math.abs(val('oi-sph')));
-      var effC = Math.max(Math.abs(val('od-cyl')), Math.abs(val('oi-cyl')));
-      var resPrice = calcLocalZeiss(st.need, curIdx, st.trat, effE, effC, val('add'));
+      var rx = getEffRx();
+      var resPrice = calcLocalZeiss(st.need, curIdx, st.trat, rx.e, rx.c, rx.add);
 
       // Resbox limpio: solo el precio grande y "por par · IVA incluido"
       h += '<div class="resbox">'
@@ -721,20 +737,20 @@ function render(){
       h += '<div class="lab">Ajusta tu mica (opcional)</div>';
 
       if (worth) {
-        var dThin = calcLocalZeiss(st.need, rec, st.trat, effE, effC, val('add')) - calcLocalZeiss(st.need, base, st.trat, effE, effC, val('add'));
+        var dThin = calcLocalZeiss(st.need, rec, st.trat, rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, base, st.trat, rx.e, rx.c, rx.add);
         h += '<div class="add' + (st.thin ? ' on' : '') + '" onclick="togThin()">'
           + '<div class="t"><b>Más delgada y ligera</b><span>Índice ' + idxLabel(rec) + ' · recomendada para tu potencia óptica.</span></div>'
           + '<span class="p">+' + money(dThin) + '</span></div>';
       }
 
-      var dAz = calcLocalZeiss(st.need, curIdx, 'azul', effE, effC, val('add')) - calcLocalZeiss(st.need, curIdx, 'none', effE, effC, val('add'));
+      var dAz = calcLocalZeiss(st.need, curIdx, 'azul', rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, curIdx, 'none', rx.e, rx.c, rx.add);
       h += '<div class="add' + (st.trat === 'azul' ? ' on' : '') + '" onclick="setTrat(\'azul\')">'
         + '<div class="t"><b>Filtro de luz azul (BlueGuard)</b><span>Protección para pantallas y dispositivos; menos fatiga visual.</span></div>'
         + '<span class="p">+' + money(dAz) + '</span></div>';
 
       if (feasIdx('foto').length) {
         var fi = feasIdx('foto')[0];
-        var dFo = calcLocalZeiss(st.need, fi, 'foto', effE, effC, val('add')) - calcLocalZeiss(st.need, fi, 'none', effE, effC, val('add'));
+        var dFo = calcLocalZeiss(st.need, fi, 'foto', rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, fi, 'none', rx.e, rx.c, rx.add);
         h += '<div class="add' + (st.trat === 'foto' ? ' on' : '') + '" onclick="setTrat(\'foto\')">'
           + '<div class="t"><b>Fotocromático (PhotoFusion X)</b><span>Se oscurece al sol y se aclara rápidamente en interiores.</span></div>'
           + '<span class="p">+' + money(dFo) + '</span></div>';

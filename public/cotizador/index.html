@@ -74,7 +74,6 @@ h1{font-family:Georgia,serif;font-size:32px;margin:0 0 6px;color:var(--navy);lin
 .ghost.wa-btn{border-color:#1a9c6b;color:#13795a;background:#eafaf2}
 .ghost.wa-btn:hover{background:#dcf5e7}
 .note{font-size:12px;color:var(--grey);margin-top:14px;text-align:center;line-height:1.4}
-.sync-tag{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#1a9c6b;background:#eafaf2;border:1px solid #c5ecd8;border-radius:999px;padding:3px 9px;margin-top:8px;font-weight:600}
 </style>
 </head>
 <body>
@@ -89,7 +88,7 @@ h1{font-family:Georgia,serif;font-size:32px;margin:0 0 6px;color:var(--navy);lin
       <span class="d" id="l-d">Desde</span>
       <span class="v" id="l-v">$1,899</span>
       <span class="n">por par · IVA incluido</span>
-      <span class="msi" id="l-msi">o $633/mes a 3 MSI</span>
+      <span class="msi" id="l-msi" style="display:none"></span>
     </div>
   </div>
   <div class="right" id="right"></div>
@@ -105,6 +104,22 @@ var POS_API_BASE = (window.location.hostname === 'localhost' || window.location.
   : 'https://lensique-pos.onrender.com';
 
 var _posPriceCache = {};
+
+/* Reglas de MSI Lensique:
+   - 3 meses sin intereses: solo si el monto a pagar es >= $2,500.
+   - 6 meses sin intereses: solo si el monto a pagar es >= $4,000.
+   - Por debajo de $2,500: NO mostrar mensualidad/MSI (solo precio de contado).
+*/
+function getMsiInfo(price) {
+  if (typeof price !== 'number' || isNaN(price)) return null;
+  if (price >= 4000) {
+    return { n: 6, monthly: Math.round(price / 6) };
+  }
+  if (price >= 2500) {
+    return { n: 3, monthly: Math.round(price / 3) };
+  }
+  return null;
+}
 
 /* Catálogo y reglas base ZEISS L5 2026 (idéntico al mostrador del POS para cálculo inmediato o fallback) */
 var MONO_COST = {
@@ -391,7 +406,7 @@ function updateLeft(){
   if (st.ok && st.idx === '') {
     $('l-d').textContent = 'Tu mica ZEISS';
     $('l-v').textContent = '—';
-    $('l-msi').textContent = 'Consúltanos';
+    if ($('l-msi')) { $('l-msi').textContent = ''; $('l-msi').style.display = 'none'; }
     return;
   }
 
@@ -404,14 +419,41 @@ function updateLeft(){
 
   $('l-d').textContent = st.ok ? 'Tu mica ZEISS' : (st.step === 2 ? 'Estimado' : 'Desde');
   $('l-v').textContent = money(basePrice);
-  $('l-msi').textContent = 'o ' + money(Math.round(basePrice / 3)) + '/mes a 3 MSI';
+
+  function applyMsi(p) {
+    var m = getMsiInfo(p);
+    if ($('l-msi')) {
+      if (m) {
+        $('l-msi').textContent = 'o ' + money(m.monthly) + '/mes a ' + m.n + ' MSI';
+        $('l-msi').style.display = '';
+      } else {
+        $('l-msi').textContent = '';
+        $('l-msi').style.display = 'none';
+      }
+    }
+  }
+  applyMsi(basePrice);
 
   if (st.step === 3 && st.ok) {
     queryPosPrice(idx, st.trat, function(livePrice){
       if ($('l-v')) $('l-v').textContent = money(livePrice);
-      if ($('l-msi')) $('l-msi').textContent = 'o ' + money(Math.round(livePrice / 3)) + '/mes a 3 MSI';
+      applyMsi(livePrice);
       if ($('mainPrice')) $('mainPrice').textContent = money(livePrice);
-      if ($('msiMonthly')) $('msiMonthly').textContent = money(Math.round(livePrice / 3));
+
+      var mLive = getMsiInfo(livePrice);
+      var msiBox = $('msiContainer');
+      if (msiBox) {
+        if (mLive) {
+          msiBox.innerHTML = '<div class="msibox">'
+            + '<span class="l">PÁGALO A MESES<br><span>' + mLive.n + ' meses sin intereses</span></span>'
+            + '<span class="v" id="msiMonthly">' + money(mLive.monthly) + '<small>/mes</small></span>'
+            + '</div>';
+          msiBox.style.display = '';
+        } else {
+          msiBox.innerHTML = '';
+          msiBox.style.display = 'none';
+        }
+      }
     });
   }
 }
@@ -669,12 +711,11 @@ function render(){
       var effE = Math.max(Math.abs(val('od-sph')), Math.abs(val('oi-sph')));
       var effC = Math.max(Math.abs(val('od-cyl')), Math.abs(val('oi-cyl')));
       var resPrice = calcLocalZeiss(st.need, curIdx, st.trat, effE, effC, val('add'));
-      var tratL = st.trat === 'azul' ? ' · filtro azul (BlueGuard)' : (st.trat === 'foto' ? ' · fotocromático (PhotoFusion X)' : '');
 
+      // Resbox limpio: solo el precio grande y "por par · IVA incluido"
       h += '<div class="resbox">'
         + '<div class="big" id="mainPrice">' + money(resPrice) + '</div>'
-        + '<div class="cfg">Mica ZEISS ' + typeLabel[st.need] + ' · índice ' + idxLabel(curIdx) + tratL + ' · Antirreflejante DuraVision Platinum incluido</div>'
-        + '<span class="sync-tag">✓ Precio sincrono mostrador Lensique</span>'
+        + '<div class="cfg">por par · IVA incluido</div>'
         + '</div>';
 
       h += '<div class="lab">Ajusta tu mica (opcional)</div>';
@@ -699,15 +740,21 @@ function render(){
           + '<span class="p">+' + money(dFo) + '</span></div>';
       }
 
-      h += '<div class="msibox">'
-        + '<span class="l">PÁGALO A MESES<br><span>3 meses sin intereses</span></span>'
-        + '<span class="v" id="msiMonthly">' + money(Math.round(resPrice / 3)) + '<small>/mes</small></span>'
-        + '</div>';
+      // MSI respetando reglas (3 MSI >= $2500, 6 MSI >= $4000, ninguno < $2500)
+      var msiRes = getMsiInfo(resPrice);
+      h += '<div id="msiContainer"' + (msiRes ? '' : ' style="display:none"') + '>';
+      if (msiRes) {
+        h += '<div class="msibox">'
+          + '<span class="l">PÁGALO A MESES<br><span>' + msiRes.n + ' meses sin intereses</span></span>'
+          + '<span class="v" id="msiMonthly">' + money(msiRes.monthly) + '<small>/mes</small></span>'
+          + '</div>';
+      }
+      h += '</div>';
 
       h += '<button class="cta" onclick="comprarArmazon()">Comprar (elige tu armazón)</button>';
       h += '<button class="ghost" onclick="agendarMontaje()">Ya tengo mi armazón · agendar montaje</button>';
       h += '<button class="ghost wa-btn" onclick="escribenosWhatsApp()">Escríbenos por WhatsApp</button>';
-      h += '<div class="note">Precio por par, IVA incluido. Una sola fuente de la verdad: sincronizado directamente con el cotizador mostrador del POS Lensique.</div>';
+      h += '<div class="note">Precio por par, IVA incluido.</div>';
     }
   }
   r.innerHTML = h;

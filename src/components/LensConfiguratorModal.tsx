@@ -41,15 +41,31 @@ export function charmPrice(n: number): number {
   return Math.round(n / 100) * 100 - 1;
 }
 
-const MONO_COST: Record<string, { term?: number; proc?: number }> = {
-  chrome: { term: 422 },
-  '1.5':  { term: 747, proc: 1288 },
-  '1.6':  { term: 829, proc: 1617 },
-  '1.67': { term: 922, proc: 2019 },
-  '1.74': { proc: 2857 }
+const MONO_COST: Record<string, Record<string, { term?: number; proc?: number }>> = {
+  chrome: {
+    '1.5': { term: 422 }
+  },
+  verde: {
+    '1.5':  { term: 747, proc: 1288 },
+    '1.6':  { term: 829, proc: 1617 },
+    '1.67': { term: 922, proc: 2019 },
+    '1.74': { proc: 2857 }
+  },
+  azul: {
+    '1.5':  { term: 747, proc: 1288 },
+    '1.6':  { term: 829, proc: 1694 },
+    '1.67': { term: 922, proc: 2019 },
+    '1.74': { proc: 2922 }
+  },
+  foto: {
+    '1.5':  { proc: 1679 },
+    '1.6':  { term: 1179, proc: 1921 },
+    '1.67': { proc: 2416 }
+  }
 };
 
-function isTermStock(e: number, c: number, idx: string) {
+function isTermStock(e: number, c: number, idx: string, trat?: string) {
+  if (trat === 'foto') return false;
   return (Math.abs(c) <= 2 && e >= -6 && e <= 4 && (idx === '1.5' || idx === '1.6'));
 }
 
@@ -67,27 +83,27 @@ export function calcLocalZeiss(
 ): number {
   e = typeof e === 'number' ? e : 0;
   c = typeof c === 'number' ? c : 0;
-  let cost = 747;
   if (tipo === 'mono') {
-    const d = MONO_COST[idx] || MONO_COST['1.5'];
-    const stock = isTermStock(e, c, idx) || (idx === '1.67' && trat !== 'foto' && t167Stock(e, c));
-    if (stock && d.term && !(trat === 'foto' && e < -4)) {
+    const k = trat === 'foto' ? 'foto' : (trat === 'azul' ? 'azul' : 'verde');
+    const d = (MONO_COST[k] && MONO_COST[k][idx]) ? MONO_COST[k][idx] : (MONO_COST.verde[idx] || MONO_COST.verde['1.5']);
+    const stock = isTermStock(e, c, idx, trat) || (idx === '1.67' && trat !== 'foto' && t167Stock(e, c));
+    let cost: number;
+    if (stock && d.term) {
       cost = d.term;
+    } else if (d.proc) {
+      cost = d.proc;
     } else {
-      cost = d.proc || d.term || 1288;
-      if (trat === 'foto' && cost === 2755) cost = 2258;
+      cost = d.term || 1288;
     }
-    if (trat === 'foto' && stock && idx === '1.6') cost = 1179;
-    if (trat === 'foto' && idx === '1.5') cost = 1679;
     const iva = cost * 1.16;
     const m = multFor(cost);
     const raw = iva * m;
     return charmPrice(raw);
   } else {
     // Progresivo ZEISS Light 3Dv (Comfort) - Paridad exacta con mostrador POS ($4,600 base)
+    let cost = 2129;
     if (trat === 'foto') cost = 2439;
     else if (trat === 'azul') cost = 2191;
-    else cost = 2129;
     const iva = cost * 1.16;
     const m = multFor(cost);
     const raw = iva * m;
@@ -543,35 +559,49 @@ export default function LensConfiguratorModal({
     if (need === 'frame' || tab !== 'rx') return null;
     if (feasibleIndices.length === 0) return null;
 
-    const base = feasibleIndices[0]; // Estándar: mínimo fabricable
+    // Base más económica feasible con la graduación actual
+    let base = feasibleIndices[0];
+    let minP = getMicaPriceVal(need, base, selectedTrat, effRx.e, effRx.c);
+    for (let i = 1; i < feasibleIndices.length; i++) {
+      const p = getMicaPriceVal(need, feasibleIndices[i], selectedTrat, effRx.e, effRx.c);
+      if (p < minP) {
+        minP = p;
+        base = feasibleIndices[i];
+      }
+    }
+
     const rec = getRecommendation(numVal(odSph), numVal(odCyl), numVal(oiSph), numVal(oiCyl));
-    const recIndex = (rec && feasibleIndices.includes(rec)) ? rec : base;
-    const worth = ORDER.indexOf(recIndex) > ORDER.indexOf(base);
-
-    const pot = Math.max(
-      Math.abs(numVal(odSph)),
-      Math.abs(numVal(odSph) + numVal(odCyl)),
-      Math.abs(numVal(oiSph)),
-      Math.abs(numVal(oiSph) + numVal(oiCyl))
-    );
-
-    const OPT_MIN = 2.0; // Debajo de ±2.00 no tiene sentido adelgazar
+    const baseOrder = ORDER.indexOf(base);
     let offer: string | null = null;
     let optional = false;
 
-    if (worth) {
-      offer = recIndex;
-      optional = false;
-    } else {
-      offer = (pot >= OPT_MIN && feasibleIndices.length > 1) ? feasibleIndices[1] : null;
-      optional = true;
+    if (rec && ORDER.indexOf(rec) > baseOrder && feasibleIndices.includes(rec)) {
+      const pRec = getMicaPriceVal(need, rec, selectedTrat, effRx.e, effRx.c);
+      if (pRec >= minP) {
+        offer = rec;
+        optional = false;
+      }
+    }
+
+    if (!offer) {
+      for (let i = baseOrder + 1; i < ORDER.length; i++) {
+        const cand = ORDER[i];
+        if (feasibleIndices.includes(cand)) {
+          const pCand = getMicaPriceVal(need, cand, selectedTrat, effRx.e, effRx.c);
+          if (pCand >= minP) {
+            offer = cand;
+            optional = true;
+            break;
+          }
+        }
+      }
     }
 
     if (!offer) {
       return { base, offer: null, optional: false };
     }
     return { base, offer, optional };
-  }, [need, tab, feasibleIndices, odSph, odCyl, oiSph, oiCyl]);
+  }, [need, tab, feasibleIndices, odSph, odCyl, oiSph, oiCyl, selectedTrat, effRx, getMicaPriceVal]);
 
   // Sincronizar índice seleccionado con base/oferta cuando cambie la graduación
   useEffect(() => {
@@ -1433,7 +1463,7 @@ export default function LensConfiguratorModal({
                                   : 'Para tu graduación, una mica notablemente más delgada y ligera.'}
                               </div>
                             </div>
-                            <span className="lsq-addon-pr">+${diff.toLocaleString('es-MX')}</span>
+                            <span className="lsq-addon-pr">{diff > 0 ? `+$${diff.toLocaleString('es-MX')}` : 'incluida'}</span>
                           </div>
                         );
                       })()}

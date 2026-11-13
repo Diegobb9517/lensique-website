@@ -164,10 +164,23 @@ function getMsiInfo(price) {
 /* Catálogo y reglas base ZEISS L5 2026 (idéntico al mostrador del POS para cálculo inmediato o fallback) */
 var MONO_COST = {
   chrome: { term: 422 },
-  '1.5':  { term: 747, proc: 1288 },
-  '1.6':  { term: 829, proc: 1617 },
-  '1.67': { term: 922, proc: 2019 },
-  '1.74': { proc: 2857 }
+  verde: {
+    '1.5':  { term: 747, proc: 1288 },
+    '1.6':  { term: 829, proc: 1617 },
+    '1.67': { term: 922, proc: 2019 },
+    '1.74': { proc: 2857 }
+  },
+  azul: {
+    '1.5':  { term: 747, proc: 1288 },
+    '1.6':  { term: 829, proc: 1694 },
+    '1.67': { term: 922, proc: 2019 },
+    '1.74': { proc: 2922 }
+  },
+  foto: {
+    '1.5':  { proc: 1679 },
+    '1.6':  { term: 1179, proc: 1921 },
+    '1.67': { proc: 2416 }
+  }
 };
 var PROG_BASE_COST = {
   '1.5':  2129 // ZEISS Light 3Dv (Comfort) - Paridad exacta con mostrador POS
@@ -199,7 +212,7 @@ window.ZeissEngine = {
     }
     var idx = opt.indice || '1.5';
     var isProg = opt.tipo === 'prog';
-    var costo = isProg ? (PROG_BASE_COST[idx] || 3662) : (MONO_COST[idx] ? (MONO_COST[idx].term || MONO_COST[idx].proc) : 747);
+    var costo = isProg ? (PROG_BASE_COST[idx] || 3662) : (MONO_COST.verde[idx] ? (MONO_COST.verde[idx].term || MONO_COST.verde[idx].proc) : 747);
     return { disponible: true, costoLista: costo, tipoFab: 'Terminado' };
   }
 };
@@ -208,7 +221,8 @@ function charmPrice(n){
   return Math.round(n / 100) * 100 - 1;
 }
 
-function isTermStock(e, c, idx) {
+function isTermStock(e, c, idx, trat) {
+  if (trat === 'foto') return false;
   return (Math.abs(c) <= 2 && e >= -6 && e <= 4 && (idx === '1.5' || idx === '1.6'));
 }
 
@@ -220,36 +234,39 @@ function t167Stock(e, c) {
 function calcLocalZeiss(tipo, idx, trat, e, c, add) {
   e = typeof e === 'number' ? e : 0;
   c = typeof c === 'number' ? c : 0;
-  var cost = 747;
   if (tipo === 'mono') {
-    var d = MONO_COST[idx] || MONO_COST['1.5'];
-    var stock = isTermStock(e, c, idx) || (idx === '1.67' && trat !== 'foto' && t167Stock(e, c));
-    if (stock && d.term && !(trat === 'foto' && e < -4)) {
+    var k = trat === 'foto' ? 'foto' : (trat === 'azul' ? 'azul' : 'verde');
+    var d = (MONO_COST[k] && MONO_COST[k][idx]) ? MONO_COST[k][idx] : (MONO_COST.verde[idx] || MONO_COST.verde['1.5']);
+    var stock = isTermStock(e, c, idx, trat) || (idx === '1.67' && trat !== 'foto' && t167Stock(e, c));
+    var cost;
+    if (stock && d.term) {
       cost = d.term;
+    } else if (d.proc) {
+      cost = d.proc;
     } else {
-      cost = d.proc || d.term || 1288;
-      if (trat === 'foto' && cost === 2755) cost = 2258;
+      cost = d.term || 1288;
     }
-    if (trat === 'foto' && stock && idx === '1.6') cost = 1179;
-    if (trat === 'foto' && idx === '1.5') cost = 1679;
     var iva = cost * 1.16;
     var m = multFor(cost);
-    var raw = iva * m;
-    return charmPrice(raw);
+    var pvpOriginal = Math.round(iva * m / 100) * 100;
+    return charmPrice(pvpOriginal);
   } else {
     // Progresivo ZEISS Light 3Dv (Comfort) - Paridad exacta con POS
-    // Costos de lista L3: verde: 2129, azul: 2191, foto: 2439
+    var cost = 2129;
     if (trat === 'foto') cost = 2439;
     else if (trat === 'azul') cost = 2191;
-    else cost = 2129;
     var iva = cost * 1.16;
     var m = multFor(cost);
-    var raw = iva * m;
-    return Math.round(raw / 100) * 100;
+    return Math.round(iva * m / 100) * 100;
   }
 }
 
 function money(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+
+function formatDelta(d, zeroText) {
+  if (d <= 0) return zeroText || 'incluido';
+  return '+' + money(d);
+}
 
 var RANGES = {
   '1.5':  [-7, 6, 4],
@@ -363,14 +380,49 @@ function recIdx(){
   return recommend(rx.e, rx.c);
 }
 
-function currentIdx(){
+function getBaseIdx(){
   var feas = feasIdx();
   if (!feas.length) return '1.5';
-  var base = feas[0];
+  var rx = getEffRx();
+  var bestBase = feas[0];
+  var minPrice = calcLocalZeiss(st.need, bestBase, st.trat, rx.e, rx.c, rx.add);
+  for (var i = 1; i < feas.length; i++) {
+    var p = calcLocalZeiss(st.need, feas[i], st.trat, rx.e, rx.c, rx.add);
+    if (p < minPrice) {
+      minPrice = p;
+      bestBase = feas[i];
+    }
+  }
+  return bestBase;
+}
+
+function getThinOfferIdx(baseIdx){
+  if (st.need === 'prog') return null;
+  var base = baseIdx || getBaseIdx();
+  var feas = feasIdx();
   var rec = recIdx();
-  if (rec && feas.indexOf(rec) < 0) rec = null;
-  var worth = !!(st.need !== 'prog' && rec && ORDER.indexOf(rec) > ORDER.indexOf(base) && potVal() >= 2);
-  if (st.thin && worth) return rec;
+  var baseOrder = ORDER.indexOf(base);
+  var rx = getEffRx();
+  var basePrice = calcLocalZeiss(st.need, base, st.trat, rx.e, rx.c, rx.add);
+
+  if (rec && ORDER.indexOf(rec) > baseOrder && feas.indexOf(rec) >= 0) {
+    var pRec = calcLocalZeiss(st.need, rec, st.trat, rx.e, rx.c, rx.add);
+    if (pRec >= basePrice) return rec;
+  }
+  for (var i = baseOrder + 1; i < ORDER.length; i++) {
+    var cand = ORDER[i];
+    if (feas.indexOf(cand) >= 0) {
+      var pCand = calcLocalZeiss(st.need, cand, st.trat, rx.e, rx.c, rx.add);
+      if (pCand >= basePrice) return cand;
+    }
+  }
+  return null;
+}
+
+function currentIdx(){
+  var base = getBaseIdx();
+  var offer = getThinOfferIdx(base);
+  if (st.thin && offer) return offer;
   return base;
 }
 
@@ -516,6 +568,36 @@ function updateLeft(){
             msiBox.innerHTML = '';
             msiBox.style.display = 'none';
           }
+        }
+
+        // Consulta en vivo de extras al POS para garantizar sincronía total con el mostrador
+        var b = getBaseIdx();
+        var to = getThinOfferIdx(b);
+        if (to) {
+          queryPosPrice(to, st.trat, function(liveThinP){
+            queryPosPrice(b, st.trat, function(liveBaseP){
+              var d = liveThinP - liveBaseP;
+              if (d < 0) d = 0;
+              if ($('dThinPrice')) $('dThinPrice').textContent = formatDelta(d, 'incluida');
+            });
+          });
+        }
+        queryPosPrice(idx, 'azul', function(liveAzP){
+          queryPosPrice(idx, 'none', function(liveNoneP){
+            var d = liveAzP - liveNoneP;
+            if (d < 0) d = 0;
+            if ($('dAzPrice')) $('dAzPrice').textContent = formatDelta(d, 'incluido');
+          });
+        });
+        if (feasIdx('foto').length) {
+          var fi = feasIdx('foto').indexOf(idx) >= 0 ? idx : feasIdx('foto')[0];
+          queryPosPrice(fi, 'foto', function(liveFoP){
+            queryPosPrice(fi, 'none', function(liveNoneP){
+              var d = liveFoP - liveNoneP;
+              if (d < 0) d = 0;
+              if ($('dFoPrice')) $('dFoPrice').textContent = formatDelta(d, 'incluido');
+            });
+          });
         }
       }
     });
@@ -772,12 +854,10 @@ function render(){
       h += '<button class="ghost wa-btn" onclick="escribenosWhatsApp()">Escríbenos por WhatsApp</button>';
       st.idx = '';
     } else {
-      var base = feas[0];
-      var rec = recIdx();
-      if (rec && feas.indexOf(rec) < 0) rec = null;
-      var worth = !!(st.need !== 'prog' && rec && ORDER.indexOf(rec) > ORDER.indexOf(base) && potVal() >= 2);
-      if (st.thin && !worth) st.thin = false;
-      var curIdx = currentIdx();
+      var base = getBaseIdx();
+      var thinOffer = getThinOfferIdx(base);
+      if (st.thin && !thinOffer) st.thin = false;
+      var curIdx = (st.thin && thinOffer) ? thinOffer : base;
       st.idx = curIdx;
 
       var rx = getEffRx();
@@ -791,24 +871,27 @@ function render(){
 
       h += '<div class="lab">Ajusta tu mica (opcional)</div>';
 
-      if (worth) {
-        var dThin = calcLocalZeiss(st.need, rec, st.trat, rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, base, st.trat, rx.e, rx.c, rx.add);
+      if (thinOffer) {
+        var dThin = calcLocalZeiss(st.need, thinOffer, st.trat, rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, base, st.trat, rx.e, rx.c, rx.add);
+        if (dThin < 0) dThin = 0;
         h += '<div class="add' + (st.thin ? ' on' : '') + '" onclick="togThin()">'
-          + '<div class="t"><b>Más delgada y ligera</b><span>Índice ' + idxLabel(rec) + ' · recomendada para tu potencia óptica.</span></div>'
-          + '<span class="p">+' + money(dThin) + '</span></div>';
+          + '<div class="t"><b>Más delgada y ligera</b><span>Índice ' + idxLabel(thinOffer) + ' · recomendada para tu potencia óptica.</span></div>'
+          + '<span class="p" id="dThinPrice">' + formatDelta(dThin, 'incluida') + '</span></div>';
       }
 
       var dAz = calcLocalZeiss(st.need, curIdx, 'azul', rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, curIdx, 'none', rx.e, rx.c, rx.add);
+      if (dAz < 0) dAz = 0;
       h += '<div class="add' + (st.trat === 'azul' ? ' on' : '') + '" onclick="setTrat(\'azul\')">'
         + '<div class="t"><b>Filtro de luz azul (BlueGuard)</b><span>Protección para pantallas y dispositivos; menos fatiga visual.</span></div>'
-        + '<span class="p">+' + money(dAz) + '</span></div>';
+        + '<span class="p" id="dAzPrice">' + formatDelta(dAz, 'incluido') + '</span></div>';
 
       if (feasIdx('foto').length) {
-        var fi = feasIdx('foto')[0];
+        var fi = feasIdx('foto').indexOf(curIdx) >= 0 ? curIdx : feasIdx('foto')[0];
         var dFo = calcLocalZeiss(st.need, fi, 'foto', rx.e, rx.c, rx.add) - calcLocalZeiss(st.need, fi, 'none', rx.e, rx.c, rx.add);
+        if (dFo < 0) dFo = 0;
         h += '<div class="add' + (st.trat === 'foto' ? ' on' : '') + '" onclick="setTrat(\'foto\')">'
           + '<div class="t"><b>Fotocromático (PhotoFusion X)</b><span>Se oscurece al sol y se aclara rápidamente en interiores.</span></div>'
-          + '<span class="p">+' + money(dFo) + '</span></div>';
+          + '<span class="p" id="dFoPrice">' + formatDelta(dFo, 'incluido') + '</span></div>';
       }
 
       // MSI respetando reglas (3 MSI >= $2500, 6 MSI >= $4000, ninguno < $2500)

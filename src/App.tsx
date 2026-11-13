@@ -30,6 +30,8 @@ import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPT
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
 import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName } from './lib/format';
+import { getOfficialHdImage } from './lib/productImages';
+import { ProductFallbackCard } from './components/ProductFallbackCard';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard, FormatProductName } from './components/ProductCard';
@@ -1258,6 +1260,7 @@ function App() {
   const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
+  const [contactModalImgError, setContactModalImgError] = useState(false);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [configuratorInitialSection, setConfiguratorInitialSection] = useState<string | null>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
@@ -1346,6 +1349,7 @@ function App() {
 
   // 2. Sync history pushState, SEO title, meta tags, and JSON-LD when selectedProductDetail changes
   useEffect(() => {
+    setContactModalImgError(false);
     if (selectedProductDetail) {
       import('./lib/analytics').then(({ trackViewItem }) => trackViewItem(selectedProductDetail));
 
@@ -1850,7 +1854,8 @@ function App() {
             const basePrice = selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0;
             const deliv = calculateDeliveryTime(selectedProductDetail);
             const fmt = getContactLensFormat(selectedProductDetail);
-            const imgSrc = resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url) || contactLensesImg;
+            const hdImg = getOfficialHdImage(selectedProductDetail);
+            const imgSrc = hdImg || resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url);
 
             return (
               <motion.div
@@ -1882,14 +1887,16 @@ function App() {
                     <div className="cl-detail-badge">
                       {isOutOfStock ? '● SOBRE PEDIDO' : '● EN EXISTENCIA'}
                     </div>
-                    <img 
-                      src={imgSrc} 
-                      alt={selectedProductDetail.name} 
-                      onError={(e: any) => {
-                        const target = e.currentTarget;
-                        if (!target.src.includes(contactLensesImg)) target.src = contactLensesImg;
-                      }}
-                    />
+                    {contactModalImgError || !imgSrc ? (
+                      <ProductFallbackCard product={selectedProductDetail} variant="detail" />
+                    ) : (
+                      <img 
+                        src={imgSrc} 
+                        alt={selectedProductDetail.name} 
+                        onError={() => setContactModalImgError(true)}
+                        style={{ maxWidth: '100%', maxHeight: '280px', width: 'auto', height: 'auto', objectFit: 'contain' }}
+                      />
+                    )}
                   </div>
 
                   {/* Derecha: Info con aire */}

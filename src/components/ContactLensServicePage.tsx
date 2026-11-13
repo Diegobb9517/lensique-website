@@ -18,6 +18,8 @@ import {
   Smile
 } from 'lucide-react';
 import './ContactLensServicePage.css';
+import { getOfficialHdImage, getContactLensBrand } from '../lib/productImages';
+import { ProductFallbackCard } from './ProductFallbackCard';
 
 import heroImg from '../assets/contact_lens/hero.jpg';
 import washImg from '../assets/contact_lens/wash.jpg';
@@ -34,6 +36,67 @@ interface ContactLensServicePageProps {
   featuredProducts?: any[];
   contactWhatsapp?: string;
 }
+
+const FeaturedContactLensCardItem = ({
+  product,
+  imgUrl,
+  onViewProduct
+}: {
+  product: any;
+  imgUrl: string | null;
+  onViewProduct?: (p: any) => void;
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const brand = getContactLensBrand(product);
+
+  return (
+    <div
+      className="wp-product-card"
+      onClick={() => onViewProduct && onViewProduct(product)}
+      style={{ cursor: 'pointer' }}
+    >
+      <div
+        className="wp-card-img-area"
+        style={{
+          width: '100%',
+          aspectRatio: '4 / 3',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          position: 'relative',
+          borderRadius: '12px',
+          background: '#f8fafc'
+        }}
+      >
+        {hasError || !imgUrl ? (
+          <ProductFallbackCard product={product} variant="compact" />
+        ) : (
+          <img
+            src={imgUrl}
+            alt={product.name || 'Lente de contacto'}
+            className="wp-card-img"
+            loading="lazy"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px' }}
+            onError={() => setHasError(true)}
+          />
+        )}
+      </div>
+      <div className="wp-card-info" style={{ textAlign: 'center', padding: '12px 6px' }}>
+        <p className="wp-card-category" style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>
+          {brand}
+        </p>
+        <h4 className="wp-product-name" style={{ fontSize: '14px', fontWeight: 600, color: '#16223f', margin: '0 0 6px' }}>
+          {product.name}
+        </h4>
+        <div className="wp-product-price" style={{ fontSize: '15px', fontWeight: 700, color: '#16223f' }}>
+          {product.price_incl_tax ? `$${Math.round(product.price_incl_tax).toLocaleString('es-MX')}` : (product.price || '')}
+          <small style={{ fontSize: '11px', fontWeight: 400, color: '#64748b', marginLeft: '4px' }}>/ caja</small>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
   onNavigateToCatalog,
@@ -639,28 +702,15 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
 
             <div className="wp-carousel-grid">
               {featuredProducts.slice(0, 8).map((product: any, idx: number) => {
-                const imgUrl = product.image_url || product.image || (product.images && product.images[0]?.image_url);
+                const hdImage = getOfficialHdImage(product);
+                const imgUrl = hdImage || product.image_url || product.image || (product.images && product.images[0]?.image_url);
                 return (
-                  <div
+                  <FeaturedContactLensCardItem
                     key={`contact-${idx}-${product.id || idx}`}
-                    className="wp-product-card"
-                    onClick={() => onViewProduct && onViewProduct(product)}
-                  >
-                    <div className="wp-product-image-wrapper">
-                      <img
-                        src={imgUrl || heroImg}
-                        alt={product.name || 'Lente de contacto'}
-                        className="wp-product-image"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="wp-product-info">
-                      <div className="wp-product-title">{product.name}</div>
-                      <div className="wp-product-price">
-                        {product.price_incl_tax ? `$${Math.round(product.price_incl_tax)}` : (product.price || '')}
-                      </div>
-                    </div>
-                  </div>
+                    product={product}
+                    imgUrl={imgUrl}
+                    onViewProduct={onViewProduct}
+                  />
                 );
               })}
             </div>

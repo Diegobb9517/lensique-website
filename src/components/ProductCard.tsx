@@ -1,5 +1,7 @@
 // @ts-nocheck
-import React from 'react';
+import React, { useState } from 'react';
+import { ProductFallbackCard } from './ProductFallbackCard';
+import { getOfficialHdImage } from '../lib/productImages';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
 import { getDisplayName, getProductSlug, isInStock, isProvisionalName, getCardDisplayName } from '../lib/format';
 import { resolveImageUrl } from '../App';
@@ -36,9 +38,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isEditorial = false,
   onSelectAction
 }) => {
+  const [imageError, setImageError] = useState(false);
   const outOfStock = !isInStock(product);
   
-  const imageUrl = resolveImageUrl((product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url, product.image);
+  const hdImage = getOfficialHdImage(product);
+  const rawImageUrl = (product.images && product.images.length > 0) ? product.images[0].image_url : product.image_url;
+  const imageUrl = hdImage || resolveImageUrl(rawImageUrl, product.image);
   const slug = getProductSlug(product);
   const href = `/producto/${slug}`;
 
@@ -73,6 +78,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ) : (
               outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
             )}
+            {isContactLens && (imageError || (!imageUrl && !fallbackImage)) ? (
+              <ProductFallbackCard product={product} variant="compact" />
+            ) : (
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
               alt={product.name} 
@@ -80,6 +88,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               loading="lazy"
               decoding="async"
               onError={(e: any) => {
+                if (isContactLens) {
+                  setImageError(true);
+                  return;
+                }
                 e.target.onerror = null;
                 e.target.src = SVG_PLACEHOLDER;
                 e.target.style.padding = '20%';
@@ -87,6 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 e.target.style.background = '#f9fafb';
               }}
             />
+            )}
           </div>
 
           <div className="product-info-editorial" style={{ textAlign: 'center' }}>
@@ -140,20 +153,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           ) : (
             outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
           )}
-          <ImageWithSkeleton 
-            src={imageUrl || fallbackImage} 
-            alt={product.name} 
-            className="wp-card-img"
-            loading="lazy"
-            decoding="async" 
-            onError={(e: any) => {
-              e.target.onerror = null;
-              e.target.src = SVG_PLACEHOLDER;
-              e.target.style.padding = '20%';
-              e.target.style.objectFit = 'contain';
-              e.target.style.background = '#f9fafb';
-            }}
-          />
+          {isContactLens && (imageError || (!imageUrl && !fallbackImage)) ? (
+            <ProductFallbackCard product={product} variant="compact" />
+          ) : (
+            <ImageWithSkeleton 
+              src={imageUrl || fallbackImage} 
+              alt={product.name} 
+              className="wp-card-img"
+              loading="lazy"
+              decoding="async" 
+              onError={(e: any) => {
+                if (isContactLens) {
+                  setImageError(true);
+                  return;
+                }
+                e.target.onerror = null;
+                e.target.src = SVG_PLACEHOLDER;
+                e.target.style.padding = '20%';
+                e.target.style.objectFit = 'contain';
+                e.target.style.background = '#f9fafb';
+              }}
+            />
+          )}
         </div>
 
         <div className="wp-card-info" style={{ textAlign: 'center' }}>

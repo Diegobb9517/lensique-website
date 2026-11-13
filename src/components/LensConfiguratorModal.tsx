@@ -6,8 +6,12 @@ import { getDisplayName, formatBrandName } from '../lib/format';
 import './LensConfiguratorModal.css';
 
 // ==========================================
-// 1. CONSTANTES & MOTOR ZEISS (PROTOTIPO LENSIQUE)
+// 1. CONSTANTES & MOTOR ZEISS (PARIDAD POS LENSIQUE)
 // ==========================================
+const POS_API_BASE = (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+  ? 'http://localhost:3000'
+  : 'https://lensique-pos.onrender.com';
+
 export const RANGES: Record<string, [number, number, number]> = {
   '1.5': [-7, 6, 4],
   '1.6': [-10, 6, 6],
@@ -17,28 +21,88 @@ export const RANGES: Record<string, [number, number, number]> = {
 
 export const ORDER = ['1.5', '1.6', '1.67', '1.74'];
 
-// PLACEHOLDER DE PRECIOS MICA (MOTOR PROTOTIPO LENSIQUE / MIENTRAS SE CONECTA EL ENDPOINT EN VIVO DEL COTIZADOR POS)
-// Estos precios se sustituirán por la respuesta del endpoint del cotizador ZEISS.
-// Formato: precio completo de la mica configurada (por par, IVA, AR+UV+armado incl.)
-export const MICA_PLACEHOLDER_PRICES: Record<'mono' | 'prog', Record<string, Record<'none' | 'azul' | 'foto', number>>> = {
-  mono: {
-    '1.5': { none: 1200, azul: 1500, foto: 3600 },
-    '1.6': { none: 1800, azul: 2100, foto: 4200 },
-    '1.67': { none: 4300, azul: 4600, foto: 5400 },
-    '1.74': { none: 6100, azul: 6400, foto: 7000 }
-  },
-  prog: {
-    '1.5': { none: 4500, azul: 4800, foto: 6600 },
-    '1.6': { none: 5400, azul: 5700, foto: 7400 },
-    '1.67': { none: 6400, azul: 6700, foto: 8200 },
-    '1.74': { none: 7400, azul: 7700, foto: 9000 }
+const PRICING_TRAMOS = [
+  { h: 600,   m: 2.45 },
+  { h: 1500,  m: 2.20 },
+  { h: 3000,  m: 1.85 },
+  { h: 5000,  m: 1.62 },
+  { h: 1e9,   m: 1.47 }
+];
+
+export function multFor(c: number): number {
+  c = c || 0;
+  for (let i = 0; i < PRICING_TRAMOS.length; i++) {
+    if (c < PRICING_TRAMOS[i].h) return PRICING_TRAMOS[i].m;
   }
+  return 1.47;
+}
+
+export function charmPrice(n: number): number {
+  return Math.round(n / 100) * 100 - 1;
+}
+
+const MONO_COST: Record<string, { term?: number; proc?: number }> = {
+  chrome: { term: 422 },
+  '1.5':  { term: 747, proc: 1288 },
+  '1.6':  { term: 829, proc: 1617 },
+  '1.67': { term: 922, proc: 2019 },
+  '1.74': { proc: 2857 }
 };
 
-export function getMicaPrice(type: 'mono' | 'prog', index: string, trat: 'none' | 'azul' | 'foto'): number {
-  const group = MICA_PLACEHOLDER_PRICES[type]?.[index] || MICA_PLACEHOLDER_PRICES[type]?.['1.5'];
-  if (!group) return 1200;
-  return group[trat] != null ? group[trat] : group.none;
+function isTermStock(e: number, c: number, idx: string) {
+  return (Math.abs(c) <= 2 && e >= -6 && e <= 4 && (idx === '1.5' || idx === '1.6'));
+}
+
+function t167Stock(e: number, c: number) {
+  return (e >= 3 && e <= 6 && Math.abs(c) <= 2) || (e >= -10 && e <= -6.25 && c === 0);
+}
+
+// Cálculo idéntico a mostrador POS Lensique
+export function calcLocalZeiss(
+  tipo: 'mono' | 'prog',
+  idx: string,
+  trat: 'none' | 'azul' | 'foto',
+  e: number = 0,
+  c: number = 0
+): number {
+  e = typeof e === 'number' ? e : 0;
+  c = typeof c === 'number' ? c : 0;
+  let cost = 747;
+  if (tipo === 'mono') {
+    const d = MONO_COST[idx] || MONO_COST['1.5'];
+    const stock = isTermStock(e, c, idx) || (idx === '1.67' && trat !== 'foto' && t167Stock(e, c));
+    if (stock && d.term && !(trat === 'foto' && e < -4)) {
+      cost = d.term;
+    } else {
+      cost = d.proc || d.term || 1288;
+      if (trat === 'foto' && cost === 2755) cost = 2258;
+    }
+    if (trat === 'foto' && stock && idx === '1.6') cost = 1179;
+    if (trat === 'foto' && idx === '1.5') cost = 1679;
+    const iva = cost * 1.16;
+    const m = multFor(cost);
+    const raw = iva * m;
+    return charmPrice(raw);
+  } else {
+    // Progresivo ZEISS Light 3Dv (Comfort) - Paridad exacta con mostrador POS ($4,600 base)
+    if (trat === 'foto') cost = 2439;
+    else if (trat === 'azul') cost = 2191;
+    else cost = 2129;
+    const iva = cost * 1.16;
+    const m = multFor(cost);
+    const raw = iva * m;
+    return Math.round(raw / 100) * 100;
+  }
+}
+
+export function getMicaPrice(
+  type: 'mono' | 'prog',
+  index: string,
+  trat: 'none' | 'azul' | 'foto',
+  e: number = 0,
+  c: number = 0
+): number {
+  return calcLocalZeiss(type, index, trat, e, c);
 }
 
 export function recommend(e: number, c: number): string | null {
@@ -77,24 +141,19 @@ export function getRecommendation(odSph: number, odCyl: number, oiSph: number, o
   return ORDER.indexOf(r1) >= ORDER.indexOf(r2) ? r1 : r2;
 }
 
-// Comisiones Mercado Pago y precio psicológico
-export const MP_BASE = 0.04;
-export const MSI_RATE3 = 0.0469;
-export const MSI_RATE6 = 0.0769;
-export const MSI_T3 = 2500;
-export const MSI_T6 = 4000;
-
-export function charm(n: number): number {
-  return Math.round(n / 100) * 100 - 1;
-}
-
-export function priceWithMP(net: number): { price: number; n: number; monthly: number } {
-  const p0 = net / (1 - MP_BASE);
-  const n = (p0 >= MSI_T6) ? 6 : (p0 >= MSI_T3) ? 3 : 0;
-  const rate = MP_BASE + (n === 6 ? MSI_RATE6 : n === 3 ? MSI_RATE3 : 0);
-  const price = charm(net / (1 - rate));
-  const monthly = n > 0 ? Math.round(price / n) : price;
-  return { price, n, monthly };
+// Reglas de Meses Sin Intereses (MSI) Lensique:
+// - 3 MSI desde $2,500
+// - 6 MSI desde $4,000
+// - Debajo de $2,500: solo pago de contado (sin MSI)
+export function getMsiInfo(price: number): { n: number; monthly: number } {
+  if (typeof price !== 'number' || isNaN(price)) return { n: 0, monthly: price };
+  if (price >= 4000) {
+    return { n: 6, monthly: Math.round(price / 6) };
+  }
+  if (price >= 2500) {
+    return { n: 3, monthly: Math.round(price / 3) };
+  }
+  return { n: 0, monthly: price };
 }
 
 export function idxLabel(i: string): string {
@@ -403,8 +462,81 @@ export default function LensConfiguratorModal({
   // Factibilidad de índices
   const feasibleIndices = useMemo(() => {
     if (need === 'frame' || tab !== 'rx') return ['1.5', '1.6', '1.67', '1.74'];
+    if (need === 'prog') return ['1.5']; // ZEISS Light 3Dv orgánico solo en 1.50
     return getFeasibleIndices(numVal(odSph), numVal(odCyl), numVal(oiSph), numVal(oiCyl));
   }, [need, tab, odSph, odCyl, oiSph, oiCyl]);
+
+  // Estado de precios en vivo devueltos por el endpoint del POS
+  const [posPrices, setPosPrices] = useState<Record<string, number>>({});
+
+  const effRx = useMemo(() => {
+    const e1 = numVal(odSph);
+    const c1 = numVal(odCyl);
+    const e2 = sameEye ? e1 : numVal(oiSph);
+    const c2 = sameEye ? c1 : numVal(oiCyl);
+    const p1 = Math.max(Math.abs(e1), Math.abs(e1 + c1));
+    const p2 = Math.max(Math.abs(e2), Math.abs(e2 + c2));
+    const e = p1 >= p2 ? e1 : e2;
+    const c = p1 >= p2 ? c1 : c2;
+    const addVal = need === 'prog' ? numVal(add) : 0;
+    return { e, c, add: addVal, odE: e1, odC: c1, oiE: e2, oiC: c2 };
+  }, [odSph, odCyl, oiSph, oiCyl, sameEye, need, add]);
+
+  const getMicaPriceVal = useCallback((
+    type: 'mono' | 'prog',
+    index: string,
+    trat: 'none' | 'azul' | 'foto',
+    e: number = 0,
+    c: number = 0
+  ): number => {
+    const cacheKey = `${type}|${index}|${trat}|${e}|${c}`;
+    if (posPrices[cacheKey] != null) return posPrices[cacheKey];
+    return calcLocalZeiss(type, index, trat, e, c);
+  }, [posPrices]);
+
+  // Consulta en vivo al cotizador POS (Lensique)
+  useEffect(() => {
+    if (need === 'frame') return;
+    const curIdx = selectedIdx;
+    const trat = selectedTrat;
+    const effE = effRx.e;
+    const effC = effRx.c;
+    const effAdd = effRx.add;
+    const cacheKey = `${need}|${curIdx}|${trat}|${effE}|${effC}`;
+
+    if (posPrices[cacheKey] != null) return;
+
+    const payload = {
+      tipo: need === 'prog' ? 'progresivo' : 'monofocal',
+      nivel: need === 'prog' ? '3dv' : undefined,
+      esfera: effE,
+      cilindro: effC,
+      eje: numVal(odAxis) || 0,
+      adicion: effAdd,
+      indice: curIdx === '1.5' ? '1.50' : curIdx === '1.6' ? '1.60' : curIdx,
+      tratamiento: trat === 'foto' ? 'fotocromatico' : (trat === 'azul' ? 'filtro_azul' : 'ninguno'),
+      od: { esfera: effRx.odE, cilindro: effRx.odC, eje: numVal(odAxis) || 0, adicion: effAdd },
+      oi: { esfera: effRx.oiE, cilindro: effRx.oiC, eje: sameEye ? (numVal(odAxis) || 0) : (numVal(oiAxis) || 0), adicion: effAdd }
+    };
+
+    let active = true;
+    fetch(POS_API_BASE + '/api/precio-mica', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (!active) return;
+        if (data && data.disponible && typeof data.precio === 'number') {
+          const finalP = need === 'mono' ? charmPrice(data.precio) : data.precio;
+          setPosPrices(prev => ({ ...prev, [cacheKey]: finalP }));
+        }
+      })
+      .catch(() => {});
+
+    return () => { active = false; };
+  }, [need, selectedIdx, selectedTrat, effRx, odAxis, oiAxis, sameEye, posPrices]);
 
   // Cálculo de adelgazamiento y opciones ofrecidas
   const thinningOffer = useMemo(() => {
@@ -515,35 +647,34 @@ export default function LensConfiguratorModal({
 
   // Precios dinámicos y totales
   const lowestMonoPrice = useMemo(() => {
-    const net = framePrice + getMicaPrice('mono', '1.5', 'none');
-    return priceWithMP(net).price;
+    return framePrice + calcLocalZeiss('mono', '1.5', 'none');
   }, [framePrice]);
 
   const lowestProgPrice = useMemo(() => {
-    const net = framePrice + getMicaPrice('prog', '1.5', 'none');
-    return priceWithMP(net).price;
+    return framePrice + calcLocalZeiss('prog', '1.5', 'none');
   }, [framePrice]);
 
   const currentSummaryPricing = useMemo(() => {
     if (need === 'frame') {
-      return { price: framePrice, n: 0, monthly: framePrice, micaNet: 0 };
+      const msi = getMsiInfo(framePrice);
+      return { price: framePrice, n: msi.n, monthly: msi.monthly, micaNet: 0 };
     }
-    const micaNet = getMicaPrice(need, selectedIdx, selectedTrat);
+    const micaNet = getMicaPriceVal(need, selectedIdx, selectedTrat, effRx.e, effRx.c);
     const net = framePrice + micaNet;
-    const mp = priceWithMP(net);
-    return { ...mp, micaNet };
-  }, [need, framePrice, selectedIdx, selectedTrat]);
+    const msi = getMsiInfo(net);
+    return { price: net, n: msi.n, monthly: msi.monthly, micaNet };
+  }, [need, framePrice, selectedIdx, selectedTrat, effRx, getMicaPriceVal]);
 
   // Diferencia de precio de tratamientos adicionales al índice actual
   const diffAzul = useMemo(() => {
     if (need === 'frame') return 0;
-    return getMicaPrice(need, selectedIdx, 'azul') - getMicaPrice(need, selectedIdx, 'none');
-  }, [need, selectedIdx]);
+    return getMicaPriceVal(need, selectedIdx, 'azul', effRx.e, effRx.c) - getMicaPriceVal(need, selectedIdx, 'none', effRx.e, effRx.c);
+  }, [need, selectedIdx, effRx, getMicaPriceVal]);
 
   const diffFoto = useMemo(() => {
     if (need === 'frame') return 0;
-    return getMicaPrice(need, selectedIdx, 'foto') - getMicaPrice(need, selectedIdx, 'none');
-  }, [need, selectedIdx]);
+    return getMicaPriceVal(need, selectedIdx, 'foto', effRx.e, effRx.c) - getMicaPriceVal(need, selectedIdx, 'none', effRx.e, effRx.c);
+  }, [need, selectedIdx, effRx, getMicaPriceVal]);
 
   // Finalizar configuración y enviar al carrito
   const handleAddToCart = () => {
@@ -556,11 +687,11 @@ export default function LensConfiguratorModal({
       return;
     }
 
-    const etiqueta = need === 'mono' ? 'ZEISS Visión Sencilla' : 'ZEISS Progresivo Light';
+    const etiqueta = need === 'mono' ? 'ZEISS ClearView (Una distancia)' : 'ZEISS Light 3Dv (Progresivo Comfort)';
     const tipoFab = selectedIdx === '1.5' ? 'Estándar' : (selectedIdx === '1.74' ? 'Ultra delgada' : 'Adelgazada');
     const tratNombre = selectedTrat === 'azul'
       ? 'Filtro luz azul (BlueGuard)'
-      : (selectedTrat === 'foto' ? 'Fotocromático (PhotoFusion)' : 'Antirreflejante estándar');
+      : (selectedTrat === 'foto' ? 'Fotocromático (PhotoFusion X)' : 'Antirreflejante estándar');
 
     const configPayload = {
       originalProduct: product,
@@ -577,7 +708,7 @@ export default function LensConfiguratorModal({
       pvp: currentSummaryPricing.price - framePrice,
       framePrice,
       total: currentSummaryPricing.price,
-      mpRate: currentSummaryPricing.n === 6 ? MSI_RATE6 : (currentSummaryPricing.n === 3 ? MSI_RATE3 : 0),
+      mpRate: 0,
       msiCount: currentSummaryPricing.n,
       msiMonthly: currentSummaryPricing.monthly,
       rxMethod: tab,
@@ -655,12 +786,12 @@ export default function LensConfiguratorModal({
                   <div style={{ color: 'var(--lsq-grey)', fontSize: '14px' }}>Sin imagen disponible</div>
                 )}
                 <div className="lsq-lbl-head">
-                  {need === 'mono' ? 'UNA DISTANCIA' : (need === 'prog' ? 'TODO EN UNO (PROGRESIVO)' : 'SOLO EL ARMAZÓN')}
+                  {need === 'mono' ? 'UNA DISTANCIA' : (need === 'prog' ? 'PROGRESIVO (ZEISS LIGHT 3DV)' : 'SOLO EL ARMAZÓN')}
                 </div>
               </div>
 
               <div className="lsq-pic-cap">
-                {need === 'mono' ? 'Una distancia' : (need === 'prog' ? 'Todo en uno · progresivo' : 'Solo el armazón')}
+                {need === 'mono' ? 'Una distancia · ZEISS ClearView' : (need === 'prog' ? 'ZEISS Light 3Dv · Progresivo Comfort' : 'Solo el armazón')}
               </div>
 
               {frameBrand && <div className="lsq-prod-brand">{frameBrand}</div>}
@@ -705,7 +836,7 @@ export default function LensConfiguratorModal({
                       </svg>
                     </div>
                     <div className="lsq-opt-body">
-                      <div className="lsq-opt-name">Una distancia</div>
+                      <div className="lsq-opt-name">Una distancia (ZEISS ClearView)</div>
                       <div className="lsq-opt-desc">Para ver de lejos, o solo para leer de cerca.</div>
                     </div>
                     <div className="lsq-opt-radio">{need === 'mono' ? '✓' : ''}</div>
@@ -722,10 +853,10 @@ export default function LensConfiguratorModal({
                       </svg>
                     </div>
                     <div className="lsq-opt-body">
-                      <div className="lsq-opt-name">Todo en uno (progresivo)</div>
+                      <div className="lsq-opt-name">Progresivo (ZEISS Light 3Dv)</div>
                       <div className="lsq-opt-desc">
                         {isAptoProg
-                          ? 'Lejos, intermedio y cerca en un lente, sin línea.'
+                          ? 'ZEISS Light 3Dv (Comfort): Lejos, intermedio y cerca en un lente, sin línea.'
                           : 'No disponible en este armazón (altura insuficiente). Elige otro modelo.'}
                       </div>
                     </div>
@@ -1204,7 +1335,7 @@ export default function LensConfiguratorModal({
                     <div className="lsq-pkg-title">
                       {need === 'frame'
                         ? 'Solo el armazón'
-                        : `Incluye · ${need === 'mono' ? 'lentes de una distancia' : 'lentes progresivos'}`}
+                        : `Incluye · ${need === 'mono' ? 'lentes de una distancia (ZEISS ClearView)' : 'lentes progresivos (ZEISS Light 3Dv)'}`}
                     </div>
                     <div className="lsq-feat">✓ Armazón {frameDisplayName}</div>
 
@@ -1275,7 +1406,7 @@ export default function LensConfiguratorModal({
                       {/* Opción Adelgazada recomendada u opcional */}
                       {(() => {
                         const offer = thinningOffer.offer;
-                        const diff = getMicaPrice(need, offer, selectedTrat) - getMicaPrice(need, thinningOffer.base, selectedTrat);
+                        const diff = getMicaPriceVal(need, offer, selectedTrat, effRx.e, effRx.c) - getMicaPriceVal(need, thinningOffer.base, selectedTrat, effRx.e, effRx.c);
                         const offerNames: Record<string, string> = {
                           '1.6': 'Más delgada (1.60)',
                           '1.67': 'Más delgada y ligera (1.67)',
@@ -1333,7 +1464,7 @@ export default function LensConfiguratorModal({
                             Reduce el cansancio visual de pantallas (celular, computadora). Ideal si pasas muchas horas frente a ellas.
                           </div>
                         </div>
-                        <span className="lsq-addon-pr">+${diffAzul.toLocaleString('es-MX')}</span>
+                        <span className="lsq-addon-pr">{diffAzul > 0 ? `+$${diffAzul.toLocaleString('es-MX')}` : 'incluido'}</span>
                       </div>
 
                       {/* Fotocromático */}
@@ -1353,7 +1484,7 @@ export default function LensConfiguratorModal({
                             Se oscurece con el sol y se aclara en interiores: tus lentes y lentes de sol en uno solo.
                           </div>
                         </div>
-                        <span className="lsq-addon-pr">+${diffFoto.toLocaleString('es-MX')}</span>
+                        <span className="lsq-addon-pr">{diffFoto > 0 ? `+$${diffFoto.toLocaleString('es-MX')}` : 'incluido'}</span>
                       </div>
                     </div>
                   )}

@@ -687,7 +687,7 @@ export default function LensConfiguratorModal({
       return;
     }
 
-    const etiqueta = need === 'mono' ? 'ZEISS ClearView (Una distancia)' : 'ZEISS Light 3Dv (Progresivo Comfort)';
+    const etiqueta = need === 'mono' ? 'ZEISS · Una distancia' : 'ZEISS · Progresivo';
     const tipoFab = selectedIdx === '1.5' ? 'Estándar' : (selectedIdx === '1.74' ? 'Ultra delgada' : 'Adelgazada');
     const tratNombre = selectedTrat === 'azul'
       ? 'Filtro luz azul (BlueGuard)'
@@ -786,12 +786,12 @@ export default function LensConfiguratorModal({
                   <div style={{ color: 'var(--lsq-grey)', fontSize: '14px' }}>Sin imagen disponible</div>
                 )}
                 <div className="lsq-lbl-head">
-                  {need === 'mono' ? 'UNA DISTANCIA' : (need === 'prog' ? 'PROGRESIVO (ZEISS LIGHT 3DV)' : 'SOLO EL ARMAZÓN')}
+                  {need === 'mono' ? 'UNA DISTANCIA' : (need === 'prog' ? 'PROGRESIVO' : 'SOLO EL ARMAZÓN')}
                 </div>
               </div>
 
               <div className="lsq-pic-cap">
-                {need === 'mono' ? 'Una distancia · ZEISS ClearView' : (need === 'prog' ? 'ZEISS Light 3Dv · Progresivo Comfort' : 'Solo el armazón')}
+                {need === 'mono' ? 'Micas ZEISS · Una distancia' : (need === 'prog' ? 'Micas ZEISS · Progresivo' : 'Solo el armazón')}
               </div>
 
               {frameBrand && <div className="lsq-prod-brand">{frameBrand}</div>}
@@ -836,7 +836,7 @@ export default function LensConfiguratorModal({
                       </svg>
                     </div>
                     <div className="lsq-opt-body">
-                      <div className="lsq-opt-name">Una distancia (ZEISS ClearView)</div>
+                      <div className="lsq-opt-name">Una distancia</div>
                       <div className="lsq-opt-desc">Para ver de lejos, o solo para leer de cerca.</div>
                     </div>
                     <div className="lsq-opt-radio">{need === 'mono' ? '✓' : ''}</div>
@@ -853,10 +853,10 @@ export default function LensConfiguratorModal({
                       </svg>
                     </div>
                     <div className="lsq-opt-body">
-                      <div className="lsq-opt-name">Progresivo (ZEISS Light 3Dv)</div>
+                      <div className="lsq-opt-name">Progresivo</div>
                       <div className="lsq-opt-desc">
                         {isAptoProg
-                          ? 'ZEISS Light 3Dv (Comfort): Lejos, intermedio y cerca en un lente, sin línea.'
+                          ? 'Lejos, intermedio y cerca en un lente, sin línea.'
                           : 'No disponible en este armazón (altura insuficiente). Elige otro modelo.'}
                       </div>
                     </div>
@@ -1335,7 +1335,7 @@ export default function LensConfiguratorModal({
                     <div className="lsq-pkg-title">
                       {need === 'frame'
                         ? 'Solo el armazón'
-                        : `Incluye · ${need === 'mono' ? 'lentes de una distancia (ZEISS ClearView)' : 'lentes progresivos (ZEISS Light 3Dv)'}`}
+                        : `Incluye · ${need === 'mono' ? 'lentes de una distancia' : 'lentes progresivos'}`}
                     </div>
                     <div className="lsq-feat">✓ Armazón {frameDisplayName}</div>
 

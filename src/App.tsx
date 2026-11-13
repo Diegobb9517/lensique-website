@@ -3117,10 +3117,10 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissSmartLifeImg} alt="ZEISS SmartLife" loading="lazy" />
+                  <img src={zeissSmartLifeImg} alt="ZEISS Progresivo" loading="lazy" />
                 </div>
                 <div className="zeiss-tech-cbody">
-                  <h3 className="zeiss-tech-title">ZEISS SmartLife</h3>
+                  <h3 className="zeiss-tech-title">ZEISS Progresivo</h3>
                   <p className="zeiss-tech-desc">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</p>
                 </div>
               </div>

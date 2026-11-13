@@ -440,8 +440,8 @@ const micasBodyInjection = `
           <div class="mz-cbody"><div class="mz-ct">ZEISS DuraVision</div><div class="mz-cb">Antirreflejante premium: más nitidez, menos reflejos, más resistencia.</div></div>
         </div>
         <div class="mz-card">
-          <div class="mz-imgwrap"><img src="/assets/zeiss/smartlife.jpg" alt="ZEISS SmartLife" /></div>
-          <div class="mz-cbody"><div class="mz-ct">ZEISS SmartLife</div><div class="mz-cb">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</div></div>
+          <div class="mz-imgwrap"><img src="/assets/zeiss/smartlife.jpg" alt="ZEISS Progresivo" /></div>
+          <div class="mz-cbody"><div class="mz-ct">ZEISS Progresivo</div><div class="mz-cb">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</div></div>
         </div>
         <div class="mz-card">
           <div class="mz-imgwrap"><img src="/assets/zeiss/uvprotect.jpg" alt="ZEISS UVProtect" /></div>

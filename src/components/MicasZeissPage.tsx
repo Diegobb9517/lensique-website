@@ -67,10 +67,10 @@ export const MicasZeissPage: React.FC<MicasZeissPageProps> = () => {
 
           <div className="mz-card">
             <div className="mz-imgwrap">
-              <img src={imgSmartLife} alt="ZEISS SmartLife" loading="lazy" />
+              <img src={imgSmartLife} alt="ZEISS Progresivo" loading="lazy" />
             </div>
             <div className="mz-cbody">
-              <div className="mz-ct">ZEISS SmartLife</div>
+              <div className="mz-ct">ZEISS Progresivo</div>
               <div className="mz-cb">Visión clara en todo lugar, adaptada a tu edad y tu día digital.</div>
             </div>
           </div>

@@ -114,6 +114,40 @@ h1{font-family:Georgia,serif;font-size:32px;margin:0 0 6px;color:var(--navy);lin
 .ghost.wa-btn{border-color:#1a9c6b;color:#13795a;background:#eafaf2}
 .ghost.wa-btn:hover{background:#dcf5e7}
 .note{font-size:12px;color:var(--grey);margin-top:14px;text-align:center;line-height:1.4}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(22,34,63,0.18);border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+html.is-embedded, html.is-embedded body{
+  height:auto!important;
+  min-height:100%!important;
+  overflow:hidden!important;
+  overflow-y:hidden!important;
+  background:#fff!important;
+}
+html.is-embedded ::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+html.is-embedded .modal{
+  height:auto!important;
+  min-height:580px!important;
+  overflow:visible!important;
+}
+html.is-embedded .left{
+  height:auto!important;
+  min-height:100%!important;
+  position:sticky!important;
+  top:0!important;
+  align-self:start!important;
+}
+html.is-embedded .right{
+  height:auto!important;
+  min-height:580px!important;
+  overflow-y:visible!important;
+  justify-content:flex-start!important;
+}
+@media(max-width:820px){
+  html.is-embedded .left{position:static!important}
+  html.is-embedded .modal{min-height:auto!important}
+  html.is-embedded .right{min-height:auto!important}
+}
 </style>
 </head>
 <body>
@@ -950,6 +984,7 @@ function render(){
     $('oi-axis').addEventListener('input', saveRx);
   }
   updateLeft();
+  notifyParentHeight();
 }
 
 function opt(n, t, d){
@@ -963,7 +998,46 @@ function opt(n, t, d){
     + '<div class="rd"></div></div>';
 }
 
+function notifyParentHeight() {
+  if (window.self === window.top) return;
+  function measure() {
+    var modal = document.querySelector('.modal');
+    var h = 0;
+    if (modal) {
+      h = Math.max(modal.scrollHeight, modal.offsetHeight);
+    }
+    if (!h) {
+      h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    }
+    if (h > 100) {
+      try {
+        window.parent.postMessage({ type: 'lensique-cotizador-resize', height: h }, '*');
+      } catch(e){}
+    }
+  }
+  measure();
+  setTimeout(measure, 50);
+  setTimeout(measure, 200);
+}
+
+if (window.self !== window.top) {
+  document.documentElement.classList.add('is-embedded');
+  window.addEventListener('load', notifyParentHeight);
+  window.addEventListener('resize', notifyParentHeight);
+  if (typeof ResizeObserver !== 'undefined') {
+    var _ro = new ResizeObserver(function() {
+      notifyParentHeight();
+    });
+    window.addEventListener('DOMContentLoaded', function() {
+      var m = document.querySelector('.modal');
+      if (m) _ro.observe(m);
+      if (document.body) _ro.observe(document.body);
+    });
+  }
+}
+
 render();
+notifyParentHeight();
 </script>
 </body>
 </html>

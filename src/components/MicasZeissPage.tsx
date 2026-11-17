@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './MicasZeissPage.css';
 
 import zeissLogo from '../assets/zeiss_logo.png';
@@ -13,6 +13,32 @@ interface MicasZeissPageProps {
 }
 
 export const MicasZeissPage: React.FC<MicasZeissPageProps> = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [iframeHeight, setIframeHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    function handleMsg(e: MessageEvent) {
+      if (e.data && e.data.type === 'lensique-cotizador-resize' && typeof e.data.height === 'number') {
+        if (e.data.height > 250) {
+          setIframeHeight(e.data.height);
+        }
+      }
+    }
+    window.addEventListener('message', handleMsg);
+    return () => window.removeEventListener('message', handleMsg);
+  }, []);
+
+  const handleIframeLoad = () => {
+    try {
+      const doc = iframeRef.current?.contentDocument;
+      if (doc) {
+        const modal = doc.querySelector('.modal');
+        const h = modal ? Math.ceil(modal.scrollHeight) : Math.ceil(doc.body.scrollHeight);
+        if (h > 250) setIframeHeight(h);
+      }
+    } catch (_) {}
+  };
+
   const scrollToCotizador = () => {
     const el = document.getElementById('cotizador-micas');
     if (el) {
@@ -113,8 +139,13 @@ export const MicasZeissPage: React.FC<MicasZeissPageProps> = () => {
             Descubre las opciones de micas monofocales o progresivas con tecnología ZEISS y calcula el costo exacto según tu receta y necesidades.
           </p>
         </div>
-        <div className="mz-cotizador-iframe-wrap">
+        <div 
+          className="mz-cotizador-iframe-wrap"
+          style={{ height: iframeHeight ? `${iframeHeight}px` : undefined }}
+        >
           <iframe 
+            ref={iframeRef}
+            onLoad={handleIframeLoad}
             src={`/asesor_zeiss.html?v=2.0.0${typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tipo') ? `&initialType=${encodeURIComponent(new URLSearchParams(window.location.search).get('tipo')!)}` : ''}${typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('montaje') ? `&montaje=${encodeURIComponent(new URLSearchParams(window.location.search).get('montaje')!)}` : ''}`}
             title="Asesor Visual ZEISS · Cotizador de Micas"
             className="mz-cotizador-iframe"

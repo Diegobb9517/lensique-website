@@ -617,6 +617,226 @@
   opacity: 0.7;
 }
 
+/* Custom Sphere Selector & Popover */
+.cl-sph-selector-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.cl-sph-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px;
+  background: #ffffff;
+  border: 1px solid var(--lsq-line);
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: var(--lsq-navy);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.cl-sph-trigger:hover {
+  border-color: #cbd5e1;
+}
+
+.cl-sph-trigger.open {
+  border-color: var(--lsq-navy);
+  box-shadow: 0 0 0 2px rgba(22, 34, 63, 0.1);
+}
+
+.cl-sph-trigger.has-value {
+  font-weight: 700;
+  color: var(--lsq-navy);
+}
+
+.cl-sph-trigger:disabled {
+  background: var(--lsq-soft);
+  color: var(--lsq-grey);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cl-sph-trigger-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cl-sph-trigger-arrow {
+  font-size: 10px;
+  color: var(--lsq-grey);
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+/* Popover desplegable flotante contenido */
+.cl-sph-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 260px;
+  width: 100%;
+  max-width: 300px;
+  background: #ffffff;
+  border: 1px solid var(--lsq-line);
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(16, 24, 40, 0.16);
+  z-index: 2500;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: clSphFadeIn 0.15s ease;
+}
+
+@keyframes clSphFadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pestañas de modo */
+.cl-sph-tabs {
+  display: flex;
+  background: var(--lsq-soft);
+  padding: 4px;
+  gap: 3px;
+  border-bottom: 1px solid var(--lsq-line);
+}
+
+.cl-sph-tab {
+  flex: 1;
+  padding: 6px 2px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--lsq-grey);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.cl-sph-tab:hover {
+  color: var(--lsq-navy);
+}
+
+.cl-sph-tab.active {
+  background: #ffffff;
+  color: var(--lsq-navy);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Lista de scroll contenida a máximo 220px */
+.cl-sph-scroll-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+.cl-sph-scroll-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cl-sph-scroll-list::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.cl-sph-scroll-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.cl-sph-list-header {
+  font-size: 10.5px;
+  color: var(--lsq-grey);
+  font-weight: 700;
+  padding: 4px 8px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cl-sph-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  color: var(--lsq-navy);
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s ease;
+}
+
+.cl-sph-option:hover {
+  background: #f1f5f9;
+}
+
+.cl-sph-option.selected {
+  background: #eef4ff;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.cl-sph-val {
+  font-feature-settings: "tnum";
+}
+
+.cl-sph-check {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.cl-sph-neutro-content {
+  padding: 10px;
+}
+
+.cl-sph-neutro-content .cl-sph-option {
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.cl-sph-neutro-content .cl-sph-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cl-sph-neutro-content .cl-sph-option-info .cl-sph-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.cl-sph-neutro-content .cl-sph-desc {
+  font-size: 11px;
+  color: #475569;
+}
+
+.cl-sph-hint {
+  font-size: 11.5px;
+  color: var(--lsq-grey);
+  line-height: 1.4;
+  margin: 8px 2px 0;
+}
+
 .cl-same {
   display: flex;
   align-items: center;

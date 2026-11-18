@@ -174,6 +174,178 @@ export function getContactLensSpecs(product: any): ContactLensSpecs {
   return { bcOptions: ['8.6'], dia: '14.2', isMultipleBc: false };
 }
 
+interface SphereDropdownProps {
+  value: string;
+  disabled?: boolean;
+  placeholder?: string;
+  onChange: (val: string) => void;
+}
+
+function SphereDropdown({ value, disabled = false, placeholder = 'Elige esfera', onChange }: SphereDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const getModeFromVal = (val: string) => {
+    if (val === '0.00') return 'neutro';
+    if (val && val.startsWith('+')) return 'hyperopia';
+    return 'myopia';
+  };
+
+  const [mode, setMode] = useState<'neutro' | 'myopia' | 'hyperopia'>(() => getModeFromVal(value));
+
+  useEffect(() => {
+    if (value) {
+      setMode(getModeFromVal(value));
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
+
+  const negativePowers = useMemo(() => {
+    const list: string[] = [];
+    for (let p = -0.25; p >= -6.00; p -= 0.25) list.push(p.toFixed(2));
+    for (let p = -6.50; p >= -12.00; p -= 0.50) list.push(p.toFixed(2));
+    return list;
+  }, []);
+
+  const positivePowers = useMemo(() => {
+    const list: string[] = [];
+    for (let p = 0.25; p <= 4.00; p += 0.25) list.push(`+${p.toFixed(2)}`);
+    for (let p = 4.50; p <= 8.00; p += 0.50) list.push(`+${p.toFixed(2)}`);
+    return list;
+  }, []);
+
+  const displayLabel = useMemo(() => {
+    if (!value) return placeholder;
+    if (value === '0.00') return '0.00 (Neutro)';
+    return value;
+  }, [value, placeholder]);
+
+  return (
+    <div className={`cl-sph-selector-wrap ${disabled ? 'disabled' : ''}`} ref={containerRef}>
+      <button
+        type="button"
+        className={`cl-sph-trigger ${isOpen ? 'open' : ''} ${value ? 'has-value' : ''}`}
+        onClick={() => {
+          if (!disabled) setIsOpen(!isOpen);
+        }}
+        disabled={disabled}
+      >
+        <span className="cl-sph-trigger-text">{displayLabel}</span>
+        <span className="cl-sph-trigger-arrow">{isOpen ? '▲' : '▾'}</span>
+      </button>
+
+      {isOpen && (
+        <div className="cl-sph-popover">
+          <div className="cl-sph-tabs">
+            <button
+              type="button"
+              className={`cl-sph-tab ${mode === 'neutro' ? 'active' : ''}`}
+              onClick={() => {
+                setMode('neutro');
+                onChange('0.00');
+                setIsOpen(false);
+              }}
+            >
+              0.00 Neutro
+            </button>
+            <button
+              type="button"
+              className={`cl-sph-tab ${mode === 'myopia' ? 'active' : ''}`}
+              onClick={() => setMode('myopia')}
+            >
+              − Miopía
+            </button>
+            <button
+              type="button"
+              className={`cl-sph-tab ${mode === 'hyperopia' ? 'active' : ''}`}
+              onClick={() => setMode('hyperopia')}
+            >
+              + Hipermetropía
+            </button>
+          </div>
+
+          {mode === 'neutro' && (
+            <div className="cl-sph-neutro-content">
+              <button
+                type="button"
+                className={`cl-sph-option ${value === '0.00' ? 'selected' : ''}`}
+                onClick={() => {
+                  onChange('0.00');
+                  setIsOpen(false);
+                }}
+              >
+                <div className="cl-sph-option-info">
+                  <span className="cl-sph-val">0.00</span>
+                  <span className="cl-sph-desc">Sin graduación · Solo cosmético</span>
+                </div>
+                {value === '0.00' && <span className="cl-sph-check">✓</span>}
+              </button>
+              <p className="cl-sph-hint">Ideal si solo buscas el tono cosmético de color o no requieres aumento.</p>
+            </div>
+          )}
+
+          {mode === 'myopia' && (
+            <div className="cl-sph-scroll-list">
+              <div className="cl-sph-list-header">Miopía (Ver de lejos)</div>
+              {negativePowers.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`cl-sph-option ${value === p ? 'selected' : ''}`}
+                  onClick={() => {
+                    onChange(p);
+                    setIsOpen(false);
+                  }}
+                >
+                  <span className="cl-sph-val">{p}</span>
+                  {value === p && <span className="cl-sph-check">✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {mode === 'hyperopia' && (
+            <div className="cl-sph-scroll-list">
+              <div className="cl-sph-list-header">Hipermetropía (Ver de cerca)</div>
+              {positivePowers.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`cl-sph-option ${value === p ? 'selected' : ''}`}
+                  onClick={() => {
+                    onChange(p);
+                    setIsOpen(false);
+                  }}
+                >
+                  <span className="cl-sph-val">{p}</span>
+                  {value === p && <span className="cl-sph-check">✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface ContactLensConfiguratorModalProps {
   product: any;
   onClose: () => void;
@@ -316,19 +488,6 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
     return contactLensesImg;
   };
-
-  // Opciones de graduación
-  const sphOptions = useMemo(() => {
-    const opts = [{ value: '', label: 'Elige' }];
-    for (let p = -0.25; p >= -12.00; p -= 0.25) {
-      opts.push({ value: p.toFixed(2), label: p.toFixed(2) });
-    }
-    opts.push({ value: '0.00', label: '0.00' });
-    for (let p = 0.25; p <= 8.00; p += 0.25) {
-      opts.push({ value: `+${p.toFixed(2)}`, label: `+${p.toFixed(2)}` });
-    }
-    return opts;
-  }, []);
 
   const dynamicBcOptions = useMemo(() => {
     const opts = [{ value: '', label: 'Elige curva' }];
@@ -748,17 +907,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         {odOn && (
                           <>
                             <div className="cl-rl">OD</div>
-                            <select 
+                            <SphereDropdown 
                               value={prescriptionOD.sph} 
-                              onChange={(e) => {
-                                const val = e.target.value;
+                              onChange={(val) => {
                                 setValidationError(null);
                                 setPrescriptionOD(prev => ({ ...prev, sph: val }));
                                 if (samePrescription) setPrescriptionOS(prev => ({ ...prev, sph: val }));
                               }}
-                            >
-                              {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
+                            />
 
                             {specs.isMultipleBc && (
                               <select 
@@ -818,13 +974,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         {oiOn && (
                           <>
                             <div className="cl-rl">OI</div>
-                            <select 
+                            <SphereDropdown 
                               value={samePrescription ? prescriptionOD.sph : prescriptionOS.sph} 
                               disabled={samePrescription}
-                              onChange={(e) => setPrescriptionOS(prev => ({ ...prev, sph: e.target.value }))}
-                            >
-                              {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                            </select>
+                              onChange={(val) => {
+                                setValidationError(null);
+                                setPrescriptionOS(prev => ({ ...prev, sph: val }));
+                              }}
+                            />
 
                             {specs.isMultipleBc && (
                               <select 
@@ -883,17 +1040,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                             <div className="cl-rx-fields-grid">
                               <div className="cl-field-group">
                                 <label>Esfera (PWR) *</label>
-                                <select 
+                                <SphereDropdown 
                                   value={prescriptionOD.sph} 
-                                  onChange={(e) => {
-                                    const val = e.target.value;
+                                  onChange={(val) => {
                                     setValidationError(null);
                                     setPrescriptionOD(prev => ({ ...prev, sph: val }));
                                     if (samePrescription) setPrescriptionOS(prev => ({ ...prev, sph: val }));
                                   }}
-                                >
-                                  {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
+                                />
                               </div>
 
                               {specs.isMultipleBc && (
@@ -978,12 +1132,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 <div className="cl-rx-fields-grid">
                                   <div className="cl-field-group">
                                     <label>Esfera (PWR) *</label>
-                                    <select 
+                                    <SphereDropdown 
                                       value={prescriptionOS.sph} 
-                                      onChange={(e) => setPrescriptionOS(prev => ({ ...prev, sph: e.target.value }))}
-                                    >
-                                      {sphOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                    </select>
+                                      onChange={(val) => {
+                                        setValidationError(null);
+                                        setPrescriptionOS(prev => ({ ...prev, sph: val }));
+                                      }}
+                                    />
                                   </div>
 
                                   {specs.isMultipleBc && (

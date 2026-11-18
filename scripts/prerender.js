@@ -53,6 +53,18 @@ const getProductSlug = (product) => {
 let products = [];
 const indexTemplate = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf8') : '';
 
+// Extract historical/existing slugs from public/sitemap.xml
+const sitemapSlugs = new Set();
+const existingSitemapPath = path.join(rootDir, 'public', 'sitemap.xml');
+if (fs.existsSync(existingSitemapPath)) {
+  const sitemapContent = fs.readFileSync(existingSitemapPath, 'utf8');
+  const matches = sitemapContent.matchAll(/\/producto\/([a-zA-Z0-9_-]+)/g);
+  for (const m of matches) {
+    if (m[1]) sitemapSlugs.add(m[1].toLowerCase());
+  }
+  console.log(`[Sitemap] Found ${sitemapSlugs.size} existing product slugs to support.`);
+}
+
 const sitemapUrls = [
   'https://www.lensique.com.mx/',
   'https://www.lensique.com.mx/armazones',
@@ -324,16 +336,60 @@ ${JSON.stringify(jsonLd, null, 2)}
     process.exit(1);
   }
 
-  // Pre-render common alternative slugs (e.g. brand-sku-sku, brand-sku) for backward compatibility
-  const extraSlugs = [];
+  // Pre-render common alternative slugs for backward compatibility & robustness
+  const extraSlugs = new Set();
   const brandSlug = slugify(p.brand || '');
+  const modelSlug = slugify(p.model || p.name || '');
   const skuSlug = slugify(p.sku || '');
-  if (brandSlug && skuSlug) {
-    extraSlugs.push(`${brandSlug}-${skuSlug}`);
-    extraSlugs.push(`${brandSlug}-${skuSlug}-${skuSlug}`);
+
+  // 1. Variations of oneday / one-day (vital for contact lenses)
+  if (slug.includes('oneday')) {
+    extraSlugs.add(slug.replace(/oneday/g, 'one-day'));
   }
+  if (slug.includes('one-day')) {
+    extraSlugs.add(slug.replace(/one-day/g, 'oneday'));
+  }
+
+  // 2. Brand + SKU combinations
+  if (brandSlug && skuSlug) {
+    extraSlugs.add(`${brandSlug}-${skuSlug}`);
+    extraSlugs.add(`${brandSlug}-${skuSlug}-${skuSlug}`);
+    if (modelSlug) {
+      extraSlugs.add(`${brandSlug}-${modelSlug}`);
+      extraSlugs.add(`${brandSlug}-${modelSlug}-${skuSlug}`);
+    }
+  }
+
+  // 3. Model/Name + SKU combinations
+  if (modelSlug && skuSlug) {
+    extraSlugs.add(`${modelSlug}-${skuSlug}`);
+    extraSlugs.add(`${modelSlug}-${skuSlug}-${skuSlug}`);
+    if (modelSlug.includes('oneday')) {
+      const withHyphen = modelSlug.replace(/oneday/g, 'one-day');
+      extraSlugs.add(`${withHyphen}-${skuSlug}`);
+      extraSlugs.add(`${withHyphen}-${skuSlug}-${skuSlug}`);
+    }
+    if (modelSlug.includes('one-day')) {
+      const withoutHyphen = modelSlug.replace(/one-day/g, 'oneday');
+      extraSlugs.add(`${withoutHyphen}-${skuSlug}`);
+      extraSlugs.add(`${withoutHyphen}-${skuSlug}-${skuSlug}`);
+    }
+  }
+
+  // 4. SKU alone
+  if (skuSlug) {
+    extraSlugs.add(skuSlug);
+  }
+
+  // 5. Match against historical sitemap slugs
+  for (const oldSlug of sitemapSlugs) {
+    if (skuSlug && (oldSlug.endsWith(`-${skuSlug}`) || oldSlug === skuSlug || oldSlug.includes(skuSlug))) {
+      extraSlugs.add(oldSlug);
+    }
+  }
+
   for (const extraSlug of extraSlugs) {
-    if (extraSlug !== slug) {
+    if (extraSlug && extraSlug !== slug) {
       const extraProdDir = path.join(distDir, 'producto', extraSlug);
       if (!fs.existsSync(extraProdDir)) {
         fs.mkdirSync(extraProdDir, { recursive: true });
@@ -1252,4 +1308,18 @@ const fourOhFourHtml = `<!doctype html>
 fs.writeFileSync(path.join(distDir, '404.html'), fourOhFourHtml, 'utf8');
 fs.writeFileSync(path.join(rootDir, 'public', '404.html'), fourOhFourHtml, 'utf8');
 console.log('✅ Generated /404.html page.');
+
+// Pre-render 404 handler for /producto/no-existe-123 and /producto fallback
+const test404Dir = path.join(distDir, 'producto', 'no-existe-123');
+if (!fs.existsSync(test404Dir)) {
+  fs.mkdirSync(test404Dir, { recursive: true });
+}
+fs.writeFileSync(path.join(test404Dir, 'index.html'), fourOhFourHtml, 'utf8');
+
+const prodIndexDir = path.join(distDir, 'producto');
+if (!fs.existsSync(prodIndexDir)) {
+  fs.mkdirSync(prodIndexDir, { recursive: true });
+}
+fs.writeFileSync(path.join(prodIndexDir, 'index.html'), fourOhFourHtml, 'utf8');
+
 

@@ -323,7 +323,7 @@ export default function LensConfiguratorModal({
     return 1;
   });
 
-  const [need, setNeed] = useState<'mono' | 'prog' | 'frame'>('mono');
+  const [need, setNeed] = useState<'mono' | 'prog' | 'frame'>('frame');
   const [tab, setTab] = useState<'rx' | 'photo' | 'later'>('rx');
 
   // Graduación (campos arrancan VACÍOS 'Elige', NO en 0.00)
@@ -630,6 +630,11 @@ export default function LensConfiguratorModal({
   };
 
   const handleGoto3 = () => {
+    if (tab === 'later') {
+      setRxError('');
+      setStep(3);
+      return;
+    }
     // Validaciones estrictas del Paso 2
     if (tab === 'rx') {
       const faltan: string[] = [];
@@ -857,6 +862,27 @@ export default function LensConfiguratorModal({
                   <p className="lsq-sub">Elige una opción.</p>
 
                   <div
+                    className={`lsq-opt-card ${need === 'frame' ? 'lsq-opt-sel' : ''}`}
+                    onClick={() => handlePickNeed('frame')}
+                  >
+                    <div className="lsq-opt-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2.5" y="8" width="8" height="7" rx="3" />
+                        <rect x="13.5" y="8" width="8" height="7" rx="3" />
+                        <path d="M10.5 11h3" />
+                      </svg>
+                    </div>
+                    <div className="lsq-opt-body">
+                      <div className="lsq-opt-name">Solo el armazón</div>
+                      <div className="lsq-opt-desc">Sin micas graduadas.</div>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--lsq-forest, #1e3a2b)', marginTop: '4px' }}>
+                        ${framePrice.toLocaleString('es-MX')}
+                      </div>
+                    </div>
+                    <div className="lsq-opt-radio">{need === 'frame' ? '✓' : ''}</div>
+                  </div>
+
+                  <div
                     className={`lsq-opt-card ${need === 'mono' ? 'lsq-opt-sel' : ''}`}
                     onClick={() => handlePickNeed('mono')}
                   >
@@ -868,6 +894,9 @@ export default function LensConfiguratorModal({
                     <div className="lsq-opt-body">
                       <div className="lsq-opt-name">Una distancia</div>
                       <div className="lsq-opt-desc">Para ver de lejos, o solo para leer de cerca.</div>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--lsq-forest, #1e3a2b)', marginTop: '4px' }}>
+                        Desde ${lowestMonoPrice.toLocaleString('es-MX')} · con micas ZEISS
+                      </div>
                     </div>
                     <div className="lsq-opt-radio">{need === 'mono' ? '✓' : ''}</div>
                   </div>
@@ -889,26 +918,13 @@ export default function LensConfiguratorModal({
                           ? 'Lejos, intermedio y cerca en un lente, sin línea.'
                           : 'No disponible en este armazón (altura insuficiente). Elige otro modelo.'}
                       </div>
+                      {isAptoProg && (
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--lsq-forest, #1e3a2b)', marginTop: '4px' }}>
+                          Desde ${lowestProgPrice.toLocaleString('es-MX')} · con micas ZEISS
+                        </div>
+                      )}
                     </div>
                     <div className="lsq-opt-radio">{need === 'prog' ? '✓' : ''}</div>
-                  </div>
-
-                  <div
-                    className={`lsq-opt-card ${need === 'frame' ? 'lsq-opt-sel' : ''}`}
-                    onClick={() => handlePickNeed('frame')}
-                  >
-                    <div className="lsq-opt-icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="2.5" y="8" width="8" height="7" rx="3" />
-                        <rect x="13.5" y="8" width="8" height="7" rx="3" />
-                        <path d="M10.5 11h3" />
-                      </svg>
-                    </div>
-                    <div className="lsq-opt-body">
-                      <div className="lsq-opt-name">Solo el armazón</div>
-                      <div className="lsq-opt-desc">Sin micas graduadas.</div>
-                    </div>
-                    <div className="lsq-opt-radio">{need === 'frame' ? '✓' : ''}</div>
                   </div>
 
                   {/* Garantía y WhatsApp en el flujo en móvil */}
@@ -951,10 +967,67 @@ export default function LensConfiguratorModal({
                     <span>· Paso 2 de 3</span>
                   </div>
                   <h2 className="lsq-title">Tu graduación</h2>
-                  <p className="lsq-sub">Elige cómo ingresar tu receta.</p>
+
+                  {/* Hero Banner: Salida evidente 'No tengo mi receta' */}
+                  <div
+                    className="lsq-no-rx-card"
+                    style={{
+                      background: '#f0fdf4',
+                      border: '1.5px solid #86efac',
+                      borderRadius: '12px',
+                      padding: '16px 18px',
+                      marginBottom: '18px',
+                      boxShadow: '0 2px 8px rgba(22, 101, 52, 0.06)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                      <span style={{ fontSize: '24px', lineHeight: 1 }}>📱</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '15px', fontWeight: 700, color: '#166534', marginBottom: '4px' }}>
+                          ¿No tienes tu receta a la mano?
+                        </div>
+                        <p style={{ margin: 0, fontSize: '13.5px', color: '#15803d', lineHeight: 1.45 }}>
+                          Termina tu compra con calma y <b>nos la envías por WhatsApp después</b>. Un optometrista la valida contigo antes de fabricar tus micas.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setTab('later');
+                            setRxError('');
+                            setStep(3);
+                          }}
+                          style={{
+                            marginTop: '12px',
+                            background: '#166534',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '10px 20px',
+                            fontSize: '13.5px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          Continuar sin receta ahora ›
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="lsq-sub">O si ya la tienes a la mano, elige una opción:</p>
 
                   {/* Pestañas */}
                   <div className="lsq-tabs">
+                    <div
+                      className={`lsq-tab ${tab === 'later' ? 'lsq-tab-on' : ''}`}
+                      onClick={() => handleSwitchTab('later')}
+                    >
+                      La envío después
+                    </div>
                     <div
                       className={`lsq-tab ${tab === 'rx' ? 'lsq-tab-on' : ''}`}
                       onClick={() => handleSwitchTab('rx')}
@@ -965,13 +1038,7 @@ export default function LensConfiguratorModal({
                       className={`lsq-tab ${tab === 'photo' ? 'lsq-tab-on' : ''}`}
                       onClick={() => handleSwitchTab('photo')}
                     >
-                      Subir mi receta (foto o PDF)
-                    </div>
-                    <div
-                      className={`lsq-tab ${tab === 'later' ? 'lsq-tab-on' : ''}`}
-                      onClick={() => handleSwitchTab('later')}
-                    >
-                      La envío después
+                      Subir foto o PDF
                     </div>
                   </div>
 
@@ -1237,7 +1304,8 @@ export default function LensConfiguratorModal({
                     </div>
                   )}
 
-                  {/* Bloque: Distancia pupilar (DP) */}
+                  {/* Bloque: Distancia pupilar (DP) - solo si no es tab 'later' */}
+                  {tab !== 'later' && (
                   <div className="lsq-card">
                     <h3>Distancia pupilar (DP)</h3>
                     <p className="lsq-note">
@@ -1286,6 +1354,7 @@ export default function LensConfiguratorModal({
                       </div>
                     )}
                   </div>
+                  )}
 
                   {/* Aviso de error de validación */}
                   {rxError && (

@@ -47,7 +47,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
   const isContactLens = String(product.category || '').toLowerCase().includes('contacto');
-  const displayPrice = (product.price_incl_tax || 0) + (isFrame ? BASE_LENS_PRICE : 0);
+  const displayPrice = Number(product.price_incl_tax) || 0;
+  const minWithLenses = displayPrice + 1899;
   const specs = isContactLens ? getContactLensCardSpecs(product) : null;
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -127,8 +128,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
             </div>
             {isFrame && (
-              <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
-                micas antirreflejantes incluidas
+              <p style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
+                Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
               </p>
             )}
             {isContactLens && specs && (
@@ -237,8 +238,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
           </div>
           {isFrame && (
-            <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
-              micas antirreflejantes incluidas
+            <p style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
+              Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
             </p>
           )}
           {isContactLens && specs && (

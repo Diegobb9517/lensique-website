@@ -37,7 +37,7 @@ import { ProductCard, FormatProductName } from './components/ProductCard';
 import { CollectionRow } from './components/CollectionRow';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
-import { calculateDeliveryTime, getDeliveryEstimate } from './lib/delivery';
+import { calculateDeliveryTime, getDeliveryEstimate, addBusinessDays } from './lib/delivery';
 import { CartDrawer } from './components/CartDrawer';
 import { TriageModal } from './components/TriageModal';
 import OrderTracking from './components/OrderTracking';
@@ -1412,15 +1412,18 @@ function App() {
       const isOutOfStock = selectedProductDetail.stock != null && selectedProductDetail.stock !== '' && Number(selectedProductDetail.stock) <= 0;
       const isFrame = !String(selectedProductDetail.category || '').toLowerCase().includes('sol') && !String(selectedProductDetail.category || '').toLowerCase().includes('contacto');
       const basePrice = Number(selectedProductDetail.price_incl_tax) || 0;
-      const displayPrice = basePrice + (isFrame ? BASE_LENS_PRICE : 0);
+      const displayPrice = basePrice;
       const numericPrice = displayPrice.toFixed(2);
       
+      const deliv = calculateDeliveryTime(selectedProductDetail);
+      const estAvailabilityDate = addBusinessDays(new Date(), deliv.maxDays || 10).toISOString().split('T')[0];
+
       const productSchema = {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": `${brand}${model} - ${categoryLabel}`,
         "image": [absImage],
-        "description": descText + (isFrame ? ' con micas antirreflejantes incluidas' : ''),
+        "description": descText + (isFrame ? ' con opción de micas graduadas ZEISS' : ''),
         "sku": selectedProductDetail.sku || slug,
         "mpn": selectedProductDetail.sku || slug,
         "brand": { "@type": "Brand", "name": selectedProductDetail.brand || "Lensique" },
@@ -1431,11 +1434,25 @@ function App() {
           "price": numericPrice,
           "itemCondition": "https://schema.org/NewCondition",
           "availability": isOutOfStock ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
+          ...(isOutOfStock ? { "availabilityDate": estAvailabilityDate } : {}),
           "seller": { "@type": "Organization", "name": "Óptica Lensique" }
         }
       };
 
-      let scriptEl = document.getElementById('product-jsonld');
+      // Ensure NO duplicate Product JSON-LD script exists
+      const existingProductScripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
+        .filter(s => s.id === 'product-jsonld' || (s.textContent && (s.textContent.includes('"@type": "Product"') || s.textContent.includes('"@type":"Product"'))));
+
+      let scriptEl = document.getElementById('product-jsonld') as HTMLScriptElement | null;
+      if (!scriptEl && existingProductScripts.length > 0) {
+        scriptEl = existingProductScripts[0] as HTMLScriptElement;
+        scriptEl.id = 'product-jsonld';
+      }
+      if (existingProductScripts.length > 1) {
+        for (let i = 1; i < existingProductScripts.length; i++) {
+          existingProductScripts[i].remove();
+        }
+      }
       if (!scriptEl) {
         scriptEl = document.createElement('script');
         scriptEl.id = 'product-jsonld';
@@ -2053,15 +2070,15 @@ function App() {
                     <FormatProductName product={selectedProductDetail} />
                   </h1>
 
-                  {/* Precio con desglose discreto */}
+                  {/* Precio con desglose claro */}
                   <div className="product-detail-price-box">
                     {isFrame ? (
                       <>
                         <div className="product-detail-price">
-                          ${Math.round(finalPrice).toLocaleString('es-MX')} <small>· micas incluidas</small>
+                          ${Math.round(basePrice).toLocaleString('es-MX')} <small>· armazón solo</small>
                         </div>
                         <div className="product-detail-breakdown">
-                          Armazón ${Math.round(basePrice).toLocaleString('es-MX')} · Micas $1,200
+                          Armazón ${Math.round(basePrice).toLocaleString('es-MX')} · desde ${Math.round(basePrice + 1899).toLocaleString('es-MX')} con micas
                         </div>
                       </>
                     ) : (

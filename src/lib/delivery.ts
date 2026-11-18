@@ -13,7 +13,7 @@ export interface DeliveryEstimate {
 }
 
 // Function to add business days to a date (Mon-Fri)
-function addBusinessDays(startDate: Date, daysToAdd: number): Date {
+export function addBusinessDays(startDate: Date, daysToAdd: number): Date {
   const date = new Date(startDate.getTime());
   let daysAdded = 0;
   while (daysAdded < daysToAdd) {

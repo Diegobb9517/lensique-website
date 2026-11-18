@@ -60,6 +60,17 @@ const sitemapUrls = [
   'https://www.lensique.com.mx/agendar-cita'
 ];
 
+const addBusinessDays = (startDate, daysToAdd) => {
+  const date = new Date(startDate.getTime());
+  let daysAdded = 0;
+  while (daysAdded < daysToAdd) {
+    date.setDate(date.getDate() + 1);
+    const day = date.getDay();
+    if (day !== 0 && day !== 6) daysAdded++;
+  }
+  return date;
+};
+
 const formatPrice = (amount) => {
   const num = Number(amount) || 0;
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(num);
@@ -224,13 +235,10 @@ products.forEach(p => {
   const isOutOfStock = p.stock != null && p.stock !== '' && Number(p.stock) <= 0;
   const availabilitySchema = isOutOfStock ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock';
   const availabilityText = isOutOfStock ? 'Sobre pedido' : 'En existencia';
+  const estAvailabilityDate = addBusinessDays(new Date(), 10).toISOString().split('T')[0];
 
   const basePrice = Number(p.price_incl_tax) || 0;
-  const constantsPath = path.join(__dirname, '..', 'src', 'lib', 'constants.ts');
-  const constantsContent = fs.readFileSync(constantsPath, 'utf8');
-  const match = constantsContent.match(/export const BASE_LENS_PRICE\s*=\s*(\d+);/);
-  const baseLensPrice = match ? parseInt(match[1], 10) : 1200;
-  const finalPrice = basePrice + (isFrame ? baseLensPrice : 0);
+  const finalPrice = basePrice;
 
   const numericPrice = finalPrice.toFixed(2);
   const formattedPriceMxn = `${formatPrice(finalPrice)} MXN`;
@@ -238,7 +246,7 @@ products.forEach(p => {
   const pageTitle = `${displayName} | ${categoryLabel} | Óptica Lensique`;
   let pageDesc = p.description || `Compra ${displayName} (${categoryLabel}) en Óptica Lensique. Respaldo de oftalmólogo en Zapopan y envíos a todo México.`;
   if (isFrame) {
-    pageDesc += ' Con micas antirreflejantes incluidas.';
+    pageDesc += ` Armazón desde ${formattedPriceMxn} con opción de micas graduadas ZEISS.`;
   }
 
   const jsonLd = {
@@ -257,6 +265,7 @@ products.forEach(p => {
       "price": numericPrice,
       "itemCondition": "https://schema.org/NewCondition",
       "availability": availabilitySchema,
+      ...(isOutOfStock ? { "availabilityDate": estAvailabilityDate } : {}),
       "seller": { "@type": "Organization", "name": "Óptica Lensique" }
     }
   };
@@ -270,7 +279,7 @@ products.forEach(p => {
     <meta property="og:image" content="${absImg}" />
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:type" content="product" />
-    <script type="application/ld+json">
+    <script type="application/ld+json" id="product-jsonld">
 ${JSON.stringify(jsonLd, null, 2)}
     </script>
   `;
@@ -279,7 +288,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     <div id="product-seo-fallback" style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif; border: 1px solid #eaeaea; border-radius: 16px; background: #ffffff;">
       <span style="font-size: 14px; font-weight: 500; color: #6b7280; letter-spacing: 0.05em;">${brandLabel} · ${categoryLabel}</span>
       <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 8px 0;">${cleanModel}</h1>
-      <p style="font-size: 24px; font-weight: 700; color: #16a34a; margin: 12px 0;">${formattedPriceMxn}</p>
+      <p style="font-size: 24px; font-weight: 700; color: #16a34a; margin: 12px 0;">${formattedPriceMxn} ${isFrame ? `<span style="font-size: 14px; font-weight: normal; color: #6b7280;">· Armazón solo (desde ${formatPrice(finalPrice + 1899)} MXN con micas ZEISS)</span>` : ''}</p>
       <div style="display: inline-block; padding: 6px 12px; background: ${isOutOfStock ? '#fff7ed' : '#f0fdf4'}; color: ${isOutOfStock ? '#c2410c' : '#15803d'}; font-weight: 600; border-radius: 6px; font-size: 13px; margin-bottom: 16px;">
         Disponibilidad: ${availabilityText}
       </div>

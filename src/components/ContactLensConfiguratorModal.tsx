@@ -28,7 +28,7 @@ const resolveImageUrl = (url: any, fallback?: any) => {
 };
 
 // ==========================================
-// PRECIOS MERCADO PAGO, MSI Y CHARM (termina en 99)
+// PRECIOS Y MSI (Sin recargos adicionales sobre POS)
 // ==========================================
 export const MP_BASE = 0.04;
 export const MSI_RATE3 = 0.0469;
@@ -37,16 +37,13 @@ export const MSI_T3 = 2500;
 export const MSI_T6 = 4000;
 
 export function charm(n: number): number {
-  return Math.round(n / 100) * 100 - 1;
+  return n;
 }
 
 export function priceWithMP(net: number): { price: number; n: number; monthly: number } {
-  const p0 = net / (1 - MP_BASE);
-  const n = (p0 >= MSI_T6) ? 6 : (p0 >= MSI_T3) ? 3 : 0;
-  const rate = MP_BASE + (n === 6 ? MSI_RATE6 : n === 3 ? MSI_RATE3 : 0);
-  const price = charm(net / (1 - rate));
-  const monthly = n > 0 ? Math.round(price / n) : price;
-  return { price, n, monthly };
+  const n = (net >= MSI_T6) ? 6 : (net >= MSI_T3) ? 3 : 0;
+  const monthly = n > 0 ? Math.round(net / n) : net;
+  return { price: net, n, monthly };
 }
 
 

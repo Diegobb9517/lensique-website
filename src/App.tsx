@@ -42,6 +42,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { TriageModal } from './components/TriageModal';
 import OrderTracking from './components/OrderTracking';
 import { MicasZeissPage } from './components/MicasZeissPage';
+import initialContent from '../content2.json';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
   const clean = waStr.replace(/\D/g, '');
@@ -1233,10 +1234,10 @@ function App() {
       { id: 'm7', title: 'Trabajos personalizados', description: 'Fabricación especial a medida.', image: premiumCustom },
       { id: 'm8', title: 'Antirreflejantes', description: 'Tratamientos premium sin deslumbramientos.', image: premiumAntireflective }
     ]),
-    featured_products: JSON.stringify([]),
-    featured_contact_lenses: JSON.stringify([]),
+    featured_products: typeof (initialContent as any).featured_products === 'string' ? (initialContent as any).featured_products : JSON.stringify((initialContent as any).featured_products || []),
+    featured_contact_lenses: typeof (initialContent as any).featured_contact_lenses === 'string' ? (initialContent as any).featured_contact_lenses : JSON.stringify((initialContent as any).featured_contact_lenses || []),
     full_catalog: JSON.stringify([]),
-    full_catalog_data: []
+    full_catalog_data: typeof (initialContent as any).full_catalog_data === 'string' ? (initialContent as any).full_catalog_data : JSON.stringify((initialContent as any).full_catalog_data || [])
   });
 
   
@@ -1260,6 +1261,7 @@ function App() {
   const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
+  const [is404Product, setIs404Product] = useState(false);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [configuratorInitialSection, setConfiguratorInitialSection] = useState<string | null>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
@@ -1296,7 +1298,10 @@ function App() {
           const product = findProductBySlug(catalog, slug);
           if (product) {
             setSelectedProductDetail(product);
+            setIs404Product(false);
           } else {
+            setSelectedProductDetail(null);
+            setIs404Product(true);
             document.title = "404 - Página no encontrada | Óptica Lensique";
             let robotsEl = document.querySelector('meta[name="robots"]');
             if (!robotsEl) {
@@ -1307,35 +1312,38 @@ function App() {
             robotsEl.setAttribute('content', 'noindex, follow');
           }
         }
-      } else if (path === '/devoluciones') {
+      } else {
+        setIs404Product(false);
+        if (path === '/devoluciones') {
           setSelectedInfoPage(returnsData);
         } else if (path === '/agendar-cita') {
-        setSelectedProduct('Examen de la Vista');
-        setIsBookingOpen(true);
-      } else if (path === '/catalogo') {
-        setCatalogInitialFilter(getInitialCatalogFilter());
-        setIsCatalogOpen(true);
-        setCurrentPath('/catalogo');
-      } else if (path.startsWith('/marca/')) {
-        const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
-        const catalog = safeJsonParse(settings.full_catalog_data, []);
-        if (catalog.length > 0) {
-          const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
-          const matchedBrand = uniqueBrands.find((b: any) => slugify(b) === slug);
-          if (matchedBrand) {
-            setCatalogInitialFilter('Todas');
-            setCatalogInitialBrand(matchedBrand as string);
-            setIsCatalogOpen(true);
-            setCurrentPath('/catalogo');
-          } else {
-            document.title = "404 - Marca no encontrada | Óptica Lensique";
-            let robotsEl = document.querySelector('meta[name="robots"]');
-            if (!robotsEl) {
-              robotsEl = document.createElement('meta');
-              robotsEl.setAttribute('name', 'robots');
-              document.head.appendChild(robotsEl);
+          setSelectedProduct('Examen de la Vista');
+          setIsBookingOpen(true);
+        } else if (path === '/catalogo') {
+          setCatalogInitialFilter(getInitialCatalogFilter());
+          setIsCatalogOpen(true);
+          setCurrentPath('/catalogo');
+        } else if (path.startsWith('/marca/')) {
+          const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
+          const catalog = safeJsonParse(settings.full_catalog_data, []);
+          if (catalog.length > 0) {
+            const uniqueBrands = Array.from(new Set(catalog.map(p => p.brand || 'Varios')));
+            const matchedBrand = uniqueBrands.find((b: any) => slugify(b) === slug);
+            if (matchedBrand) {
+              setCatalogInitialFilter('Todas');
+              setCatalogInitialBrand(matchedBrand as string);
+              setIsCatalogOpen(true);
+              setCurrentPath('/catalogo');
+            } else {
+              document.title = "404 - Marca no encontrada | Óptica Lensique";
+              let robotsEl = document.querySelector('meta[name="robots"]');
+              if (!robotsEl) {
+                robotsEl = document.createElement('meta');
+                robotsEl.setAttribute('name', 'robots');
+                document.head.appendChild(robotsEl);
+              }
+              robotsEl.setAttribute('content', 'noindex, follow');
             }
-            robotsEl.setAttribute('content', 'noindex, follow');
           }
         }
       }
@@ -2900,7 +2908,7 @@ function App() {
               const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/seguimiento'];
               const isDynamicRoute = currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/');
               const is404Title = typeof document !== 'undefined' && document.title.includes('404');
-              const is404 = (!validStaticRoutes.includes(currentPath) && !isDynamicRoute) || ((currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/')) && is404Title);
+              const is404 = (!validStaticRoutes.includes(currentPath) && !isDynamicRoute) || is404Product || ((currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/')) && is404Title);
               
               return (
                 <>

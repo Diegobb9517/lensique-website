@@ -186,12 +186,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
         const pvp = Number(item.lensConfig?.pvp || 0);
         targetUnitPrice = pvp + liveBasePrice;
       } else if (item.lensConfig && item.lensConfig.quantityOD !== undefined) {
-        // Lentes de contacto: recalcular con precio unitario catálogo
-        const totalBoxes = (item.lensConfig.quantityOD || 0) + (item.lensConfig.quantityOS || 0);
-        const boxes = totalBoxes > 0 ? totalBoxes : item.quantity;
-        const net = liveBasePrice * boxes;
-        const pricing = priceWithMP(net);
-        targetUnitPrice = Math.round(pricing.price / boxes);
+        // Lentes de contacto: precio unitario directo del catálogo/POS
+        targetUnitPrice = liveBasePrice;
       } else {
         // Armazón o producto individual
         targetUnitPrice = liveBasePrice;

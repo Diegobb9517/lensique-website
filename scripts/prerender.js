@@ -323,6 +323,24 @@ ${JSON.stringify(jsonLd, null, 2)}
     console.error(`[ERROR] Generado archivo vacío (0 bytes) para el producto: ${slug}`);
     process.exit(1);
   }
+
+  // Pre-render common alternative slugs (e.g. brand-sku-sku, brand-sku) for backward compatibility
+  const extraSlugs = [];
+  const brandSlug = slugify(p.brand || '');
+  const skuSlug = slugify(p.sku || '');
+  if (brandSlug && skuSlug) {
+    extraSlugs.push(`${brandSlug}-${skuSlug}`);
+    extraSlugs.push(`${brandSlug}-${skuSlug}-${skuSlug}`);
+  }
+  for (const extraSlug of extraSlugs) {
+    if (extraSlug !== slug) {
+      const extraProdDir = path.join(distDir, 'producto', extraSlug);
+      if (!fs.existsSync(extraProdDir)) {
+        fs.mkdirSync(extraProdDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(extraProdDir, 'index.html'), html, 'utf8');
+    }
+  }
   
   generatedCount++;
 

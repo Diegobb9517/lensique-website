@@ -229,14 +229,52 @@ export const findProductBySlug = (catalog: any[], slug: string): any | null => {
   if (!catalog || !Array.isArray(catalog) || !slug) return null;
   const targetSlug = slug.toLowerCase().trim();
   
+  // 1. Exact match with canonical getProductSlug
   const exact = catalog.find(p => getProductSlug(p) === targetSlug);
   if (exact) return exact;
 
-  return catalog.find(p => {
-    if (p.id && String(p.id) === targetSlug) return true;
-    if (p.sku && slugify(p.sku) === targetSlug) return true;
+  // 2. ID match: '52' or 'producto-52'
+  const idMatch = catalog.find(p => p.id && (String(p.id) === targetSlug || `producto-${p.id}` === targetSlug));
+  if (idMatch) return idMatch;
+
+  // 3. Match by SKU or combinations (brand-sku, brand-sku-sku, brand-name, etc.)
+  const skuMatches = catalog.filter(p => {
+    if (!p.sku) return false;
+    const skuSlug = slugify(p.sku);
+    if (!skuSlug) return false;
+    if (skuSlug === targetSlug) return true;
+
+    const brandSlug = slugify(p.brand || '');
+    if (brandSlug) {
+      if (`${brandSlug}-${skuSlug}` === targetSlug) return true;
+      if (`${brandSlug}-${skuSlug}-${skuSlug}` === targetSlug) return true;
+    }
+    const nameSlug = slugify(p.name || '');
+    if (nameSlug && `${brandSlug}-${nameSlug}` === targetSlug) return true;
     return false;
-  }) || null;
+  });
+  if (skuMatches.length === 1) return skuMatches[0];
+
+  // 4. Substring SKU match if SKU has significant length (>= 5 chars)
+  const substrMatches = catalog.filter(p => {
+    if (!p.sku) return false;
+    const skuSlug = slugify(p.sku);
+    if (skuSlug.length >= 5 && targetSlug.includes(skuSlug)) {
+      return true;
+    }
+    return false;
+  });
+  if (substrMatches.length === 1) return substrMatches[0];
+  if (substrMatches.length > 1) {
+    const brandMatch = substrMatches.find(p => {
+      const brandSlug = slugify(p.brand || '');
+      return brandSlug && targetSlug.includes(brandSlug);
+    });
+    if (brandMatch) return brandMatch;
+    return substrMatches[0];
+  }
+
+  return null;
 };
 
 export const isInStock = (product: any): boolean => {

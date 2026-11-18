@@ -1,8 +1,5 @@
 routes:
   - type: rewrite
-    source: /producto/:slug
-    destination: /producto/:slug/index.html
-  - type: rewrite
     source: /p/:token
     destination: /index.html
   - type: rewrite
@@ -14,10 +11,12 @@ routes:
   - type: rewrite
     source: /lentes-de-contacto
     destination: /index.html
-
   - type: rewrite
     source: /catalogo
     destination: /catalogo/index.html
+  - type: rewrite
+    source: /*
+    destination: /index.html
 
 headers:
   - path: /*

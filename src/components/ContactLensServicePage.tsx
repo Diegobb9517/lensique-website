@@ -18,8 +18,9 @@ import {
   Smile
 } from 'lucide-react';
 import './ContactLensServicePage.css';
-import { getOfficialHdImage, getContactLensBrand } from '../lib/productImages';
-import { ProductFallbackCard } from './ProductFallbackCard';
+import { getContactLensBrand, getContactLensCardSpecs } from '../lib/productImages';
+import { isInStock } from '../lib/format';
+import { resolveImageUrl } from '../App';
 
 import heroImg from '../assets/contact_lens/hero.jpg';
 import washImg from '../assets/contact_lens/wash.jpg';
@@ -39,15 +40,16 @@ interface ContactLensServicePageProps {
 
 const FeaturedContactLensCardItem = ({
   product,
-  imgUrl,
   onViewProduct
 }: {
   product: any;
-  imgUrl: string | null;
   onViewProduct?: (p: any) => void;
 }) => {
-  const [hasError, setHasError] = useState(false);
   const brand = getContactLensBrand(product);
+  const specs = getContactLensCardSpecs(product);
+  const outOfStock = !isInStock(product);
+  const rawImg = (product.images && product.images.length > 0) ? product.images[0].image_url : (product.image_url || product.image);
+  const imgUrl = resolveImageUrl(rawImg, heroImg) || heroImg;
 
   return (
     <div
@@ -69,18 +71,59 @@ const FeaturedContactLensCardItem = ({
           background: '#f8fafc'
         }}
       >
-        {hasError || !imgUrl ? (
-          <ProductFallbackCard product={product} variant="compact" />
-        ) : (
-          <img
-            src={imgUrl}
-            alt={product.name || 'Lente de contacto'}
-            className="wp-card-img"
-            loading="lazy"
-            style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px' }}
-            onError={() => setHasError(true)}
-          />
+        {outOfStock && (
+          <div
+            className="out-of-stock-badge"
+            style={{
+              position: 'absolute',
+              top: '8px',
+              left: '8px',
+              zIndex: 2,
+              color: '#d97706',
+              background: '#fffbeb',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              fontWeight: 600,
+              letterSpacing: '0.05em'
+            }}
+          >
+            Sobre pedido
+          </div>
         )}
+        <div
+          className="original-badge"
+          style={{
+            position: 'absolute',
+            top: '8px',
+            right: '8px',
+            zIndex: 2,
+            fontSize: '9.5px',
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+            color: '#16a34a',
+            background: 'rgba(240, 253, 244, 0.95)',
+            border: '1px solid rgba(187, 247, 208, 0.8)',
+            padding: '2px 7px',
+            borderRadius: '999px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3px'
+          }}
+        >
+          ✓ Original
+        </div>
+        <img
+          src={imgUrl}
+          alt={product.name || 'Lente de contacto'}
+          className="wp-card-img"
+          loading="lazy"
+          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px' }}
+          onError={(e: any) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = heroImg;
+          }}
+        />
       </div>
       <div className="wp-card-info" style={{ textAlign: 'center', padding: '12px 6px' }}>
         <p className="wp-card-category" style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>
@@ -93,6 +136,16 @@ const FeaturedContactLensCardItem = ({
           {product.price_incl_tax ? `$${Math.round(product.price_incl_tax).toLocaleString('es-MX')}` : (product.price || '')}
           <small style={{ fontSize: '11px', fontWeight: 400, color: '#64748b', marginLeft: '4px' }}>/ caja</small>
         </div>
+        {specs && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginTop: '6px' }}>
+            <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#334155', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
+              {specs.bc} · {specs.dia}
+            </span>
+            <span style={{ fontSize: '9.5px', fontWeight: 500, color: '#475569', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
+              {specs.usage}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -701,18 +754,13 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
             </div>
 
             <div className="wp-carousel-grid">
-              {featuredProducts.slice(0, 8).map((product: any, idx: number) => {
-                const hdImage = getOfficialHdImage(product);
-                const imgUrl = hdImage || product.image_url || product.image || (product.images && product.images[0]?.image_url);
-                return (
-                  <FeaturedContactLensCardItem
-                    key={`contact-${idx}-${product.id || idx}`}
-                    product={product}
-                    imgUrl={imgUrl}
-                    onViewProduct={onViewProduct}
-                  />
-                );
-              })}
+              {featuredProducts.slice(0, 8).map((product: any, idx: number) => (
+                <FeaturedContactLensCardItem
+                  key={`contact-${idx}-${product.id || idx}`}
+                  product={product}
+                  onViewProduct={onViewProduct}
+                />
+              ))}
             </div>
 
             <div style={{ textAlign: 'center', marginTop: '36px' }}>

@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { ProductFallbackCard } from './ProductFallbackCard';
-import { getOfficialHdImage } from '../lib/productImages';
+import { getOfficialHdImage, getContactLensCardSpecs } from '../lib/productImages';
 import { ImageWithSkeleton } from './ImageWithSkeleton';
 import { getDisplayName, getProductSlug, isInStock, isProvisionalName, getCardDisplayName } from '../lib/format';
 import { resolveImageUrl } from '../App';
@@ -38,7 +37,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isEditorial = false,
   onSelectAction
 }) => {
-  const [imageError, setImageError] = useState(false);
   const outOfStock = !isInStock(product);
   
   const hdImage = getOfficialHdImage(product);
@@ -50,6 +48,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
   const isContactLens = String(product.category || '').toLowerCase().includes('contacto');
   const displayPrice = (product.price_incl_tax || 0) + (isFrame ? BASE_LENS_PRICE : 0);
+  const specs = isContactLens ? getContactLensCardSpecs(product) : null;
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -78,28 +77,45 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ) : (
               outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
             )}
-            {isContactLens && (imageError || (!imageUrl && !fallbackImage)) ? (
-              <ProductFallbackCard product={product} variant="compact" />
-            ) : (
+            {isContactLens && (
+              <div
+                className="original-badge"
+                style={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '8px',
+                  zIndex: 2,
+                  fontSize: '9.5px',
+                  fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  color: '#16a34a',
+                  background: 'rgba(240, 253, 244, 0.95)',
+                  border: '1px solid rgba(187, 247, 208, 0.8)',
+                  padding: '2px 7px',
+                  borderRadius: '999px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '3px'
+                }}
+              >
+                ✓ Original
+              </div>
+            )}
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
               alt={product.name} 
               className="product-main-img smooth-img"
               loading="lazy"
               decoding="async"
+              style={{ objectFit: 'contain', padding: isContactLens ? '12px' : undefined }}
               onError={(e: any) => {
-                if (isContactLens) {
-                  setImageError(true);
-                  return;
-                }
                 e.target.onerror = null;
-                e.target.src = SVG_PLACEHOLDER;
+                e.target.src = fallbackImage || SVG_PLACEHOLDER;
                 e.target.style.padding = '20%';
                 e.target.style.objectFit = 'contain';
                 e.target.style.background = '#f9fafb';
               }}
             />
-            )}
           </div>
 
           <div className="product-info-editorial" style={{ textAlign: 'center' }}>
@@ -114,6 +130,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
                 micas antirreflejantes incluidas
               </p>
+            )}
+            {isContactLens && specs && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginTop: '6px' }}>
+                <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#334155', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
+                  {specs.bc} · {specs.dia}
+                </span>
+                <span style={{ fontSize: '9.5px', fontWeight: 500, color: '#475569', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
+                  {specs.usage}
+                </span>
+              </div>
             )}
             
             {onSelectAction && (
@@ -145,7 +171,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onClick={handleCardClick}
         style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
       >
-        <div className="wp-card-img-area">
+        <div className="wp-card-img-area" style={{ position: 'relative' }}>
           {isFrame ? (
             <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>
               {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
@@ -153,28 +179,45 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           ) : (
             outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
           )}
-          {isContactLens && (imageError || (!imageUrl && !fallbackImage)) ? (
-            <ProductFallbackCard product={product} variant="compact" />
-          ) : (
-            <ImageWithSkeleton 
-              src={imageUrl || fallbackImage} 
-              alt={product.name} 
-              className="wp-card-img"
-              loading="lazy"
-              decoding="async" 
-              onError={(e: any) => {
-                if (isContactLens) {
-                  setImageError(true);
-                  return;
-                }
-                e.target.onerror = null;
-                e.target.src = SVG_PLACEHOLDER;
-                e.target.style.padding = '20%';
-                e.target.style.objectFit = 'contain';
-                e.target.style.background = '#f9fafb';
+          {isContactLens && (
+            <div
+              className="original-badge"
+              style={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                zIndex: 2,
+                fontSize: '9.5px',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                color: '#16a34a',
+                background: 'rgba(240, 253, 244, 0.95)',
+                border: '1px solid rgba(187, 247, 208, 0.8)',
+                padding: '2px 7px',
+                borderRadius: '999px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px'
               }}
-            />
+            >
+              ✓ Original
+            </div>
           )}
+          <ImageWithSkeleton 
+            src={imageUrl || fallbackImage} 
+            alt={product.name} 
+            className="wp-card-img"
+            loading="lazy"
+            decoding="async" 
+            style={{ objectFit: 'contain', padding: isContactLens ? '10px' : undefined }}
+            onError={(e: any) => {
+              e.target.onerror = null;
+              e.target.src = fallbackImage || SVG_PLACEHOLDER;
+              e.target.style.padding = '20%';
+              e.target.style.objectFit = 'contain';
+              e.target.style.background = '#f9fafb';
+            }}
+          />
         </div>
 
         <div className="wp-card-info" style={{ textAlign: 'center' }}>
@@ -197,6 +240,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
               micas antirreflejantes incluidas
             </p>
+          )}
+          {isContactLens && specs && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginTop: '6px' }}>
+              <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#334155', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
+                {specs.bc} · {specs.dia}
+              </span>
+              <span style={{ fontSize: '9.5px', fontWeight: 500, color: '#475569', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
+                {specs.usage}
+              </span>
+            </div>
           )}
           
           {onSelectAction && (

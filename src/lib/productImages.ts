@@ -16,51 +16,14 @@ import { getContactLensSpecs } from '../components/ContactLensConfiguratorModal'
  * o URLs directas de Cloudflare R2 / CDN oficial del fabricante.
  */
 export const OFFICIAL_HD_PRODUCT_IMAGES: Record<string, string> = {
-  // ACUVUE (Johnson & Johnson)
-  'LC-ACUVUE2': '/assets/products/acuvue2_hd.png',
-  'LC-ACUVUEOASYS': '/assets/products/acuvue_oasys_hd.png',
-  'LC-ACUVUEOASYSASTI': '/assets/products/acuvue_oasys_astigmatismo_hd.png',
-  'LC-ACUVUE1DAYMOIST': '/assets/products/acuvue_1day_moist_hd.png',
-  'LC-1DAYACUVUEMOIST': '/assets/products/acuvue_1day_moist_hd.png',
-  'LC-ACUVUEOASYSWITH': '/assets/products/acuvue_oasys_hydraluxe_hd.png',
-  'LC-ACUVUEVITATORIC': '/assets/products/acuvue_vita_toric_hd.png',
-
-  // COOPERVISION (Biofinity, Clariti)
-  'LC-BIOFINITY': '/assets/products/biofinity_hd.png',
-  'LC-BIOFINITYTORIC': '/assets/products/biofinity_toric_hd.png',
-  'LC-BIOFINITYMULTIF': '/assets/products/biofinity_multifocal_hd.png',
-  'LC-CLARITI1DAYTORI': '/assets/products/clariti_1day_toric_hd.png',
-  'LC-CLARITI1DAYMULT': '/assets/products/clariti_1day_multifocal_hd.png',
-  'LC-BIOMEDICS55': '/assets/products/biomedics55_hd.png',
-
-  // BAUSCH + LOMB (Ultra, Biotrue, SofLens)
-  'LC-BAUSCHLOMBULTRA': '/assets/products/bausch_ultra_hd.png',
-  'LC-BIOTRUEONEDAY': '/assets/products/biotrue_oneday_hd.png',
-  'LC-BIOTRUEONEDAYAS': '/assets/products/biotrue_oneday_astigmatismo_hd.png',
-  'LC-SOFLENS59': '/assets/products/soflens59_hd.png',
-  'LC-OPTIMA38': '/assets/products/optima38_hd.png',
-
-  // ALCON (Air Optix, FreshLook, Dailies)
-  'LC-AIROPTIXAQUANIG': '/assets/products/air_optix_night_day_hd.png',
-  'LC-AIROPTIXCOLORS': '/assets/products/air_optix_colors_hd.png',
-  'LC-FRESHLOOKCOLORB': '/assets/products/freshlook_colorblends_hd.png'
+  // Diego / distribuidor puede agregar aquí las rutas locales o URLs directas
+  // de Cloudflare R2 / CDN oficial en el futuro si desea reemplazar alguna imagen.
 };
 
 /**
  * Mapeo alternativo por nombre normalizado (slug)
  */
-export const OFFICIAL_HD_SLUG_IMAGES: Record<string, string> = {
-  'acuvue-2': '/assets/products/acuvue2_hd.png',
-  'acuvue-oasys': '/assets/products/acuvue_oasys_hd.png',
-  'acuvue-oasys-astigmatismo': '/assets/products/acuvue_oasys_astigmatismo_hd.png',
-  'acuvue-1-day-moist': '/assets/products/acuvue_1day_moist_hd.png',
-  'biofinity': '/assets/products/biofinity_hd.png',
-  'biofinity-toric': '/assets/products/biofinity_toric_hd.png',
-  'biofinity-multifocal': '/assets/products/biofinity_multifocal_hd.png',
-  'air-optix-aqua-night-day': '/assets/products/air_optix_night_day_hd.png',
-  'soflens-59': '/assets/products/soflens59_hd.png',
-  'biotrue-one-day': '/assets/products/biotrue_oneday_hd.png'
-};
+export const OFFICIAL_HD_SLUG_IMAGES: Record<string, string> = {};
 
 /**
  * Determina si un producto pertenece a la categoría de lentes de contacto

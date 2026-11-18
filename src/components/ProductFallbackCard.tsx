@@ -1,5 +1,7 @@
 import React from 'react';
 import { getContactLensBrand, getContactLensSubtitle, getContactLensCardSpecs } from '../lib/productImages';
+import { resolveImageUrl } from '../App';
+import contactLensesImg from '../assets/contact_lenses.png';
 
 interface ProductFallbackCardProps {
   product: any;
@@ -20,6 +22,8 @@ export const ProductFallbackCard: React.FC<ProductFallbackCardProps> = ({
   const displayName = String(product?.name || 'Lente de Contacto').replace(/\s*\(.*?\)\s*/g, '').trim();
 
   const isDetail = variant === 'detail';
+  const rawImg = (product?.images && product.images.length > 0) ? product.images[0].image_url : (product?.image_url || product?.image);
+  const imgSrc = resolveImageUrl(rawImg, contactLensesImg) || contactLensesImg;
 
   return (
     <div
@@ -103,44 +107,24 @@ export const ProductFallbackCard: React.FC<ProductFallbackCardProps> = ({
         </span>
       </div>
 
-      {/* Centro: Gráfico vector del lente + Nombre */}
+      {/* Centro: Foto real del producto (caja) + Nombre */}
       <div style={{ position: 'relative', zIndex: 2, margin: isDetail ? '12px 0' : '6px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <svg
-          width={isDetail ? 64 : 42}
-          height={isDetail ? 40 : 28}
-          viewBox="0 0 64 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ filter: 'drop-shadow(0 4px 10px rgba(37, 99, 235, 0.15))', marginBottom: isDetail ? '8px' : '4px' }}
-        >
-          {/* Menisco curvado del lente de contacto */}
-          <path
-            d="M 6 12 C 18 32, 46 32, 58 12 C 48 24, 16 24, 6 12 Z"
-            fill="url(#lensFill)"
-            stroke="url(#lensStroke)"
-            strokeWidth="1.5"
-          />
-          {/* Reflejo superior del lente */}
-          <path
-            d="M 12 15 C 22 23, 42 23, 52 15"
-            stroke="#ffffff"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            opacity="0.8"
-          />
-          <defs>
-            <linearGradient id="lensFill" x1="6" y1="12" x2="58" y2="30" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#60a5fa" stopOpacity="0.45" />
-              <stop offset="0.6" stopColor="#38bdf8" stopOpacity="0.25" />
-              <stop offset="1" stopColor="#06b6d4" stopOpacity="0.35" />
-            </linearGradient>
-            <linearGradient id="lensStroke" x1="6" y1="12" x2="58" y2="12" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#2563eb" />
-              <stop offset="0.5" stopColor="#38bdf8" />
-              <stop offset="1" stopColor="#0284c7" />
-            </linearGradient>
-          </defs>
-        </svg>
+        <img
+          src={imgSrc}
+          alt={displayName}
+          style={{
+            maxWidth: '100%',
+            maxHeight: isDetail ? '180px' : '90px',
+            width: 'auto',
+            height: 'auto',
+            objectFit: 'contain',
+            marginBottom: isDetail ? '8px' : '4px'
+          }}
+          onError={(e: any) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = contactLensesImg;
+          }}
+        />
 
         <h4
           style={{

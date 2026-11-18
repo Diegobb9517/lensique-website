@@ -30,8 +30,7 @@ import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPT
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
 import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName } from './lib/format';
-import { getOfficialHdImage } from './lib/productImages';
-import { ProductFallbackCard } from './components/ProductFallbackCard';
+import { getOfficialHdImage, getContactLensCardSpecs } from './lib/productImages';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard, FormatProductName } from './components/ProductCard';
@@ -132,7 +131,7 @@ const faceShapeGuide = [
   }
 ];
 
-const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
+const API_BASE = 'https://lensique-pos.onrender.com';
 
 export const resolveImageUrl = (url: string, fallback: string | undefined, width?: number) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
@@ -1260,7 +1259,6 @@ function App() {
   const [catalogInitialSearchQuery, setCatalogInitialSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [selectedProductDetail, setSelectedProductDetail] = useState<any | null>(null);
-  const [contactModalImgError, setContactModalImgError] = useState(false);
   const [configuratorProduct, setConfiguratorProduct] = useState<any>(null);
   const [configuratorInitialSection, setConfiguratorInitialSection] = useState<string | null>(null);
   const [contactConfiguratorProduct, setContactConfiguratorProduct] = useState<any>(null);
@@ -1349,7 +1347,6 @@ function App() {
 
   // 2. Sync history pushState, SEO title, meta tags, and JSON-LD when selectedProductDetail changes
   useEffect(() => {
-    setContactModalImgError(false);
     if (selectedProductDetail) {
       import('./lib/analytics').then(({ trackViewItem }) => trackViewItem(selectedProductDetail));
 
@@ -1854,8 +1851,9 @@ function App() {
             const basePrice = selectedProductDetail.price_incl_tax || selectedProductDetail.price || 0;
             const deliv = calculateDeliveryTime(selectedProductDetail);
             const fmt = getContactLensFormat(selectedProductDetail);
-            const hdImg = getOfficialHdImage(selectedProductDetail);
-            const imgSrc = hdImg || resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || (selectedProductDetail.images && selectedProductDetail.images[0]?.image_url);
+            const specs = getContactLensCardSpecs(selectedProductDetail);
+            const rawImg = (selectedProductDetail.images && selectedProductDetail.images.length > 0) ? selectedProductDetail.images[0].image_url : selectedProductDetail.image_url;
+            const imgSrc = resolveImageUrl(rawImg, contactLensesImg, 800) || contactLensesImg;
 
             return (
               <motion.div
@@ -1883,20 +1881,41 @@ function App() {
                   </button>
 
                   {/* Izquierda: Imagen limpia en blanco */}
-                  <div className="cl-detail-imgcol">
+                  <div className="cl-detail-imgcol" style={{ position: 'relative' }}>
                     <div className="cl-detail-badge">
                       {isOutOfStock ? '● SOBRE PEDIDO' : '● EN EXISTENCIA'}
                     </div>
-                    {contactModalImgError || !imgSrc ? (
-                      <ProductFallbackCard product={selectedProductDetail} variant="detail" />
-                    ) : (
-                      <img 
-                        src={imgSrc} 
-                        alt={selectedProductDetail.name} 
-                        onError={() => setContactModalImgError(true)}
-                        style={{ maxWidth: '100%', maxHeight: '280px', width: 'auto', height: 'auto', objectFit: 'contain' }}
-                      />
-                    )}
+                    <div
+                      className="original-badge"
+                      style={{
+                        position: 'absolute',
+                        top: '18px',
+                        right: '18px',
+                        zIndex: 2,
+                        fontSize: '10.5px',
+                        fontWeight: 600,
+                        letterSpacing: '0.04em',
+                        color: '#16a34a',
+                        background: 'rgba(240, 253, 244, 0.95)',
+                        border: '1px solid rgba(187, 247, 208, 0.8)',
+                        padding: '3px 9px',
+                        borderRadius: '999px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
+                      }}
+                    >
+                      ✓ Original
+                    </div>
+                    <img 
+                      src={imgSrc} 
+                      alt={selectedProductDetail.name} 
+                      onError={(e: any) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = contactLensesImg;
+                      }}
+                      style={{ maxWidth: '100%', maxHeight: '280px', width: 'auto', height: 'auto', objectFit: 'contain' }}
+                    />
                   </div>
 
                   {/* Derecha: Info con aire */}
@@ -1911,6 +1930,16 @@ function App() {
                     <div className="cl-detail-fmt">
                       {fmt}
                     </div>
+                    {specs && (
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', margin: '8px 0 12px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#334155', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '3px 10px', whiteSpace: 'nowrap' }}>
+                          {specs.bc} · {specs.dia}
+                        </span>
+                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#475569', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '3px 10px', whiteSpace: 'nowrap' }}>
+                          {specs.usage}
+                        </span>
+                      </div>
+                    )}
                     <div className="cl-detail-hr" />
 
                     <div className="cl-detail-deliv">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Check,
   X,
@@ -11,6 +11,8 @@ import {
   MessageCircle,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   RefreshCw,
   Compass,
@@ -18,9 +20,8 @@ import {
   Smile
 } from 'lucide-react';
 import './ContactLensServicePage.css';
-import { getContactLensBrand, getContactLensCardSpecs } from '../lib/productImages';
-import { isInStock } from '../lib/format';
-import { resolveImageUrl } from '../App';
+import { ProductCard } from './ProductCard';
+import contactLensesImg from '../assets/contact_lenses.png';
 
 import heroImg from '../assets/contact_lens/hero.jpg';
 import washImg from '../assets/contact_lens/wash.jpg';
@@ -38,119 +39,6 @@ interface ContactLensServicePageProps {
   contactWhatsapp?: string;
 }
 
-const FeaturedContactLensCardItem = ({
-  product,
-  onViewProduct
-}: {
-  product: any;
-  onViewProduct?: (p: any) => void;
-}) => {
-  const brand = getContactLensBrand(product);
-  const specs = getContactLensCardSpecs(product);
-  const outOfStock = !isInStock(product);
-  const rawImg = (product.images && product.images.length > 0) ? product.images[0].image_url : (product.image_url || product.image);
-  const imgUrl = resolveImageUrl(rawImg, heroImg) || heroImg;
-
-  return (
-    <div
-      className="wp-product-card"
-      onClick={() => onViewProduct && onViewProduct(product)}
-      style={{ cursor: 'pointer' }}
-    >
-      <div
-        className="wp-card-img-area"
-        style={{
-          width: '100%',
-          aspectRatio: '4 / 3',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-          position: 'relative',
-          borderRadius: '12px',
-          background: '#f8fafc'
-        }}
-      >
-        {outOfStock && (
-          <div
-            className="out-of-stock-badge"
-            style={{
-              position: 'absolute',
-              top: '8px',
-              left: '8px',
-              zIndex: 2,
-              color: '#d97706',
-              background: '#fffbeb',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontWeight: 600,
-              letterSpacing: '0.05em'
-            }}
-          >
-            Sobre pedido
-          </div>
-        )}
-        <div
-          className="original-badge"
-          style={{
-            position: 'absolute',
-            top: '8px',
-            right: '8px',
-            zIndex: 2,
-            fontSize: '9.5px',
-            fontWeight: 600,
-            letterSpacing: '0.04em',
-            color: '#16a34a',
-            background: 'rgba(240, 253, 244, 0.95)',
-            border: '1px solid rgba(187, 247, 208, 0.8)',
-            padding: '2px 7px',
-            borderRadius: '999px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}
-        >
-          ✓ Original
-        </div>
-        <img
-          src={imgUrl}
-          alt={product.name || 'Lente de contacto'}
-          className="wp-card-img"
-          loading="lazy"
-          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px' }}
-          onError={(e: any) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = heroImg;
-          }}
-        />
-      </div>
-      <div className="wp-card-info" style={{ textAlign: 'center', padding: '12px 6px' }}>
-        <p className="wp-card-category" style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>
-          {brand}
-        </p>
-        <h4 className="wp-product-name" style={{ fontSize: '14px', fontWeight: 600, color: '#16223f', margin: '0 0 6px' }}>
-          {product.name}
-        </h4>
-        <div className="wp-product-price" style={{ fontSize: '15px', fontWeight: 700, color: '#16223f' }}>
-          {product.price_incl_tax ? `$${Math.round(product.price_incl_tax).toLocaleString('es-MX')}` : (product.price || '')}
-          <small style={{ fontSize: '11px', fontWeight: 400, color: '#64748b', marginLeft: '4px' }}>/ caja</small>
-        </div>
-        {specs && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginTop: '6px' }}>
-            <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#334155', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
-              {specs.bc} · {specs.dia}
-            </span>
-            <span style={{ fontSize: '9.5px', fontWeight: 500, color: '#475569', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
-              {specs.usage}
-            </span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
   onNavigateToCatalog,
   onOpenWhatsApp,
@@ -160,6 +48,14 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
   contactWhatsapp = '523316929111'
 }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const contactSliderRef = useRef<HTMLDivElement>(null);
+
+  const scrollContact = (direction: 'left' | 'right') => {
+    if (contactSliderRef.current) {
+      const scrollAmount = direction === 'left' ? -320 : 320;
+      contactSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const originalTitle = document.title;
@@ -740,25 +636,47 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
       </section>
 
       {/* ------------------------------------------------------------------
-          11. Catálogo destacado en vivo (si existen productos)
+          11. Catálogo destacado en vivo (Carrusel deslizable estilo Home)
           ------------------------------------------------------------------ */}
       {featuredProducts && featuredProducts.length > 0 && (
-        <section className="cl-section">
+        <section className="cl-section cl-products-carousel-section" style={{ padding: '60px 0' }}>
           <div className="cl-container">
-            <div className="cl-section-header">
-              <span className="cl-eyebrow">Modelos disponibles</span>
-              <h2 className="cl-section-title">Lentes de contacto destacados</h2>
-              <p className="cl-section-desc">
-                Cajas selladas originales con respaldo de optometrista y entrega rápida en Zapopan y todo México.
-              </p>
+            <div className="cl-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
+              <div>
+                <span className="cl-eyebrow">Modelos disponibles</span>
+                <h2 className="cl-section-title" style={{ margin: '4px 0 8px' }}>Lentes de contacto destacados</h2>
+                <p className="cl-section-desc" style={{ margin: 0, maxWidth: '640px' }}>
+                  Cajas selladas originales con respaldo de optometrista y entrega rápida en Zapopan y todo México.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button
+                  className="slider-arrow-btn"
+                  aria-label="Desplazar Izquierda"
+                  onClick={() => scrollContact('left')}
+                  type="button"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  className="slider-arrow-btn"
+                  aria-label="Desplazar Derecha"
+                  onClick={() => scrollContact('right')}
+                  type="button"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              </div>
             </div>
 
-            <div className="wp-carousel-grid">
+            <div className="wp-slider" ref={contactSliderRef}>
               {featuredProducts.slice(0, 8).map((product: any, idx: number) => (
-                <FeaturedContactLensCardItem
-                  key={`contact-${idx}-${product.id || idx}`}
+                <ProductCard
+                  key={`contact-feat-${idx}-${product.id || idx}`}
                   product={product}
-                  onViewProduct={onViewProduct}
+                  fallbackImage={contactLensesImg}
+                  onClick={() => onViewProduct && onViewProduct(product)}
                 />
               ))}
             </div>
@@ -767,6 +685,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
               <button
                 className="cl-btn cl-btn-primary"
                 onClick={() => onNavigateToCatalog('Lentes de Contacto')}
+                type="button"
               >
                 <span>Ver catálogo completo de lentes de contacto</span>
                 <ArrowRight size={16} />

@@ -2758,7 +2758,7 @@ function App() {
             }}
             onBookExam={() => handleOpenBooking()}
             onViewProduct={(product) => setSelectedProductDetail(product)}
-            featuredProducts={safeJsonParse(settings.featured_contact_lenses)}
+            featuredProducts={safeJsonParse(settings.featured_contact_lenses).length > 0 ? safeJsonParse(settings.featured_contact_lenses) : safeJsonParse(settings.full_catalog_data).filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))}
             contactWhatsapp={settings.contact_whatsapp}
           />
         )}

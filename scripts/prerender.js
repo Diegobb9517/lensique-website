@@ -1309,17 +1309,5 @@ fs.writeFileSync(path.join(distDir, '404.html'), fourOhFourHtml, 'utf8');
 fs.writeFileSync(path.join(rootDir, 'public', '404.html'), fourOhFourHtml, 'utf8');
 console.log('✅ Generated /404.html page.');
 
-// Pre-render 404 handler for /producto/no-existe-123 and /producto fallback
-const test404Dir = path.join(distDir, 'producto', 'no-existe-123');
-if (!fs.existsSync(test404Dir)) {
-  fs.mkdirSync(test404Dir, { recursive: true });
-}
-fs.writeFileSync(path.join(test404Dir, 'index.html'), fourOhFourHtml, 'utf8');
-
-const prodIndexDir = path.join(distDir, 'producto');
-if (!fs.existsSync(prodIndexDir)) {
-  fs.mkdirSync(prodIndexDir, { recursive: true });
-}
-fs.writeFileSync(path.join(prodIndexDir, 'index.html'), fourOhFourHtml, 'utf8');
 
 

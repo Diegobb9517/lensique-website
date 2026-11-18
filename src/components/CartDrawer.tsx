@@ -713,7 +713,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             </div>
                             {it.lensConfig?.etiqueta && (
                               <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', lineHeight: 1.35 }}>
-                                Micas {it.lensConfig.etiqueta} · índice {it.lensConfig.indice} · {it.lensConfig.tipoFab || 'estándar'}
+                                Micas · {it.lensConfig.etiqueta.replace(/\bzeiss\s*·?\s*/gi, '').trim()} · índice {it.lensConfig.indice} · {it.lensConfig.tipoFab || 'estándar'}
                               </div>
                             )}
                             <div style={{ fontSize: '11.5px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
@@ -957,7 +957,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             {/* Línea puntual de mica en gris */}
                             {item.lensConfig && item.lensConfig.etiqueta && (
                               <div style={{ fontSize: '12px', color: '#64748b', lineHeight: 1.35, margin: '1px 0' }}>
-                                Micas {item.lensConfig.etiqueta} · índice {item.lensConfig.indice} · {item.lensConfig.tipoFab || 'estándar'}
+                                Micas · {item.lensConfig.etiqueta.replace(/\bzeiss\s*·?\s*/gi, '').trim()} · índice {item.lensConfig.indice} · {item.lensConfig.tipoFab || 'estándar'}
                                 {(item.lensConfig.esfera || item.lensConfig.cilindro) ? ' · Rx incl.' : ''}
                                 {(item.lensConfig.montaje && item.lensConfig.montaje !== 'completo') ? ` · Montaje: ${item.lensConfig.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : (item.product?.montaje && item.product.montaje !== 'completo' ? ` · Montaje: ${item.product.montaje === 'al_aire' ? 'Al aire' : 'Semi al aire'}` : '')}
                               </div>

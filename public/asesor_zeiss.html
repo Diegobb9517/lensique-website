@@ -802,11 +802,11 @@ function toResult(){
 
 function buildWhatsAppQuoteMessage(){
   var curIdx = st.idx || '1.5';
-  var tratL = st.trat === 'azul' ? ' · filtro azul (BlueGuard)' : (st.trat === 'foto' ? ' · fotocromático (PhotoFusion X)' : '');
-  var txt = '¡Hola Lensique! Me interesa cotizar estas micas ZEISS en línea:\n';
-  txt += '• Tipo: Mica ZEISS ' + typeLabel[st.need] + '\n';
+  var tratL = st.trat === 'azul' ? ' · filtro de luz azul' : (st.trat === 'foto' ? ' · fotocromático' : '');
+  var txt = '¡Hola Lensique! Me interesa cotizar estas micas en línea:\n';
+  txt += '• Tipo: Micas ' + typeLabel[st.need] + '\n';
   txt += '• Índice: ' + idxLabel(curIdx) + tratL + '\n';
-  txt += '• Antirreflejante: DuraVision Platinum (incluido)\n';
+  txt += '• Antirreflejante: Incluido\n';
   txt += '• Graduación OD: Esf ' + val('od-sph') + ', Cil ' + val('od-cyl') + (val('od-cyl') ? ', Eje ' + ($('od-axis') ? $('od-axis').value : '') + '°' : '') + '\n';
   txt += '• Graduación OI: Esf ' + (st.same ? val('od-sph') : val('oi-sph')) + ', Cil ' + (st.same ? val('od-cyl') : val('oi-cyl')) + ((st.same ? val('od-cyl') : val('oi-cyl')) ? ', Eje ' + ($('oi-axis') ? $('oi-axis').value : '') + '°' : '') + '\n';
   if (st.need === 'prog') txt += '• Adición (ADD): +' + val('add') + '\n';
@@ -821,7 +821,7 @@ function comprarArmazon(){
     indice: st.idx,
     indiceLabel: idxLabel(st.idx),
     tratamiento: st.trat,
-    antirreflejante: 'DuraVision Platinum',
+    antirreflejante: 'Antirreflejante estándar',
     rx: {
       od: { esfera: val('od-sph'), cilindro: val('od-cyl'), eje: $('od-axis') ? $('od-axis').value : '' },
       oi: { esfera: st.same ? val('od-sph') : val('oi-sph'), cilindro: st.same ? val('od-cyl') : val('oi-cyl'), eje: $('oi-axis') ? $('oi-axis').value : '' },
@@ -842,7 +842,7 @@ function comprarArmazon(){
 }
 
 function agendarMontaje(){
-  var msg = '¡Hola Lensique! Ya tengo mi armazón propio y quiero agendar cita para montaje de micas ZEISS:\n\n' + buildWhatsAppQuoteMessage();
+  var msg = '¡Hola Lensique! Ya tengo mi armazón propio y quiero agendar cita para montaje de micas:\n\n' + buildWhatsAppQuoteMessage();
   var waUrl = 'https://wa.me/523316929111?text=' + encodeURIComponent(msg);
   window.open(waUrl, '_blank');
 }
@@ -857,7 +857,7 @@ function render(){
   var r = $('right'), h = '';
   if (st.step === 1) {
     st.ok = false;
-    h += '<div class="step">Paso 1 de 3</div><h1>¿Qué micas necesitas?</h1><p class="sub">Elige el tipo de visión. Al final obtienes el precio exacto de tus micas ZEISS conectado a nuestro motor de óptica.</p>';
+    h += '<div class="step">Paso 1 de 3</div><h1>¿Qué micas necesitas?</h1><p class="sub">Elige el tipo de visión. Al final obtienes el precio exacto de tus micas conectado a nuestro motor de óptica.</p>';
     h += opt('mono', 'Una distancia', 'Para ver de lejos, o solo para leer de cerca.');
     h += opt('prog', 'Progresivo', 'Lejos, intermedio y cerca en un lente, sin línea visible.');
     h += '<button class="cta" onclick="go(2)">Continuar</button>';

@@ -1179,7 +1179,8 @@ function App() {
         const config = event.data.payload;
         if (config) {
           let configText = `Hola, quiero cotizar mis micas. Esto fue lo que seleccioné en el cotizador:\n`;
-          if (config.etiqueta) configText += `- ${config.etiqueta} (índice ${config.indice})\n`;
+          const cleanEtiqueta = (config.etiqueta || '').replace(/\bzeiss\s*·?\s*/gi, '').trim();
+          if (cleanEtiqueta) configText += `- ${cleanEtiqueta} (índice ${config.indice})\n`;
           if (config.tratamientos && config.tratamientos.length > 0) configText += `- Tratamientos: ${config.tratamientos.join(', ')}\n`;
           if (config.material) configText += `- Material sugerido: ${config.material}\n`;
           if (config.precioCalculado) configText += `\nPrecio estimado: ${config.precioCalculado}\n`;
@@ -2325,13 +2326,18 @@ function App() {
             }
 
             const safeBrand = (product.brand && product.brand !== 'null') ? product.brand : '';
-            let configText = `¡Hola! Me interesa comprar el armazón ${product.name}${safeBrand ? ' ' + safeBrand : ''}.\n\nEsta es mi configuración de micas ZEISS:\n`;
+            let configText = `¡Hola! Me interesa comprar el armazón ${product.name}${safeBrand ? ' ' + safeBrand : ''}.\n\nEsta es mi configuración de micas:\n`;
             
             if (config.etiqueta) {
-              configText += `• ${config.etiqueta} · índice ${config.indice}\n`;
+              const cleanEtiqueta = config.etiqueta.replace(/\bzeiss\s*·?\s*/gi, '').trim();
+              configText += `• ${cleanEtiqueta} · índice ${config.indice}\n`;
             }
             if (config.tratamientoNombre && config.tratamiento && config.tratamiento !== 'none') {
-              configText += `• Tratamiento: ${config.tratamientoNombre}\n`;
+              const cleanTrat = config.tratamientoNombre
+                .replace(/\b\(?blueguard\)?/gi, '')
+                .replace(/\b\(?photofusion\s*x?\)?/gi, '')
+                .trim();
+              configText += `• Tratamiento: ${cleanTrat}\n`;
             }
             if (config.montaje && config.montaje !== 'completo') {
               const montLabel = config.montaje === 'al_aire' ? 'Al aire (3 piezas)' : 'Semi al aire';

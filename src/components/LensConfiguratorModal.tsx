@@ -722,11 +722,11 @@ export default function LensConfiguratorModal({
       return;
     }
 
-    const etiqueta = need === 'mono' ? 'ZEISS · Una distancia' : 'ZEISS · Progresivo';
+    const etiqueta = need === 'mono' ? 'Una distancia' : 'Progresivo';
     const tipoFab = selectedIdx === '1.5' ? 'Estándar' : (selectedIdx === '1.74' ? 'Ultra delgada' : 'Adelgazada');
     const tratNombre = selectedTrat === 'azul'
-      ? 'Filtro luz azul (BlueGuard)'
-      : (selectedTrat === 'foto' ? 'Fotocromático (PhotoFusion X)' : 'Antirreflejante estándar');
+      ? 'Filtro de luz azul'
+      : (selectedTrat === 'foto' ? 'Fotocromático' : 'Antirreflejante estándar');
 
     const configPayload = {
       originalProduct: product,
@@ -826,7 +826,7 @@ export default function LensConfiguratorModal({
               </div>
 
               <div className="lsq-pic-cap">
-                {need === 'mono' ? 'Micas ZEISS · Una distancia' : (need === 'prog' ? 'Micas ZEISS · Progresivo' : 'Solo el armazón')}
+                {need === 'mono' ? 'Micas · Una distancia' : (need === 'prog' ? 'Micas · Progresivo' : 'Solo el armazón')}
               </div>
 
               {frameBrand && <div className="lsq-prod-brand">{frameBrand}</div>}
@@ -895,7 +895,7 @@ export default function LensConfiguratorModal({
                       <div className="lsq-opt-name">Una distancia</div>
                       <div className="lsq-opt-desc">Para ver de lejos, o solo para leer de cerca.</div>
                       <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--lsq-forest, #1e3a2b)', marginTop: '4px' }}>
-                        Desde ${lowestMonoPrice.toLocaleString('es-MX')} · con micas ZEISS
+                        Desde ${lowestMonoPrice.toLocaleString('es-MX')} · con micas graduadas
                       </div>
                     </div>
                     <div className="lsq-opt-radio">{need === 'mono' ? '✓' : ''}</div>
@@ -920,7 +920,7 @@ export default function LensConfiguratorModal({
                       </div>
                       {isAptoProg && (
                         <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--lsq-forest, #1e3a2b)', marginTop: '4px' }}>
-                          Desde ${lowestProgPrice.toLocaleString('es-MX')} · con micas ZEISS
+                          Desde ${lowestProgPrice.toLocaleString('es-MX')} · con micas graduadas
                         </div>
                       )}
                     </div>
@@ -1440,7 +1440,7 @@ export default function LensConfiguratorModal({
 
                     {need !== 'frame' && (
                       <>
-                        <div className="lsq-feat">✓ Micas ZEISS con capa antirreflejante y protección UV</div>
+                        <div className="lsq-feat">✓ Micas graduadas con capa antirreflejante y protección UV</div>
                         <div className="lsq-feat">
                           {tab === 'rx'
                             ? (feasibleIndices.length === 0 ? '⚠ Requiere valoración médica' : '✓ Grosor de mica ideal para tu graduación')
@@ -1458,21 +1458,14 @@ export default function LensConfiguratorModal({
                           {need === 'prog' && ' · altura de montaje: la define tu optometrista'}
                         </div>
 
-                        {/* Sello ZEISS discreto y minimal */}
+                        {/* Sello de calidad discreto */}
                         <div className="lsq-zeiss-seal">
                           <div className="lsq-zlogo-wrap">
-                            <span className="lsq-zlbl">Micas</span>
-                            <img src="/zeiss-logo.png" alt="ZEISS" style={{ height: '22px', width: 'auto', display: 'block' }} />
+                            <span className="lsq-zlbl">Micas de alta definición</span>
                           </div>
-                          <a
-                            href="https://www.zeiss.com.mx/vision-care/necesitas-lentes-nuevos.html"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="lsq-link"
-                            style={{ fontSize: '12px' }}
-                          >
-                            ¿Qué son las micas ZEISS?
-                          </a>
+                          <span style={{ fontSize: '12px', color: 'var(--lsq-grey)' }}>
+                            Calidad óptica y precisión garantizada
+                          </span>
                         </div>
                       </>
                     )}

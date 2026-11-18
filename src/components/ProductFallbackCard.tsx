@@ -88,23 +88,7 @@ export const ProductFallbackCard: React.FC<ProductFallbackCardProps> = ({
         >
           {brand}
         </span>
-        <span
-          style={{
-            fontSize: isDetail ? '10px' : '8.5px',
-            fontWeight: 600,
-            letterSpacing: '0.04em',
-            color: '#16a34a',
-            background: 'rgba(240, 253, 244, 0.95)',
-            border: '1px solid rgba(187, 247, 208, 0.8)',
-            padding: isDetail ? '2px 8px' : '1px 6px',
-            borderRadius: '999px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3px'
-          }}
-        >
-          ✓ Original
-        </span>
+
       </div>
 
       {/* Centro: Foto real del producto (caja) + Nombre */}
@@ -150,47 +134,7 @@ export const ProductFallbackCard: React.FC<ProductFallbackCardProps> = ({
         </span>
       </div>
 
-      {/* Footer: Especificaciones ópticas del empaque */}
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: isDetail ? '6px' : '4px',
-          width: '100%'
-        }}
-      >
-        <span
-          style={{
-            fontSize: isDetail ? '10.5px' : '9px',
-            fontWeight: 600,
-            color: '#334155',
-            background: 'rgba(255, 255, 255, 0.9)',
-            border: '1px solid #cbd5e1',
-            borderRadius: '999px',
-            padding: isDetail ? '3px 8px' : '2px 6px',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {specs.bc} · {specs.dia}
-        </span>
-        <span
-          style={{
-            fontSize: isDetail ? '10.5px' : '9px',
-            fontWeight: 500,
-            color: '#475569',
-            background: 'rgba(255, 255, 255, 0.9)',
-            border: '1px solid #cbd5e1',
-            borderRadius: '999px',
-            padding: isDetail ? '3px 8px' : '2px 6px',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {specs.usage}
-        </span>
-      </div>
+
     </div>
   );
 };

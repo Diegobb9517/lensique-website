@@ -78,30 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ) : (
               outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
             )}
-            {isContactLens && (
-              <div
-                className="original-badge"
-                style={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '8px',
-                  zIndex: 2,
-                  fontSize: '9.5px',
-                  fontWeight: 600,
-                  letterSpacing: '0.04em',
-                  color: '#16a34a',
-                  background: 'rgba(240, 253, 244, 0.95)',
-                  border: '1px solid rgba(187, 247, 208, 0.8)',
-                  padding: '2px 7px',
-                  borderRadius: '999px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '3px'
-                }}
-              >
-                ✓ Original
-              </div>
-            )}
+
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
               alt={product.name} 
@@ -132,16 +109,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
               </p>
             )}
-            {isContactLens && specs && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginTop: '6px' }}>
-                <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#334155', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
-                  {specs.bc} · {specs.dia}
-                </span>
-                <span style={{ fontSize: '9.5px', fontWeight: 500, color: '#475569', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
-                  {specs.usage}
-                </span>
-              </div>
-            )}
+
             
             {onSelectAction && (
               <button 
@@ -180,30 +148,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           ) : (
             outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
           )}
-          {isContactLens && (
-            <div
-              className="original-badge"
-              style={{
-                position: 'absolute',
-                top: '8px',
-                right: '8px',
-                zIndex: 2,
-                fontSize: '9.5px',
-                fontWeight: 600,
-                letterSpacing: '0.04em',
-                color: '#16a34a',
-                background: 'rgba(240, 253, 244, 0.95)',
-                border: '1px solid rgba(187, 247, 208, 0.8)',
-                padding: '2px 7px',
-                borderRadius: '999px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '3px'
-              }}
-            >
-              ✓ Original
-            </div>
-          )}
+
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 
             alt={product.name} 
@@ -242,16 +187,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
             </p>
           )}
-          {isContactLens && specs && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginTop: '6px' }}>
-              <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#334155', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
-                {specs.bc} · {specs.dia}
-              </span>
-              <span style={{ fontSize: '9.5px', fontWeight: 500, color: '#475569', background: 'rgba(241, 245, 249, 0.9)', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '2px 7px', whiteSpace: 'nowrap' }}>
-                {specs.usage}
-              </span>
-            </div>
-          )}
+
           
           {onSelectAction && (
             <span className="wp-card-cta-hover">

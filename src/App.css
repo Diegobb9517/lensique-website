@@ -1425,6 +1425,14 @@ body.no-scroll {
   margin-bottom: 24px;
 }
 
+.full-catalog-view.standalone .catalog-toolbar,
+.full-catalog-view.is-page .catalog-toolbar {
+  position: relative !important;
+  top: auto !important;
+  z-index: 10 !important;
+  margin-bottom: 36px !important;
+}
+
 .catalog-toolbar-left {
   display: flex;
   align-items: center;
@@ -3084,6 +3092,20 @@ body.no-scroll {
 .wp-icon-ghost:hover {
   background: #f9f9f9;
   transform: scale(1.05);
+}
+
+.product-card-badge-row {
+  min-height: 22px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.product-card-badge-row .out-of-stock-badge {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  display: inline-block !important;
 }
 
 .out-of-stock-badge {

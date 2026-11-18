@@ -1911,28 +1911,6 @@ function App() {
                     <div className="cl-detail-badge">
                       {isOutOfStock ? '● SOBRE PEDIDO' : '● EN EXISTENCIA'}
                     </div>
-                    <div
-                      className="original-badge"
-                      style={{
-                        position: 'absolute',
-                        top: '18px',
-                        right: '18px',
-                        zIndex: 2,
-                        fontSize: '10.5px',
-                        fontWeight: 600,
-                        letterSpacing: '0.04em',
-                        color: '#16a34a',
-                        background: 'rgba(240, 253, 244, 0.95)',
-                        border: '1px solid rgba(187, 247, 208, 0.8)',
-                        padding: '3px 9px',
-                        borderRadius: '999px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '3px'
-                      }}
-                    >
-                      ✓ Original
-                    </div>
                     <img 
                       src={imgSrc} 
                       alt={selectedProductDetail.name} 

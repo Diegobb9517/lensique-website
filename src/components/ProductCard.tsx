@@ -70,15 +70,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           onClick={handleCardClick}
           style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
         >
-          <div className="product-img-area" style={{ position: 'relative' }}>
+          <div className="product-card-badge-row" style={{ minHeight: '22px', marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
             {isFrame ? (
-              <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>
+              <div className="out-of-stock-badge" style={{ ...(outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }), position: 'static', top: 'auto', left: 'auto' }}>
                 {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
               </div>
             ) : (
-              outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
+              outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em', position: 'static', top: 'auto', left: 'auto' }}>Sobre pedido</div>
             )}
-
+          </div>
+          <div className="product-img-area" style={{ position: 'relative' }}>
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
               alt={product.name} 
@@ -140,15 +141,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onClick={handleCardClick}
         style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
       >
-        <div className="wp-card-img-area" style={{ position: 'relative' }}>
+        <div className="product-card-badge-row" style={{ minHeight: '22px', marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
           {isFrame ? (
-            <div className="out-of-stock-badge" style={outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>
+            <div className="out-of-stock-badge" style={{ ...(outOfStock ? { color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' } : { color: '#16a34a', background: 'rgba(240, 253, 244, 0.9)', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }), position: 'static', top: 'auto', left: 'auto' }}>
               {outOfStock ? 'SOBRE PEDIDO' : 'EN EXISTENCIA'}
             </div>
           ) : (
-            outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>Sobre pedido</div>
+            outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em', position: 'static', top: 'auto', left: 'auto' }}>Sobre pedido</div>
           )}
-
+        </div>
+        <div className="wp-card-img-area" style={{ position: 'relative' }}>
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 
             alt={product.name} 

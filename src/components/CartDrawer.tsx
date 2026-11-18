@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock, Check, ChevronLeft } from 'lucide-react';
+import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock, Check, ChevronLeft, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { resolveImageUrl } from '../App';
 import { priceWithMP } from './ContactLensConfiguratorModal';
+import logo from '../assets/logo.png';
 
 interface CartDrawerProps {
   onOpenConfigurator?: (product: any, section?: string) => void;
@@ -105,8 +106,18 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   }, [deliveryMethod, addressDetails.zip, total, isFreeShipping]);
 
   // Cálculo de fechas hábiles de entrega
-  let finalMaxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => i.maxDeliveryDays || 0)) : 0;
-  let minDelDays = items.length > 0 ? Math.max(...items.map(i => (i as any).minDeliveryDays || Math.max(0, (i.maxDeliveryDays||3)-3))) : 0;
+  let finalMaxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => {
+    if (i.maxDeliveryDays && i.maxDeliveryDays > 0) return i.maxDeliveryDays;
+    const isCL = (i.type as any) === 'contact_lens' || Boolean((i as any).contactLensConfig) || String(i.product?.category || '').toLowerCase().includes('contacto');
+    return isCL ? 5 : 3;
+  })) : 3;
+
+  let minDelDays = items.length > 0 ? Math.max(...items.map(i => {
+    if ((i as any).minDeliveryDays && (i as any).minDeliveryDays > 0) return (i as any).minDeliveryDays;
+    const isCL = (i.type as any) === 'contact_lens' || Boolean((i as any).contactLensConfig) || String(i.product?.category || '').toLowerCase().includes('contacto');
+    return isCL ? 3 : 1;
+  })) : 1;
+
   if (deliveryMethod === 'HOME_DELIVERY' && shippingQuote?.transitDays) {
     finalMaxDeliveryDays += shippingQuote.transitDays;
     minDelDays += Math.max(1, shippingQuote.transitDays - 2);
@@ -130,7 +141,9 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   
   let deliveryDaysRange = '';
-  if (dMin.getMonth() === dMax.getMonth()) {
+  if (dMin.getTime() === dMax.getTime() || (dMin.getDate() === dMax.getDate() && dMin.getMonth() === dMax.getMonth())) {
+    deliveryDaysRange = `el ${dMin.getDate()} ${months[dMin.getMonth()]}`;
+  } else if (dMin.getMonth() === dMax.getMonth()) {
     deliveryDaysRange = `${dMin.getDate()} – ${dMax.getDate()} ${months[dMax.getMonth()]}`;
   } else {
     deliveryDaysRange = `${dMin.getDate()} ${months[dMin.getMonth()]} – ${dMax.getDate()} ${months[dMax.getMonth()]}`;
@@ -399,7 +412,12 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
               <header className="lsq-checkout-topbar">
                 <div className="lsq-checkout-topbar-inner">
                   <div className="lsq-checkout-brand">
-                    <span className="lsq-checkout-brand-title">Óptica Lensique</span>
+                    <img 
+                      src={logo} 
+                      alt="Óptica Lensique" 
+                      className="logo-img"
+                      style={{ height: '26px', width: 'auto', display: 'block', objectFit: 'contain' }}
+                    />
                     <span className="lsq-checkout-brand-badge">Paso 2 · Datos y pago</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -742,9 +760,9 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                     </div>
 
                     {/* Total grande */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '12px', borderTop: '1px solid #e2e8f0', marginBottom: msiMonths > 0 ? '12px' : '16px' }}>
-                      <span style={{ fontSize: '16px', color: '#64748b', fontWeight: 600 }}>Total</span>
-                      <span className="tabular-nums" style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '14px', borderTop: '1px solid #e2e8f0', marginBottom: msiMonths > 0 ? '12px' : '18px' }}>
+                      <span style={{ fontSize: '15px', color: '#64748b', fontWeight: 600 }}>Total</span>
+                      <span className="tabular-nums" style={{ fontSize: '28px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
                         ${Math.round(finalTotal).toLocaleString('es-MX')}
                       </span>
                     </div>
@@ -778,16 +796,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
                     )}
 
-                    {/* Garantía en una sola línea */}
-                    <div style={{ textAlign: 'center', fontSize: '11.5px', color: '#64748b', marginBottom: '14px', lineHeight: 1.4 }}>
-                      🔒 Garantía 30 días · validación por optometrista.{' '}
-                      <a href="/devoluciones" target="_blank" rel="noopener noreferrer" style={{ color: '#0f172a', textDecoration: 'underline' }}>
-                        Ver política
-                      </a>
-                    </div>
-
                     {paymentError && (
-                      <div style={{ padding: '10px 12px', background: '#fef2f2', color: '#b91c1c', borderRadius: '10px', fontSize: '12.5px', marginBottom: '12px', border: '1px solid #fecaca' }}>
+                      <div style={{ padding: '10px 12px', background: '#fef2f2', color: '#b91c1c', borderRadius: '10px', fontSize: '12.5px', marginBottom: '14px', border: '1px solid #fecaca' }}>
                         ⚠️ {paymentError}
                       </div>
                     )}
@@ -802,7 +812,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         background: isProcessing ? '#94a3b8' : '#16a34a', 
                         color: '#fff', 
                         border: 'none', 
-                        borderRadius: '50px', 
+                        borderRadius: '14px', 
                         fontWeight: 700, 
                         fontSize: '15.5px', 
                         cursor: isProcessing ? 'not-allowed' : 'pointer',
@@ -810,25 +820,62 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         justifyContent: 'center',
                         alignItems: 'center',
                         gap: '8px',
-                        transition: 'background 0.2s',
-                        boxShadow: '0 4px 14px rgba(22, 163, 74, 0.25)'
+                        transition: 'all 0.2s ease',
+                        boxShadow: '0 4px 14px rgba(22, 163, 74, 0.22)'
                       }}
                     >
                       <CreditCard size={19} />
                       {isProcessing ? 'Procesando pago...' : 'Pagar con Mercado Pago'}
                     </button>
 
-                    {/* Sello de pago seguro */}
-                    <div style={{ textAlign: 'center', fontSize: '11.5px', color: '#64748b', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-                      <span>🔒</span>
-                      <span>Pago 100% seguro · Visa · MasterCard · OXXO · SPEI</span>
+                    {/* Sello de confianza y garantías unificado */}
+                    <div style={{
+                      marginTop: '16px',
+                      padding: '12px 14px',
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                      textAlign: 'center'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: '#0f172a' }}>
+                        <ShieldCheck size={15} color="#16a34a" />
+                        <span>Pago 100% seguro con Mercado Pago</span>
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.45 }}>
+                        Tarjetas de crédito, débito, OXXO y SPEI
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.45, paddingTop: '6px', borderTop: '1px solid #e2e8f0' }}>
+                        Garantía de 30 días · validación por optometrista.{' '}
+                        <a href="/devoluciones" target="_blank" rel="noopener noreferrer" style={{ color: '#0f172a', fontWeight: 600, textDecoration: 'underline' }}>
+                          Ver política
+                        </a>
+                      </div>
                     </div>
 
                     <button 
                       onClick={() => setShowCheckoutForm(false)}
-                      style={{ width: '100%', padding: '10px', background: 'transparent', color: '#64748b', border: 'none', fontSize: '13px', cursor: 'pointer', marginTop: '6px', textDecoration: 'underline' }}
+                      style={{ 
+                        width: '100%', 
+                        padding: '10px', 
+                        background: 'transparent', 
+                        color: '#64748b', 
+                        border: 'none', 
+                        fontSize: '13px', 
+                        cursor: 'pointer', 
+                        marginTop: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px',
+                        transition: 'color 0.15s'
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#0f172a')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#64748b')}
                     >
-                      Volver al carrito
+                      <ChevronLeft size={15} /> Volver al carrito
                     </button>
                   </div>
                 </aside>

@@ -2233,6 +2233,8 @@ function App() {
               ? Math.round(clConfig.totalPrice / (totalQty > 0 ? totalQty : 1)) 
               : (contactConfiguratorProduct.price_incl_tax || 0);
 
+            const delTime = calculateDeliveryTime(contactConfiguratorProduct, clConfig);
+
             addItem({
               type: 'product',
               title: `Lentes de contacto ${contactConfiguratorProduct.name}${colorTitle}`,
@@ -2241,6 +2243,10 @@ function App() {
               product: contactConfiguratorProduct,
               image: contactConfiguratorProduct.image || (contactConfiguratorProduct.images && contactConfiguratorProduct.images[0]?.image_url),
               lensConfig: clConfig,
+              estimatedDeliveryStr: delTime.label,
+              estimatedDeliverySubtitle: delTime.subtitle,
+              maxDeliveryDays: delTime.maxDays,
+              minDeliveryDays: delTime.minDays,
               // @ts-ignore
               receta: clConfig.prescriptionOD.sph === 'NA' || clConfig.prescriptionPending ? 'PENDIENTE' : undefined,
               // @ts-ignore

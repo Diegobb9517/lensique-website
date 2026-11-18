@@ -44,7 +44,7 @@ export const DELIVERY_DAYS = {
   frame: {
     instock: { min: 1, max: 1 },
     preorder: { min: 10, max: 14 },
-    contact_spherical: { min: 3, max: 3 },
+    contact_spherical: { min: 3, max: 5 },
     contact_toric: { min: 8, max: 15 },
     contact_xr: { min: 40, max: 60 },
     contact_lumilent: { min: 8, max: 15 }

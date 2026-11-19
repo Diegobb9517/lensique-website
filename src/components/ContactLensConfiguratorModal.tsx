@@ -545,6 +545,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         selectedColor,
         samePrescription,
         tab,
+        rxMethod: tab === 'rx' ? 'manual' : (tab === 'photo' ? 'photo' : 'later'),
         prescriptionOD: tab === 'rx' 
           ? { ...prescriptionOD, bc: prescriptionOD.bc || specs.bcOptions[0], dia: specs.dia }
           : { sph: tab === 'later' ? 'NA' : 'FOTO', bc: specs.bcOptions[0], dia: specs.dia, cyl: '', axis: '', add: '' },

@@ -2234,6 +2234,9 @@ function App() {
               : (contactConfiguratorProduct.price_incl_tax || 0);
 
             const delTime = calculateDeliveryTime(contactConfiguratorProduct, clConfig);
+            if (!clConfig.rxMethod) {
+              clConfig.rxMethod = clConfig.tab === 'rx' ? 'manual' : (clConfig.tab === 'photo' ? 'photo' : 'later');
+            }
 
             addItem({
               type: 'product',

@@ -109,14 +109,14 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   let finalMaxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => {
     if (i.maxDeliveryDays && i.maxDeliveryDays > 0) return i.maxDeliveryDays;
     const isCL = (i.type as any) === 'contact_lens' || Boolean((i as any).contactLensConfig) || String(i.product?.category || '').toLowerCase().includes('contacto');
-    return isCL ? 5 : 3;
-  })) : 3;
+    return isCL ? 5 : 4;
+  })) : 4;
 
   let minDelDays = items.length > 0 ? Math.max(...items.map(i => {
     if ((i as any).minDeliveryDays && (i as any).minDeliveryDays > 0) return (i as any).minDeliveryDays;
     const isCL = (i.type as any) === 'contact_lens' || Boolean((i as any).contactLensConfig) || String(i.product?.category || '').toLowerCase().includes('contacto');
-    return isCL ? 3 : 1;
-  })) : 1;
+    return isCL ? 3 : 2;
+  })) : 2;
 
   if (deliveryMethod === 'HOME_DELIVERY' && shippingQuote?.transitDays) {
     finalMaxDeliveryDays += shippingQuote.transitDays;
@@ -141,14 +141,14 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   
   let deliveryDaysRange = '';
-  if (dMin.getTime() === dMax.getTime() || (dMin.getDate() === dMax.getDate() && dMin.getMonth() === dMax.getMonth())) {
-    deliveryDaysRange = `el ${dMin.getDate()} ${months[dMin.getMonth()]}`;
+  if (dMin.getDate() === dMax.getDate() && dMin.getMonth() === dMax.getMonth()) {
+    deliveryDaysRange = `el ${dMin.getDate()} de ${months[dMin.getMonth()]}`;
   } else if (dMin.getMonth() === dMax.getMonth()) {
-    deliveryDaysRange = `${dMin.getDate()} – ${dMax.getDate()} ${months[dMax.getMonth()]}`;
+    deliveryDaysRange = `del ${dMin.getDate()} al ${dMax.getDate()} de ${months[dMax.getMonth()]}`;
   } else {
-    deliveryDaysRange = `${dMin.getDate()} ${months[dMin.getMonth()]} – ${dMax.getDate()} ${months[dMax.getMonth()]}`;
+    deliveryDaysRange = `del ${dMin.getDate()} de ${months[dMin.getMonth()]} al ${dMax.getDate()} de ${months[dMax.getMonth()]}`;
   }
-  const maxDelStr = `Llega ${deliveryDaysRange}`;
+  const maxDelStr = deliveryMethod === 'STORE_PICKUP' ? `Listo ${deliveryDaysRange}` : `Llega ${deliveryDaysRange}`;
 
   // ============================================================
   // RE-COTIZAR CONTRA PRECIO VIGENTE DEL CATÁLOGO
@@ -414,9 +414,13 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                   <div className="lsq-checkout-brand">
                     <img 
                       src={logo} 
-                      alt="Óptica Lensique" 
+                      alt="Lensique" 
                       className="logo-img"
-                      style={{ height: '26px', width: 'auto', display: 'block', objectFit: 'contain' }}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/logo.png';
+                      }}
+                      style={{ height: '28px', width: 'auto', display: 'block', objectFit: 'contain' }}
                     />
                     <span className="lsq-checkout-brand-badge">Paso 2 · Datos y pago</span>
                   </div>
@@ -680,7 +684,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                           Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jal. (C.P. 45040).
                         </p>
                         <p style={{ fontSize: '12px', color: '#64748b', margin: 0, lineHeight: 1.45 }}>
-                          Te notificaremos por WhatsApp y correo electrónico cuando tu graduación esté montada y lista para recoger.
+                          Te notificaremos por WhatsApp y correo electrónico cuando tu graduación esté montada y lista para recoger (estimado: {deliveryDaysRange}).
                         </p>
                       </div>
                     )}
@@ -730,9 +734,6 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                                 Micas · {it.lensConfig.etiqueta.replace(/\bzeiss\s*·?\s*/gi, '').trim()} · índice {it.lensConfig.indice} · {it.lensConfig.tipoFab || 'estándar'}
                               </div>
                             )}
-                            <div style={{ fontSize: '11.5px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                              <Clock size={11} /> <span>Llega {deliveryDaysRange}</span>
-                            </div>
                           </div>
                           <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', flexShrink: 0, paddingTop: '2px' }}>
                             ${Math.round(it.unit_price * it.quantity).toLocaleString('es-MX')}
@@ -750,8 +751,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                         <span>
                           {deliveryMethod === 'HOME_DELIVERY' 
-                            ? `Envío a domicilio · llega ${deliveryDaysRange}`
-                            : 'Recoger en tienda · Zapopan'}
+                            ? `Envío a domicilio · Llega ${deliveryDaysRange}`
+                            : `Recoger en tienda · Listo ${deliveryDaysRange}`}
                         </span>
                         <span style={{ fontWeight: 700, color: (deliveryMethod === 'STORE_PICKUP' || isFreeShipping) ? '#16a34a' : '#0f172a' }}>
                           {deliveryMethod === 'STORE_PICKUP' ? 'Sin costo' : (isFreeShipping ? 'Gratis' : `$${shippingCost}`)}

@@ -33,7 +33,7 @@ export function isContactLensProduct(product: any): boolean {
   const category = String(product.category || '').toLowerCase();
   const name = String(product.name || '').toLowerCase();
   const sku = String(product.sku || '').toUpperCase();
-  return category.includes('contacto') || sku.startsWith('LC-') || name.includes('acuvue') || name.includes('biofinity') || name.includes('biotrue');
+  return category.includes('contacto') || sku.startsWith('LC-') || name.includes('acuvue') || name.includes('biofinity') || name.includes('biotrue') || name.includes('lunare');
 }
 
 /**
@@ -108,16 +108,14 @@ export function getContactLensCardSpecs(product: any) {
   const usage = getContactLensUsage(product?.name || '');
   const format = getContactLensFormat(product);
 
-  const bcText = specs.bcOptions && specs.bcOptions.length > 0 
-    ? `BC ${specs.bcOptions.join('/')}` 
-    : 'BC 8.6';
-  const diaText = specs.dia ? `DIA ${specs.dia}` : 'DIA 14.0';
+  const bcVal = specs.bc || (specs.bcOptions && specs.bcOptions[0]) || '8.6';
+  const diaVal = specs.dia || '14.0';
 
   return {
-    bc: bcText,
-    dia: diaText,
+    bc: `BC ${bcVal}`,
+    dia: `DIA ${diaVal}`,
     usage: usage === 'Todos' ? 'Uso Quincenal / Mensual' : usage,
     format,
-    isMultipleBc: specs.isMultipleBc
+    isMultipleBc: false
   };
 }

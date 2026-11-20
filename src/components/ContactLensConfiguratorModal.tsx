@@ -809,7 +809,26 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   </button>
                   <div className="cl-step">Paso 2 de 3</div>
                   <h1>Tu graduación</h1>
-                  <p className="cl-sub">Los datos vienen en tu caja actual o en tu receta.</p>
+                  <p className="cl-sub">
+                    Los datos vienen en tu caja actual o en tu receta.
+                    <button 
+                      type="button" 
+                      onClick={() => setShowRxGuide(!showRxGuide)} 
+                      style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        padding: 0, 
+                        color: 'var(--lsq-gold)', 
+                        fontSize: '13px', 
+                        fontWeight: 600, 
+                        cursor: 'pointer', 
+                        textDecoration: 'underline', 
+                        marginLeft: '8px' 
+                      }}
+                    >
+                      {showRxGuide ? 'Ocultar guía' : '¿Cómo leer mi receta?'}
+                    </button>
+                  </p>
 
                   <div className="cl-tabs">
                     <button 
@@ -837,37 +856,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
                   {tab === 'rx' && (
                     <div>
-                      <div style={{ marginBottom: '10px', textAlign: 'right' }}>
-                        <button 
-                          type="button"
-                          onClick={() => setShowRxGuide(!showRxGuide)}
-                          style={{ 
-                            background: 'none', border: 'none', padding: 0, 
-                            color: 'var(--lsq-gold)', fontSize: '12.5px', fontWeight: 600, 
-                            cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' 
-                          }}
-                        >
-                          {showRxGuide ? '▼' : '▶'} ¿Cómo leer mi receta?
-                        </button>
-                      </div>
-                      
                       {showRxGuide && (
                         <div style={{ marginBottom: '14px' }}>
                           <RxGuide isToric={isToric} isMultifocal={isMultifocal} />
                         </div>
                       )}
-
-                      {/* Especificaciones de Curva y Diámetro predeterminadas */}
-                      <div className="cl-specs-fixed-banner">
-                        <div className="cl-specs-fixed-title">
-                          <span style={{ fontSize: '15px' }}>📐</span>
-                          <b>Parámetros de fábrica para {cleanName}:</b>
-                        </div>
-                        <div className="cl-specs-fixed-values">
-                          <span className="cl-specs-pill">Curva base (BC): <b>{defaultBc}</b></span>
-                          <span className="cl-specs-pill">Diámetro (DIA): <b>{defaultDia}</b></span>
-                        </div>
-                      </div>
 
                       <div className={`cl-rxgrid fixed-specs ${isToric ? 'toric' : isMultifocal ? 'multifocal' : ''}`}>
                         <div></div>
@@ -979,10 +972,6 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         {odOn && (
                           <div className="cl-rx-eye-card">
                             <div className="cl-rx-eye-header">👁️ Ojo derecho (OD)</div>
-                            
-                            <div className="cl-rx-card-fixed-specs">
-                              📐 Curva {defaultBc} · Diámetro {defaultDia} (de fábrica)
-                            </div>
 
                             <div className="cl-rx-fields-grid">
                               <div className="cl-field-group">
@@ -1052,12 +1041,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 ✓ Mismos datos que el ojo derecho
                               </div>
                             ) : (
-                              <>
-                                <div className="cl-rx-card-fixed-specs">
-                                  📐 Curva {defaultBc} · Diámetro {defaultDia} (de fábrica)
-                                </div>
-
-                                <div className="cl-rx-fields-grid">
+                              <div className="cl-rx-fields-grid">
                                   <div className="cl-field-group">
                                     <label>Esfera (PWR) *</label>
                                     <SphereDropdown 
@@ -1104,10 +1088,9 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                     </div>
                                   )}
                                 </div>
-                              </>
-                            )}
-                          </div>
-                        )}
+                              )}
+                            </div>
+                          )}
                       </div>
 
                       {/* Casilla Mis datos son los mismos en ambos ojos */}
@@ -1289,14 +1272,14 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             {odOn && (
                               <div>
-                                <b>OD:</b> Esf {prescriptionOD.sph} · Curva {defaultBc} · Diámetro {defaultDia}
+                                <b>OD:</b> Esf {prescriptionOD.sph}
                                 {isToric && ` · Cil ${prescriptionOD.cyl} · Eje ${prescriptionOD.axis}°`}
                                 {isMultifocal && ` · Add ${prescriptionOD.add}`}
                               </div>
                             )}
                             {oiOn && (
                               <div>
-                                <b>OI:</b> Esf {samePrescription ? prescriptionOD.sph : prescriptionOS.sph} · Curva {defaultBc} · Diámetro {defaultDia}
+                                <b>OI:</b> Esf {samePrescription ? prescriptionOD.sph : prescriptionOS.sph}
                                 {isToric && ` · Cil ${samePrescription ? prescriptionOD.cyl : prescriptionOS.cyl} · Eje ${samePrescription ? prescriptionOD.axis : prescriptionOS.axis}°`}
                                 {isMultifocal && ` · Add ${samePrescription ? prescriptionOD.add : prescriptionOS.add}`}
                               </div>

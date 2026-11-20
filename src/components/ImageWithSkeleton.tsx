@@ -28,7 +28,15 @@ export const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
   return (
     <div 
       className={`image-with-skeleton-container ${containerClassName}`} 
-      style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}
+      style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '100%', 
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
     >
       {/* Skeleton loader */}
       {!isLoaded && !hasError && (
@@ -43,7 +51,7 @@ export const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: '#e2e8f0', // default gray skeleton
+            backgroundColor: '#f1f5f9',
             borderRadius: 'inherit'
           }}
         />
@@ -59,8 +67,14 @@ export const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
         style={{ 
           opacity: isLoaded ? 1 : 0, 
           transition: 'opacity 0.3s ease-in-out',
+          maxWidth: '100%',
+          maxHeight: '100%',
           width: '100%',
           height: '100%',
+          objectFit: 'contain',
+          objectPosition: 'center',
+          display: 'block',
+          margin: 'auto',
           ...props.style
         }}
         {...props}

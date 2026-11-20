@@ -68,7 +68,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <a 
           href={href} 
           onClick={handleCardClick}
-          style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+          style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}
         >
           <div className="product-card-badge-row" style={{ minHeight: '22px', marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
             {isFrame ? (
@@ -94,14 +94,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               loading="lazy"
               decoding="async"
               style={{ 
-                objectFit: 'contain', 
-                padding: isContactLens ? '12px' : undefined,
+                objectFit: 'contain',
                 ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {})
               }}
               onError={(e: any) => {
                 e.target.onerror = null;
                 e.target.src = fallbackImage || SVG_PLACEHOLDER;
-                e.target.style.padding = '20%';
                 e.target.style.objectFit = 'contain';
                 e.target.style.background = isContactLens ? '#ffffff' : '#f9fafb';
               }}
@@ -150,7 +148,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <a 
         href={href}
         onClick={handleCardClick}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
+        style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}
       >
         <div className="product-card-badge-row" style={{ minHeight: '22px', marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
           {isFrame ? (
@@ -176,14 +174,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             loading="lazy"
             decoding="async" 
             style={{ 
-              objectFit: 'contain', 
-              padding: isContactLens ? '10px' : undefined,
+              objectFit: 'contain',
               ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {})
             }}
             onError={(e: any) => {
               e.target.onerror = null;
               e.target.src = fallbackImage || SVG_PLACEHOLDER;
-              e.target.style.padding = '20%';
               e.target.style.objectFit = 'contain';
               e.target.style.background = isContactLens ? '#ffffff' : '#f9fafb';
             }}

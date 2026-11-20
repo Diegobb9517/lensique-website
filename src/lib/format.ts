@@ -281,3 +281,55 @@ export const isInStock = (product: any): boolean => {
   if (!product) return false;
   return product.stock != null && product.stock !== '' && Number(String(product.stock).trim()) > 0;
 };
+
+export interface CartItemDisplayInfo {
+  title: string;
+  color?: string;
+}
+
+/**
+ * Formatea el título de un ítem en el carrito para presentarlo estéticamente limpio,
+ * eliminando paréntesis redundantes como "(Blando Cosmético)" o "(Color: ...)" y extrayendo
+ * el color a una línea descriptiva propia.
+ */
+export const parseCartItemDisplay = (title: string, lensConfig?: any): CartItemDisplayInfo => {
+  let cleanTitle = title || '';
+  let color = lensConfig?.selectedColor || '';
+
+  // Extraer color si viene en el título ej. "(Color: Blue (Azul))" o "(Color: Blue)"
+  const colorMatch = cleanTitle.match(/\s*\(\s*Color:\s*(.+?)\)(?=\s*(?:\(|$))/i);
+  if (colorMatch) {
+    if (!color) color = colorMatch[1].trim();
+    cleanTitle = cleanTitle.replace(colorMatch[0], '').trim();
+  }
+
+  // Eliminar clasificaciones de tipo en paréntesis ej. "(Blando Cosmético)", "(Blando Esférico)"
+  cleanTitle = cleanTitle
+    .replace(/\s*\(\s*Blando\s+[^)]+\s*\)/gi, '')
+    .replace(/\s*\(\s*(?:Esf[eé]rico|T[oó]rico|Multifocal|Cosm[eé]tico)\s*\)/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  // Normalizar nombres todo en mayúsculas a Title Case estético
+  cleanTitle = cleanTitle
+    .replace(/\bLUNARE CON GRADUACI[OÓ]N\b/gi, 'Lunare con Graduación')
+    .replace(/\bLUNARE NEUTROS\b/gi, 'Lunare Neutros')
+    .replace(/\bOPTIMA 38\b/gi, 'Optima 38')
+    .replace(/\bSOFLENS TORIC\b/gi, 'SofLens Toric')
+    .replace(/\bSOFLENS 59\b/gi, 'SofLens 59')
+    .replace(/\bFRESHLOOK ONE DAY\b/gi, 'FreshLook One Day')
+    .replace(/\bLC CLARITI 1 DAY\b/gi, 'Clariti 1 Day')
+    .replace(/\bLIBERTI TORICO\b/gi, 'Liberti Tórico')
+    .replace(/\bDAILIES TOTAL\b/gi, 'Dailies Total')
+    .replace(/\bBIOMEDICS NOW\b/gi, 'Biomedics Now')
+    .replace(/\bBIOMEDICS 55\b/gi, 'Biomedics 55')
+    .trim();
+
+  let colorDisplay = '';
+  if (color) {
+    colorDisplay = `Color: ${color}`;
+  }
+
+  return { title: cleanTitle, color: colorDisplay };
+};
+

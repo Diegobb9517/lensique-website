@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock, Check, ChevronLeft, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { resolveImageUrl } from '../App';
+import { parseCartItemDisplay } from '../lib/format';
 import { priceWithMP } from './ContactLensConfiguratorModal';
 import logo from '../assets/logo.png';
 
@@ -716,30 +717,38 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
 
                     {/* Lista de productos */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '16px' }}>
-                      {items.map(it => (
-                        <div key={it.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                          {it.image && (
-                            <img 
-                              src={resolveImageUrl(it.image, '')} 
-                              alt={it.title} 
-                              style={{ width: '48px', height: '48px', objectFit: 'contain', background: '#f8fafc', borderRadius: '8px', flexShrink: 0, border: '1px solid #e2e8f0', padding: '2px' }} 
-                            />
-                          )}
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#0f172a', lineHeight: 1.3 }}>
-                              {it.quantity > 1 ? `${it.quantity}x ` : ''}{it.title}
-                            </div>
-                            {it.lensConfig?.etiqueta && (
-                              <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', lineHeight: 1.35 }}>
-                                Micas · {it.lensConfig.etiqueta.replace(/\bzeiss\s*·?\s*/gi, '').trim()} · índice {it.lensConfig.indice} · {it.lensConfig.tipoFab || 'estándar'}
-                              </div>
+                      {items.map(it => {
+                        const itDisplay = parseCartItemDisplay(it.title, it.lensConfig);
+                        return (
+                          <div key={it.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                            {it.image && (
+                              <img 
+                                src={resolveImageUrl(it.image, '')} 
+                                alt={itDisplay.title} 
+                                style={{ width: '48px', height: '48px', objectFit: 'contain', background: '#f8fafc', borderRadius: '8px', flexShrink: 0, border: '1px solid #e2e8f0', padding: '2px' }} 
+                              />
                             )}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#0f172a', lineHeight: 1.3 }}>
+                                {it.quantity > 1 ? `${it.quantity}x ` : ''}{itDisplay.title}
+                              </div>
+                              {itDisplay.color && (
+                                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', lineHeight: 1.35, fontWeight: 500 }}>
+                                  {itDisplay.color}
+                                </div>
+                              )}
+                              {it.lensConfig?.etiqueta && (
+                                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', lineHeight: 1.35 }}>
+                                  Micas · {it.lensConfig.etiqueta.replace(/\bzeiss\s*·?\s*/gi, '').trim()} · índice {it.lensConfig.indice} · {it.lensConfig.tipoFab || 'estándar'}
+                                </div>
+                              )}
+                            </div>
+                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', flexShrink: 0, paddingTop: '2px' }}>
+                              ${Math.round(it.unit_price * it.quantity).toLocaleString('es-MX')}
+                            </div>
                           </div>
-                          <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', flexShrink: 0, paddingTop: '2px' }}>
-                            ${Math.round(it.unit_price * it.quantity).toLocaleString('es-MX')}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     {/* Desglose de totales */}
@@ -975,28 +984,35 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {/* Lista de artículos: UNA sola tarjeta por artículo */}
-                      {items.map((item) => (
-                        <div 
-                          key={item.id} 
-                          style={{ 
-                            display: 'flex', 
-                            gap: '12px', 
-                            background: '#ffffff', 
-                            border: '1px solid #e2e8f0', 
-                            borderRadius: '12px', 
-                            padding: '14px',
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-                          }}
-                        >
-                          {item.image && (
-                            <div style={{ width: '68px', height: '68px', borderRadius: '8px', background: '#f8fafc', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
-                              <img src={resolveImageUrl(item.image, '')} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                            </div>
-                          )}
-                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                            <div style={{ fontSize: '14.5px', fontWeight: 600, color: '#0f172a', margin: '0 0 2px 0', lineHeight: 1.3 }}>
-                              {item.title}
-                            </div>
+                      {items.map((item) => {
+                        const itemDisplay = parseCartItemDisplay(item.title, item.lensConfig);
+                        return (
+                          <div 
+                            key={item.id} 
+                            style={{ 
+                              display: 'flex', 
+                              gap: '12px', 
+                              background: '#ffffff', 
+                              border: '1px solid #e2e8f0', 
+                              borderRadius: '12px', 
+                              padding: '14px',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+                            }}
+                          >
+                            {item.image && (
+                              <div style={{ width: '68px', height: '68px', borderRadius: '8px', background: '#f8fafc', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
+                                <img src={resolveImageUrl(item.image, '')} alt={itemDisplay.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                              </div>
+                            )}
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                              <div style={{ fontSize: '14.5px', fontWeight: 600, color: '#0f172a', margin: '0 0 2px 0', lineHeight: 1.3 }}>
+                                {itemDisplay.title}
+                              </div>
+                              {itemDisplay.color && (
+                                <div style={{ fontSize: '12px', color: '#64748b', lineHeight: 1.35, margin: '1px 0', fontWeight: 500 }}>
+                                  {itemDisplay.color}
+                                </div>
+                              )}
                             
                             {/* Línea puntual de mica en gris */}
                             {item.lensConfig && item.lensConfig.etiqueta && (
@@ -1069,7 +1085,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             </div>
                           </div>
                         </div>
-                      ))}
+                      );
+                    })}
 
                       {/* Sección: ¿Cómo quieres recibir tu pedido? */}
                       <div style={{ marginTop: '14px' }}>

@@ -29,7 +29,7 @@ import { ContactLensServicePage } from './components/ContactLensServicePage';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
-import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName } from './lib/format';
+import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName, toTitleCase } from './lib/format';
 import { getOfficialHdImage, getContactLensCardSpecs } from './lib/productImages';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
@@ -255,22 +255,9 @@ function FullCatalog({
     }
   }, [availableBrands, selectedBrand]);
 
-  function getContactLensType(name: string) {
-    const nm = name.toLowerCase();
-    if (nm.includes('toric') || nm.includes('astigmatismo') || nm.includes('tórico')) return 'Blando Tórico';
-    if (nm.includes('multifocal')) return 'Blando Multifocal';
-    if (nm.includes('color') || nm.includes('colors') || nm.includes('freshlook') || nm.includes('lunare') || nm.includes('stars')) return 'Blando Cosmético';
-    return 'Blando Esférico';
-  }
-
   const filteredProducts = (catalogData || []).map(p => {
-    let displayName = p.name;
-    if (String(p.category || '').toLowerCase().includes('contacto')) {
-      displayName = `${p.name} (${getContactLensType(p.name || '')})`;
-    }
     return {
       ...p,
-      name: displayName,
       image: resolveImageUrl(p.image_url, p.image),
       model: p.model || p.sku 
     };
@@ -2228,7 +2215,6 @@ function App() {
             const totalPrice = clConfig.totalPrice || ((contactConfiguratorProduct.price_incl_tax || 0) * (totalQty > 0 ? totalQty : 1));
             configText += `\n*Precio Estimado Total:* $${Math.round(totalPrice).toLocaleString('es-MX')}\n\n¿Me pueden confirmar el pedido y los métodos de pago?`;
             
-            const colorTitle = clConfig.selectedColor ? ` (Color: ${clConfig.selectedColor})` : '';
             const unitPrice = clConfig.totalPrice 
               ? Math.round(clConfig.totalPrice / (totalQty > 0 ? totalQty : 1)) 
               : (contactConfiguratorProduct.price_incl_tax || 0);
@@ -2238,9 +2224,19 @@ function App() {
               clConfig.rxMethod = clConfig.tab === 'rx' ? 'manual' : (clConfig.tab === 'photo' ? 'photo' : 'later');
             }
 
+            const rawName = (contactConfiguratorProduct.name || '')
+              .replace(/\s*\([^)]*Blando[^)]*\)/gi, '')
+              .replace(/\s*\([^)]*\)\s*$/g, '')
+              .trim();
+            const cleanProdName = (rawName === rawName.toUpperCase() && rawName.length > 3)
+              ? toTitleCase(rawName) 
+              : rawName;
+            const basePrefix = cleanProdName.toLowerCase().startsWith('lentes') ? '' : 'Lentes de contacto ';
+            const cleanCartTitle = `${basePrefix}${cleanProdName}`.trim();
+
             addItem({
               type: 'product',
-              title: `Lentes de contacto ${contactConfiguratorProduct.name}${colorTitle}`,
+              title: cleanCartTitle,
               quantity: totalQty > 0 ? totalQty : 1,
               unit_price: unitPrice,
               product: contactConfiguratorProduct,

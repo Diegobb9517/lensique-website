@@ -1031,12 +1031,6 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                               </div>
                             )}
 
-                            {/* Entrega como línea chica verde */}
-                            <div style={{ fontSize: '11.5px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '3px' }}>
-                              <Clock size={12} />
-                              <span>Llega {deliveryDaysRange}</span>
-                            </div>
-
                             {/* Fila inferior: stepper · precio · eliminar */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid #f8fafc' }}>
                               <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px', background: '#f8fafc' }}>

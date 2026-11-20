@@ -46,7 +46,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const href = `/producto/${slug}`;
 
   const isFrame = !String(product.category || '').toLowerCase().includes('sol') && !String(product.category || '').toLowerCase().includes('contacto');
-  const isContactLens = String(product.category || '').toLowerCase().includes('contacto');
+  const isContactLens = String(product.category || '').toLowerCase().includes('contacto') || String(product?.sku || '').toUpperCase().startsWith('LC-');
   const displayPrice = Number(product.price_incl_tax) || 0;
   const minWithLenses = displayPrice + 1899;
   const specs = isContactLens ? getContactLensCardSpecs(product) : null;
@@ -62,8 +62,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`product-card-editorial hover-scale ${className}`}
-        style={{ cursor: 'pointer', ...style }}
+        className={`product-card-editorial hover-scale ${isContactLens ? 'contact-lens-card' : ''} ${className}`}
+        style={{ cursor: 'pointer', ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {}), ...style }}
       >
         <a 
           href={href} 
@@ -79,20 +79,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em', position: 'static', top: 'auto', left: 'auto' }}>Sobre pedido</div>
             )}
           </div>
-          <div className="product-img-area" style={{ position: 'relative' }}>
+          <div 
+            className={`product-img-area ${isContactLens ? 'contact-lens-bg-white' : ''}`} 
+            style={{ 
+              position: 'relative',
+              ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {})
+            }}
+          >
             <ImageWithSkeleton 
               src={imageUrl || fallbackImage} 
               alt={product.name} 
               className="product-main-img smooth-img"
+              containerClassName={isContactLens ? 'contact-lens-img-container' : ''}
               loading="lazy"
               decoding="async"
-              style={{ objectFit: 'contain', padding: isContactLens ? '12px' : undefined }}
+              style={{ 
+                objectFit: 'contain', 
+                padding: isContactLens ? '12px' : undefined,
+                ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {})
+              }}
               onError={(e: any) => {
                 e.target.onerror = null;
                 e.target.src = fallbackImage || SVG_PLACEHOLDER;
                 e.target.style.padding = '20%';
                 e.target.style.objectFit = 'contain';
-                e.target.style.background = '#f9fafb';
+                e.target.style.background = isContactLens ? '#ffffff' : '#f9fafb';
               }}
             />
           </div>
@@ -133,8 +144,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   // Standard WP Card (used in carousels and quiz)
   return (
     <div 
-      className={className}
-      style={style}
+      className={`${isContactLens ? 'contact-lens-card' : ''} ${className}`}
+      style={{ ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {}), ...style }}
     >
       <a 
         href={href}
@@ -150,20 +161,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             outOfStock && <div className="out-of-stock-badge" style={{ color: '#d97706', background: '#fffbeb', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em', position: 'static', top: 'auto', left: 'auto' }}>Sobre pedido</div>
           )}
         </div>
-        <div className="wp-card-img-area" style={{ position: 'relative' }}>
+        <div 
+          className={`wp-card-img-area ${isContactLens ? 'contact-lens-bg-white' : ''}`} 
+          style={{ 
+            position: 'relative',
+            ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {})
+          }}
+        >
           <ImageWithSkeleton 
             src={imageUrl || fallbackImage} 
             alt={product.name} 
             className="wp-card-img"
+            containerClassName={isContactLens ? 'contact-lens-img-container' : ''}
             loading="lazy"
             decoding="async" 
-            style={{ objectFit: 'contain', padding: isContactLens ? '10px' : undefined }}
+            style={{ 
+              objectFit: 'contain', 
+              padding: isContactLens ? '10px' : undefined,
+              ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {})
+            }}
             onError={(e: any) => {
               e.target.onerror = null;
               e.target.src = fallbackImage || SVG_PLACEHOLDER;
               e.target.style.padding = '20%';
               e.target.style.objectFit = 'contain';
-              e.target.style.background = '#f9fafb';
+              e.target.style.background = isContactLens ? '#ffffff' : '#f9fafb';
             }}
           />
         </div>

@@ -5847,3 +5847,26 @@ body.no-scroll .whatsapp-float {
     margin: 0 16px 18px;
   }
 }
+
+/* ==========================================================================
+   CONTACT LENSES PURE WHITE CARD & IMAGE CONTAINER
+   Garantiza que el fondo de las tarjetas y fotos de lentes de contacto sea siempre
+   100% blanco puro (#ffffff), eliminando cualquier contenedor o recuadro gris.
+   ========================================================================== */
+.contact-lens-card,
+.contact-lens-card .wp-card-img-area,
+.contact-lens-card .product-img-area,
+.contact-lens-card .image-with-skeleton-container,
+.contact-lens-card .wp-card-img,
+.contact-lens-card .product-main-img,
+.home-collection-card-item .contact-lens-card,
+.home-collection-card-item .contact-lens-card .wp-card-img-area,
+.wp-slider .contact-lens-card .wp-card-img-area,
+.catalog-products .products-grid .contact-lens-card .wp-card-img-area,
+.wp-card-img-area.contact-lens-bg-white,
+.product-img-area.contact-lens-bg-white,
+.image-with-skeleton-container.contact-lens-img-container {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+

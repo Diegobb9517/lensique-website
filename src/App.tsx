@@ -3057,27 +3057,10 @@ function App() {
               style={{ 
                 margin: 0, 
                 textAlign: 'center', 
-                fontFamily: '"Playfair Display", serif',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px',
-                flexWrap: 'wrap'
+                fontFamily: '"Playfair Display", serif'
               }}
             >
-              <span>Lo que encuentras en</span>
-              <img 
-                src={logo} 
-                alt="Lensique" 
-                className="logo-img"
-                style={{ 
-                  height: '28px', 
-                  width: 'auto', 
-                  display: 'inline-block',
-                  verticalAlign: 'middle',
-                  objectFit: 'contain'
-                }} 
-              />
+              Lo que encuentras en Lensique
             </h2>
           </div>
           <div className="wp-services-grid" ref={servicesSliderRef}>

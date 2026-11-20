@@ -3062,7 +3062,33 @@ function App() {
 
         <section id="servicios" className="wp-services-section" style={{ padding: '80px 40px', backgroundColor: '#fff' }}>
           <div className="wp-section-header" style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 'var(--max-width)', margin: '0 auto 48px' }}>
-            <h2 className="wp-section-title" style={{ margin: 0, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Lo que encuentras en Lensique</h2>
+            <h2 
+              className="wp-section-title" 
+              style={{ 
+                margin: 0, 
+                textAlign: 'center', 
+                fontFamily: '"Playfair Display", serif',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                flexWrap: 'wrap'
+              }}
+            >
+              <span>Lo que encuentras en</span>
+              <img 
+                src={logo} 
+                alt="Lensique" 
+                className="logo-img"
+                style={{ 
+                  height: '28px', 
+                  width: 'auto', 
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                  objectFit: 'contain'
+                }} 
+              />
+            </h2>
           </div>
           <div className="wp-services-grid" ref={servicesSliderRef}>
             {[

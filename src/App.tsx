@@ -29,7 +29,7 @@ import { ContactLensServicePage } from './components/ContactLensServicePage';
 import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
-import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName, toTitleCase } from './lib/format';
+import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, formatContactLensTitle, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName, toTitleCase } from './lib/format';
 import { getOfficialHdImage, getContactLensCardSpecs } from './lib/productImages';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
@@ -2224,13 +2224,7 @@ function App() {
               clConfig.rxMethod = clConfig.tab === 'rx' ? 'manual' : (clConfig.tab === 'photo' ? 'photo' : 'later');
             }
 
-            const rawName = (contactConfiguratorProduct.name || '')
-              .replace(/\s*\([^)]*Blando[^)]*\)/gi, '')
-              .replace(/\s*\([^)]*\)\s*$/g, '')
-              .trim();
-            const cleanProdName = (rawName === rawName.toUpperCase() && rawName.length > 3)
-              ? toTitleCase(rawName) 
-              : rawName;
+            const cleanProdName = formatContactLensTitle(contactConfiguratorProduct.name || '');
             const basePrefix = cleanProdName.toLowerCase().startsWith('lentes') ? '' : 'Lentes de contacto ';
             const cleanCartTitle = `${basePrefix}${cleanProdName}`.trim();
 

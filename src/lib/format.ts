@@ -13,6 +13,85 @@ export const formatBrandName = (brand: string): string => {
   return toTitleCase(b);
 };
 
+/**
+ * Normaliza y embellece el título de un lente de contacto:
+ * - Elimina ruidos técnicos como "(blando Tórico)", "(Blando Cosmético)", etc.
+ * - Limpia prefijos como "LC-" o "LC ".
+ * - Corrige erratas comunes de catálogo.
+ * - Aplica Title Case impecable respetando minúsculas en preposiciones españolas ("para Astigmatismo", "con Graduación").
+ * - Garantiza la ortografía oficial de marcas: "Biotrue ONEday", "1-Day Acuvue Moist", "Air Optix", etc.
+ */
+export const formatContactLensTitle = (raw: string): string => {
+  if (!raw) return 'Lentes de contacto';
+  let n = raw.trim();
+
+  // Overrides de SKUs conocidos
+  if (n === 'LC-BIOTRUEONEDAY') return 'Biotrue ONEday';
+  if (n === 'LC-BIOTRUEONEDAYAS') return 'Biotrue ONEday para Astigmatismo';
+
+  // Quitar prefijo LC- o LC
+  if (/^LC[\s-]+/i.test(n)) {
+    n = n.replace(/^LC[\s-]+/i, '');
+  }
+
+  // Quitar ruidos en paréntesis técnicos del catálogo como "(blando Tórico)", "(Blando Cosmético)", etc.
+  n = n.replace(/\s*\(\s*Blando(?:\s+[^)]+)?\s*\)/gi, '');
+  n = n.replace(/\s*\(\s*(?:Esf[eé]rico|T[oó]rico|Multifocal|Cosm[eé]tico)\s*\)/gi, '');
+  n = n.replace(/\s*\([^)]*\)\s*$/g, '');
+
+  // Corregir erratas de catálogo
+  n = n.replace(/\bdalies\b/gi, 'Dailies');
+  n = n.replace(/\bbioinfinity\b/gi, 'Biofinity');
+
+  // Normalizar palabras con Title Case inteligente
+  const words = n.split(/\s+/);
+  const lowerWords = ['para', 'con', 'de', 'en', 'por', 'y', 'o', 'del', 'los', 'las', 'with'];
+  const formattedWords = words.map((w, i) => {
+    const cleanW = w.toLowerCase();
+    if (i > 0 && lowerWords.includes(cleanW)) return cleanW;
+    return cleanW.charAt(0).toUpperCase() + cleanW.slice(1);
+  });
+  n = formattedWords.join(' ');
+
+  // Marcas y modelos con ortografía oficial
+  n = n.replace(/\bBiotrue\s+One\s*day\b/gi, 'Biotrue ONEday');
+  n = n.replace(/\bBiotrue\s+Oneday\b/gi, 'Biotrue ONEday');
+  n = n.replace(/\b1-day\s+Acuvue\s+Moist\b/gi, '1-Day Acuvue Moist');
+  n = n.replace(/\bAcuvue\s+1\s*day\s*moist\b/gi, '1-Day Acuvue Moist');
+  n = n.replace(/\bClariti\s+1\s*day\b/gi, 'Clariti 1 Day');
+  n = n.replace(/\bFreshlook\s+One\s*day\b/gi, 'FreshLook One Day');
+  n = n.replace(/\bFreshlook\s+Colorblends\b/gi, 'FreshLook ColorBlends');
+  n = n.replace(/\bBausch\s*\+\s*Lomb\s+Ultra\b/gi, 'Bausch + Lomb Ultra');
+  n = n.replace(/\bAir\s+Optix\s+Aqua\s+Night\s*&\s*Day\b/gi, 'Air Optix Night & Day');
+  n = n.replace(/\bAir\s+Optix\s+Colors\b/gi, 'Air Optix Colors');
+  n = n.replace(/\bAir\s+Optix\s+Plus\s+Hydraglyde\b/gi, 'Air Optix Plus HydraGlyde');
+  n = n.replace(/\bAir\s+Optix\s+Hydraglyde\b/gi, 'Air Optix HydraGlyde');
+  n = n.replace(/\bHydraluxe\b/gi, 'HydraLuxe');
+  n = n.replace(/\bLunare\s+con\s+graduaci[oó]n\b/gi, 'Lunare con Graduación');
+  n = n.replace(/\bLunare\s+neutros\b/gi, 'Lunare Neutros');
+  n = n.replace(/\bSoflens\s+59\b/gi, 'SofLens 59');
+  n = n.replace(/\bSoflens\s+Toric\b/gi, 'SofLens Toric');
+  n = n.replace(/\bOptima\s+38\b/gi, 'Optima 38');
+  n = n.replace(/\bSense\s+Toricos\b/gi, 'Sense Tóricos');
+  n = n.replace(/\bBiofinity\s+Toric\b/gi, 'Biofinity Toric');
+  n = n.replace(/\bBiofinity\s+Multifocal\b/gi, 'Biofinity Multifocal');
+  n = n.replace(/\bBiofinity\s+Energys\b/gi, 'Biofinity Energys');
+  n = n.replace(/\bBiofinity\s+Xr\b/gi, 'Biofinity XR');
+  n = n.replace(/\bBiofinity\s+Toric\s+Xr\b/gi, 'Biofinity Toric XR');
+  n = n.replace(/\bTorico\b/gi, 'Tórico');
+
+  // Quitar la palabra redundante 'blandos' en títulos
+  n = n.replace(/\bblandos\s+/gi, '');
+
+  // Asegurar que Astigmatismo use 'para Astigmatismo' de forma natural
+  if (/\bAstigmatismo\b/i.test(n) && !/\bpara\s+Astigmatismo\b/i.test(n)) {
+    n = n.replace(/\bAstigmatismo\b/i, 'para Astigmatismo');
+  }
+  n = n.replace(/\bpara\s+para\s+Astigmatismo\b/gi, 'para Astigmatismo');
+
+  return n.replace(/\s{2,}/g, ' ').trim();
+};
+
 export const formatModelName = (modelRaw: string): string => {
   if (!modelRaw) return '';
   let cleaned = modelRaw.trim();
@@ -45,45 +124,13 @@ export const getDisplayName = (product: any): string => {
 export const getCardDisplayName = (product: any): string => {
   if (!product) return '';
   
-  const isContact = String(product.category || '').toLowerCase().includes('contacto');
+  const isContact = String(product.category || '').toLowerCase().includes('contacto') || String(product.sku || '').toUpperCase().startsWith('LC-');
   let brand = (product.brand && product.brand !== 'null') ? product.brand.trim() : '';
   let rawName = (product.model || product.name || '').trim();
 
-  // 1. Lentes de contacto: mantener la lógica actual
+  // 1. Lentes de contacto: formato limpio y unificado
   if (isContact) {
-    rawName = (product.name || product.model || '').trim();
-    rawName = rawName.replace(/\s*\([^)]*\)\s*$/g, '').trim();
-
-    if (!product.description && (/^LC-[A-Z0-9]+$/i.test(rawName) || rawName === product.sku)) {
-      let descText = '';
-      if (product.description) {
-        descText = toTitleCase(product.description.split(/\s+/).slice(0, 6).join(' '));
-        return (brand ? `${formatBrandName(brand)} ${descText}` : descText).trim();
-      } else {
-        let skuRaw = product.sku || rawName;
-        return skuRaw.replace(/^LC-/i, '');
-      }
-    }
-
-    // Limpiar prefijo LC o LC-
-    rawName = rawName.replace(/^LC[\s-]+/i, '');
-
-    // Corregir erratas comunes en catálogo
-    rawName = rawName.replace(/^dalies\s+/i, 'Dailies ');
-    rawName = rawName.replace(/^bioinfinity\s+/i, 'Biofinity ');
-
-    const formattedB = formatBrandName(brand);
-
-    if (brand && rawName.toUpperCase().startsWith(brand.toUpperCase())) {
-      rawName = rawName.substring(brand.length).trim();
-    }
-    if (rawName === rawName.toUpperCase() && !/\b[A-Z]{1,3}\d+\b/.test(rawName)) {
-      rawName = toTitleCase(rawName);
-    }
-    if (formattedB && rawName.toUpperCase().includes(formattedB.toUpperCase())) {
-      return rawName.trim();
-    }
-    return (formattedB ? `${formattedB} ${rawName}` : rawName).trim();
+    return formatContactLensTitle(product.name || product.model || product.sku || '');
   }
 
   // 2. Armazones / Sol
@@ -179,27 +226,36 @@ export const formatProductTitle = (product: any, prefix: string = 'Lentes') => {
   return `${prefix} ${brand ? brand + ' ' : ''}${name}`.trim();
 };
 
-export const getContactLensUsage = (name: string) => {
+export const getContactLensUsage = (name: string): string => {
   const n = (name ? name.toString() : '').toUpperCase();
-  if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Uso Diario';
-  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Uso Quincenal';
+  if (n.includes('1 DAY') || n.includes('1-DAY') || n.includes('DAILY') || n.includes('DAILIES') || n.includes('DIARIO') || n.includes('ONE DAY') || n.includes('ONEDAY') || n.includes('PRECISION1')) return 'Uso Diario';
+  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || (n.includes('OASYS') && !n.includes('1 DAY') && !n.includes('1-DAY'))) return 'Uso Quincenal';
   if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Uso Mensual';
-  if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL')) return 'Uso Anual';
+  if (n.includes('YEARLY') || n.includes('ANUAL') || n.includes('ANNUAL') || n.includes('LUNARE') || n.includes('STARS') || n.includes('SENSE') || n.includes('OPTIMA 38')) return 'Uso Anual';
   return 'Todos';
 };
 
 export const getContactLensFormat = (product: any): string => {
-  const n = String(product?.name || '').toUpperCase();
+  const n = String(product?.name || (typeof product === 'string' ? product : '')).toUpperCase();
   if (n.includes('COLOR') || n.includes('LUNARE') || n.includes('STARS') || n.includes('AIR OPTIX COLORS') || n.includes('FRESHLOOK')) {
     if (n.includes('AIR OPTIX')) return 'Caja con 2 lentes · uso mensual por lente';
-    if (n.includes('FRESHLOOK')) return 'Caja con 10 lentes · uso diario';
+    if (n.includes('FRESHLOOK')) {
+      if (n.includes('ONE') || n.includes('1 DAY') || n.includes('1-DAY') || n.includes('DAILY')) return 'Caja con 10 lentes · uso diario';
+      return 'Caja con 2 lentes · uso mensual';
+    }
     if (n.includes('LUNARE') || n.includes('STARS')) return 'Lente individual · uso anual';
     return 'Lentes de contacto cosméticos de color';
   }
   if (n.includes('SENSE') || n.includes('ANUAL') || n.includes('LIBERTI') || n.includes('OPTIMA 38')) return 'Lente individual · uso anual';
-  if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Caja con 30 lentes · uso diario';
-  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Caja con 6 lentes · uso quincenal';
-  if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Caja con 6 lentes · uso mensual';
+  if (n.includes('1 DAY') || n.includes('1-DAY') || n.includes('DAILY') || n.includes('DAILIES') || n.includes('DIARIO') || n.includes('ONE DAY') || n.includes('ONEDAY') || n.includes('PRECISION1')) {
+    return 'Caja con 30 lentes · uso diario';
+  }
+  if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || (n.includes('OASYS') && !n.includes('1 DAY') && !n.includes('1-DAY'))) {
+    return 'Caja con 6 lentes · uso quincenal';
+  }
+  if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) {
+    return 'Caja con 6 lentes · uso mensual';
+  }
   return 'Caja con 6 lentes · uso mensual';
 };
 
@@ -324,6 +380,14 @@ export const parseCartItemDisplay = (title: string, lensConfig?: any): CartItemD
     .replace(/\bBIOMEDICS NOW\b/gi, 'Biomedics Now')
     .replace(/\bBIOMEDICS 55\b/gi, 'Biomedics 55')
     .trim();
+
+  // Asegurar formato estético unificado para lentes de contacto
+  const isContact = cleanTitle.toLowerCase().includes('lente') || !!lensConfig;
+  if (isContact) {
+    const hasPrefix = /^Lentes de contacto\s+/i.test(cleanTitle);
+    const sub = cleanTitle.replace(/^Lentes de contacto\s+/i, '');
+    cleanTitle = (hasPrefix ? 'Lentes de contacto ' : '') + formatContactLensTitle(sub);
+  }
 
   let colorDisplay = '';
   if (color) {

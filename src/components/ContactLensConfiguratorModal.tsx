@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { X } from 'lucide-react';
-import { toTitleCase } from '../lib/format';
+import { toTitleCase, formatContactLensTitle, getContactLensFormat } from '../lib/format';
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
 import contactLensesImg from '../assets/contact_lenses.png';
@@ -439,25 +439,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   };
 
   const cleanName = useMemo(() => {
-    let n = product?.name || 'Lentes de contacto';
-    if (n === 'LC-BIOTRUEONEDAY') return 'Biotrue ONEday';
-    if (n.startsWith('LC-')) n = n.substring(3).replace(/-/g, ' ');
-    return toTitleCase(n);
+    return formatContactLensTitle(product?.name || product?.model || product?.sku || 'Lentes de contacto');
   }, [product]);
 
   const getUsageType = () => {
-    const n = productName;
-    if (n.includes('COLOR') || n.includes('LUNARE') || n.includes('STARS') || n.includes('AIR OPTIX COLORS') || n.includes('FRESHLOOK')) {
-      if (n.includes('AIR OPTIX')) return 'Caja con 2 lentes · uso mensual por lente';
-      if (n.includes('FRESHLOOK')) return 'Caja con 10 lentes · uso diario';
-      if (n.includes('LUNARE') || n.includes('STARS')) return 'Lente individual · uso anual';
-      return 'Lentes de contacto cosméticos de color';
-    }
-    if (n.includes('SENSE') || n.includes('ANUAL') || n.includes('LIBERTI') || n.includes('OPTIMA 38')) return 'Lente individual · uso anual';
-    if (n.includes('1 DAY') || n.includes('DAILY') || n.includes('DIARIO') || n.includes('ONE DAY')) return 'Caja con 30 lentes · uso diario';
-    if (n.includes('BIWEEKLY') || n.includes('QUINCENAL') || n.includes('OASYS')) return 'Caja con 6 lentes · uso quincenal';
-    if (n.includes('MONTHLY') || n.includes('MENSUAL') || n.includes('ULTRA') || n.includes('AIR OPTIX') || n.includes('BIOFINITY')) return 'Caja con 6 lentes · uso mensual';
-    return 'Caja con 6 lentes · uso mensual';
+    return getContactLensFormat(product);
   };
 
   const getProductImage = () => {
@@ -1327,7 +1313,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   <div className="cl-sumrow" style={{ border: 'none', paddingTop: '4px', paddingBottom: '4px' }}>
                     <span className="cl-k">Envío</span>
                     <span className="cl-v" style={{ fontWeight: 400, color: 'var(--lsq-grey)' }}>
-                      {totalPricing.price >= 2500 ? 'Gratis' : 'Calculado en el carrito · o recoge en clínica'}
+                      {totalPricing.price >= 2500 ? 'Gratis' : 'Calculado en el carrito · o recoger en sucursal'}
                     </span>
                   </div>
 

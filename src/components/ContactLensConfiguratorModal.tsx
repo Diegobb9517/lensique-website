@@ -184,172 +184,102 @@ export function getContactLensSpecs(product: any): ContactLensSpecs {
   return { bc: '8.6', dia: '14.2', bcOptions: ['8.6'], isMultipleBc: false };
 }
 
-interface SphereDropdownProps {
+interface CustomDropdownProps {
+  options: { value: string; label: string }[];
   value: string;
-  disabled?: boolean;
+  onChange: (value: string) => void;
   placeholder?: string;
-  onChange: (val: string) => void;
+  centerZero?: boolean;
+  disabled?: boolean;
 }
 
-function SphereDropdown({ value, disabled = false, placeholder = 'Elige esfera', onChange }: SphereDropdownProps) {
+function CustomDropdown({ options, value, onChange, placeholder = 'Elige', centerZero, disabled = false }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [isUp, setIsUp] = useState(false);
+  const ddRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
-  const getModeFromVal = (val: string) => {
-    if (val === '0.00') return 'neutro';
-    if (val && val.startsWith('+')) return 'hyperopia';
-    return 'myopia';
-  };
+  const selectedOpt = options.find(o => String(o.value) === String(value) || (value && Number(o.value) === Number(value)));
+  const displayLabel = selectedOpt ? selectedOpt.label : (placeholder || 'Elige');
 
-  const [mode, setMode] = useState<'neutro' | 'myopia' | 'hyperopia'>(() => getModeFromVal(value));
-
-  useEffect(() => {
-    if (value) {
-      setMode(getModeFromVal(value));
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (disabled) return;
+    if (!isOpen) {
+      if (ddRef.current) {
+        const rect = ddRef.current.getBoundingClientRect();
+        setIsUp(window.innerHeight - rect.bottom < 250);
+      }
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
     }
-  }, [value]);
+  };
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+
+    const timer = setTimeout(() => {
+      if (!listRef.current) return;
+      if (!value || value === '') {
+        if (centerZero) {
+          const zeroItem = listRef.current.querySelector('[data-val="0.00"]') as HTMLElement;
+          if (zeroItem) {
+            zeroItem.scrollIntoView({ block: 'center' });
+            return;
+          }
+        }
+      }
+      const selItem = listRef.current.querySelector('.lsq-dd-opt.sel') as HTMLElement;
+      if (selItem) {
+        selItem.scrollIntoView({ block: 'nearest' });
+      }
+    }, 20);
+
+    const handleClickOutside = (ev: MouseEvent) => {
+      if (ddRef.current && !ddRef.current.contains(ev.target as Node)) {
         setIsOpen(false);
       }
     };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsOpen(false);
     };
-    document.addEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      clearTimeout(timer);
+      document.removeEventListener('click', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
-
-  const negativePowers = useMemo(() => {
-    const list: string[] = [];
-    for (let p = -0.25; p >= -6.00; p -= 0.25) list.push(p.toFixed(2));
-    for (let p = -6.50; p >= -12.00; p -= 0.50) list.push(p.toFixed(2));
-    return list;
-  }, []);
-
-  const positivePowers = useMemo(() => {
-    const list: string[] = [];
-    for (let p = 0.25; p <= 4.00; p += 0.25) list.push(`+${p.toFixed(2)}`);
-    for (let p = 4.50; p <= 8.00; p += 0.50) list.push(`+${p.toFixed(2)}`);
-    return list;
-  }, []);
-
-  const displayLabel = useMemo(() => {
-    if (!value) return placeholder;
-    if (value === '0.00') return '0.00 (Neutro)';
-    return value;
-  }, [value, placeholder]);
+  }, [isOpen, value, centerZero]);
 
   return (
-    <div className={`cl-sph-selector-wrap ${disabled ? 'disabled' : ''}`} ref={containerRef}>
-      <button
-        type="button"
-        className={`cl-sph-trigger ${isOpen ? 'open' : ''} ${value ? 'has-value' : ''}`}
-        onClick={() => {
-          if (!disabled) setIsOpen(!isOpen);
-        }}
-        disabled={disabled}
-      >
-        <span className="cl-sph-trigger-text">{displayLabel}</span>
-        <span className="cl-sph-trigger-arrow">{isOpen ? '▲' : '▾'}</span>
-      </button>
-
+    <div className={`lsq-dd ${isOpen ? 'open' : ''} ${isUp ? 'up' : ''} ${disabled ? 'disabled' : ''}`} ref={ddRef}>
+      <div className="lsq-dd-btn" onClick={handleToggle} style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.6 : 1 }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayLabel}</span>
+        <span className="lsq-dd-caret">{isOpen ? '▲' : '▾'}</span>
+      </div>
       {isOpen && (
-        <div className="cl-sph-popover">
-          <div className="cl-sph-tabs">
-            <button
-              type="button"
-              className={`cl-sph-tab ${mode === 'neutro' ? 'active' : ''}`}
-              onClick={() => {
-                setMode('neutro');
-                onChange('0.00');
-                setIsOpen(false);
-              }}
-            >
-              0.00 Neutro
-            </button>
-            <button
-              type="button"
-              className={`cl-sph-tab ${mode === 'myopia' ? 'active' : ''}`}
-              onClick={() => setMode('myopia')}
-            >
-              − Miopía
-            </button>
-            <button
-              type="button"
-              className={`cl-sph-tab ${mode === 'hyperopia' ? 'active' : ''}`}
-              onClick={() => setMode('hyperopia')}
-            >
-              + Hipermetropía
-            </button>
-          </div>
-
-          {mode === 'neutro' && (
-            <div className="cl-sph-neutro-content">
-              <button
-                type="button"
-                className={`cl-sph-option ${value === '0.00' ? 'selected' : ''}`}
-                onClick={() => {
-                  onChange('0.00');
+        <div className="lsq-dd-list" ref={listRef}>
+          {options.map((opt, idx) => {
+            const isSel = String(opt.value) === String(value) || (value && Number(opt.value) === Number(value));
+            return (
+              <div
+                key={`${opt.value}-${idx}`}
+                data-val={opt.value}
+                className={`lsq-dd-opt ${isSel ? 'sel' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(opt.value);
                   setIsOpen(false);
                 }}
               >
-                <div className="cl-sph-option-info">
-                  <span className="cl-sph-val">0.00</span>
-                  <span className="cl-sph-desc">Sin graduación · Solo cosmético</span>
-                </div>
-                {value === '0.00' && <span className="cl-sph-check">✓</span>}
-              </button>
-              <p className="cl-sph-hint">Ideal si solo buscas el tono cosmético de color o no requieres aumento.</p>
-            </div>
-          )}
-
-          {mode === 'myopia' && (
-            <div className="cl-sph-scroll-list">
-              <div className="cl-sph-list-header">Miopía (Ver de lejos)</div>
-              {negativePowers.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  className={`cl-sph-option ${value === p ? 'selected' : ''}`}
-                  onClick={() => {
-                    onChange(p);
-                    setIsOpen(false);
-                  }}
-                >
-                  <span className="cl-sph-val">{p}</span>
-                  {value === p && <span className="cl-sph-check">✓</span>}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {mode === 'hyperopia' && (
-            <div className="cl-sph-scroll-list">
-              <div className="cl-sph-list-header">Hipermetropía (Ver de cerca)</div>
-              {positivePowers.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  className={`cl-sph-option ${value === p ? 'selected' : ''}`}
-                  onClick={() => {
-                    onChange(p);
-                    setIsOpen(false);
-                  }}
-                >
-                  <span className="cl-sph-val">{p}</span>
-                  {value === p && <span className="cl-sph-check">✓</span>}
-                </button>
-              ))}
-            </div>
-          )}
+                {opt.label}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -485,9 +415,27 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return contactLensesImg;
   };
 
+  const powerOptions = useMemo(() => {
+    const a = [{ value: '', label: 'Elige' }];
+    for (let p = 8; p >= 0.25; p -= 0.25) {
+      const v = `+${p.toFixed(2)}`;
+      a.push({ value: v, label: v });
+    }
+    a.push({ value: '0.00', label: '0.00' });
+    for (let p = -0.25; p >= -6.00; p -= 0.25) {
+      const v = p.toFixed(2);
+      a.push({ value: v, label: v });
+    }
+    for (let p = -6.50; p >= -12.00; p -= 0.50) {
+      const v = p.toFixed(2);
+      a.push({ value: v, label: v });
+    }
+    return a;
+  }, []);
+
   const cylOptions = useMemo(() => {
     const opts = [{ value: '', label: 'CYL' }];
-    ['-0.75', '-1.25', '-1.75', '-2.25', '-2.75', '-0.50', '-1.00', '-1.50', '-2.00', '-2.50'].forEach(v => {
+    ['-0.50', '-0.75', '-1.00', '-1.25', '-1.50', '-1.75', '-2.00', '-2.25', '-2.50', '-2.75'].forEach(v => {
       opts.push({ value: v, label: v });
     });
     return opts;
@@ -873,8 +821,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         {odOn && (
                           <>
                             <div className="cl-rl">OD</div>
-                            <SphereDropdown 
+                            <CustomDropdown 
+                              options={powerOptions}
                               value={prescriptionOD.sph} 
+                              centerZero={true}
+                              placeholder="Elige"
                               onChange={(val) => {
                                 setValidationError(null);
                                 setPrescriptionOD(prev => ({ ...prev, sph: val, bc: defaultBc, dia: defaultDia }));
@@ -884,40 +835,37 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
                             {isToric && (
                               <>
-                                <select 
+                                <CustomDropdown 
+                                  options={cylOptions}
                                   value={prescriptionOD.cyl} 
-                                  onChange={(e) => {
-                                    const val = e.target.value;
+                                  placeholder="CYL"
+                                  onChange={(val) => {
                                     setPrescriptionOD(prev => ({ ...prev, cyl: val }));
                                     if (samePrescription) setPrescriptionOS(prev => ({ ...prev, cyl: val }));
                                   }}
-                                >
-                                  {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
-                                <select 
+                                />
+                                <CustomDropdown 
+                                  options={axisOptions}
                                   value={prescriptionOD.axis} 
-                                  onChange={(e) => {
-                                    const val = e.target.value;
+                                  placeholder="Eje"
+                                  onChange={(val) => {
                                     setPrescriptionOD(prev => ({ ...prev, axis: val }));
                                     if (samePrescription) setPrescriptionOS(prev => ({ ...prev, axis: val }));
                                   }}
-                                >
-                                  {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
+                                />
                               </>
                             )}
 
                             {isMultifocal && (
-                              <select 
+                              <CustomDropdown 
+                                options={addOptions}
                                 value={prescriptionOD.add} 
-                                onChange={(e) => {
-                                  const val = e.target.value;
+                                placeholder="ADD"
+                                onChange={(val) => {
                                   setPrescriptionOD(prev => ({ ...prev, add: val }));
                                   if (samePrescription) setPrescriptionOS(prev => ({ ...prev, add: val }));
                                 }}
-                              >
-                                {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                              </select>
+                              />
                             )}
                           </>
                         )}
@@ -926,8 +874,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         {oiOn && (
                           <>
                             <div className="cl-rl">OI</div>
-                            <SphereDropdown 
+                            <CustomDropdown 
+                              options={powerOptions}
                               value={samePrescription ? prescriptionOD.sph : prescriptionOS.sph} 
+                              centerZero={true}
+                              placeholder="Elige"
                               disabled={samePrescription}
                               onChange={(val) => {
                                 setValidationError(null);
@@ -937,31 +888,37 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
                             {isToric && (
                               <>
-                                <select 
+                                <CustomDropdown 
+                                  options={cylOptions}
                                   value={samePrescription ? prescriptionOD.cyl : prescriptionOS.cyl} 
+                                  placeholder="CYL"
                                   disabled={samePrescription}
-                                  onChange={(e) => setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }))}
-                                >
-                                  {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
-                                <select 
+                                  onChange={(val) => {
+                                    setPrescriptionOS(prev => ({ ...prev, cyl: val }));
+                                  }}
+                                />
+                                <CustomDropdown 
+                                  options={axisOptions}
                                   value={samePrescription ? prescriptionOD.axis : prescriptionOS.axis} 
+                                  placeholder="Eje"
                                   disabled={samePrescription}
-                                  onChange={(e) => setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }))}
-                                >
-                                  {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                </select>
+                                  onChange={(val) => {
+                                    setPrescriptionOS(prev => ({ ...prev, axis: val }));
+                                  }}
+                                />
                               </>
                             )}
 
                             {isMultifocal && (
-                              <select 
+                              <CustomDropdown 
+                                options={addOptions}
                                 value={samePrescription ? prescriptionOD.add : prescriptionOS.add} 
+                                placeholder="ADD"
                                 disabled={samePrescription}
-                                onChange={(e) => setPrescriptionOS(prev => ({ ...prev, add: e.target.value }))}
-                              >
-                                {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                              </select>
+                                onChange={(val) => {
+                                  setPrescriptionOS(prev => ({ ...prev, add: val }));
+                                }}
+                              />
                             )}
                           </>
                         )}
@@ -976,8 +933,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                             <div className="cl-rx-fields-grid">
                               <div className="cl-field-group">
                                 <label>Esfera (PWR) *</label>
-                                <SphereDropdown 
+                                <CustomDropdown 
+                                  options={powerOptions}
                                   value={prescriptionOD.sph} 
+                                  centerZero={true}
+                                  placeholder="Elige"
                                   onChange={(val) => {
                                     setValidationError(null);
                                     setPrescriptionOD(prev => ({ ...prev, sph: val, bc: defaultBc, dia: defaultDia }));
@@ -990,27 +950,27 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 <>
                                   <div className="cl-field-group">
                                     <label>Cilindro (CYL) *</label>
-                                    <select 
+                                    <CustomDropdown 
+                                      options={cylOptions}
                                       value={prescriptionOD.cyl} 
-                                      onChange={(e) => {
-                                        setPrescriptionOD(prev => ({ ...prev, cyl: e.target.value }));
-                                        if (samePrescription) setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }));
+                                      placeholder="CYL"
+                                      onChange={(val) => {
+                                        setPrescriptionOD(prev => ({ ...prev, cyl: val }));
+                                        if (samePrescription) setPrescriptionOS(prev => ({ ...prev, cyl: val }));
                                       }}
-                                    >
-                                      {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                    </select>
+                                    />
                                   </div>
                                   <div className="cl-field-group">
                                     <label>Eje (AXIS) *</label>
-                                    <select 
+                                    <CustomDropdown 
+                                      options={axisOptions}
                                       value={prescriptionOD.axis} 
-                                      onChange={(e) => {
-                                        setPrescriptionOD(prev => ({ ...prev, axis: e.target.value }));
-                                        if (samePrescription) setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }));
+                                      placeholder="Eje"
+                                      onChange={(val) => {
+                                        setPrescriptionOD(prev => ({ ...prev, axis: val }));
+                                        if (samePrescription) setPrescriptionOS(prev => ({ ...prev, axis: val }));
                                       }}
-                                    >
-                                      {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                    </select>
+                                    />
                                   </div>
                                 </>
                               )}
@@ -1018,15 +978,15 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                               {isMultifocal && (
                                 <div className="cl-field-group">
                                   <label>Adición (ADD) *</label>
-                                  <select 
+                                  <CustomDropdown 
+                                    options={addOptions}
                                     value={prescriptionOD.add} 
-                                    onChange={(e) => {
-                                      setPrescriptionOD(prev => ({ ...prev, add: e.target.value }));
-                                      if (samePrescription) setPrescriptionOS(prev => ({ ...prev, add: e.target.value }));
+                                    placeholder="ADD"
+                                    onChange={(val) => {
+                                      setPrescriptionOD(prev => ({ ...prev, add: val }));
+                                      if (samePrescription) setPrescriptionOS(prev => ({ ...prev, add: val }));
                                     }}
-                                  >
-                                    {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                  </select>
+                                  />
                                 </div>
                               )}
                             </div>
@@ -1044,8 +1004,11 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                               <div className="cl-rx-fields-grid">
                                   <div className="cl-field-group">
                                     <label>Esfera (PWR) *</label>
-                                    <SphereDropdown 
+                                    <CustomDropdown 
+                                      options={powerOptions}
                                       value={prescriptionOS.sph} 
+                                      centerZero={true}
+                                      placeholder="Elige"
                                       onChange={(val) => {
                                         setValidationError(null);
                                         setPrescriptionOS(prev => ({ ...prev, sph: val, bc: defaultBc, dia: defaultDia }));
@@ -1057,21 +1020,21 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                     <>
                                       <div className="cl-field-group">
                                         <label>Cilindro (CYL) *</label>
-                                        <select 
+                                        <CustomDropdown 
+                                          options={cylOptions}
                                           value={prescriptionOS.cyl} 
-                                          onChange={(e) => setPrescriptionOS(prev => ({ ...prev, cyl: e.target.value }))}
-                                        >
-                                          {cylOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                        </select>
+                                          placeholder="CYL"
+                                          onChange={(val) => setPrescriptionOS(prev => ({ ...prev, cyl: val }))}
+                                        />
                                       </div>
                                       <div className="cl-field-group">
                                         <label>Eje (AXIS) *</label>
-                                        <select 
+                                        <CustomDropdown 
+                                          options={axisOptions}
                                           value={prescriptionOS.axis} 
-                                          onChange={(e) => setPrescriptionOS(prev => ({ ...prev, axis: e.target.value }))}
-                                        >
-                                          {axisOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                        </select>
+                                          placeholder="Eje"
+                                          onChange={(val) => setPrescriptionOS(prev => ({ ...prev, axis: val }))}
+                                        />
                                       </div>
                                     </>
                                   )}
@@ -1079,12 +1042,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                   {isMultifocal && (
                                     <div className="cl-field-group">
                                       <label>Adición (ADD) *</label>
-                                      <select 
+                                      <CustomDropdown 
+                                        options={addOptions}
                                         value={prescriptionOS.add} 
-                                        onChange={(e) => setPrescriptionOS(prev => ({ ...prev, add: e.target.value }))}
-                                      >
-                                        {addOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                                      </select>
+                                        placeholder="ADD"
+                                        onChange={(val) => setPrescriptionOS(prev => ({ ...prev, add: val }))}
+                                      />
                                     </div>
                                   )}
                                 </div>

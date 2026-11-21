@@ -1,0 +1,222 @@
+/* ==========================================================================
+   SECCIÓN DE RESEÑAS DE GOOGLE ("Tu visión es nuestra prioridad")
+   Basado en prototipo-testimonios-dinamico.html y prototipo-resenas-google.html
+   ========================================================================== */
+
+.reviews-section {
+  padding: 72px 24px;
+  background-color: #f8fafc;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .reviews-section {
+    padding: 52px 16px 64px;
+  }
+}
+
+.reviews-container {
+  max-width: 1160px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.reviews-eyebrow {
+  color: #c9a65e;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.reviews-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 38px;
+  color: #11213c;
+  font-weight: 600;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .reviews-title {
+    font-size: 28px;
+  }
+}
+
+/* Rating stat bar con animación de conteo */
+.reviews-stat-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.reviews-rnum {
+  font-size: 28px;
+  font-weight: 800;
+  color: #11213c;
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.reviews-rstars {
+  color: #c9a65e;
+  font-size: 21px;
+  letter-spacing: 2px;
+  user-select: none;
+}
+
+.reviews-rcount {
+  color: #6b7585;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.reviews-rcount b {
+  color: #11213c;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.reviews-gpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  border: 1px solid #e7e9ee;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  color: #1a2740;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
+  user-select: none;
+}
+
+/* Carousel wrapper y grid de tarjetas */
+.reviews-carousel-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.reviews-track-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .reviews-track-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+/* Tarjeta individual uniforme */
+.resena-card-uniform {
+  background: #ffffff;
+  border: 1px solid #e7e9ee;
+  border-radius: 18px;
+  padding: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.04);
+  text-align: left;
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.resena-card-uniform:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(16, 24, 40, 0.08);
+}
+
+.resena-card-stars {
+  color: #c9a65e;
+  font-size: 16px;
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+  user-select: none;
+}
+
+.resena-card-quote {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  line-height: 1.55;
+  color: #1a2740;
+  font-style: italic;
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.resena-card-who {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid #e7e9ee;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.resena-card-av {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #11213c;
+  color: #ffffff;
+  font-family: Georgia, serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.resena-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.resena-card-name {
+  font-weight: 700;
+  color: #11213c;
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resena-card-source {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #6b7585;
+  font-size: 12px;
+}
+
+/* Pie de sección discreto */
+.reviews-footer-note {
+  text-align: center;
+  color: #86868b;
+  font-size: 12.5px;
+  margin: 28px 0 0;
+}

@@ -18,6 +18,7 @@ import InfoPage, { type InfoPageData } from './components/InfoPage';
 import { type ServiceInfoData } from './components/ServiceInfoModal';
 import ServiceInfoModal from './components/ServiceInfoModal';
 import { FAQSection } from './components/FAQSection';
+import GoogleReviewsSection from './components/GoogleReviewsSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
 import LensExplainer from './components/LensExplainer';
 import BlogList from './components/BlogList';
@@ -1790,24 +1791,11 @@ function App() {
   };
 
   const servicesSliderRef = useRef<HTMLDivElement>(null);
-  const reviewsSliderRef = useRef<HTMLDivElement>(null);
-  
-  // Drag states for reviews slider
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
 
   const scrollServicios = (direction: 'left' | 'right') => {
     if (servicesSliderRef.current) {
       const scrollAmount = direction === 'left' ? -300 : 300;
       servicesSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
-  const scrollReviews = (direction: 'left' | 'right') => {
-    if (reviewsSliderRef.current) {
-      const scrollAmount = direction === 'left' ? -340 : 340;
-      reviewsSliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -3471,89 +3459,7 @@ function App() {
 
         
 
-        <section className="reviews-section" style={{ padding: '40px 24px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
-            <span className="hero-eyebrow">Lo que dicen nuestros pacientes</span>
-            
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginBottom: '40px', flexWrap: 'wrap' }}>
-              <h2 className="section-title" style={{ margin: 0 }}>Tu visión es nuestra prioridad</h2>
-              <div style={{ display: 'flex', gap: '10px' }} className="reviews-arrows">
-                <button className="slider-arrow-btn" aria-label="Desplazar Izquierda" onClick={() => scrollReviews('left')}><ChevronLeft size={24} /></button>
-                <button className="slider-arrow-btn" aria-label="Desplazar Derecha" onClick={() => scrollReviews('right')}><ChevronRight size={24} /></button>
-              </div>
-            </div>
-
-            <style>{`
-              .resenas-track::-webkit-scrollbar { display: none; }
-              @media (max-width: 768px) {
-                .reviews-arrows { display: none !important; }
-                .resena-card { width: 85vw !important; }
-              }
-            `}</style>
-            
-            <div 
-              ref={reviewsSliderRef} 
-              className="resenas-track" 
-              style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingBottom: '20px', paddingLeft: '16px', paddingRight: '16px', scrollPaddingLeft: '16px', cursor: 'grab' }}
-              onMouseDown={(e) => {
-                isDragging.current = true;
-                if (reviewsSliderRef.current) {
-                  reviewsSliderRef.current.style.cursor = 'grabbing';
-                  reviewsSliderRef.current.style.scrollSnapType = 'none'; // Disable snap while dragging
-                  startX.current = e.pageX - reviewsSliderRef.current.offsetLeft;
-                  scrollLeft.current = reviewsSliderRef.current.scrollLeft;
-                }
-              }}
-              onMouseLeave={() => {
-                isDragging.current = false;
-                if (reviewsSliderRef.current) {
-                  reviewsSliderRef.current.style.cursor = 'grab';
-                  reviewsSliderRef.current.style.scrollSnapType = 'x mandatory';
-                }
-              }}
-              onMouseUp={() => {
-                isDragging.current = false;
-                if (reviewsSliderRef.current) {
-                  reviewsSliderRef.current.style.cursor = 'grab';
-                  reviewsSliderRef.current.style.scrollSnapType = 'x mandatory';
-                }
-              }}
-              onMouseMove={(e) => {
-                if (!isDragging.current || !reviewsSliderRef.current) return;
-                e.preventDefault();
-                const x = e.pageX - reviewsSliderRef.current.offsetLeft;
-                const walk = (x - startX.current) * 2;
-                reviewsSliderRef.current.scrollLeft = scrollLeft.current - walk;
-              }}
-            >
-              {[
-                { name: 'Yeshua Muñoz', review: 'Muy buen servicio y excelente atención. Me ayudaron a elegir los lentes ideales para mí, explicándome las opciones con detalle.' },
-                { name: 'Giovanna Campollo Orendain', review: 'Excelente servicio, gran variedad, y apoyo en todo momento. Aparte de súper rápido todo el servicio. Mil gracias' },
-                { name: 'Verenice Rico lopez', review: 'Excelente servicio, las instalaciones son muy buenas. Además de la súper atención que brindas, son personas muy capacitadas para poder brindarnos una atención de calidad.' },
-                { name: 'Martínez Reyna Edson Santiago', review: 'Super recomendado. Excelente atención al cliente' },
-                { name: 'pamela wence', review: 'Excelente clínica, muy buena atención y médicos capacitados, me explicaron todo de forma clara. Tienen ahí mismo muy buenas opciones de armazones y lentes de contacto.' },
-                { name: 'Miriam Alondra Madrigal Corona', review: 'Excelente servicio y muy buena calidad de lentes, y una excelente calidad de examen de la vista🙌🏼' },
-                { name: 'Citlalli Gomez', review: 'Muy buen servicio! Super buena la atención, y me entregaron los lentes en tiempo y forma.' },
-                { name: 'Gabriela Ocampo', review: 'Muy buena atención, súper amables y buena calidad!' },
-                { name: 'Elizabeth López Gómez', review: 'Excelente atención de los médicos, gran variedad de diseños en lentes y servicio rápido en la entrega de lentes graduados, buenos precios y muy amables todos, gracias x su atención' }
-              ].map((r, i) => (
-                <div className="resena-card" key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 auto', width: '320px', backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#fbbf24' }}>
-                    {[...Array(5)].map((_, j) => <svg key={j} width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
-                  </div>
-                  <p style={{ color: '#475569', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px', fontStyle: 'italic', flexGrow: 1 }}>"{r.review}"</p>
-                  <div style={{ marginTop: 'auto' }}>
-                    <p style={{ fontWeight: '600', color: '#1e293b', marginBottom: '4px' }}>{r.name}</p>
-                    <div style={{ fontSize: '13px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                      <span>Reseña en Google</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <GoogleReviewsSection />
 
         <FAQSection limit={4} onOpenAll={() => setSelectedInfoPage(faqData)} />
 

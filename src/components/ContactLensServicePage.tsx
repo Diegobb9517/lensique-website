@@ -172,7 +172,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
             <span className="cl-eyebrow">Paso a paso ilustrado</span>
             <h2 className="cl-section-title">Cómo ponerte los lentes de contacto</h2>
             <p className="cl-section-desc">
-              Sigue estos 7 pasos sencillos. Con un poco de práctica, te tomará menos de un minuto cada mañana.
+              Sigue estos 3 pasos clave (o consulta los 7 pasos en detalle más abajo). Con un poco de práctica, te tomará menos de un minuto cada mañana.
             </p>
           </div>
 
@@ -206,7 +206,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
                 />
               </div>
               <div className="cl-visual-step-body">
-                <span className="cl-visual-step-num">Pasos 02 & 03 · Posición</span>
+                <span className="cl-visual-step-num">Paso 02 · Posición y orientación</span>
                 <h3 className="cl-visual-step-heading">Revisa forma en la yema</h3>
                 <p className="cl-visual-step-text">
                   Pon el lente en la yema del índice y verifica que no esté al revés: debe parecer un tazón con bordes hacia arriba, no un plato abierto.
@@ -224,10 +224,10 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
                 />
               </div>
               <div className="cl-visual-step-body">
-                <span className="cl-visual-step-num">Pasos 06 & 07 · Colocación</span>
+                <span className="cl-visual-step-num">Paso 03 · Colocación suave</span>
                 <h3 className="cl-visual-step-heading">Coloca suave y parpadea</h3>
                 <p className="cl-visual-step-text">
-                  Acerca el lente despacio hasta tocar el ojo, suelta los párpados con suavidad y parpadea despacio para que se acomode naturalmente.
+                  Sujeta los párpados con suavidad para evitar el parpadeo, acerca el lente despacio hasta tocar el ojo y parpadea para que se acomode naturalmente.
                 </p>
               </div>
             </div>

@@ -508,7 +508,7 @@ body.no-scroll {
 }
 
 #populares {
-  padding-top: 140px; /* Extra space for navbar */
+  scroll-margin-top: 70px;
 }
 
 .comparison-grid {
@@ -3011,7 +3011,7 @@ body.no-scroll {
 
 /* WP Product Carousel */
 .wp-carousel-section {
-  padding: 80px 40px;
+  padding: 48px 40px 60px;
   background-color: #fff;
 }
 
@@ -4562,7 +4562,7 @@ body.no-scroll .whatsapp-float {
    HOME COLLECTION ROWS (WARBY PARKER + NETFLIX SLIDERS)
 ------------------------------------------------------------------------- */
 .home-collections-section {
-  padding: 40px 0 56px;
+  padding: 20px 0 44px;
   background-color: #ffffff;
   width: 100%;
   max-width: 100vw;

@@ -10,6 +10,7 @@
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
   overflow-x: hidden;
+  padding-top: 80px;
 }
 
 .cl-container {
@@ -22,44 +23,6 @@
   max-width: 840px;
   margin: 0 auto;
   padding: 0 24px;
-}
-
-/* --------------------------------------------------------------------------
-   Top Bar / Breadcrumb
-   -------------------------------------------------------------------------- */
-.cl-breadcrumb-bar {
-  padding-top: 100px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  background-color: #ffffff;
-}
-
-.cl-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.cl-breadcrumb a {
-  color: #64748b;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.cl-breadcrumb a:hover {
-  color: #0f172a;
-}
-
-.cl-breadcrumb-sep {
-  opacity: 0.4;
-}
-
-.cl-breadcrumb-current {
-  color: #0f172a;
-  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
@@ -987,9 +950,6 @@
 }
 
 @media (max-width: 768px) {
-  .cl-breadcrumb-bar {
-    padding-top: 80px;
-  }
   .cl-section {
     padding: 64px 0;
   }

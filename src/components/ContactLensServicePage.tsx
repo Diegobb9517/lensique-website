@@ -95,21 +95,6 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
   return (
     <div className="cl-page">
       {/* ------------------------------------------------------------------
-          Breadcrumb Navigation
-          ------------------------------------------------------------------ */}
-      <div className="cl-breadcrumb-bar">
-        <div className="cl-container">
-          <nav className="cl-breadcrumb" aria-label="Ruta de navegación">
-            <a href="/" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>Inicio</a>
-            <span className="cl-breadcrumb-sep">/</span>
-            <a href="/#servicios" onClick={(e) => { e.preventDefault(); window.location.href = '/#servicios'; }}>Servicios</a>
-            <span className="cl-breadcrumb-sep">/</span>
-            <span className="cl-breadcrumb-current">Lentes de contacto</span>
-          </nav>
-        </div>
-      </div>
-
-      {/* ------------------------------------------------------------------
           1. Hero & Intro (Editorial)
           ------------------------------------------------------------------ */}
       <section className="cl-hero">

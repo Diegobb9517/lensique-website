@@ -641,44 +641,43 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
       {featuredProducts && featuredProducts.length > 0 && (
         <section className="cl-section cl-products-carousel-section" style={{ padding: '60px 0' }}>
           <div className="cl-container">
-            <div className="cl-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
-              <div>
-                <span className="cl-eyebrow">Modelos disponibles</span>
-                <h2 className="cl-section-title" style={{ margin: '4px 0 8px' }}>Lentes de contacto destacados</h2>
-                <p className="cl-section-desc" style={{ margin: 0, maxWidth: '640px' }}>
-                  Cajas selladas originales con respaldo de optometrista y entrega rápida en Zapopan y todo México.
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <button
-                  className="slider-arrow-btn"
-                  aria-label="Desplazar Izquierda"
-                  onClick={() => scrollContact('left')}
-                  type="button"
-                >
-                  <ChevronLeft size={22} />
-                </button>
-                <button
-                  className="slider-arrow-btn"
-                  aria-label="Desplazar Derecha"
-                  onClick={() => scrollContact('right')}
-                  type="button"
-                >
-                  <ChevronRight size={22} />
-                </button>
-              </div>
+            <div className="cl-section-header" style={{ marginBottom: '36px' }}>
+              <span className="cl-eyebrow">Modelos disponibles</span>
+              <h2 className="cl-section-title" style={{ margin: '4px 0 8px' }}>Lentes de contacto destacados</h2>
+              <p className="cl-section-desc" style={{ margin: '0 auto', maxWidth: '640px' }}>
+                Cajas selladas originales con respaldo de optometrista y entrega rápida en Zapopan y todo México.
+              </p>
             </div>
 
-            <div className="wp-slider" ref={contactSliderRef}>
-              {featuredProducts.slice(0, 8).map((product: any, idx: number) => (
-                <ProductCard
-                  key={`contact-feat-${idx}-${product.id || idx}`}
-                  product={product}
-                  fallbackImage={contactLensesImg}
-                  onClick={() => onViewProduct && onViewProduct(product)}
-                />
-              ))}
+            <div className="cl-slider-container">
+              <button
+                className="cl-floating-arrow prev"
+                aria-label="Desplazar Izquierda"
+                onClick={() => scrollContact('left')}
+                type="button"
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <div className="wp-slider" ref={contactSliderRef}>
+                {featuredProducts.slice(0, 8).map((product: any, idx: number) => (
+                  <ProductCard
+                    key={`contact-feat-${idx}-${product.id || idx}`}
+                    product={product}
+                    fallbackImage={contactLensesImg}
+                    onClick={() => onViewProduct && onViewProduct(product)}
+                  />
+                ))}
+              </div>
+
+              <button
+                className="cl-floating-arrow next"
+                aria-label="Desplazar Derecha"
+                onClick={() => scrollContact('right')}
+                type="button"
+              >
+                <ChevronRight size={24} />
+              </button>
             </div>
 
             <div style={{ textAlign: 'center', marginTop: '36px' }}>

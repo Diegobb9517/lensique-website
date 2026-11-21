@@ -1085,3 +1085,65 @@
     font-size: 24px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Carrusel de lentes destacados: Flechas flotantes laterales
+   -------------------------------------------------------------------------- */
+.cl-slider-container {
+  position: relative;
+  width: 100%;
+}
+
+.cl-floating-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(16, 24, 40, 0.12);
+  color: #11213c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cl-floating-arrow:hover {
+  background: #ffffff;
+  color: #2563eb;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 22px rgba(16, 24, 40, 0.18);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.cl-floating-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.cl-floating-arrow.prev {
+  left: -20px;
+}
+
+.cl-floating-arrow.next {
+  right: -20px;
+}
+
+@media (max-width: 1180px) {
+  .cl-floating-arrow.prev {
+    left: 8px;
+  }
+  .cl-floating-arrow.next {
+    right: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cl-floating-arrow {
+    display: none;
+  }
+}

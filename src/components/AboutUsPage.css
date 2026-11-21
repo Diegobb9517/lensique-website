@@ -1,0 +1,631 @@
+/* ==========================================================================
+   Página / Sección Nosotros (About Us) - Óptica Lensique
+   ========================================================================== */
+
+.about-page-wrapper {
+  padding-top: 80px;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   1. Hero Editorial
+   -------------------------------------------------------------------------- */
+.about-hero {
+  position: relative;
+  padding: 80px 24px 60px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.about-hero-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.about-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background-color: #eaf3ec;
+  color: #2c4436;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.about-hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 600;
+  color: #15223e;
+  line-height: 1.18;
+  margin: 0 0 24px;
+}
+
+.about-hero-text {
+  font-size: clamp(16px, 1.8vw, 19px);
+  line-height: 1.7;
+  color: #475569;
+  margin: 0 auto 36px;
+  max-width: 760px;
+}
+
+.about-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.about-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background-color: #15223e;
+  color: #ffffff;
+  border: 1px solid #15223e;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(21, 34, 62, 0.15);
+  text-decoration: none;
+}
+
+.about-btn-primary:hover {
+  background-color: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(21, 34, 62, 0.25);
+  color: #ffffff;
+}
+
+.about-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background-color: transparent;
+  color: #15223e;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.about-btn-secondary:hover {
+  border-color: #15223e;
+  background-color: rgba(21, 34, 62, 0.04);
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   2. Galería de Instalaciones (Tour Visual)
+   -------------------------------------------------------------------------- */
+.about-gallery-section {
+  padding: 80px 24px;
+  background-color: #ffffff;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.about-section-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 52px;
+}
+
+.about-section-badge {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #9c8056;
+  margin-bottom: 12px;
+}
+
+.about-section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 600;
+  color: #15223e;
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+
+.about-section-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Layout del grid fotográfico */
+.about-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+
+/* Tarjeta Destacada (Gran angular consultorio): ocupa 12 columnas */
+.about-card-featured {
+  grid-column: span 12;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  background-color: #f1f5f9;
+  min-height: 440px;
+}
+
+.about-card-featured .about-card-img-wrap {
+  width: 100%;
+  height: 480px;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-card-featured .about-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-card-featured:hover .about-card-img {
+  transform: scale(1.03);
+}
+
+.about-card-featured .about-card-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 40px 36px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.88) 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.about-card-featured .about-card-tag {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.about-card-featured .about-card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(22px, 2.5vw, 30px);
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: #ffffff;
+}
+
+.about-card-featured .about-card-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 680px;
+  margin: 0;
+}
+
+/* Tarjetas medianas (6 columnas en desktop) */
+.about-card-half {
+  grid-column: span 6;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2f6;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-card-half:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+}
+
+.about-card-half .about-card-img-wrap {
+  width: 100%;
+  height: 290px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f1f5f9;
+}
+
+.about-card-half .about-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.about-card-half:hover .about-card-img {
+  transform: scale(1.04);
+}
+
+.about-card-half .about-card-body {
+  padding: 24px 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-card-half .about-card-tag {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  color: #0047BB;
+  border: 1px solid rgba(0, 71, 187, 0.15);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.about-card-half .about-card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: #15223e;
+  margin: 0 0 10px;
+}
+
+.about-card-half .about-card-desc {
+  font-size: 14.5px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Tarjetas en tercio (4 columnas en desktop) */
+.about-card-third {
+  grid-column: span 4;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2f6;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-card-third:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+}
+
+.about-card-third .about-card-img-wrap {
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f1f5f9;
+}
+
+.about-card-third .about-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.about-card-third:hover .about-card-img {
+  transform: scale(1.05);
+}
+
+.about-card-third .about-card-body {
+  padding: 22px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-card-third .about-card-tag {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.about-card-third .about-card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18.5px;
+  font-weight: 600;
+  color: #15223e;
+  margin: 0 0 8px;
+}
+
+.about-card-third .about-card-desc {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Pilares / Compromiso
+   -------------------------------------------------------------------------- */
+.about-pillars-section {
+  padding: 80px 24px;
+  background-color: #f8fafc;
+  border-top: 1px solid #eef2f6;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.about-pillars-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.about-pillar-card {
+  background: #ffffff;
+  padding: 36px 30px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.about-pillar-card:hover {
+  transform: translateY(-3px);
+}
+
+.about-pillar-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #eaf3ec;
+  color: #2c4436;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.about-pillar-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: #15223e;
+  margin: 0 0 12px;
+}
+
+.about-pillar-text {
+  font-size: 14.5px;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. Tarjeta de Ubicación y Visita
+   -------------------------------------------------------------------------- */
+.about-location-section {
+  padding: 80px 24px 100px;
+  background-color: #ffffff;
+}
+
+.about-location-card {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #15223e 0%, #1e293b 100%);
+  border-radius: 24px;
+  padding: 48px;
+  color: #ffffff;
+  box-shadow: 0 16px 40px rgba(21, 34, 62, 0.2);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.about-location-info h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(26px, 3vw, 36px);
+  color: #ffffff;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+.about-location-info p {
+  color: #cbd5e1;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+.about-location-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.about-loc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: #e2e8f0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.about-loc-item svg {
+  color: #c5a880;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.about-loc-item strong {
+  color: #ffffff;
+  display: block;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.about-location-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.about-btn-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background-color: #ffffff;
+  color: #15223e;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.about-btn-white:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-2px);
+}
+
+.about-btn-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background-color: #25D366;
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.about-btn-wa:hover {
+  background-color: #20bd5a;
+  transform: translateY(-2px);
+}
+
+.about-location-map {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  aspect-ratio: 4 / 3;
+}
+
+.about-location-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Mobile
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .about-card-featured .about-card-img-wrap {
+    height: 340px;
+  }
+  .about-card-half {
+    grid-column: span 12;
+  }
+  .about-card-third {
+    grid-column: span 12;
+  }
+  .about-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .about-location-card {
+    grid-template-columns: 1fr;
+    padding: 32px 24px;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-hero {
+    padding: 50px 16px 40px;
+  }
+  .about-hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .about-btn-primary, .about-btn-secondary {
+    width: 100%;
+  }
+  .about-gallery-section {
+    padding: 50px 16px;
+  }
+  .about-card-featured .about-card-img-wrap {
+    height: 260px;
+  }
+  .about-card-featured .about-card-overlay {
+    padding: 24px 20px;
+  }
+  .about-pillars-section {
+    padding: 50px 16px;
+  }
+  .about-location-section {
+    padding: 50px 16px 70px;
+  }
+  .about-location-actions {
+    flex-direction: column;
+  }
+  .about-btn-white, .about-btn-wa {
+    width: 100%;
+  }
+}

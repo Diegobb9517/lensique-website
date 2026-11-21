@@ -43,6 +43,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { TriageModal } from './components/TriageModal';
 import OrderTracking from './components/OrderTracking';
 import { MicasZeissPage } from './components/MicasZeissPage';
+import { AboutUsPage } from './components/AboutUsPage';
 import initialContent from '../content2.json';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
@@ -2771,85 +2772,20 @@ function App() {
         )}
 
         {currentPath === '/nosotros' && (
-          <div style={{ paddingTop: '80px', backgroundColor: '#ffffff', paddingBottom: '0' }}>
-        <section id="nosotros" className="about-section">
-          <div className="about-content">
-            <span className="hero-eyebrow">Nosotros</span>
-            <h2 className="section-title">{settings.about_title}</h2>
-            <p className="about-text">{settings.about_text}</p>
-          </div>
-        </section>
-        {/* Typographic Statement + Lifestyle Banner */}
-        <section className="statement-banner-section">
-          {/* Part 1: Typographic Statement */}
-          <div className="statement-block">
-            <span className="statement-eyebrow">Todo lo que tus ojos necesitan</span>
-            <p className="statement-headline">
-              Agenda un{' '}
-              <button className="statement-link" onClick={() => handleOpenBooking('Examen de la Vista')}>
-                examen de vista
-              </button>
-              , pruébate{' '}
-              <button className="statement-link" onClick={() => { 
-                setCatalogInitialFilter('Todas'); 
-                setIsCatalogOpen(true); 
-                setCurrentPath('/catalogo'); 
-                window.history.pushState(null, '', '/catalogo'); 
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
-              }}>
-                armazones
-              </button>
-              {' '}y compra{' '}
-              <button className="statement-link" onClick={() => { setIsContactQuizOpen(true); }}>
-                lentes de contacto
-              </button>
-              {'\u2014'}todo en tu óptica de confianza.
-            </p>
-          </div>
-
-          {/* Part 2: Lifestyle Banner */}
-          <Reveal className="lifestyle-banner">
-            <div className="lifestyle-banner-text">
-              <h2 className="lifestyle-banner-title">Compra junto a quien más quieres</h2>
-              <p className="lifestyle-banner-desc">
-                Encuentra el armazón perfecto para toda la familia. Asesoría personalizada y la mejor selección en Zapopan.
-              </p>
-              <div className="lifestyle-banner-btns">
-                <button className="lifestyle-btn lifestyle-btn--primary" onClick={() => { 
-                  setCatalogInitialFilter('Armazones'); 
-                  setIsCatalogOpen(true); 
-                  setCurrentPath('/catalogo'); 
-                  window.history.pushState(null, '', '/catalogo?tipo=armazones'); 
-                  window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                }}>
-                  Ver armazones
-                </button>
-                <button className="lifestyle-btn lifestyle-btn--secondary" onClick={() => { 
-                  setCatalogInitialFilter('Armazones'); 
-                  setIsCatalogOpen(true); 
-                  setCurrentPath('/catalogo'); 
-                  window.history.pushState(null, '', '/catalogo?tipo=armazones'); 
-                  window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                }}>
-                  Ver lentes de sol
-                </button>
-              </div>
-              <button className="lifestyle-banner-link" onClick={() => handleOpenBooking()}>
-                Agenda tu cita &rsaquo;
-              </button>
-            </div>
-            <div className="lifestyle-banner-img-col">
-              <img
-                src={storeInteriorImg}
-                alt="Óptica Lensique - Atención personalizada"
-                className="lifestyle-banner-img"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </Reveal>
-        </section>
-          </div>
+          <AboutUsPage
+            onOpenBooking={handleOpenBooking}
+            onOpenCatalog={(filter = 'Todas') => {
+              setCatalogInitialFilter(filter);
+              setIsCatalogOpen(true);
+              setCurrentPath('/catalogo');
+              window.history.pushState(null, '', filter === 'Todas' ? '/catalogo' : `/catalogo?tipo=${slugify(filter)}`);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            contactWhatsapp={settings.contact_whatsapp}
+            contactLocation={settings.contact_location}
+            aboutTitle={settings.about_title}
+            aboutText={settings.about_text}
+          />
         )}
 
         {currentPath.startsWith('/blog/') && (

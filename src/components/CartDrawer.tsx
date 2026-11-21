@@ -425,13 +425,13 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                     />
                     <span className="lsq-checkout-brand-badge">Paso 2 · Datos y pago</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="lsq-checkout-actions">
                     <button 
                       className="lsq-checkout-back-btn" 
                       onClick={() => setShowCheckoutForm(false)}
                       title="Volver al carrito"
                     >
-                      <ChevronLeft size={16} /> <span>Volver a entrega</span>
+                      <ChevronLeft size={16} /> <span>Volver</span>
                     </button>
                     <button 
                       className="cart-close-btn"
@@ -442,6 +442,9 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       <X size={20} />
                     </button>
                   </div>
+                </div>
+                <div className="lsq-checkout-step-mobile">
+                  <span>Paso 2 de 2 · Datos y pago</span>
                 </div>
               </header>
 
@@ -690,14 +693,6 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
                     )}
                   </div>
-
-                  {/* Aviso de privacidad como línea discreta */}
-                  <div className="lsq-checkout-privacy">
-                    🔒 Tus datos personales y de salud (receta) están protegidos. Al pagar aceptas el{' '}
-                    <a href="#privacidad" onClick={(e) => { e.preventDefault(); setShowCheckoutForm(false); setIsCartOpen(false); document.getElementById('footer-privacy-link')?.click(); }} style={{ color: '#0f172a', textDecoration: 'underline' }}>
-                      Aviso de Privacidad
-                    </a>.
-                  </div>
                 </div>
 
                 {/* COLUMNA DERECHA (FIJA / STICKY): Resumen del pedido y botón Pagar */}
@@ -757,13 +752,18 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         <span>Subtotal</span>
                         <span style={{ fontWeight: 600, color: '#0f172a' }}>${Math.round(total).toLocaleString('es-MX')}</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <span>
-                          {deliveryMethod === 'HOME_DELIVERY' 
-                            ? `Envío a domicilio · Llega ${deliveryDaysRange}`
-                            : `Recoger en tienda · Listo ${deliveryDaysRange}`}
-                        </span>
-                        <span style={{ fontWeight: 700, color: (deliveryMethod === 'STORE_PICKUP' || isFreeShipping) ? '#16a34a' : '#0f172a' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 600, color: '#0f172a', lineHeight: 1.35, fontSize: '13.5px' }}>
+                            {deliveryMethod === 'HOME_DELIVERY' ? 'Envío a domicilio' : 'Recoger en tienda'}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', lineHeight: 1.3 }}>
+                            {deliveryMethod === 'HOME_DELIVERY' 
+                              ? `Llega ${deliveryDaysRange}` 
+                              : `Listo ${deliveryDaysRange}`}
+                          </div>
+                        </div>
+                        <span style={{ fontWeight: 700, whiteSpace: 'nowrap', fontSize: '13.5px', color: (deliveryMethod === 'STORE_PICKUP' || isFreeShipping) ? '#16a34a' : '#0f172a' }}>
                           {deliveryMethod === 'STORE_PICKUP' ? 'Sin costo' : (isFreeShipping ? 'Gratis' : `$${shippingCost}`)}
                         </span>
                       </div>
@@ -838,30 +838,46 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       {isProcessing ? 'Procesando pago...' : 'Pagar con Mercado Pago'}
                     </button>
 
-                    {/* Sello de confianza y garantías unificado */}
+                    {/* Sello de confianza, garantías y privacidad unificado */}
                     <div style={{
                       marginTop: '16px',
-                      padding: '12px 14px',
+                      padding: '14px',
                       background: '#f8fafc',
                       border: '1px solid #e2e8f0',
                       borderRadius: '12px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '6px',
+                      gap: '8px',
                       textAlign: 'center'
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: '#0f172a' }}>
-                        <ShieldCheck size={15} color="#16a34a" />
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: '#0f172a' }}>
+                        <ShieldCheck size={16} color="#16a34a" />
                         <span>Pago 100% seguro con Mercado Pago</span>
                       </div>
-                      <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.45 }}>
+                      <div style={{ fontSize: '12px', color: '#475569', lineHeight: 1.45 }}>
                         Tarjetas de crédito, débito, OXXO y SPEI
                       </div>
-                      <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.45, paddingTop: '6px', borderTop: '1px solid #e2e8f0' }}>
+                      <div style={{ fontSize: '11.5px', color: '#475569', lineHeight: 1.45, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
                         Garantía de 30 días · validación por optometrista.{' '}
                         <a href="/devoluciones" target="_blank" rel="noopener noreferrer" style={{ color: '#0f172a', fontWeight: 600, textDecoration: 'underline' }}>
                           Ver política
                         </a>
+                      </div>
+                      <div style={{ fontSize: '11.5px', color: '#64748b', lineHeight: 1.45, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
+                        🔒 Tus datos personales y de salud están protegidos.<br />
+                        Al pagar aceptas el{' '}
+                        <a 
+                          href="#privacidad" 
+                          onClick={(e) => { 
+                            e.preventDefault(); 
+                            setShowCheckoutForm(false); 
+                            setIsCartOpen(false); 
+                            document.getElementById('footer-privacy-link')?.click(); 
+                          }} 
+                          style={{ color: '#0f172a', textDecoration: 'underline', fontWeight: 600 }}
+                        >
+                          Aviso de Privacidad
+                        </a>.
                       </div>
                     </div>
 

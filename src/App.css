@@ -273,39 +273,62 @@ body.no-scroll {
 .perks-bar {
   display: flex;
   background-color: #eaf3ec; /* Light green WP style */
-  padding: 16px 40px;
+  padding: 12px 40px;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  gap: 30px;
+  gap: 28px;
 }
 
 .perk-item {
-  flex: 1;
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #2c4436;
-  line-height: 1.4;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .perk-separator {
   width: 1px;
-  height: 40px;
+  height: 20px;
   background-color: rgba(44, 68, 54, 0.2);
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
   .d-none-mobile { display: none !important; }
   .mobile-menu-btn { display: block; }
   .perks-bar { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px 10px; 
-    padding: 24px 16px; 
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 14px !important; 
+    padding: 10px 16px !important; 
+    justify-content: flex-start !important;
+    border-bottom: 1px solid rgba(44, 68, 54, 0.12) !important;
   }
-  .perk-item { font-size: 13px; }
-  .perk-separator { display: none; }
+  .perks-bar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  .perk-item { 
+    font-size: 12px !important; 
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    color: #2c4436 !important;
+    font-weight: 600 !important;
+  }
+  .perk-separator { 
+    display: block !important;
+    width: 1px !important;
+    height: 14px !important;
+    background-color: rgba(44, 68, 54, 0.2) !important;
+    flex-shrink: 0 !important;
+  }
   .slider-arrow-btn { display: none !important; }
   .hero-content { margin: 0 auto; text-align: center; max-width: 100%; }
   .hero-actions-left { flex-direction: column; }

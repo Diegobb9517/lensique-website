@@ -276,7 +276,7 @@
 }
 
 .cl-right-inner {
-  max-width: 540px;
+  max-width: 580px;
   width: 100%;
   margin: auto auto; /* Centered vertically & horizontally, doesn't clip on overflow */
   display: flex;
@@ -494,34 +494,44 @@
 
 .cl-rxgrid {
   display: grid;
-  grid-template-columns: 36px 1fr;
-  gap: 10px;
+  grid-template-columns: 40px 1fr;
+  gap: 10px 8px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cl-rxgrid.fixed-specs {
-  grid-template-columns: 36px 1fr;
+  grid-template-columns: 40px 1fr;
+}
+
+.cl-rxgrid.fixed-specs.spherical {
+  grid-template-columns: 40px 1fr;
 }
 
 .cl-rxgrid.fixed-specs.toric {
-  grid-template-columns: 36px 1.4fr 1fr 1fr;
+  grid-template-columns: 40px minmax(110px, 1.3fr) minmax(85px, 1fr) minmax(85px, 1fr);
 }
 
 .cl-rxgrid.fixed-specs.multifocal {
-  grid-template-columns: 36px 1.4fr 1fr;
+  grid-template-columns: 40px minmax(130px, 1.4fr) minmax(100px, 1fr);
 }
 
-.cl-rxgrid.multi-bc {
-  grid-template-columns: 36px 1.4fr 1fr;
+.cl-rxgrid.fixed-specs.toric-multifocal {
+  grid-template-columns: 40px minmax(95px, 1.25fr) minmax(80px, 1fr) minmax(75px, 1fr) minmax(80px, 1fr);
 }
 
-.cl-rxgrid.multi-bc.toric {
-  grid-template-columns: 36px 1.2fr 1fr 1fr 1fr;
+.cl-rxgrid.toric {
+  grid-template-columns: 40px minmax(110px, 1.3fr) minmax(85px, 1fr) minmax(85px, 1fr);
 }
 
-.cl-rxgrid.multi-bc.multifocal {
-  grid-template-columns: 36px 1.2fr 1fr 1fr;
+.cl-rxgrid.multifocal {
+  grid-template-columns: 40px minmax(130px, 1.4fr) minmax(100px, 1fr);
+}
+
+.cl-rxgrid.toric-multifocal {
+  grid-template-columns: 40px minmax(95px, 1.25fr) minmax(80px, 1fr) minmax(75px, 1fr) minmax(80px, 1fr);
 }
 
 .cl-specs-fixed-banner {
@@ -584,6 +594,9 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cl-rxgrid .cl-rl {
@@ -622,15 +635,18 @@
 .lsq-dd {
   position: relative;
   width: 100%;
+  min-width: 0;
 }
 
 .lsq-dd-btn {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  padding: 9px 10px;
+  gap: 4px;
+  font-size: 13.5px;
+  padding: 9px 8px;
+  min-width: 0;
+  width: 100%;
   border-radius: 10px;
   border: 1px solid var(--lsq-line, #e2e8f0);
   background: #ffffff;

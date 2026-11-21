@@ -256,10 +256,25 @@ function CustomDropdown({ options, value, onChange, placeholder = 'Elige', cente
   }, [isOpen, value, centerZero]);
 
   return (
-    <div className={`lsq-dd ${isOpen ? 'open' : ''} ${isUp ? 'up' : ''} ${disabled ? 'disabled' : ''}`} ref={ddRef}>
-      <div className="lsq-dd-btn" onClick={handleToggle} style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.6 : 1 }}>
-        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayLabel}</span>
-        <span className="lsq-dd-caret">{isOpen ? '▲' : '▾'}</span>
+    <div 
+      className={`lsq-dd ${isOpen ? 'open' : ''} ${isUp ? 'up' : ''} ${disabled ? 'disabled' : ''}`} 
+      ref={ddRef}
+      style={{ minWidth: 0, width: '100%' }}
+    >
+      <div 
+        className="lsq-dd-btn" 
+        onClick={handleToggle} 
+        style={{ 
+          cursor: disabled ? 'not-allowed' : 'pointer', 
+          opacity: disabled ? 0.6 : 1,
+          minWidth: 0,
+          width: '100%'
+        }}
+      >
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
+          {displayLabel}
+        </span>
+        <span className="lsq-dd-caret" style={{ flexShrink: 0 }}>{isOpen ? '▲' : '▾'}</span>
       </div>
       {isOpen && (
         <div className="lsq-dd-list" ref={listRef}>
@@ -457,6 +472,24 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     return opts;
   }, []);
 
+  // Grid layout according to lens parameters (Toric / Multifocal / Spherical)
+  const isToricAndMultifocal = isToric && isMultifocal;
+  const gridVariant = isToricAndMultifocal
+    ? 'toric-multifocal'
+    : isToric
+    ? 'toric'
+    : isMultifocal
+    ? 'multifocal'
+    : 'spherical';
+
+  const gridColumns = isToricAndMultifocal
+    ? '40px minmax(95px, 1.25fr) minmax(80px, 1fr) minmax(75px, 1fr) minmax(80px, 1fr)'
+    : isToric
+    ? '40px minmax(110px, 1.3fr) minmax(85px, 1fr) minmax(85px, 1fr)'
+    : isMultifocal
+    ? '40px minmax(130px, 1.4fr) minmax(100px, 1fr)'
+    : '40px 1fr';
+
   // Precios y total con Mercado Pago + MSI
   const boxPrice = useMemo(() => {
     return Number(product?.price_incl_tax || product?.price || 1200);
@@ -534,11 +567,21 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         <div className="cl-wrap">
           {/* PANEL IZQUIERDO (Fijo, centrado verticalmente) */}
           <div className="cl-left">
-            <div className="cl-pbox">
+            <div 
+              className="cl-pbox"
+              style={{
+                background: '#ffffff',
+                backgroundColor: '#ffffff',
+                border: 'none',
+                borderRadius: 0,
+                boxShadow: 'none'
+              }}
+            >
               <img 
                 src={getProductImage()} 
                 alt={cleanName} 
                 className="cl-pbox-img"
+                style={{ background: '#ffffff', objectFit: 'contain' }}
                 onError={(e) => {
                   const target = e.currentTarget as HTMLImageElement;
                   if (target.src !== contactLensesImg) {
@@ -810,7 +853,10 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         </div>
                       )}
 
-                      <div className={`cl-rxgrid fixed-specs ${isToric ? 'toric' : isMultifocal ? 'multifocal' : ''}`}>
+                      <div 
+                        className={`cl-rxgrid fixed-specs ${gridVariant}`}
+                        style={{ gridTemplateColumns: gridColumns, gap: '10px 8px' }}
+                      >
                         <div></div>
                         <div className="cl-lb">Esfera (PWR) *</div>
                         {isToric && <div className="cl-lb">Cilindro</div>}

@@ -111,13 +111,13 @@
   width: 100%;
   max-width: 260px;
   aspect-ratio: 1 / 1;
-  background: var(--lsq-soft);
-  border: 1px solid var(--lsq-line);
-  border-radius: 20px;
+  background: #ffffff;
+  border: none;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 22px;
+  padding: 12px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -127,6 +127,7 @@
   height: 100%;
   object-fit: contain;
   display: block;
+  mix-blend-mode: multiply;
   transition: transform 0.2s ease;
 }
 

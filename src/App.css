@@ -5889,6 +5889,7 @@ body.no-scroll .whatsapp-float {
    Garantiza que el fondo de las tarjetas y fotos de lentes de contacto sea siempre
    100% blanco puro (#ffffff), eliminando cualquier contenedor o recuadro gris.
    ========================================================================== */
+.cl-pbox,
 .contact-lens-card,
 .contact-lens-card .wp-card-img-area,
 .contact-lens-card .product-img-area,

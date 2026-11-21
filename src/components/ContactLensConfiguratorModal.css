@@ -502,6 +502,47 @@
   box-sizing: border-box;
 }
 
+/* Rx Table Estructura Fila por Fila (Inmune a saltos o desajustes de cuadrícula) */
+.cl-rx-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cl-rx-row {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cl-rx-header-row {
+  margin-bottom: 2px;
+}
+
+.cl-rx-row .cl-lb {
+  font-size: 11px;
+  color: var(--lsq-grey);
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cl-rx-row .cl-rl {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--lsq-navy);
+  text-align: center;
+  width: 38px;
+}
+
 .cl-rxgrid.fixed-specs {
   grid-template-columns: 40px 1fr;
 }
@@ -1268,7 +1309,8 @@
   }
 
   /* Rx Grid tabla se oculta en móvil; se usan tarjetas ordenadas por ojo */
-  .cl-rxgrid {
+  .cl-rxgrid,
+  .cl-rx-table {
     display: none !important;
   }
 

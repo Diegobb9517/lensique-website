@@ -345,7 +345,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const productName = (product?.name ? product.name.toString() : '').toUpperCase();
+  const rawProductName = (product?.name || product?.title || product?.model || product?.sku || '').toString();
+  const productName = rawProductName.toUpperCase();
   const isToric = productName.includes('ASTIGMATISMO') || productName.includes('TORIC') || productName.includes('ASTIGMATISM');
   const isMultifocal = productName.includes('MULTIFOCAL') || productName.includes('PRESBICIA') || productName.includes('PRESBYOPIA');
 
@@ -483,12 +484,12 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
     : 'spherical';
 
   const gridColumns = isToricAndMultifocal
-    ? '40px minmax(95px, 1.25fr) minmax(80px, 1fr) minmax(75px, 1fr) minmax(80px, 1fr)'
+    ? '38px minmax(90px, 1.25fr) minmax(75px, 1fr) minmax(75px, 1fr) minmax(75px, 1fr)'
     : isToric
-    ? '40px minmax(110px, 1.3fr) minmax(85px, 1fr) minmax(85px, 1fr)'
+    ? '38px minmax(105px, 1.3fr) minmax(80px, 1fr) minmax(80px, 1fr)'
     : isMultifocal
-    ? '40px minmax(130px, 1.4fr) minmax(100px, 1fr)'
-    : '40px 1fr';
+    ? '38px minmax(120px, 1.4fr) minmax(95px, 1fr)'
+    : '38px 1fr';
 
   // Precios y total con Mercado Pago + MSI
   const boxPrice = useMemo(() => {
@@ -853,19 +854,25 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         </div>
                       )}
 
-                      <div 
-                        className={`cl-rxgrid fixed-specs ${gridVariant}`}
-                        style={{ gridTemplateColumns: gridColumns, gap: '10px 8px' }}
-                      >
-                        <div></div>
-                        <div className="cl-lb">Esfera (PWR) *</div>
-                        {isToric && <div className="cl-lb">Cilindro</div>}
-                        {isToric && <div className="cl-lb">Eje</div>}
-                        {isMultifocal && <div className="cl-lb">Adición</div>}
+                      <div className={`cl-rx-table ${gridVariant}`}>
+                        {/* Fila Encabezados */}
+                        <div 
+                          className="cl-rx-row cl-rx-header-row"
+                          style={{ gridTemplateColumns: gridColumns, gap: '8px' }}
+                        >
+                          <div style={{ width: '38px' }}></div>
+                          <div className="cl-lb">Esfera (PWR) *</div>
+                          {isToric && <div className="cl-lb">Cilindro</div>}
+                          {isToric && <div className="cl-lb">Eje</div>}
+                          {isMultifocal && <div className="cl-lb">Adición</div>}
+                        </div>
 
                         {/* Fila OD */}
                         {odOn && (
-                          <>
+                          <div 
+                            className="cl-rx-row"
+                            style={{ gridTemplateColumns: gridColumns, gap: '8px' }}
+                          >
                             <div className="cl-rl">OD</div>
                             <CustomDropdown 
                               options={powerOptions}
@@ -913,12 +920,15 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 }}
                               />
                             )}
-                          </>
+                          </div>
                         )}
 
                         {/* Fila OI */}
                         {oiOn && (
-                          <>
+                          <div 
+                            className="cl-rx-row"
+                            style={{ gridTemplateColumns: gridColumns, gap: '8px' }}
+                          >
                             <div className="cl-rl">OI</div>
                             <CustomDropdown 
                               options={powerOptions}
@@ -966,7 +976,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                                 }}
                               />
                             )}
-                          </>
+                          </div>
                         )}
                       </div>
 

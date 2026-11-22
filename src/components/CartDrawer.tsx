@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, CreditCard, ShoppingBag, MapPin, Clock, Check, ChevronLeft, ShieldCheck } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { useCart, isKitItem, isContactLensItem } from '../context/CartContext';
 import { resolveImageUrl } from '../App';
 import { parseCartItemDisplay } from '../lib/format';
 import { priceWithMP } from './ContactLensConfiguratorModal';
 import logo from '../assets/logo.png';
+
+const API_BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
 
 interface CartDrawerProps {
   onOpenConfigurator?: (product: any, section?: string) => void;
 }
 
 export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
-  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, setCartItems, total, clearCart } = useCart();
+  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, setCartItems, total, clearCart, addItem } = useCart();
+  const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/website/care-kit`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.enabled && data.product) {
+          setCareKit(data.product);
+        } else {
+          setCareKit(null);
+        }
+      })
+      .catch(() => setCareKit(null));
+  }, []);
+
+  const hasContactLens = items.some(isContactLensItem);
+  const hasKit = items.some(isKitItem);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   
@@ -1063,27 +1082,33 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                               </div>
                             )}
 
-                            {/* Fila inferior: stepper · precio · eliminar */}
+                            {/* Fila inferior: stepper o cantidad fija · precio · eliminar */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid #f8fafc' }}>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px', background: '#f8fafc' }}>
-                                <button 
-                                  onClick={() => updateQuantity(item.id, item.quantity - 1)} 
-                                  style={{ minWidth: '36px', minHeight: '36px', width: '36px', height: '36px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}
-                                  aria-label="Disminuir cantidad"
-                                >
-                                  -
-                                </button>
-                                <span style={{ fontSize: '12.5px', fontWeight: 600, width: '22px', textAlign: 'center', color: '#0f172a' }}>
-                                  {item.quantity}
+                              {isKitItem(item) ? (
+                                <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', background: '#f1f5f9', padding: '4px 8px', borderRadius: '6px' }}>
+                                  Cantidad: 1
                                 </span>
-                                <button 
-                                  onClick={() => updateQuantity(item.id, item.quantity + 1)} 
-                                  style={{ minWidth: '36px', minHeight: '36px', width: '36px', height: '36px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}
-                                  aria-label="Aumentar cantidad"
-                                >
-                                  +
-                                </button>
-                              </div>
+                              ) : (
+                                <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '6px', background: '#f8fafc' }}>
+                                  <button 
+                                    onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                                    style={{ minWidth: '36px', minHeight: '36px', width: '36px', height: '36px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}
+                                    aria-label="Disminuir cantidad"
+                                  >
+                                    -
+                                  </button>
+                                  <span style={{ fontSize: '12.5px', fontWeight: 600, width: '22px', textAlign: 'center', color: '#0f172a' }}>
+                                    {item.quantity}
+                                  </span>
+                                  <button 
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1)} 
+                                    style={{ minWidth: '36px', minHeight: '36px', width: '36px', height: '36px', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}
+                                    aria-label="Aumentar cantidad"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              )}
 
                               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <span style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a' }}>
@@ -1103,6 +1128,59 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         </div>
                       );
                     })}
+
+                      {/* Sugerencia de kit de cuidado opcional */}
+                      {hasContactLens && !hasKit && careKit && (
+                        <div style={{
+                          padding: '12px 14px',
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '12px',
+                          marginTop: '4px'
+                        }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', lineHeight: 1.35 }}>
+                              ¿Gustas añadir el kit de cuidado (solución + estuche)?
+                            </div>
+                            <div style={{ fontSize: '12.5px', color: '#16a34a', marginTop: '2px', fontWeight: 700 }}>
+                              +${Number(careKit.price_incl_tax).toLocaleString('es-MX')}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              addItem({
+                                type: 'care_kit',
+                                concept_type: 'ACCESSORY',
+                                isCareKit: true,
+                                title: careKit.name || 'Kit de cuidado (solución + estuche)',
+                                quantity: 1,
+                                unit_price: Number(careKit.price_incl_tax),
+                                product: careKit,
+                                image: careKit.image_url || '/assets/care-kit.png',
+                                estimatedDeliveryStr: 'Entrega con tus lentes de contacto'
+                              });
+                            }}
+                            style={{
+                              background: '#16223f',
+                              color: '#ffffff',
+                              border: 'none',
+                              padding: '8px 14px',
+                              borderRadius: '8px',
+                              fontSize: '12.5px',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              flexShrink: 0
+                            }}
+                          >
+                            Agregar
+                          </button>
+                        </div>
+                      )}
 
                       {/* Sección: ¿Cómo quieres recibir tu pedido? */}
                       <div style={{ marginTop: '14px' }}>

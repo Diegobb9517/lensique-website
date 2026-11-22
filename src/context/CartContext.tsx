@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { trackAddToCart } from '../lib/analytics';
 
 export interface CartItem {
   id: string; // Unique ID for the cart line item (e.g., timestamp or uuid)
-  type: 'frame_with_lenses' | 'product';
+  type: 'frame_with_lenses' | 'product' | 'care_kit';
+  concept_type?: string;
   title: string;
   quantity: number;
   unit_price: number;
@@ -13,6 +15,31 @@ export interface CartItem {
   estimatedDeliverySubtitle?: string;
   maxDeliveryDays?: number;
   minDeliveryDays?: number;
+  isCareKit?: boolean;
+}
+
+export function isKitItem(item: CartItem | any): boolean {
+  if (!item) return false;
+  if (item.isCareKit) return true;
+  if (item.type === 'care_kit' || item.concept_type === 'ACCESSORY') return true;
+  if (item.product?.id && (String(item.product.id) === '1338' || item.product.is_kit)) return true;
+  const title = (item.title || item.product?.name || '').toLowerCase();
+  if (title.includes('kit de cuidado') || title.includes('solución + estuche') || title.includes('solucion + estuche')) {
+    return true;
+  }
+  return false;
+}
+
+export function isContactLensItem(item: CartItem | any): boolean {
+  if (!item) return false;
+  if (isKitItem(item)) return false;
+  return item.type === 'contact_lens' ||
+         item.lensConfig?.prescriptionOD !== undefined ||
+         item.lensConfig?.quantityOD !== undefined ||
+         Boolean(item.product?.category && String(item.product.category).toLowerCase().includes('contacto')) ||
+         (item.title || '').toLowerCase().includes('contacto') ||
+         Boolean(item.product?.base_curve) ||
+         Boolean(item.lensConfig?.tab);
 }
 
 interface CartContextType {
@@ -30,8 +57,6 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-import { trackAddToCart } from '../lib/analytics';
-
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     // Auto-clear cart on payment success page
@@ -41,7 +66,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     try {
       const saved = localStorage.getItem('lensique_cart');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed: CartItem[] = JSON.parse(saved);
+      const hasContactLens = parsed.some(isContactLensItem);
+      return hasContactLens ? parsed : parsed.filter(i => !isKitItem(i));
     } catch (e) {
       return [];
     }
@@ -58,6 +86,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       trackAddToCart(item.product, item.unit_price * item.quantity);
     }
     setItems(prev => {
+      // Regla de negocio: El kit de cuidado no se puede duplicar y su cantidad es fija en 1
+      if (isKitItem(item)) {
+        const alreadyHasKit = prev.some(isKitItem);
+        if (alreadyHasKit) {
+          return prev;
+        }
+        return [...prev, { ...item, quantity: 1, isCareKit: true, id: 'care-kit-' + Date.now() }];
+      }
+
       const key = (it: Omit<CartItem, 'id'>) => `${it.product?.id || ''}|${it.lensConfig?.etiqueta || ''}|${it.lensConfig?.indice || ''}|${it.lensConfig?.tipoFab || ''}`;
       const itemKey = key(item);
       
@@ -82,7 +119,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeItem = (id: string) => {
-    setItems(prev => prev.filter(i => i.id !== id));
+    setItems(prev => {
+      const remaining = prev.filter(i => i.id !== id);
+      // Si el cliente elimina todos los lentes de contacto, el kit se elimina solo
+      const hasContactLens = remaining.some(isContactLensItem);
+      if (!hasContactLens) {
+        return remaining.filter(i => !isKitItem(i));
+      }
+      return remaining;
+    });
   };
 
   const updateQuantity = (id: string, quantity: number) => {
@@ -90,12 +135,32 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeItem(id);
       return;
     }
-    setItems(prev => prev.map(i => i.id === id ? { ...i, quantity } : i));
+    setItems(prev => {
+      const updated = prev.map(i => {
+        if (i.id === id) {
+          // Cantidad del kit no editable (fija en 1)
+          if (isKitItem(i)) return { ...i, quantity: 1 };
+          return { ...i, quantity };
+        }
+        return i;
+      });
+      const hasContactLens = updated.some(isContactLensItem);
+      if (!hasContactLens) {
+        return updated.filter(i => !isKitItem(i));
+      }
+      return updated;
+    });
   };
 
-  const updateItemPrice = (id: string, newUnitPrice: number) => { setItems(prev => prev.map(i => i.id === id ? { ...i, unit_price: newUnitPrice } : i)); };
+  const updateItemPrice = (id: string, newUnitPrice: number) => {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, unit_price: newUnitPrice } : i));
+  };
 
-  const setCartItems = (newItems: CartItem[]) => { setItems(newItems); };
+  const setCartItems = (newItems: CartItem[]) => {
+    const hasContactLens = newItems.some(isContactLensItem);
+    const cleaned = hasContactLens ? newItems : newItems.filter(i => !isKitItem(i));
+    setItems(cleaned);
+  };
 
   const clearCart = () => {
     setItems([]);

@@ -304,11 +304,28 @@ function CustomDropdown({ options, value, onChange, placeholder = 'Elige', cente
 interface ContactLensConfiguratorModalProps {
   product: any;
   onClose: () => void;
-  onComplete: (configData: any, checkoutNow: boolean) => void;
+  onComplete: (configData: any, checkoutNow: boolean, careKitToAdd?: any) => void;
 }
 
 export default function ContactLensConfiguratorModal({ product, onClose, onComplete }: ContactLensConfiguratorModalProps) {
   const [step, setStep] = useState(1);
+  
+  // Kit de cuidado opcional
+  const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(null);
+  const [addCareKit, setAddCareKit] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/website/care-kit`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.enabled && data.product) {
+          setCareKit(data.product);
+        } else {
+          setCareKit(null);
+        }
+      })
+      .catch(() => setCareKit(null));
+  }, []);
   
   // Step 1: Cantidad por ojo
   const [od, setOd] = useState(1);
@@ -493,7 +510,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
   // Precios y total con Mercado Pago + MSI
   const boxPrice = useMemo(() => {
-    return Number(product?.price_incl_tax || product?.price || 1200);
+    return Number(product?.price_incl_tax || product?.price || 0);
   }, [product]);
 
   const totalBoxes = useMemo(() => {
@@ -501,12 +518,17 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   }, [odOn, oiOn, od, oi]);
 
   const totalPricing = useMemo(() => {
-    const net = boxPrice * Math.max(1, totalBoxes);
-    return priceWithMP(net);
-  }, [boxPrice, totalBoxes]);
+    const boxesNet = boxPrice * Math.max(1, totalBoxes);
+    const kitNet = (addCareKit && careKit) ? Number(careKit.price_incl_tax || 0) : 0;
+    return priceWithMP(boxesNet + kitNet);
+  }, [boxPrice, totalBoxes, addCareKit, careKit]);
 
   // Completar y enviar al carrito
   const handleAddToCart = () => {
+    if (!boxPrice || boxPrice <= 0) {
+      alert('Este producto no tiene un precio configurado en inventario. Por favor contáctanos para asistirte.');
+      return;
+    }
     const configData = {
       ...product,
       contactLensConfig: {
@@ -525,12 +547,13 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
         prescriptionPending: tab === 'later',
         hasPhoto: tab === 'photo' && !!photoFile,
         photoFileName: photoFile ? photoFile.name : null,
-        totalPrice: totalPricing.price,
+        totalPrice: boxPrice * Math.max(1, totalBoxes),
         monthly: totalPricing.monthly,
-        msi: totalPricing.n
+        msi: totalPricing.n,
+        careKit: (addCareKit && careKit) ? careKit : null
       }
     };
-    onComplete(configData, true);
+    onComplete(configData, true, (addCareKit && careKit) ? careKit : null);
   };
 
   const isSingle = getUsageType().includes('individual');
@@ -1310,7 +1333,35 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
                     <div className="cl-feat">✓ Validación por optometrista antes de surtir</div>
                     <div className="cl-feat">✓ Devolución de cajas selladas hasta 15 días</div>
+                    {addCareKit && careKit && (
+                      <div className="cl-sumrow" style={{ borderTop: '1px solid #f1f5f9', marginTop: '8px', paddingTop: '8px' }}>
+                        <span className="cl-k">Kit de cuidado</span>
+                        <span className="cl-v">
+                          1x {careKit.name || 'Kit de cuidado (solución + estuche)'} · <b>+${careKit.price_incl_tax.toLocaleString('es-MX')}</b>
+                        </span>
+                      </div>
+                    )}
                   </div>
+
+                  {careKit && careKit.price_incl_tax && (
+                    <div className="cl-care-kit-box" style={{ margin: '14px 0', padding: '12px 14px', borderRadius: '10px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13.5px', fontWeight: 600, color: '#0f172a' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={addCareKit} 
+                          onChange={(e) => setAddCareKit(e.target.checked)} 
+                          style={{ width: '18px', height: '18px', accentColor: '#16223f', cursor: 'pointer' }}
+                        />
+                        <span>
+                          Agregar kit de cuidado (solución + estuche) — <b>+${careKit.price_incl_tax.toLocaleString('es-MX')}</b>
+                        </span>
+                      </label>
+                      {/* TODO: Confirmar con el dueño la política de devolución del kit si se abre el empaque */}
+                      <div style={{ fontSize: '12px', color: '#64748b', marginTop: '5px', marginLeft: '28px', lineHeight: 1.4 }}>
+                        Solución limpiadora y estuche protector para la higiene diaria de tus lentes.
+                      </div>
+                    </div>
+                  )}
 
                   <div className="cl-sumrow" style={{ border: 'none', paddingTop: '4px', paddingBottom: '4px' }}>
                     <span className="cl-k">Envío</span>

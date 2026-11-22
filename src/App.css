@@ -2967,42 +2967,44 @@ body.no-scroll {
 }
 
 
-/* --- WhatsApp Floating Button (Premium Circle) --- */
+/* --- WhatsApp Floating Button (Official Green Circle) --- */
 .whatsapp-float {
   position: fixed;
   bottom: 40px;
   right: 40px;
-  width: 80px;
-  height: 80px;
-  background-color: #ffffff;
+  width: 68px;
+  height: 68px;
+  background-color: #25D366;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
   z-index: 5000;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
   cursor: pointer;
   text-decoration: none;
   animation: wa-pulse 2.5s infinite;
 }
 
 .whatsapp-float svg {
-  width: 56px !important;
-  height: 56px !important;
-  display: block;
+  width: 38px !important;
+  height: 38px !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+  fill: #ffffff !important;
 }
 
 @keyframes wa-pulse {
-  0% { transform: scale(1); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); }
-  50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(37, 211, 102, 0.25); }
-  100% { transform: scale(1); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); }
+  0% { transform: scale(1); box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4); }
+  50% { transform: scale(1.06); box-shadow: 0 14px 40px rgba(37, 211, 102, 0.55); }
+  100% { transform: scale(1); box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4); }
 }
 
 .whatsapp-float:hover {
-  transform: scale(1.12) translateY(-8px);
-  box-shadow: 0 20px 45px rgba(37, 211, 102, 0.2);
+  transform: scale(1.12) translateY(-4px);
+  box-shadow: 0 18px 45px rgba(37, 211, 102, 0.6);
 }
 
 .wa-label {
@@ -4543,10 +4545,15 @@ body.no-scroll .whatsapp-float {
     height: 56px !important;
     bottom: 20px !important;
     right: 16px !important;
+    background-color: #25D366 !important;
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.45) !important;
   }
   .whatsapp-float svg {
     width: 32px !important;
     height: 32px !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+    fill: #ffffff !important;
   }
 
   /* FAQ & Content padding-bottom to prevent WhatsApp overlap */

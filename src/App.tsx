@@ -926,7 +926,7 @@ const privacyData: InfoPageData = {
       heading: 'IV. Finalidades del Tratamiento',
       content: <>
         <p><strong>Finalidades principales (necesarias):</strong> Atender tu compra o cita, calcular y fabricar tus lentes/micas, validar tu graduación por un optometrista, entregar tu pedido, facturar, dar soporte y cumplir garantías.</p>
-        <p><strong>Finalidades secundarias (opcionales):</strong> Enviarte promociones, dar seguimiento post-venta y realizar encuestas de satisfacción. Puedes negarte a estas sin que afecte tu compra, escribiéndonos a <a href="mailto:contacto@lensique.com.mx">contacto@lensique.com.mx</a>.</p>
+        <p><strong>Finalidades secundarias (opcionales):</strong> Enviarte promociones, dar seguimiento post-venta y realizar encuestas de satisfacción. Puedes negarte a estas sin que afecte tu compra, escribiéndonos a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a>.</p>
       </>
     },
     {
@@ -935,7 +935,7 @@ const privacyData: InfoPageData = {
     },
     {
       heading: 'VI. Derechos ARCO y Revocación',
-      content: <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos, así como a revocar tu consentimiento. Para ejercerlos, escríbenos a <a href="mailto:contacto@lensique.com.mx">contacto@lensique.com.mx</a> o vía WhatsApp al +52 33 1692 9111 indicando tu nombre y solicitud. Te responderemos en los plazos que marca la ley.</p>
+      content: <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos, así como a revocar tu consentimiento. Para ejercerlos, escríbenos a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a> o vía WhatsApp al +52 33 1692 9111 indicando tu nombre y solicitud. Te responderemos en los plazos que marca la ley.</p>
     },
     {
       heading: 'VII. Cookies y Cambios al Aviso',
@@ -950,7 +950,7 @@ const termsData: InfoPageData = {
   sections: [
     {
       heading: '1. Identidad del Responsable',
-      content: <p>Este sitio es operado por Óptica Lensique, con domicilio en Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040. Contacto: <a href="mailto:contacto@lensique.com.mx">contacto@lensique.com.mx</a> / WhatsApp +52 33 1692 9111.</p>
+      content: <p>Este sitio es operado por Óptica Lensique, con domicilio en Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040. Contacto: <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a> / WhatsApp +52 33 1692 9111.</p>
     },
     {
       heading: '2. Productos y Servicios',

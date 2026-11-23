@@ -304,31 +304,58 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
   const activeWhatsApp = order?.contact_whatsapp || contactWhatsapp || '523316929111';
   const cleanWA = activeWhatsApp.replace(/\D/g, '');
 
-  const stepsConfig = [
+  const isShipping = order?.delivery_method === 'SHIPPING';
+
+  const stepsConfig = isShipping ? [
     {
       num: 1,
-      title: 'Recibido',
-      desc: 'Tu pedido fue registrado en nuestro sistema.',
+      title: 'Pedido registrado',
+      desc: 'Tu compra ha sido confirmada y registrada en nuestro sistema.',
       date: order?.created_at ? formatDate(order.created_at) : null
     },
     {
       num: 2,
       title: 'En laboratorio',
-      desc: 'Tus micas y armazón están en proceso de biselado y montaje.',
+      desc: 'Tus micas y armazón están en proceso de biselado, montaje y control de calidad.',
       date: order?.in_process_date ? formatDate(order.in_process_date) : null
     },
     {
       num: 3,
-      title: 'Listo para entregar',
-      desc: order?.delivery_method === 'SHIPPING'
-        ? 'Tu paquete está empaquetado y listo para ser enviado.'
-        : 'Tus lentes están listos para entrega en nuestra sucursal.',
+      title: 'Listo para envío / Despacho',
+      desc: order?.tracking_guide 
+        ? `Empaquetado y entregado a paquetería (${order.carrier || 'Envío express'}).`
+        : 'Tu paquete está empaquetado y listo para ser recolectado por la paquetería.',
       date: order?.ready_date ? formatDate(order.ready_date) : null
     },
     {
       num: 4,
       title: 'Entregado',
-      desc: 'Tu pedido ha sido entregado exitosamente.',
+      desc: 'Tu paquete ha sido entregado exitosamente en tu domicilio.',
+      date: order?.delivered_date ? formatDate(order.delivered_date) : null
+    }
+  ] : [
+    {
+      num: 1,
+      title: 'Pedido registrado',
+      desc: 'Tu pedido fue registrado en Óptica Lensique.',
+      date: order?.created_at ? formatDate(order.created_at) : null
+    },
+    {
+      num: 2,
+      title: 'En fabricación / laboratorio',
+      desc: 'Tus lentes están en proceso de fabricación, calibración y montaje.',
+      date: order?.in_process_date ? formatDate(order.in_process_date) : null
+    },
+    {
+      num: 3,
+      title: 'Listo para recoger en óptica',
+      desc: '¡Tus lentes están listos! Te esperamos en nuestra sucursal de Av. Guadalupe 1296, Zapopan.',
+      date: order?.ready_date ? formatDate(order.ready_date) : null
+    },
+    {
+      num: 4,
+      title: 'Recogido en sucursal',
+      desc: 'Tus lentes fueron entregados en tienda exitosamente.',
       date: order?.delivered_date ? formatDate(order.delivered_date) : null
     }
   ];
@@ -373,7 +400,9 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
           </h1>
           <p style={{ fontSize: '15px', color: '#64748b', margin: 0 }}>
             {order 
-              ? `Hola ${order.customer_first_name}, aquí puedes revisar el avance de tus lentes.`
+              ? (isShipping 
+                  ? `Hola ${order.customer_first_name}, aquí puedes revisar el avance y envío de tu pedido.`
+                  : `Hola ${order.customer_first_name}, aquí puedes revisar el avance de tus lentes para recoger en óptica.`)
               : 'Ingresa tu número de folio o número de guía para consultar el estado en tiempo real.'}
           </p>
         </div>
@@ -699,6 +728,63 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
                   );
                 })}
               </div>
+
+              {/* Store Pickup Location Card for In-Store Orders */}
+              {!isShipping && (
+                <div style={{
+                  marginTop: '24px',
+                  padding: '20px 22px',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '18px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '14px'
+                }}>
+                  <div style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '12px',
+                    background: '#1b2436',
+                    color: '#d4af37',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    <Store size={19} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      Punto de Entrega · Sucursal Óptica Lensique
+                    </div>
+                    <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#0f172a', marginTop: '3px' }}>
+                      Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jal.
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '4px', lineHeight: 1.4 }}>
+                      Horarios: Lunes a Viernes 10:00 am - 8:00 pm · Sábados 10:00 am - 5:00 pm
+                    </div>
+                    <div style={{ marginTop: '10px' }}>
+                      <a
+                        href="https://maps.google.com/?q=Av.+Guadalupe+1296,+Jardines+de+San+Ignacio,+45040+Zapopan,+Jal."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          color: '#0284c7',
+                          fontSize: '12.5px',
+                          fontWeight: 600,
+                          textDecoration: 'none'
+                        }}
+                      >
+                        Ver ubicación en Google Maps <ExternalLink size={13} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Live Carrier Tracking via Envia.com */}
               {order.delivery_method === 'SHIPPING' && order.envia_tracking && (

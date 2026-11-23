@@ -907,28 +907,39 @@ const privacyData: InfoPageData = {
   layout: 'default',
   sections: [
     {
-      heading: 'I. Responsable de los Datos Personales',
-      content: <p>En <strong>Óptica Lensique</strong>, con domicilio en Av. Guadalupe 1296, Col. Jardines de San Ignacio, C.P. 45040, Zapopan, Jalisco, México, somos conscientes de la importancia de proteger su privacidad. Por ello, en estricto apego a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), le informamos que somos responsables del uso, tratamiento y protección de sus datos personales y datos sensibles (como su historial optométrico).</p>
+      heading: 'I. Responsable del Tratamiento y Protección',
+      content: <p><strong>Óptica Lensique</strong>, con domicilio en <strong>Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040</strong>, es responsable del tratamiento y protección de tus datos personales, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).</p>
     },
     {
-      heading: 'II. Fines del Tratamiento de Datos',
-      content: <p>Los datos personales que recabamos (nombre, teléfono, correo electrónico, domicilio y prescripción visual) serán utilizados para: (a) Proveer los productos y servicios solicitados; (b) Dar seguimiento a la fabricación y entrega de sus pedidos; (c) Crear y mantener su expediente clínico optométrico; y (d) Gestionar sus citas de examen de la vista.</p>
+      heading: 'II. Datos Personales que Recabamos',
+      content: <ul>
+        <li><strong>De identificación y contacto:</strong> nombre, teléfono/WhatsApp, correo electrónico y domicilio de envío.</li>
+        <li><strong>De tu salud visual:</strong> tu <strong>receta/graduación óptica</strong> y datos relacionados con tu examen de la vista.</li>
+        <li><strong>De pago:</strong> los necesarios para procesar tu compra (procesados directamente por <strong>Mercado Pago</strong>; <strong>no almacenamos los datos de tu tarjeta</strong>).</li>
+      </ul>
     },
     {
-      heading: 'III. Transferencia de Datos a Terceros',
-      content: <p>Para cumplir con las finalidades descritas, sus datos pueden ser compartidos con terceros estrictamente necesarios para la operación, tales como: procesadores de pago (<strong>Mercado Pago</strong>), proveedores de correos transaccionales (<strong>Resend</strong>), servicios de analítica y publicidad (<strong>Google Analytics, Meta Pixel</strong>), y empresas de <strong>paquetería y logística</strong> para el envío de sus pedidos. Estos terceros están obligados a mantener la confidencialidad de sus datos conforme a sus propias políticas de privacidad.</p>
+      heading: 'III. Datos Personales Sensibles',
+      content: <p>Tu <strong>graduación, receta y datos de salud visual</strong> son datos personales sensibles. Los tratamos únicamente para fabricar y validar correctamente tus micas y lentes, y para darte seguimiento. Para su tratamiento solicitamos tu <strong>consentimiento expreso</strong>: al proporcionarnos tu receta o datos de salud para una compra o cita, consientes su uso para estas finalidades.</p>
     },
     {
-      heading: 'IV. Uso de Cookies y Tecnologías de Rastreo',
-      content: <p>Le informamos que en nuestra página web utilizamos cookies y tecnologías de terceros para monitorear su comportamiento como usuario, medir la efectividad de nuestras campañas y brindarle una mejor experiencia de navegación y publicidad. Puede desactivar estas tecnologías directamente en la configuración de su navegador.</p>
+      heading: 'IV. Finalidades del Tratamiento',
+      content: <>
+        <p><strong>Finalidades principales (necesarias):</strong> Atender tu compra o cita, calcular y fabricar tus lentes/micas, validar tu graduación por un optometrista, entregar tu pedido, facturar, dar soporte y cumplir garantías.</p>
+        <p><strong>Finalidades secundarias (opcionales):</strong> Enviarte promociones, dar seguimiento post-venta y realizar encuestas de satisfacción. Puedes negarte a estas sin que afecte tu compra, escribiéndonos a <a href="mailto:contacto@lensique.com.mx">contacto@lensique.com.mx</a>.</p>
+      </>
     },
     {
-      heading: 'V. Derechos ARCO',
-      content: <p>Usted tiene derecho a conocer qué datos personales tenemos, para qué los utilizamos (Acceso), solicitar la corrección de su información (Rectificación), pedir que la eliminemos de nuestros registros (Cancelación), u oponerse al uso de sus datos para fines específicos (Oposición). Para ejercer sus derechos ARCO, puede contactarnos a través de nuestro WhatsApp oficial: +52 33 1692 9111.</p>
+      heading: 'V. Transferencias de Datos',
+      content: <p>Compartimos tus datos solo con quien es necesario para cumplir tu servicio: laboratorios y proveedores ópticos (p. ej. Carl Zeiss Vision), servicios de pago (Mercado Pago) y de paquetería para el envío. <strong>No vendemos tus datos</strong> a terceros.</p>
     },
     {
-      heading: 'VI. Cambios al Aviso',
-      content: <p>Este aviso puede actualizarse conforme a cambios legales o en nuestras prácticas. Nos comprometemos a mantenerlo informado sobre los cambios a través de esta misma página web. Para dudas sobre tus datos, contáctanos en <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a>. <br/><br/><em>Última actualización: Agosto 2026.</em></p>
+      heading: 'VI. Derechos ARCO y Revocación',
+      content: <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos, así como a revocar tu consentimiento. Para ejercerlos, escríbenos a <a href="mailto:contacto@lensique.com.mx">contacto@lensique.com.mx</a> o vía WhatsApp al +52 33 1692 9111 indicando tu nombre y solicitud. Te responderemos en los plazos que marca la ley.</p>
+    },
+    {
+      heading: 'VII. Cookies y Cambios al Aviso',
+      content: <p>Nuestro sitio usa cookies para su correcto funcionamiento; consulta nuestra Política de Cookies. Podemos actualizar este aviso periódicamente; la versión vigente siempre estará disponible en lensique.com.mx.<br/><br/><em>Última actualización: Noviembre 2026.</em></p>
     }
   ]
 };
@@ -938,12 +949,40 @@ const termsData: InfoPageData = {
   layout: 'default',
   sections: [
     {
-      heading: 'Uso del Sitio',
-      content: <p>El contenido de las páginas de este sitio web es para su información y uso general. Está sujeto a cambios sin previo aviso.</p>
+      heading: '1. Identidad del Responsable',
+      content: <p>Este sitio es operado por Óptica Lensique, con domicilio en Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040. Contacto: <a href="mailto:contacto@lensique.com.mx">contacto@lensique.com.mx</a> / WhatsApp +52 33 1692 9111.</p>
     },
     {
-      heading: 'Precios y Pagos',
-      content: <p>Los precios mostrados están en pesos mexicanos (MXN) e incluyen IVA. Nos reservamos el derecho de modificar los precios en cualquier momento. Las transacciones se completan de forma presencial o a través de enlaces de pago verificados solicitados vía WhatsApp.</p>
+      heading: '2. Productos y Servicios',
+      content: <p>Vendemos armazones, micas graduadas ZEISS, lentes de contacto y servicios de examen de la vista y consulta. Las marcas de terceros (incluida ZEISS) se usan con autorización y son propiedad de sus titulares.</p>
+    },
+    {
+      heading: '3. Precios y Moneda',
+      content: <p>Los precios están en pesos mexicanos (MXN), con IVA incluido, y pueden cambiar sin previo aviso. El precio final de tus micas se calcula según tu graduación; el precio mostrado en el cotizador es una estimación hasta que un optometrista valida tu receta.</p>
+    },
+    {
+      heading: '4. Receta y Validación Óptica',
+      content: <p>Un optometrista valida tu graduación antes de fabricar. Si tu receta no procede o requiere ajuste, te contactamos; si no puede fabricarse, cancelamos y reembolsamos conforme a nuestra política.</p>
+    },
+    {
+      heading: '5. Métodos de Pago',
+      content: <p>Procesamos pagos de forma segura a través de Mercado Pago (tarjeta de débito/crédito, meses sin intereses cuando aplica, OXXO, SPEI). No almacenamos datos de tarjeta.</p>
+    },
+    {
+      heading: '6. Envíos y Entrega',
+      content: <p>Puedes recoger en tienda en Zapopan sin costo o recibir por envío (local/nacional, con los costos y tiempos indicados al momento de la compra). Los tiempos de fabricación dependen del tipo de mica.</p>
+    },
+    {
+      heading: '7. Devoluciones y Garantías',
+      content: <p>Se rigen por nuestra política de Devoluciones y Garantías, disponible en lensique.com.mx/devoluciones (incluye garantía de graduación exacta, periodo de adaptación de 30 días y garantía contra defectos de fabricación).</p>
+    },
+    {
+      heading: '8. Propiedad Intelectual',
+      content: <p>El contenido del sitio, fotografías, diseño y marcas son propiedad de sus titulares y no pueden usarse sin autorización previa por escrito.</p>
+    },
+    {
+      heading: '9. Legislación y Jurisdicción',
+      content: <p>Estos términos se rigen por las leyes mexicanas. Para cualquier controversia, las partes se someten a los tribunales competentes de Zapopan / Guadalajara, Jalisco.<br/><br/><em>Última actualización: Noviembre 2026.</em></p>
     }
   ]
 };
@@ -953,8 +992,19 @@ const cookiesData: InfoPageData = {
   layout: 'default',
   sections: [
     {
-      heading: 'Uso de Cookies',
-      content: <p>Este sitio web utiliza cookies para mejorar la experiencia del usuario y analizar el tráfico del sitio. Al navegar por nuestro sitio, usted acepta nuestro uso de cookies de acuerdo con esta política. Utilizamos cookies de Google Analytics y Meta Pixel para medir la efectividad de nuestra publicidad y entender cómo los visitantes interactúan con nuestro sitio web.</p>
+      heading: '¿Qué son las cookies?',
+      content: <p>Son pequeños archivos que el sitio guarda en tu dispositivo para que funcione de manera óptima y recordar tus preferencias de navegación.</p>
+    },
+    {
+      heading: '¿Qué cookies usamos?',
+      content: <ul>
+        <li><strong>Esenciales:</strong> necesarias para que el sitio web y el carrito de compras funcionen correctamente.</li>
+        <li><strong>De desempeño y analíticas:</strong> nos ayudan a entender cómo se usa el sitio para mejorarlo continuamente (p. ej. Google Analytics y Meta Pixel).</li>
+      </ul>
+    },
+    {
+      heading: '¿Cómo desactivarlas?',
+      content: <p>Puedes bloquear o borrar las cookies en cualquier momento desde la configuración de tu navegador. Si las desactivas, algunas funciones (como el carrito de compras) podrían no operar correctamente. Al continuar navegando en nuestro sitio aceptas el uso de cookies conforme a esta política.<br/><br/><em>Última actualización: Noviembre 2026.</em></p>
     }
   ]
 };

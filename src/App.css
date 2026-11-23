@@ -1032,7 +1032,7 @@ body.no-scroll {
 .booking-modal {
   background: white;
   width: 100%;
-  max-width: 660px;
+  max-width: 860px;
   max-height: 94vh;
   border-radius: 24px;
   padding: 24px 28px 20px;
@@ -1056,12 +1056,12 @@ body.no-scroll {
 
 @media(min-width: 768px) {
   .booking-modal {
-    padding: 26px 32px 22px;
+    padding: 28px 36px 24px;
   }
   .booking-content-grid.has-date {
-    grid-template-columns: 1.05fr 1fr;
+    grid-template-columns: 310px 1fr;
     align-items: start;
-    gap: 24px;
+    gap: 28px;
   }
 }
 
@@ -1258,11 +1258,11 @@ body.no-scroll {
 
 .time-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  max-height: 165px;
-  overflow-y: auto;
-  padding-right: 2px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
 }
 
 .time-slot {

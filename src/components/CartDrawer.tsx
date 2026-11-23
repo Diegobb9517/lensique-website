@@ -6,8 +6,16 @@ import { resolveImageUrl } from '../App';
 import { parseCartItemDisplay } from '../lib/format';
 import { priceWithMP } from './ContactLensConfiguratorModal';
 import logo from '../assets/logo.png';
+import solutionImg from '../assets/contact_lens/solution.jpg';
 
 const API_BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
+
+const DEFAULT_CARE_KIT = {
+  id: 1446,
+  name: 'Kit de cuidado (solución + estuche)',
+  price_incl_tax: 150,
+  image_url: solutionImg
+};
 
 interface CartDrawerProps {
   onOpenConfigurator?: (product: any, section?: string) => void;
@@ -15,19 +23,24 @@ interface CartDrawerProps {
 
 export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, setCartItems, total, clearCart, addItem } = useCart();
-  const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(null);
+  const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(DEFAULT_CARE_KIT);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/website/care-kit`)
       .then(res => res.json())
       .then(data => {
         if (data && data.enabled && data.product) {
-          setCareKit(data.product);
-        } else {
+          setCareKit({
+            ...data.product,
+            image_url: data.product.image_url || solutionImg
+          });
+        } else if (data && data.enabled === false) {
           setCareKit(null);
         }
       })
-      .catch(() => setCareKit(null));
+      .catch(() => {
+        // Keeps DEFAULT_CARE_KIT fallback on network error/cold start
+      });
   }, []);
 
   const hasContactLens = items.some(isContactLensItem);
@@ -1135,19 +1148,26 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                           padding: '12px 14px',
                           background: '#f8fafc',
                           border: '1px solid #e2e8f0',
-                          borderRadius: '12px',
+                          borderRadius: '14px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           gap: '12px',
-                          marginTop: '4px'
+                          marginTop: '8px'
                         }}>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', lineHeight: 1.35 }}>
-                              ¿Gustas añadir el kit de cuidado (solución + estuche)?
-                            </div>
-                            <div style={{ fontSize: '12.5px', color: '#16a34a', marginTop: '2px', fontWeight: 700 }}>
-                              +${Number(careKit.price_incl_tax).toLocaleString('es-MX')}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
+                            <img
+                              src={careKit.image_url || solutionImg}
+                              alt="Kit de cuidado (solución + estuche)"
+                              style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: '10px', border: '1px solid #e2e8f0', flexShrink: 0 }}
+                            />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', lineHeight: 1.35 }}>
+                                ¿Gustas añadir el kit de cuidado (solución + estuche)?
+                              </div>
+                              <div style={{ fontSize: '12.5px', color: '#16a34a', marginTop: '2px', fontWeight: 700 }}>
+                                +${Number(careKit.price_incl_tax).toLocaleString('es-MX')}
+                              </div>
                             </div>
                           </div>
                           <button
@@ -1161,7 +1181,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                                 quantity: 1,
                                 unit_price: Number(careKit.price_incl_tax),
                                 product: careKit,
-                                image: careKit.image_url || '/assets/care-kit.png',
+                                image: careKit.image_url || solutionImg,
                                 estimatedDeliveryStr: 'Entrega con tus lentes de contacto'
                               });
                             }}
@@ -1169,12 +1189,14 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                               background: '#16223f',
                               color: '#ffffff',
                               border: 'none',
-                              padding: '8px 14px',
-                              borderRadius: '8px',
+                              padding: '9px 16px',
+                              borderRadius: '10px',
                               fontSize: '12.5px',
                               fontWeight: 700,
                               cursor: 'pointer',
-                              flexShrink: 0
+                              flexShrink: 0,
+                              boxShadow: '0 2px 6px rgba(22, 34, 63, 0.15)',
+                              transition: 'transform 0.1s ease'
                             }}
                           >
                             Agregar

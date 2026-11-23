@@ -4,8 +4,16 @@ import { toTitleCase, formatContactLensTitle, getContactLensFormat } from '../li
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
 import contactLensesImg from '../assets/contact_lenses.png';
+import solutionImg from '../assets/contact_lens/solution.jpg';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://lensique-pos.onrender.com';
+
+const DEFAULT_CARE_KIT = {
+  id: 1446,
+  name: 'Kit de cuidado (solución + estuche)',
+  price_incl_tax: 150,
+  image_url: solutionImg
+};
 const resolveImageUrl = (url: any, fallback?: any) => {
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
   if (!isInvalid(url)) {
@@ -311,7 +319,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
   const [step, setStep] = useState(1);
   
   // Kit de cuidado opcional
-  const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(null);
+  const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(DEFAULT_CARE_KIT);
   const [addCareKit, setAddCareKit] = useState<boolean>(false);
 
   useEffect(() => {
@@ -319,12 +327,17 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
       .then(res => res.json())
       .then(data => {
         if (data && data.enabled && data.product) {
-          setCareKit(data.product);
-        } else {
+          setCareKit({
+            ...data.product,
+            image_url: data.product.image_url || solutionImg
+          });
+        } else if (data && data.enabled === false) {
           setCareKit(null);
         }
       })
-      .catch(() => setCareKit(null));
+      .catch(() => {
+        // Keeps DEFAULT_CARE_KIT fallback on network error/cold start
+      });
   }, []);
   
   // Step 1: Cantidad por ojo

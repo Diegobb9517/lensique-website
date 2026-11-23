@@ -22,7 +22,7 @@ export function isKitItem(item: CartItem | any): boolean {
   if (!item) return false;
   if (item.isCareKit) return true;
   if (item.type === 'care_kit' || item.concept_type === 'ACCESSORY') return true;
-  if (item.product?.id && (String(item.product.id) === '1338' || item.product.is_kit)) return true;
+  if (item.product?.id && (String(item.product.id) === '1338' || String(item.product.id) === '1446' || item.product.is_kit)) return true;
   const title = (item.title || item.product?.name || '').toLowerCase();
   if (title.includes('kit de cuidado') || title.includes('solución + estuche') || title.includes('solucion + estuche')) {
     return true;

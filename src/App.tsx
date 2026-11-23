@@ -2415,66 +2415,21 @@ function App() {
               </button>
 
               <div className="modal-header">
-                <Calendar className="modal-icon" style={{ stroke: 'var(--accent)' }} />
-                <h2>{isEyeExam ? 'Agendar examen de vista' : 'Agendar tu cita'}</h2>
-                  {selectedProduct && <p style={{ fontSize: '1rem', color: '#4b5563', margin: '4px 0 16px 0', fontWeight: 500 }}>Servicio: {selectedProduct}</p>}
-                {isEyeExam && (
-                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '12px 16px', borderRadius: '8px', fontSize: '14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', textAlign: 'left', lineHeight: 1.4 }}>
-                    <div style={{ flex: '0 0 auto' }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                      </div>
-                      <div>
-                        Tu examen es realizado con equipo de vanguardia por un <strong>oftalmólogo certificado</strong>.
-                      </div>
-                    </div>
-                  )}
-
-                  {window.location.pathname === '/agendar-cita' && !isBookingFromTriage && (
-                    <div style={{
-                      backgroundColor: '#fef3c7',
-                      border: '1px solid #fde68a',
-                      borderRadius: '8px',
-                      padding: '12px',
-                      marginBottom: '20px',
-                      textAlign: 'left'
-                    }}>
-                      <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: '#92400e' }}>
-                        ¿No sabe si requiere examen de la vista o consulta médica?
-                      </p>
-                      <button 
-                        onClick={(e) => { e.preventDefault(); setIsBookingOpen(false); setIsTriageOpen(true); }}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          color: '#b45309',
-                          fontWeight: 600,
-                          fontSize: '0.9rem',
-                          textDecoration: 'underline',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Responda una pregunta
-                      </button>
-                    </div>
-                  )}
-
-                  <p style={{ lineHeight: 1.5, margin: 0 }}>
-                  {isEyeExam ? 'Selecciona el día y hora a continuación para reservar tu lugar.' : 'Selecciona el día y hora que mejor te acomode.'}
-                </p>
+                <h2>{isEyeExam ? 'Agendar examen de vista' : (selectedProduct || 'Agendar tu cita')}</h2>
+                <p>Selecciona fecha y hora para tu visita en Zapopan</p>
               </div>
 
               <div className={`booking-content-grid ${selectedDate ? 'has-date' : ''}`}>
                 <div className={`calendar-container ${selectedDate ? 'hidden-on-mobile' : ''}`}>
                   <div className="calendar-nav">
-                    <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}>
-                      <ChevronLeft size={20} />
+                    <button type="button" onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}>
+                      <ChevronLeft size={18} />
                     </button>
-                    <h3 style={{ textTransform: 'capitalize' }}>
+                    <h3>
                       {currentMonth.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })}
                     </h3>
-                    <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}>
-                      <ChevronRight size={20} />
+                    <button type="button" onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}>
+                      <ChevronRight size={18} />
                     </button>
                   </div>
                   
@@ -2496,6 +2451,7 @@ function App() {
                       
                       return (
                         <button 
+                          type="button"
                           key={`day-${date.toISOString()}`}
                           className={`calendar-day ${isSelected ? 'selected' : ''} ${isDisabled ? 'past' : ''} ${isToday && !isSelected ? 'is-today' : ''}`}
                           disabled={isDisabled}
@@ -2511,20 +2467,25 @@ function App() {
                 <AnimatePresence mode="popLayout">
                   {selectedDate && (
                     <motion.div 
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: 16 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
+                      exit={{ opacity: 0, x: 16 }}
                       className="booking-right-panel"
                     >
                       <div className="time-selection">
-                        <div className="time-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Clock size={16} />
+                        <div className="time-header">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Clock size={15} />
                             <span>Horarios disponibles</span>
                           </div>
+                          {selectedDate && (
+                            <span className="booking-date-badge">
+                              {selectedDate.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' })}
+                            </span>
+                          )}
                           <button 
-                            className="d-md-none" 
-                            style={{ background: 'none', border: 'none', color: '#009ee3', textDecoration: 'underline', fontSize: '14px', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+                            type="button"
+                            className="d-md-none booking-change-date-btn" 
                             onClick={() => setSelectedDate(null)}
                           >
                             Cambiar fecha
@@ -2548,11 +2509,11 @@ function App() {
                             }
                             return (
                               <button 
+                                type="button"
                                 key={`time-${time}`}
                                 className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
                                 onClick={() => setSelectedTime(time)}
                                 disabled={isPastTime}
-                                style={{ opacity: isPastTime ? 0.4 : 1, cursor: isPastTime ? 'not-allowed' : 'pointer' }}
                               >
                                 {time}
                               </button>
@@ -2561,38 +2522,35 @@ function App() {
                         </div>
                       </div>
 
-                      {selectedTime && (
-                        <motion.div 
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          className="time-selection"
-                          style={{ marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}
-                        >
-                          <div className="time-header" style={{ marginBottom: '0.5rem' }}>
-                            <User size={16} />
-                            <span>Tus datos</span>
-                          </div>
-                          <input 
-                            type="text" 
-                            placeholder="Tu nombre completo" 
-                            value={bookingName}
-                            onChange={(e) => setBookingName(e.target.value)}
-                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0', outline: 'none' }}
-                          />
-                        </motion.div>
-                      )}
+                      <div className="booking-name-wrap">
+                        <label htmlFor="booking-name-input">
+                          <User size={13} style={{ display: 'inline', marginRight: '4px', verticalAlign: '-1px' }} />
+                          Tu nombre completo
+                        </label>
+                        <input 
+                          id="booking-name-input"
+                          type="text" 
+                          placeholder="Escribe tu nombre y apellido" 
+                          value={bookingName}
+                          onChange={(e) => setBookingName(e.target.value)}
+                        />
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              <div className="modal-footer" style={{ marginTop: '1.5rem' }}>
+              <div className="modal-footer">
                 <button 
-                  className={`btn btn-primary full-width ${(!selectedDate || !selectedTime || !bookingName.trim()) ? 'disabled' : ''}`}
+                  type="button"
+                  className={`btn-booking-confirm ${(!selectedDate || !selectedTime || !bookingName.trim()) ? 'disabled' : ''}`}
                   disabled={!selectedDate || !selectedTime || !bookingName.trim()}
                   onClick={handleBookingConfirm}
                 >
-                  Confirmar y enviar WhatsApp
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                  </svg>
+                  {selectedTime ? `Confirmar cita (${selectedTime}) por WhatsApp` : 'Confirmar cita por WhatsApp'}
                 </button>
               </div>
             </motion.div>

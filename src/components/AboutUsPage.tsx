@@ -27,7 +27,7 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
   contactWhatsapp = '523316929111',
   contactLocation = 'Av. Guadalupe 1296, Jardines de San Ignacio, 45040 Zapopan, Jal.',
   aboutTitle = 'Nuestra Pasión es tu Visión',
-  aboutText = 'En Óptica Lensique combinamos la precisión técnica de la salud visual con una curaduría de armazones de diseño. Nacimos en Zapopan para ofrecerte un espacio moderno, cercano y transparente donde cuidar tus ojos es una experiencia placentera y personalizada.'
+  aboutText = 'En Óptica Lensique combinamos el cuidado experto de tu salud visual con una cuidada selección de armazones de diseño. Nacimos en Zapopan para ofrecerte un espacio moderno, cercano y transparente donde cuidar tus ojos sea una experiencia cómoda y personalizada.'
 }) => {
   const cleanWa = contactWhatsapp.replace(/\D/g, '');
   const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent('Hola, me gustaría conocer más sobre sus servicios en Óptica Lensique.')}`;
@@ -67,29 +67,29 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
       {/* 2. Galería de Instalaciones (Tour Visual) */}
       <section className="about-gallery-section">
         <div className="about-section-header">
-          <span className="about-section-badge">Instalaciones & Espacio</span>
-          <h2 className="about-section-title">Conoce nuestra óptica</h2>
+          <span className="about-section-badge">Nuestra Casa de Visión</span>
+          <h2 className="about-section-title">Conoce nuestros espacios</h2>
           <p className="about-section-subtitle">
-            Un consultorio moderno equipado con tecnología diagnóstica de alta precisión y un showroom pensado para que encuentres tu armazón ideal con calma y buena luz.
+            Diseñamos cada rincón pensando en tu comodidad: un consultorio moderno para cuidar tu vista y una boutique donde elegir tus lentes se siente como en casa.
           </p>
         </div>
 
         <div className="about-gallery-grid">
-          {/* Foto 1: Consultorio completo / Gabinete clínico (Featured Full Width) */}
+          {/* Foto 1: Consultorio completo (Featured Full Width) */}
           <div className="about-card-featured">
             <div className="about-card-img-wrap">
               <img
                 src={clinicWideImg}
-                alt="Consultorio clínico y gabinete de optometría de Óptica Lensique en Zapopan"
+                alt="Consultorio privado y examen de la vista en Óptica Lensique"
                 className="about-card-img"
                 loading="eager"
                 decoding="async"
               />
               <div className="about-card-overlay">
-                <span className="about-card-tag">Gabinete Clínico Principal</span>
-                <h3 className="about-card-title">Consultorio Integral de Salud Visual</h3>
+                <span className="about-card-tag">Consultorio Principal</span>
+                <h3 className="about-card-title">Tu examen de la vista en un espacio privado y tranquilo</h3>
                 <p className="about-card-desc">
-                  Espacio privado y climatizado para valoraciones optométricas y oftalmológicas profundas, pruebas de agudeza visual, fondo de ojo y adaptación personalizada de lentes.
+                  Un entorno cómodo y equipado con tecnología digital de vanguardia para revisar tu graduación y cuidar la salud de tus ojos sin prisas.
                 </p>
               </div>
             </div>
@@ -100,17 +100,17 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="about-card-img-wrap">
               <img
                 src={storeShowroomImg}
-                alt="Showroom y boutique de armazones en Óptica Lensique"
+                alt="Showroom y probadores de armazones en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
               />
             </div>
             <div className="about-card-body">
-              <span className="about-card-tag">Showroom de Diseño</span>
-              <h3 className="about-card-title">Boutique de Armazones y Estilo</h3>
+              <span className="about-card-tag">Boutique & Probadores</span>
+              <h3 className="about-card-title">Elige tus armazones con calma y buena luz</h3>
               <p className="about-card-desc">
-                Vitrinas con iluminación cálida, probadores dedicados y mesa de asesoría para que encuentres tu armazón ideal con total tranquilidad y acompañamiento experto.
+                Vitrinas abiertas con luz natural, probadores y asesoría personalizada para que encuentres el estilo que mejor va con tu rostro y tu día a día.
               </p>
             </div>
           </div>
@@ -120,7 +120,7 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="about-card-img-wrap">
               <img
                 src={slitLampExamImg}
-                alt="Examen de salud visual en lámpara de hendidura con especialista en Óptica Lensique"
+                alt="Revisión visual personalizada con especialista en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
@@ -128,9 +128,9 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             </div>
             <div className="about-card-body">
               <span className="about-card-tag">Atención Personalizada</span>
-              <h3 className="about-card-title">Biomicroscopía y Salud Ocular</h3>
+              <h3 className="about-card-title">Revisión detallada por optometristas certificados</h3>
               <p className="about-card-desc">
-                Exploración minuciosa de córnea, película lagrimal y cristalino por optometristas certificados. Una consulta empática, transparente y sin prisas.
+                Nos tomamos el tiempo de evaluar la salud de tus ojos, explicarte cada resultado con total claridad y recomendarte la solución visual ideal para ti.
               </p>
             </div>
           </div>
@@ -140,17 +140,17 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="about-card-img-wrap">
               <img
                 src={waitingRoomImg}
-                alt="Sala de espera confortable y contemporánea en Óptica Lensique"
+                alt="Sala de espera cómoda en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
               />
             </div>
             <div className="about-card-body">
-              <span className="about-card-tag">Recepción & Confort</span>
-              <h3 className="about-card-title">Sala de Espera y Bienvenida</h3>
+              <span className="about-card-tag">Recepción</span>
+              <h3 className="about-card-title">Una bienvenida cálida y puntual</h3>
               <p className="about-card-desc">
-                Un entorno cálido con arte contemporáneo y diseño minimalista para recibirte con puntualidad y tranquilidad.
+                Una sala cómoda y tranquila pensada para que te relajes mientras te recibimos a la hora acordada, sin largas esperas.
               </p>
             </div>
           </div>
@@ -160,37 +160,37 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="about-card-img-wrap">
               <img
                 src={framesDisplayImg}
-                alt="Curaduría de armazones oftálmicos de titanio y acetato en Óptica Lensique"
+                alt="Armazones oftálmicos de calidad en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
               />
             </div>
             <div className="about-card-body">
-              <span className="about-card-tag">Curaduría Exclusiva</span>
-              <h3 className="about-card-title">Materiales y Acabados de Gama Alta</h3>
+              <span className="about-card-tag">Armazones de Calidad</span>
+              <h3 className="about-card-title">Materiales ligeros, duraderos y cómodos</h3>
               <p className="about-card-desc">
-                Monturas en titanio ligero, acetatos italianos pulidos y metales hipoalergénicos ajustados a tu fisonomía.
+                Seleccionamos monturas en acetato pulido, titanio y metales flexibles que no pesan y se adaptan de forma natural a tus facciones.
               </p>
             </div>
           </div>
 
-          {/* Foto 6: Analizador CV-7600 (Third width) */}
+          {/* Foto 6: Foróptero Digital (Third width) */}
           <div className="about-card-third">
             <div className="about-card-img-wrap">
               <img
                 src={cv7600Img}
-                alt="Foróptero computarizado CV-7600 de alta precisión en Óptica Lensique"
+                alt="Tecnología de graduación digital en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
               />
             </div>
             <div className="about-card-body">
-              <span className="about-card-tag">Tecnología Digital</span>
-              <h3 className="about-card-title">Foróptero Digital CV-7600</h3>
+              <span className="about-card-tag">Graduación Digital</span>
+              <h3 className="about-card-title">Medición exacta para tu graduación</h3>
               <p className="about-card-desc">
-                Graduación computarizada automatizada para una refracción exacta en astigmatismos exigentes y lentes progresivos.
+                Tecnología digital que nos permite ajustar tus lentes con máxima nitidez, ideal para graduaciones altas, astigmatismo o progresivos.
               </p>
             </div>
           </div>
@@ -200,17 +200,17 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="about-card-img-wrap">
               <img
                 src={hallwayGardenImg}
-                alt="Instalaciones con jardín interior y consultorios privados en Óptica Lensique"
+                alt="Instalaciones con jardín interior en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
               />
             </div>
             <div className="about-card-body">
-              <span className="about-card-tag">Arquitectura & Luz Natural</span>
-              <h3 className="about-card-title">Espacios con Jardín Interior</h3>
+              <span className="about-card-tag">Nuestras Instalaciones</span>
+              <h3 className="about-card-title">Espacios amplios y con luz natural</h3>
               <p className="about-card-desc">
-                Instalaciones amplias y ventiladas con luz natural que conectan a consultorios privados para garantizar tu confort e intimidad.
+                Un diseño arquitectónico pensado para brindarte tranquilidad, con áreas verdes interiores que llenan de frescura cada rincón.
               </p>
             </div>
           </div>
@@ -220,17 +220,17 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
             <div className="about-card-img-wrap">
               <img
                 src={micasImg}
-                alt="Laboratorio de micas oftálmicas y tecnología ZEISS"
+                alt="Laboratorio de micas oftálmicas ZEISS en Óptica Lensique"
                 className="about-card-img"
                 loading="lazy"
                 decoding="async"
               />
             </div>
             <div className="about-card-body">
-              <span className="about-card-tag">Micas de Precisión</span>
-              <h3 className="about-card-title">Laboratorio y Alianza ZEISS</h3>
+              <span className="about-card-tag">Micas Oftálmicas</span>
+              <h3 className="about-card-title">Tecnología alemana ZEISS en tus lentes</h3>
               <p className="about-card-desc">
-                Montaje milimétrico con tratamientos antirreflejantes DuraVision®, filtro de luz azul BlueGuard y protección UV total certificada.
+                Montaje de alta precisión con tratamientos antirreflejantes, protección contra luz azul de pantallas y filtro UV total.
               </p>
             </div>
           </div>

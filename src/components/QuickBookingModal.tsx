@@ -74,7 +74,7 @@ export default function QuickBookingModal({
     // Mensaje de WhatsApp pre-llenado al número de la óptica
     const msg = [
       '¡Hola Óptica Lensique! 👋',
-      'Me gustaría agendar una cita:',
+      'Me gustaría agendar un horario para visitarlos:',
       '',
       `• ¿Qué necesito?: ${service}`,
       `• Nombre: ${name.trim()}`,
@@ -204,7 +204,7 @@ export default function QuickBookingModal({
           {/* Botón de confirmación */}
           <button type="submit" className="qb-submit-btn">
             <MessageCircle size={19} />
-            <span>Confirmar por WhatsApp</span>
+            <span>Agendar tu horario por WhatsApp</span>
           </button>
 
           <div className="qb-footer-note">

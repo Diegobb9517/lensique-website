@@ -2707,12 +2707,6 @@ function App() {
                   {link.name}
                 </a>
               ))}
-              <button 
-                className="btn-header-agenda"
-                onClick={() => handleOpenQuickBooking('Examen de la vista', 'header')}
-              >
-                Agenda tu cita
-              </button>
             </div>
 
             <div className="nav-right">
@@ -2765,30 +2759,6 @@ function App() {
                   {link.name}
                 </a>
               ))}
-              <button
-                className="mobile-link"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: '#f1f5f9',
-                  color: '#16223f',
-                  fontWeight: 600,
-                  padding: '12px 16px',
-                  borderRadius: '12px',
-                  marginTop: '12px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  width: '100%',
-                  textAlign: 'left'
-                }}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  handleOpenQuickBooking('Examen de la vista', 'mobile_menu');
-                }}
-              >
-                📅 Agenda tu cita
-              </button>
             </motion.div>
           )}
         </AnimatePresence>

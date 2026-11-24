@@ -2784,10 +2784,10 @@ function App() {
                 }}
                 onClick={() => {
                   setIsMobileMenuOpen(false);
-                  handleOpenQuickBooking('Examen de la vista completo', 'mobile_menu');
+                  handleOpenQuickBooking('Examen de la vista', 'mobile_menu');
                 }}
               >
-                📅 Agendar cita en boutique
+                📅 Agenda tu cita
               </button>
             </motion.div>
           )}

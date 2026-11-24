@@ -6186,15 +6186,15 @@ body.no-scroll .whatsapp-float {
 
 
 /* ==========================================================================
-   DOMINANT AGENDA CTA STYLES (Header Button & Mobile Sticky Bottom Bar)
+   BOUTIQUE AGENDA CTA STYLES (Header Button & Mobile Subtle Pill)
    ========================================================================== */
 .btn-header-agenda {
   border: 1.5px solid #16223f;
   background: transparent;
   color: #16223f;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 8px 18px;
+  padding: 7px 16px;
   border-radius: 999px;
   cursor: pointer;
   margin-left: 12px;
@@ -6212,51 +6212,58 @@ body.no-scroll .whatsapp-float {
   box-shadow: 0 4px 12px rgba(22, 34, 63, 0.15);
 }
 
-.mobile-sticky-agenda-bar {
+.mobile-header-agenda-btn {
+  display: none;
+}
+
+.mobile-floating-agenda-capsule {
   display: none;
 }
 
 @media (max-width: 768px) {
-  .mobile-sticky-agenda-bar {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  .mobile-header-agenda-btn {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-sticky-agenda-btn {
-    width: 100%;
-    background-color: #0b3d91;
+    gap: 5px;
+    background: #16223f;
     color: #ffffff;
     border: none;
     border-radius: 999px;
-    padding: 14px 20px;
-    font-size: 15px;
+    padding: 6px 13px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+    margin-right: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-header-agenda-btn:active {
+    transform: scale(0.96);
+  }
+
+  .mobile-floating-agenda-capsule {
     display: flex;
+    position: fixed;
+    bottom: 22px;
+    right: 16px;
+    z-index: 9990;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 14px rgba(11, 61, 145, 0.25);
-    transition: transform 0.15s ease;
+    gap: 7px;
+    background: rgba(22, 34, 63, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -4px rgba(22, 34, 63, 0.35);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
 
-  .mobile-sticky-agenda-btn:active {
-    transform: scale(0.98);
-  }
-
-  body {
-    padding-bottom: 72px;
+  .mobile-floating-agenda-capsule:active {
+    transform: scale(0.96);
   }
 }

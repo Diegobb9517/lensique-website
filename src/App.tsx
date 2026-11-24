@@ -2912,13 +2912,15 @@ function App() {
         </section>
 
         <section className="perks-bar">
-          <div className="perk-item">Examen de vista</div>
-          <div className="perk-separator"></div>
-          <div className="perk-item">Micas de alta calidad</div>
-          <div className="perk-separator"></div>
-          <div className="perk-item">Asesoría de imagen</div>
-          <div className="perk-separator"></div>
-          <div className="perk-item">Garantía de adaptación</div>
+          <div className="perks-bar-inner">
+            <div className="perk-item">Examen de vista</div>
+            <div className="perk-separator"></div>
+            <div className="perk-item">Micas de alta calidad</div>
+            <div className="perk-separator"></div>
+            <div className="perk-item">Asesoría de imagen</div>
+            <div className="perk-separator"></div>
+            <div className="perk-item">Garantía de adaptación</div>
+          </div>
         </section>
 
         {/* En ESCRITORIO / TABLET (≥ 768px): Home idéntico a 8b60fbe */}

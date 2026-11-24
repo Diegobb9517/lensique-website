@@ -273,26 +273,43 @@ body.no-scroll {
 .perks-bar {
   display: flex;
   background-color: #eaf3ec; /* Light green WP style */
-  padding: 12px 40px;
+  padding: 16px 24px;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  gap: 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.perks-bar-inner {
+  display: flex;
+  width: 100%;
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .perk-item {
+  flex: 1 1 0;
   text-align: center;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #2c4436;
   line-height: 1.3;
   white-space: nowrap;
+  letter-spacing: 0.01em;
+  transition: opacity 0.2s ease;
+}
+
+.perk-item:hover {
+  opacity: 0.85;
 }
 
 .perk-separator {
   width: 1px;
-  height: 20px;
-  background-color: rgba(44, 68, 54, 0.2);
+  height: 22px;
+  background-color: rgba(44, 68, 54, 0.22);
   flex-shrink: 0;
 }
 
@@ -310,6 +327,9 @@ body.no-scroll {
     justify-content: flex-start !important;
     border-bottom: 1px solid rgba(44, 68, 54, 0.12) !important;
   }
+  .perks-bar-inner {
+    display: contents !important;
+  }
   .perks-bar::-webkit-scrollbar {
     display: none !important;
     width: 0 !important;
@@ -319,6 +339,7 @@ body.no-scroll {
     font-size: 12px !important; 
     white-space: nowrap !important;
     flex-shrink: 0 !important;
+    flex: 0 0 auto !important;
     color: #2c4436 !important;
     font-weight: 600 !important;
   }

@@ -1,0 +1,284 @@
+/* Quick Booking Modal - Minimal Fields Aesthetic */
+.quick-booking-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: qbFadeIn 0.2s ease-out;
+}
+
+@keyframes qbFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.quick-booking-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  border-radius: 24px;
+  padding: 30px 28px 24px;
+  position: relative;
+  box-shadow: 0 25px 60px -15px rgba(22, 34, 63, 0.22);
+  border: 1px solid rgba(22, 34, 63, 0.08);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  animation: qbScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quick-booking-modal::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes qbScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.quick-booking-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-booking-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.quick-booking-header {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.quick-booking-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #16223f;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.quick-booking-title {
+  font-family: Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #16223f;
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.quick-booking-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.quick-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.qb-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qb-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e293b;
+  letter-spacing: -0.01em;
+}
+
+.qb-pills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.qb-pills-timing {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.qb-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: center;
+}
+
+.qb-pill:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.qb-pill.selected {
+  background: #16223f;
+  color: #ffffff;
+  border-color: #16223f;
+  box-shadow: 0 4px 12px rgba(22, 34, 63, 0.16);
+  font-weight: 600;
+}
+
+.qb-pill-icon {
+  flex-shrink: 0;
+}
+
+.qb-input {
+  width: 100%;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.qb-input:focus {
+  border-color: #0b3d91;
+  box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.12);
+}
+
+.qb-phone-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.qb-phone-wrap:focus-within {
+  border-color: #0b3d91;
+  box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.12);
+}
+
+.qb-phone-prefix {
+  padding: 12px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #475569;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.qb-phone-input {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding-left: 12px;
+}
+
+.qb-error-msg {
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  text-align: center;
+}
+
+.qb-submit-btn {
+  width: 100%;
+  background: #0b3d91;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 15px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(11, 61, 145, 0.28);
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.qb-submit-btn:hover {
+  background: #092c69;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(11, 61, 145, 0.35);
+}
+
+.qb-submit-btn:active {
+  transform: translateY(0);
+}
+
+.qb-footer-note {
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: -4px;
+}
+
+@media (max-width: 480px) {
+  .quick-booking-modal {
+    padding: 24px 20px 20px;
+    border-radius: 20px;
+  }
+
+  .quick-booking-title {
+    font-size: 22px;
+  }
+
+  .qb-pills-timing {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

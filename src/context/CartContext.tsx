@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { trackAddToCart } from '../lib/analytics';
+import solutionImg from '../assets/contact_lens/solution.jpg';
 
 export interface CartItem {
   id: string; // Unique ID for the cart line item (e.g., timestamp or uuid)
@@ -22,7 +23,7 @@ export function isKitItem(item: CartItem | any): boolean {
   if (!item) return false;
   if (item.isCareKit) return true;
   if (item.type === 'care_kit' || item.concept_type === 'ACCESSORY') return true;
-  if (item.product?.id && (String(item.product.id) === '1338' || String(item.product.id) === '1446' || item.product.is_kit)) return true;
+  if (item.product?.id && (String(item.product.id) === '1338' || String(item.product.id) === '1446' || String(item.product.id) === '1465' || item.product.is_kit)) return true;
   const title = (item.title || item.product?.name || '').toLowerCase();
   if (title.includes('kit de cuidado') || title.includes('solución + estuche') || title.includes('solucion + estuche')) {
     return true;
@@ -68,8 +69,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem('lensique_cart');
       if (!saved) return [];
       const parsed: CartItem[] = JSON.parse(saved);
-      const hasContactLens = parsed.some(isContactLensItem);
-      return hasContactLens ? parsed : parsed.filter(i => !isKitItem(i));
+      const sanitized = parsed.map(it => {
+        if (isKitItem(it)) {
+          return {
+            ...it,
+            image: solutionImg
+          };
+        }
+        return it;
+      });
+      const hasContactLens = sanitized.some(isContactLensItem);
+      return hasContactLens ? sanitized : sanitized.filter(i => !isKitItem(i));
     } catch (e) {
       return [];
     }
@@ -92,7 +102,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (alreadyHasKit) {
           return prev;
         }
-        return [...prev, { ...item, quantity: 1, isCareKit: true, id: 'care-kit-' + Date.now() }];
+        return [...prev, { ...item, image: solutionImg, quantity: 1, isCareKit: true, id: 'care-kit-' + Date.now() }];
       }
 
       const key = (it: Omit<CartItem, 'id'>) => `${it.product?.id || ''}|${it.lensConfig?.etiqueta || ''}|${it.lensConfig?.indice || ''}|${it.lensConfig?.tipoFab || ''}`;

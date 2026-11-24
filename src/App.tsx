@@ -96,6 +96,7 @@ import zeissPhotoFusionImg from './assets/zeiss/photofusion.jpg';
 import zeissDuraVisionImg from './assets/zeiss/duravision.jpg';
 import zeissSmartLifeImg from './assets/zeiss/smartlife.jpg';
 import zeissUVProtectImg from './assets/zeiss/uvprotect.jpg';
+import solutionImg from './assets/contact_lens/solution.jpg';
 import './App.css';
 
 if (typeof window !== 'undefined') {
@@ -140,23 +141,35 @@ export const resolveImageUrl = (url: string, fallback: string | undefined, width
   const isInvalid = (val: any) => !val || val === 'undefined' || val === 'null' || val === '';
   
   if (isInvalid(url)) {
-    return isInvalid(fallback) ? '' : fallback as string;
+    return isInvalid(fallback) ? '' : (fallback as string);
   }
   
-  let targetUrl = url.trim();
-  if (!targetUrl.startsWith('http')) {
-    const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
-    targetUrl = `${API_BASE}${cleanUrl}`;
-  }
+  let targetUrl = String(url).trim();
 
-  if (targetUrl.includes('lensique-pos.onrender.com')) {
-    // Restauramos la calidad original pasando q=100 y omitiendo el redimensionamiento,
-    // o simplemente devolvemos la URL original si prefieren 100% fidelidad.
-    // Para asegurar 100% de calidad sin pérdida, regresaremos la URL directa del backend por ahora.
+  // Si ya es una URL completa (http/https), data URI o blob, devolver directa
+  if (targetUrl.startsWith('data:') || targetUrl.startsWith('blob:') || targetUrl.startsWith('http://') || targetUrl.startsWith('https://')) {
     return targetUrl;
   }
 
-  return targetUrl;
+  // Si es un asset compilado por Vite o archivo estático del frontend de Lensique
+  if (
+    targetUrl.startsWith('/assets/') ||
+    targetUrl.startsWith('assets/') ||
+    targetUrl.startsWith('/images/') ||
+    targetUrl.startsWith('/blog/') ||
+    targetUrl.startsWith('/hero') ||
+    targetUrl.startsWith('/logo') ||
+    targetUrl.startsWith('/solution') ||
+    targetUrl.startsWith('/favicon') ||
+    targetUrl.includes('solution') ||
+    targetUrl.includes('care-kit')
+  ) {
+    return targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
+  }
+
+  // De lo contrario, es una imagen servida por el backend del POS (p. ej. /api/files/:id o /uploads/...)
+  const cleanUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`;
+  return `${API_BASE}${cleanUrl}`;
 };
 
 const safeJsonParse = (str: any, fallback: any = []) => {
@@ -2293,7 +2306,7 @@ function App() {
                 quantity: 1,
                 unit_price: Number(kit.price_incl_tax),
                 product: kit,
-                image: kit.image_url || '/assets/care-kit.png',
+                image: kit.image_url || solutionImg,
                 estimatedDeliveryStr: 'Entrega con tus lentes de contacto'
               });
             }

@@ -750,9 +750,12 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                           <div key={it.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                             {it.image && (
                               <img 
-                                src={resolveImageUrl(it.image, '')} 
+                                src={isKitItem(it) ? solutionImg : resolveImageUrl(it.image, '')} 
                                 alt={itDisplay.title} 
-                                style={{ width: '48px', height: '48px', objectFit: 'contain', background: '#f8fafc', borderRadius: '8px', flexShrink: 0, border: '1px solid #e2e8f0', padding: '2px' }} 
+                                style={{ width: '48px', height: '48px', objectFit: isKitItem(it) ? 'cover' : 'contain', background: '#f8fafc', borderRadius: '8px', flexShrink: 0, border: '1px solid #e2e8f0', padding: '2px' }} 
+                                onError={(e) => {
+                                  if (isKitItem(it)) e.currentTarget.src = solutionImg;
+                                }}
                               />
                             )}
                             <div style={{ flex: 1, minWidth: 0 }}>
@@ -1049,7 +1052,14 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                           >
                             {item.image && (
                               <div style={{ width: '68px', height: '68px', borderRadius: '8px', background: '#f8fafc', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}>
-                                <img src={resolveImageUrl(item.image, '')} alt={itemDisplay.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                <img 
+                                  src={isKitItem(item) ? solutionImg : resolveImageUrl(item.image, '')} 
+                                  alt={itemDisplay.title} 
+                                  style={{ width: '100%', height: '100%', objectFit: isKitItem(item) ? 'cover' : 'contain' }} 
+                                  onError={(e) => {
+                                    if (isKitItem(item)) e.currentTarget.src = solutionImg;
+                                  }}
+                                />
                               </div>
                             )}
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
@@ -1157,9 +1167,10 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
                             <img
-                              src={careKit.image_url || solutionImg}
+                              src={solutionImg}
                               alt="Kit de cuidado (solución + estuche)"
                               style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: '10px', border: '1px solid #e2e8f0', flexShrink: 0 }}
+                              onError={(e) => { e.currentTarget.src = solutionImg; }}
                             />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', lineHeight: 1.35 }}>
@@ -1181,7 +1192,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                                 quantity: 1,
                                 unit_price: Number(careKit.price_incl_tax),
                                 product: careKit,
-                                image: careKit.image_url || solutionImg,
+                                image: solutionImg,
                                 estimatedDeliveryStr: 'Entrega con tus lentes de contacto'
                               });
                             }}

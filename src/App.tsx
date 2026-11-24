@@ -917,14 +917,15 @@ const returnsData: InfoPageData = {
 
 const privacyData: InfoPageData = {
   title: 'Aviso de Privacidad',
+  subtitle: <span style={{ fontSize: '14px', color: '#6b7280' }}>Última actualización: 24 de noviembre de 2026</span>,
   layout: 'default',
   sections: [
     {
-      heading: 'I. Responsable del Tratamiento y Protección',
-      content: <p><strong>Óptica Lensique</strong>, con domicilio en <strong>Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040</strong>, es responsable del tratamiento y protección de tus datos personales, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).</p>
+      heading: 'Responsable del tratamiento y protección',
+      content: <p><strong>Óptica Lensique</strong>, con domicilio en <strong>Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040</strong>, es responsable del tratamiento y protección de tus datos personales, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP). Los datos completos de identificación del responsable están disponibles a solicitud, escribiendo a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a>.</p>
     },
     {
-      heading: 'II. Datos Personales que Recabamos',
+      heading: 'Datos personales que recabamos',
       content: <ul>
         <li><strong>De identificación y contacto:</strong> nombre, teléfono/WhatsApp, correo electrónico y domicilio de envío.</li>
         <li><strong>De tu salud visual:</strong> tu <strong>receta/graduación óptica</strong> y datos relacionados con tu examen de la vista.</li>
@@ -932,92 +933,100 @@ const privacyData: InfoPageData = {
       </ul>
     },
     {
-      heading: 'III. Datos Personales Sensibles',
+      heading: 'Datos personales sensibles',
       content: <p>Tu <strong>graduación, receta y datos de salud visual</strong> son datos personales sensibles. Los tratamos únicamente para fabricar y validar correctamente tus micas y lentes, y para darte seguimiento. Para su tratamiento solicitamos tu <strong>consentimiento expreso</strong>: al proporcionarnos tu receta o datos de salud para una compra o cita, consientes su uso para estas finalidades.</p>
     },
     {
-      heading: 'IV. Finalidades del Tratamiento',
+      heading: 'Finalidades del tratamiento',
       content: <>
         <p><strong>Finalidades principales (necesarias):</strong> Atender tu compra o cita, calcular y fabricar tus lentes/micas, validar tu graduación por un optometrista, entregar tu pedido, facturar, dar soporte y cumplir garantías.</p>
-        <p><strong>Finalidades secundarias (opcionales):</strong> Enviarte promociones, dar seguimiento post-venta y realizar encuestas de satisfacción. Puedes negarte a estas sin que afecte tu compra, escribiéndonos a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a>.</p>
+        <p style={{ marginTop: '12px' }}><strong>Finalidades secundarias (opcionales):</strong> Enviarte promociones, dar seguimiento post-venta y realizar encuestas de satisfacción. Puedes negarte a estas sin que afecte tu compra, escribiéndonos a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a>.</p>
       </>
     },
     {
-      heading: 'V. Transferencias de Datos',
+      heading: 'Transferencias',
       content: <p>Compartimos tus datos solo con quien es necesario para cumplir tu servicio: laboratorios y proveedores ópticos (p. ej. Carl Zeiss Vision), servicios de pago (Mercado Pago) y de paquetería para el envío. <strong>No vendemos tus datos</strong> a terceros.</p>
     },
     {
-      heading: 'VI. Derechos ARCO y Revocación',
-      content: <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos, así como a revocar tu consentimiento. Para ejercerlos, escríbenos a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a> o vía WhatsApp al +52 33 1692 9111 indicando tu nombre y solicitud. Te responderemos en los plazos que marca la ley.</p>
+      heading: 'Derechos ARCO y revocación',
+      content: <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos, así como a revocar tu consentimiento. Para ejercerlos, escríbenos a <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a> indicando tu nombre y solicitud. Te responderemos en los plazos que marca la ley.</p>
     },
     {
-      heading: 'VII. Cookies y Cambios al Aviso',
-      content: <p>Nuestro sitio usa cookies para su correcto funcionamiento; consulta nuestra Política de Cookies. Podemos actualizar este aviso periódicamente; la versión vigente siempre estará disponible en lensique.com.mx.<br/><br/><em>Última actualización: Noviembre 2026.</em></p>
+      heading: 'Cookies y cambios',
+      content: <>
+        <p><strong>Cookies:</strong> Nuestro sitio usa cookies; consulta nuestra Política de Cookies.</p>
+        <p style={{ marginTop: '8px' }}><strong>Cambios:</strong> Podemos actualizar este aviso. La versión vigente siempre estará disponible en lensique.com.mx.</p>
+      </>
     }
   ]
 };
 
 const termsData: InfoPageData = {
   title: 'Términos y Condiciones',
+  subtitle: <span style={{ fontSize: '14px', color: '#6b7280' }}>Última actualización: 24 de noviembre de 2026</span>,
   layout: 'default',
   sections: [
     {
-      heading: '1. Identidad del Responsable',
-      content: <p>Este sitio es operado por Óptica Lensique, con domicilio en Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040. Contacto: <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a> / WhatsApp +52 33 1692 9111.</p>
+      heading: '1. Identidad',
+      content: <p>Este sitio es operado por <strong>Óptica Lensique</strong>, con domicilio en Av. Guadalupe 1296, Jardines de San Ignacio, Zapopan, Jalisco, C.P. 45040. Contacto: <a href="mailto:servicio@lensique.com.mx">servicio@lensique.com.mx</a> / WhatsApp +52 33 1692 9111. (Los datos fiscales del responsable se proporcionan al facturar.)</p>
     },
     {
-      heading: '2. Productos y Servicios',
+      heading: '2. Productos y servicios',
       content: <p>Vendemos armazones, micas graduadas ZEISS, lentes de contacto y servicios de examen de la vista y consulta. Las marcas de terceros (incluida ZEISS) se usan con autorización y son propiedad de sus titulares.</p>
     },
     {
-      heading: '3. Precios y Moneda',
-      content: <p>Los precios están en pesos mexicanos (MXN), con IVA incluido, y pueden cambiar sin previo aviso. El precio final de tus micas se calcula según tu graduación; el precio mostrado en el cotizador es una estimación hasta que un optometrista valida tu receta.</p>
+      heading: '3. Precios',
+      content: <p>Los precios están en pesos mexicanos (MXN), con IVA incluido, y pueden cambiar sin previo aviso. El precio final de tus micas se calcula según tu graduación; el precio mostrado es una cotización hasta que un optometrista valida tu receta.</p>
     },
     {
-      heading: '4. Receta y Validación Óptica',
+      heading: '4. Receta y validación',
       content: <p>Un optometrista valida tu graduación antes de fabricar. Si tu receta no procede o requiere ajuste, te contactamos; si no puede fabricarse, cancelamos y reembolsamos conforme a nuestra política.</p>
     },
     {
-      heading: '5. Métodos de Pago',
-      content: <p>Procesamos pagos de forma segura a través de Mercado Pago (tarjeta de débito/crédito, meses sin intereses cuando aplica, OXXO, SPEI). No almacenamos datos de tarjeta.</p>
+      heading: '5. Pagos',
+      content: <p>Procesamos pagos a través de Mercado Pago (tarjeta, meses sin intereses cuando aplica, OXXO, SPEI). No almacenamos datos de tarjeta.</p>
     },
     {
-      heading: '6. Envíos y Entrega',
-      content: <p>Puedes recoger en tienda en Zapopan sin costo o recibir por envío (local/nacional, con los costos y tiempos indicados al momento de la compra). Los tiempos de fabricación dependen del tipo de mica.</p>
+      heading: '6. Envíos y entrega',
+      content: <p>Puedes recoger en tienda sin costo o recibir por envío (local/nacional, con los costos y tiempos indicados al momento de la compra). Los tiempos de fabricación dependen del tipo de mica.</p>
     },
     {
-      heading: '7. Devoluciones y Garantías',
-      content: <p>Se rigen por nuestra política de Devoluciones y Garantías, disponible en lensique.com.mx/devoluciones (incluye garantía de graduación exacta, periodo de adaptación de 30 días y garantía contra defectos de fabricación).</p>
+      heading: '7. Devoluciones y garantías',
+      content: <p>Se rigen por nuestra política de Devoluciones y Garantías, disponible en <a href="/devoluciones">lensique.com.mx/devoluciones</a> (incluye garantía de graduación exacta, periodo de adaptación y garantía contra defectos de fabricación).</p>
     },
     {
-      heading: '8. Propiedad Intelectual',
-      content: <p>El contenido del sitio, fotografías, diseño y marcas son propiedad de sus titulares y no pueden usarse sin autorización previa por escrito.</p>
+      heading: '8. Propiedad intelectual',
+      content: <p>El contenido del sitio y las marcas son propiedad de sus titulares y no pueden usarse sin autorización.</p>
     },
     {
-      heading: '9. Legislación y Jurisdicción',
-      content: <p>Estos términos se rigen por las leyes mexicanas. Para cualquier controversia, las partes se someten a los tribunales competentes de Zapopan / Guadalajara, Jalisco.<br/><br/><em>Última actualización: Noviembre 2026.</em></p>
+      heading: '9. Legislación y jurisdicción',
+      content: <p>Estos términos se rigen por las leyes mexicanas. Para cualquier controversia, las partes se someten a los tribunales competentes de Zapopan/Guadalajara, Jalisco.</p>
     }
   ]
 };
 
 const cookiesData: InfoPageData = {
   title: 'Política de Cookies',
+  subtitle: <span style={{ fontSize: '14px', color: '#6b7280' }}>Última actualización: 24 de noviembre de 2026</span>,
   layout: 'default',
   sections: [
     {
       heading: '¿Qué son las cookies?',
-      content: <p>Son pequeños archivos que el sitio guarda en tu dispositivo para que funcione de manera óptima y recordar tus preferencias de navegación.</p>
+      content: <p>Pequeños archivos que el sitio guarda en tu dispositivo para que funcione mejor y recordar tus preferencias.</p>
     },
     {
       heading: '¿Qué cookies usamos?',
       content: <ul>
-        <li><strong>Esenciales:</strong> necesarias para que el sitio web y el carrito de compras funcionen correctamente.</li>
-        <li><strong>De desempeño y analíticas:</strong> nos ayudan a entender cómo se usa el sitio para mejorarlo continuamente (p. ej. Google Analytics y Meta Pixel).</li>
+        <li><strong>Esenciales:</strong> necesarias para que el sitio y el carrito funcionen.</li>
+        <li><strong>De desempeño/analíticas:</strong> nos ayudan a entender cómo se usa el sitio para mejorarlo (si aplica, p. ej. Google Analytics / Meta).</li>
       </ul>
     },
     {
       heading: '¿Cómo desactivarlas?',
-      content: <p>Puedes bloquear o borrar las cookies en cualquier momento desde la configuración de tu navegador. Si las desactivas, algunas funciones (como el carrito de compras) podrían no operar correctamente. Al continuar navegando en nuestro sitio aceptas el uso de cookies conforme a esta política.<br/><br/><em>Última actualización: Noviembre 2026.</em></p>
+      content: <>
+        <p>Puedes bloquear o borrar las cookies desde la configuración de tu navegador. Si las desactivas, algunas funciones (como el carrito) podrían no funcionar correctamente.</p>
+        <p style={{ marginTop: '12px' }}>Al usar el sitio aceptas el uso de cookies conforme a esta política.</p>
+      </>
     }
   ]
 };
@@ -1368,6 +1377,12 @@ function App() {
         setIs404Product(false);
         if (path === '/devoluciones') {
           setSelectedInfoPage(returnsData);
+        } else if (path === '/aviso-de-privacidad' || path === '/privacidad') {
+          setSelectedInfoPage(privacyData);
+        } else if (path === '/terminos' || path === '/terminos-y-condiciones') {
+          setSelectedInfoPage(termsData);
+        } else if (path === '/cookies' || path === '/politica-de-cookies') {
+          setSelectedInfoPage(cookiesData);
         } else if (path === '/agendar-cita') {
           setSelectedProduct('Examen de la Vista');
           setIsBookingOpen(true);
@@ -2840,7 +2855,7 @@ function App() {
         {!['/catalogo', '/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/') || currentPath.startsWith('/marca/')) && (
           <div>
             {(() => {
-              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/seguimiento'];
+              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/privacidad', '/terminos', '/terminos-y-condiciones', '/cookies', '/politica-de-cookies', '/seguimiento'];
               const isDynamicRoute = currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/');
               const is404Title = typeof document !== 'undefined' && document.title.includes('404');
               const is404 = (!validStaticRoutes.includes(currentPath) && !isDynamicRoute) || is404Product || ((currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/')) && is404Title);
@@ -3495,7 +3510,12 @@ function App() {
 
           <InfoPage
             isOpen={!!selectedInfoPage}
-            onClose={() => setSelectedInfoPage(null)}
+            onClose={() => {
+              setSelectedInfoPage(null);
+              if (['/devoluciones', '/aviso-de-privacidad', '/privacidad', '/terminos', '/terminos-y-condiciones', '/cookies', '/politica-de-cookies'].includes(window.location.pathname)) {
+                window.history.pushState({}, '', '/');
+              }
+            }}
             data={selectedInfoPage}
           />
 
@@ -3558,10 +3578,10 @@ function App() {
                   <a href="/nosotros">Nuestra historia</a>
                   <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
                   <h4 className="mt-8">Legal</h4>
-                  <a href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
+                  <a id="footer-privacy-link" href="/aviso-de-privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); window.history.pushState({}, '', '/aviso-de-privacidad'); }}>Aviso de Privacidad</a>
                     <a href="/devoluciones" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(returnsData); window.history.pushState({}, '', '/devoluciones'); }}>Devoluciones y Garantías</a>
-                  <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
-                  <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
+                  <a href="/terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); window.history.pushState({}, '', '/terminos'); }}>Términos y Condiciones</a>
+                  <a href="/cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); window.history.pushState({}, '', '/cookies'); }}>Política de Cookies</a>
                 </div>
 
                 <div className="footer-col">
@@ -3620,9 +3640,9 @@ function App() {
                 <span>&copy; {new Date().getFullYear()} Óptica Lensique.</span>
               </div>
               <div className="footer-bottom-links">
-                <a id="footer-privacy-link" href="#privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); }}>Aviso de Privacidad</a>
-                <a href="#terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); }}>Términos y Condiciones</a>
-                <a href="#cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); }}>Política de Cookies</a>
+                <a href="/aviso-de-privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); window.history.pushState({}, '', '/aviso-de-privacidad'); }}>Aviso de Privacidad</a>
+                <a href="/terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); window.history.pushState({}, '', '/terminos'); }}>Términos y Condiciones</a>
+                <a href="/cookies" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(cookiesData); window.history.pushState({}, '', '/cookies'); }}>Política de Cookies</a>
               </div>
             </div>
           </div>

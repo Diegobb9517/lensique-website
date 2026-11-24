@@ -810,6 +810,72 @@ if (!fs.existsSync(trackingDir)) {
 fs.writeFileSync(path.join(trackingDir, 'index.html'), trackingHtml, 'utf8');
 console.log('✅ Pre-rendered /seguimiento/index.html (noindex)');
 
+// Generate /aviso-de-privacidad prerender
+const privTitle = "Aviso de Privacidad | Óptica Lensique";
+const privDesc = "Aviso de Privacidad de Óptica Lensique conforme a la LFPDPPP. Consulta el tratamiento y protección de tus datos personales y sensibles.";
+const privCanonical = "https://www.lensique.com.mx/aviso-de-privacidad";
+sitemapUrls.push(privCanonical);
+
+const privHeadInjection = `
+    <title>${privTitle}</title>
+    <meta name="description" content="${privDesc}" />
+    <link rel="canonical" href="${privCanonical}" />
+`;
+let privHtml = indexTemplate;
+if (privHtml.includes('<title>')) privHtml = privHtml.replace(/<title>.*?<\/title>/s, `<title>${privTitle}</title>`);
+privHtml = privHtml.replace('</head>', `${privHeadInjection}\n</head>`);
+
+const privDir = path.join(distDir, 'aviso-de-privacidad');
+if (!fs.existsSync(privDir)) {
+  fs.mkdirSync(privDir, { recursive: true });
+}
+fs.writeFileSync(path.join(privDir, 'index.html'), privHtml, 'utf8');
+console.log('✅ Pre-rendered /aviso-de-privacidad/index.html');
+
+// Generate /terminos prerender
+const termTitle = "Términos y Condiciones | Óptica Lensique";
+const termDesc = "Términos y condiciones de compra, validación de recetas por optometrista y servicios de Óptica Lensique Zapopan.";
+const termCanonical = "https://www.lensique.com.mx/terminos";
+sitemapUrls.push(termCanonical);
+
+const termHeadInjection = `
+    <title>${termTitle}</title>
+    <meta name="description" content="${termDesc}" />
+    <link rel="canonical" href="${termCanonical}" />
+`;
+let termHtml = indexTemplate;
+if (termHtml.includes('<title>')) termHtml = termHtml.replace(/<title>.*?<\/title>/s, `<title>${termTitle}</title>`);
+termHtml = termHtml.replace('</head>', `${termHeadInjection}\n</head>`);
+
+const termDir = path.join(distDir, 'terminos');
+if (!fs.existsSync(termDir)) {
+  fs.mkdirSync(termDir, { recursive: true });
+}
+fs.writeFileSync(path.join(termDir, 'index.html'), termHtml, 'utf8');
+console.log('✅ Pre-rendered /terminos/index.html');
+
+// Generate /cookies prerender
+const cookTitle = "Política de Cookies | Óptica Lensique";
+const cookDesc = "Conoce las cookies esenciales y analíticas utilizadas en Óptica Lensique para optimizar tu navegación y compra.";
+const cookCanonical = "https://www.lensique.com.mx/cookies";
+sitemapUrls.push(cookCanonical);
+
+const cookHeadInjection = `
+    <title>${cookTitle}</title>
+    <meta name="description" content="${cookDesc}" />
+    <link rel="canonical" href="${cookCanonical}" />
+`;
+let cookHtml = indexTemplate;
+if (cookHtml.includes('<title>')) cookHtml = cookHtml.replace(/<title>.*?<\/title>/s, `<title>${cookTitle}</title>`);
+cookHtml = cookHtml.replace('</head>', `${cookHeadInjection}\n</head>`);
+
+const cookDir = path.join(distDir, 'cookies');
+if (!fs.existsSync(cookDir)) {
+  fs.mkdirSync(cookDir, { recursive: true });
+}
+fs.writeFileSync(path.join(cookDir, 'index.html'), cookHtml, 'utf8');
+console.log('✅ Pre-rendered /cookies/index.html');
+
 // Generate /marca/[slug] prerender
 const uniqueBrandsMap = new Map();
 products.forEach(p => {

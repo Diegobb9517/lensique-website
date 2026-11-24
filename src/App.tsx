@@ -79,7 +79,7 @@ import lsCustom from './assets/lifestyle_custom.png';
 
 import premiumMonofocal from './assets/premium_monofocal_1785865329187.jpg';
 import premiumBifocal from './assets/premium_bifocal_v2_1785866208612.jpg';
-import premiumProgressive from './assets/premium_progressive_v2_1785866839561.jpg';
+import premiumProgressive from './assets/zeiss_smartlife_progresivos.jpg';
 import premiumPhotochromic from './assets/premium_photochromic_1785865389796.jpg';
 import premiumBluelight from './assets/premium_bluelight_1785865397362.jpg';
 import premiumCustom from './assets/premium_custom_1785865421645.jpg';

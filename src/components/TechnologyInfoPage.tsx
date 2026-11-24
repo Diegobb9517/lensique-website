@@ -5,7 +5,7 @@ import { ArrowLeft, CheckCircle2, Calendar, X } from 'lucide-react';
 import monofocalImg from '../assets/monofocal.png';
 import flattopImg from '../assets/bifocal-flat-top.png';
 import invisibleImg from '../assets/bifocal-invisible.png';
-import progressiveImg from '../assets/progressive.png';
+import progressiveImg from '../assets/zeiss_smartlife_progresivos.jpg';
 import blueFilterImg from '../assets/blue-filter.png';
 import photochromicImg from '../assets/photochromic.png';
 import arImg from '../assets/cv-7600.jpg'; // Using clinic equipment as placeholder for AR/Custom

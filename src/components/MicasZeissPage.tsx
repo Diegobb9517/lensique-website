@@ -5,7 +5,7 @@ import zeissLogo from '../assets/zeiss_logo.png';
 import imgBlueGuard from '../assets/zeiss/blueguard.jpg';
 import imgPhotoFusion from '../assets/zeiss/photofusion.jpg';
 import imgDuraVision from '../assets/zeiss/duravision.jpg';
-import imgSmartLife from '../assets/zeiss/smartlife.jpg';
+import imgSmartLife from '../assets/zeiss/zeiss_smartlife_progresivos.jpg';
 import imgUVProtect from '../assets/zeiss/uvprotect.jpg';
 
 interface MicasZeissPageProps {

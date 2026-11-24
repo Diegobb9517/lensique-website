@@ -4602,20 +4602,52 @@ body.no-scroll .whatsapp-float {
     padding: 10px !important;
     margin-bottom: 10px !important;
   }
-  .catalog-products .products-grid .wp-product-name {
+  .catalog-products .products-grid .wp-product-name,
+  .catalog-products .products-grid .product-name-serif {
     font-size: 13px !important;
-    line-height: 1.25 !important;
-    display: block !important;
-    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    white-space: normal !important;
+    word-break: break-word !important;
     text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    margin: 0 0 6px 0 !important;
+  }
+  .catalog-products .products-grid .wp-product-name .fpn-main,
+  .catalog-products .products-grid .product-name-serif .fpn-main {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    line-height: 1.3 !important;
   }
   .catalog-products .products-grid .wp-card-category {
     font-size: 11px !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
   .catalog-products .products-grid .wp-product-price {
     font-size: 13px !important;
+    text-align: center !important;
+    width: 100% !important;
   }
 
   /* Catalog filter pills: que quepan y no se corten */
@@ -4851,16 +4883,37 @@ body.no-scroll .whatsapp-float {
 .home-collection-card-item .wp-product-name {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-size: 13px !important;
-  line-height: 1.25 !important;
+  line-height: 1.3 !important;
   font-weight: 500 !important;
   color: #111827 !important;
   margin: 0 0 6px 0 !important;
-  display: block !important;
-  white-space: nowrap !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: break-word !important;
   text-align: center !important;
-  min-height: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.home-collection-card-item .wp-product-name .fpn-main {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  line-height: 1.3 !important;
 }
 
 .home-collection-card-item .wp-product-price {

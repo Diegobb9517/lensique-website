@@ -110,7 +110,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <p className="product-brand-sub" style={{ fontSize: '13px', color: '#6b7280', marginBottom: '4px' }}>
               {product.category || 'Armazón de vista'} {product.brand && `· ${product.brand}`}
             </p>
-            <h3 className="product-name-serif" style={{ marginBottom: '8px', justifyContent: 'center' }}><FormatProductName product={product} /></h3>
+            <h3 className="product-name-serif" style={{ marginBottom: '8px', textAlign: 'center', width: '100%' }}><FormatProductName product={product} /></h3>
             <div style={{ textAlign: 'center' }}>
               <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
             </div>
@@ -198,7 +198,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 : 'Lensique'
             )}
           </p>
-          <h3 className="wp-product-name" style={{ justifyContent: 'center' }}><FormatProductName product={product} /></h3>
+          <h3 className="wp-product-name" style={{ textAlign: 'center', width: '100%' }}><FormatProductName product={product} /></h3>
           <div style={{ textAlign: 'center', marginTop: '6px' }}>
             <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
           </div>

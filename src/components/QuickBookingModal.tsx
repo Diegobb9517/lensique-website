@@ -10,8 +10,8 @@ interface QuickBookingModalProps {
 }
 
 const SERVICES = [
-  'Examen de la vista completo',
-  'Elegir armazón y micas',
+  'Examen de la vista',
+  'Lentes nuevos',
   'Lentes de contacto'
 ];
 
@@ -19,18 +19,16 @@ const TIMINGS = [
   'Hoy',
   'Mañana',
   'Esta semana',
-  'Sábado'
+  'Fin de semana'
 ];
 
 export default function QuickBookingModal({
   isOpen,
   onClose,
-  initialService = 'Examen de la vista completo',
+  initialService = 'Examen de la vista',
   source = 'unknown'
 }: QuickBookingModalProps) {
-  const [service, setService] = useState<string>(
-    initialService === 'Examen de la vista' ? 'Examen de la vista completo' : initialService
-  );
+  const [service, setService] = useState<string>(initialService);
   const [name, setName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [timing, setTiming] = useState<string>('Hoy');
@@ -42,13 +40,13 @@ export default function QuickBookingModal({
     e.preventDefault();
 
     if (!name.trim()) {
-      setError('Por favor indícanos tu nombre.');
+      setError('Por favor ingresa tu nombre.');
       return;
     }
 
     const cleanPhone = phone.replace(/\D/g, '');
     if (cleanPhone.length < 10) {
-      setError('Por favor déjanos tu WhatsApp a 10 dígitos para coordinar tu horario.');
+      setError('Por favor ingresa tu WhatsApp a 10 dígitos.');
       return;
     }
 
@@ -73,17 +71,17 @@ export default function QuickBookingModal({
     // Meta Pixel Lead
     import('../lib/analytics').then(({ trackLead }) => trackLead());
 
-    // Mensaje de WhatsApp amable y personalizado
+    // Mensaje de WhatsApp pre-llenado al número de la óptica
     const msg = [
       '¡Hola Óptica Lensique! 👋',
-      'Me gustaría solicitar un horario para visitarlos:',
+      'Me gustaría agendar una cita:',
       '',
-      `• Motivo: ${service}`,
+      `• ¿Qué necesito?: ${service}`,
       `• Nombre: ${name.trim()}`,
       `• WhatsApp: ${cleanPhone}`,
-      `• Preferencia de día: ${timing}`,
+      `• ¿Cuándo?: ${timing}`,
       '',
-      '¿Qué horarios tienen disponibles? Muchas gracias.'
+      '¿Qué horarios tienen disponibles?'
     ].join('\n');
 
     const whatsappUrl = `https://wa.me/523316929111?text=${encodeURIComponent(msg)}`;
@@ -109,19 +107,19 @@ export default function QuickBookingModal({
 
         <div className="quick-booking-header">
           <div className="quick-booking-badge">
-            <Sparkles size={13} />
-            <span>Atención personalizada en Zapopan</span>
+            <Calendar size={14} />
+            <span>Atención en Zapopan</span>
           </div>
-          <h2 className="quick-booking-title">Nos encantará recibirte</h2>
+          <h2 className="quick-booking-title">Agenda tu cita</h2>
           <p className="quick-booking-subtitle">
-            Una consulta de 30 a 45 minutos dedicada a tu salud visual y tu estilo, con optometrista y sin prisas.
+            Déjanos tus datos y te confirmamos tu horario por WhatsApp.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="quick-booking-form">
-          {/* 1. ¿En qué podemos ayudarte? */}
+          {/* 1. ¿Qué necesitas? */}
           <div className="qb-field-group">
-            <label className="qb-label">1. ¿En qué te podemos ayudar?</label>
+            <label className="qb-label">1. ¿Qué necesitas?</label>
             <div className="qb-pills-grid">
               {SERVICES.map((item) => {
                 const isSelected = service === item;
@@ -142,7 +140,7 @@ export default function QuickBookingModal({
 
           {/* 2. Tu nombre */}
           <div className="qb-field-group">
-            <label className="qb-label" htmlFor="qb-name-input">2. ¿Cómo te llamas?</label>
+            <label className="qb-label" htmlFor="qb-name-input">2. Tu nombre completo</label>
             <input
               id="qb-name-input"
               type="text"
@@ -156,7 +154,7 @@ export default function QuickBookingModal({
 
           {/* 3. WhatsApp (10 dígitos) */}
           <div className="qb-field-group">
-            <label className="qb-label" htmlFor="qb-phone-input">3. Tu WhatsApp de contacto</label>
+            <label className="qb-label" htmlFor="qb-phone-input">3. Tu WhatsApp (10 dígitos)</label>
             <div className="qb-phone-wrap">
               <span className="qb-phone-prefix">🇲🇽 +52</span>
               <input
@@ -176,9 +174,9 @@ export default function QuickBookingModal({
             </div>
           </div>
 
-          {/* 4. ¿Cuándo te gustaría visitarnos? */}
+          {/* 4. ¿Cuándo te gustaría? */}
           <div className="qb-field-group">
-            <label className="qb-label">4. ¿Cuándo prefieres visitarnos?</label>
+            <label className="qb-label">4. ¿Cuándo prefieres venir?</label>
             <div className="qb-pills-grid qb-pills-timing">
               {TIMINGS.map((item) => {
                 const isSelected = timing === item;
@@ -203,14 +201,14 @@ export default function QuickBookingModal({
             </div>
           )}
 
-          {/* Botón de confirmación amable */}
+          {/* Botón de confirmación */}
           <button type="submit" className="qb-submit-btn">
             <MessageCircle size={19} />
-            <span>Solicitar horario por WhatsApp</span>
+            <span>Confirmar por WhatsApp</span>
           </button>
 
           <div className="qb-footer-note">
-            <span>📍 Av. Guadalupe 1296, Zapopan · Sin costo si adquieres tus lentes · Sin compromiso</span>
+            <span>📍 Av. Guadalupe 1296, Zapopan · Sin compromiso</span>
           </div>
         </form>
       </div>

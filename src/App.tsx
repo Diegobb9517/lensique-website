@@ -2502,14 +2502,15 @@ function App() {
         />
 
         {!isCartOpen && !isQuickBookingOpen && !isBookingOpen && !selectedInfoPage && !configuratorProduct && !selectedProductDetail && (
-          <button
-            className="mobile-floating-agenda-capsule"
-            onClick={() => handleOpenQuickBooking('Examen de la vista completo', 'mobile_floating_capsule')}
-            aria-label="Agendar cita"
-          >
-            <Calendar size={15} />
-            <span>Agendar cita</span>
-          </button>
+          <div className="mobile-sticky-agenda-bar">
+            <button
+              className="mobile-sticky-agenda-btn"
+              onClick={() => handleOpenQuickBooking('Examen de la vista', 'mobile_sticky_bar')}
+            >
+              <Calendar size={18} />
+              <span>Agenda tu examen</span>
+            </button>
+          </div>
         )}
 
         {/* Booking Modal */}
@@ -2699,7 +2700,7 @@ function App() {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else if (link.name === 'Examen') {
                       e.preventDefault();
-                      handleOpenQuickBooking('Examen de la vista completo', 'header_nav_link');
+                      handleOpenQuickBooking('Examen de la vista', 'header_nav_link');
                     }
                   }}
                 >
@@ -2708,23 +2709,13 @@ function App() {
               ))}
               <button 
                 className="btn-header-agenda"
-                onClick={() => handleOpenQuickBooking('Examen de la vista completo', 'header')}
+                onClick={() => handleOpenQuickBooking('Examen de la vista', 'header')}
               >
-                <Calendar size={14} />
-                <span>Agendar cita</span>
+                Agenda tu cita
               </button>
             </div>
 
             <div className="nav-right">
-              <button 
-                className="mobile-header-agenda-btn"
-                onClick={() => handleOpenQuickBooking('Examen de la vista completo', 'mobile_header')}
-                title="Agendar cita en Zapopan"
-              >
-                <Calendar size={13} />
-                <span>Agendar</span>
-              </button>
-
               <button className="nav-icon-btn" onClick={() => setIsCartOpen(true)} style={{ position: 'relative' }}>
                 <ShoppingBag size={24} />
                 {items.length > 0 && (
@@ -2975,11 +2966,11 @@ function App() {
             <div className="hero-actions-left">
               <button 
                 className="btn btn-wp-primary" 
-                onClick={() => handleOpenQuickBooking('Examen de la vista completo', 'hero')}
+                onClick={() => handleOpenQuickBooking('Examen de la vista', 'hero')}
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                <Calendar size={16} />
-                <span>Agendar examen visual</span>
+                <Calendar size={18} />
+                <span>Agenda tu examen</span>
               </button>
               <button 
                 className="btn btn-wp-secondary" 
@@ -2991,12 +2982,8 @@ function App() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               >
-                Explorar catálogo
+                Ver Catálogo
               </button>
-            </div>
-            <div className="hero-reassurance-text" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.85)', marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ color: '#c5a880' }}>✦</span>
-              <span>Atención personalizada en Zapopan · Consulta de 30 a 45 min</span>
             </div>
             <div className="hero-link">
               <a href="#populares" onClick={(e) => { e.preventDefault(); document.getElementById('populares')?.scrollIntoView({behavior: 'smooth'})}}>

@@ -1322,25 +1322,25 @@
   }
 
   .cl-rx-eye-card {
-    background: var(--lsq-soft);
-    border: 1px solid var(--lsq-line);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 14px;
-    padding: 14px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   }
 
   .cl-rx-eye-header {
     font-size: 13.5px;
     font-weight: 700;
     color: var(--lsq-navy);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
   }
 
   .cl-rx-fields-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
   }
 
   .cl-field-group {

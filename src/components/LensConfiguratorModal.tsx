@@ -1113,7 +1113,7 @@ export default function LensConfiguratorModal({
                       {/* Versión móvil de graduación (tarjetas ordenadas por ojo) */}
                       <div className="lsq-rx-mobile-cards">
                         <div className="lsq-rx-eye-card">
-                          <div className="lsq-rx-eye-header">👁️ Ojo derecho (OD)</div>
+                          <div className="lsq-rx-eye-header">Ojo derecho (OD)</div>
                           <div className="lsq-rx-fields-row">
                             <div className="lsq-rx-field">
                               <label>Esfera</label>
@@ -1151,7 +1151,7 @@ export default function LensConfiguratorModal({
 
                         {!sameEye ? (
                           <div className="lsq-rx-eye-card">
-                            <div className="lsq-rx-eye-header">👁️ Ojo izquierdo (OI)</div>
+                            <div className="lsq-rx-eye-header">Ojo izquierdo (OI)</div>
                             <div className="lsq-rx-fields-row">
                               <div className="lsq-rx-field">
                                 <label>Esfera</label>

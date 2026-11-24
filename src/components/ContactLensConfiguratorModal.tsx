@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { X } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { toTitleCase, formatContactLensTitle, getContactLensFormat } from '../lib/format';
 import { RxGuide } from './RxGuide';
 import './ContactLensConfiguratorModal.css';
@@ -1020,7 +1020,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                       <div className="cl-rx-mobile-cards">
                         {odOn && (
                           <div className="cl-rx-eye-card">
-                            <div className="cl-rx-eye-header">👁️ Ojo derecho (OD)</div>
+                            <div className="cl-rx-eye-header">Ojo derecho (OD)</div>
 
                             <div className="cl-rx-fields-grid">
                               <div className="cl-field-group">
@@ -1087,10 +1087,10 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
 
                         {oiOn && (
                           <div className="cl-rx-eye-card">
-                            <div className="cl-rx-eye-header">👁️ Ojo izquierdo (OI)</div>
+                            <div className="cl-rx-eye-header">Ojo izquierdo (OI)</div>
                             {samePrescription ? (
-                              <div style={{ fontSize: '13px', color: 'var(--lsq-green)', fontWeight: 600, padding: '4px 0' }}>
-                                ✓ Mismos datos que el ojo derecho
+                              <div style={{ fontSize: '13px', color: '#15803d', fontWeight: 600, padding: '8px 12px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <Check size={16} strokeWidth={2.5} /> Mismos datos que el ojo derecho
                               </div>
                             ) : (
                               <div className="cl-rx-fields-grid">

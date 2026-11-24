@@ -2917,7 +2917,7 @@ function App() {
             <div className="perk-separator"></div>
             <div className="perk-item">Micas de alta calidad</div>
             <div className="perk-separator"></div>
-            <div className="perk-item">Asesoría de imagen</div>
+            <div className="perk-item">Envíos a todo México</div>
             <div className="perk-separator"></div>
             <div className="perk-item">Garantía de adaptación</div>
           </div>

@@ -134,7 +134,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   onSelectAction(product);
                 }}
               >
-                Seleccionar
+                Elegir micas
               </button>
             )}
           </div>
@@ -218,7 +218,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           
           {onSelectAction && (
             <span className="wp-card-cta-hover">
-              {isContactLens ? 'Ver detalles ›' : 'Personalizar ›'}
+              {isContactLens ? 'Ver detalles ›' : 'Elegir micas ›'}
             </span>
           )}
         </div>

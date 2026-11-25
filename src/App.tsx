@@ -2166,11 +2166,12 @@ function App() {
                         });
                         setSelectedProductDetail(null);
                       } else {
+                        setSelectedProductDetail(null);
                         setConfiguratorProduct(selectedProductDetail); 
                       }
                     }}
                   >
-                    {isSun ? 'Comprar por WhatsApp' : 'Agregar al carrito'}
+                    {isSun ? 'Comprar por WhatsApp' : 'Elegir micas y graduación'}
                   </button>
 
 

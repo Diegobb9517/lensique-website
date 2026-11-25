@@ -15,7 +15,7 @@
   inset: 0;
   background-color: rgba(22, 34, 63, 0.45);
   backdrop-filter: blur(4px);
-  z-index: 10000;
+  z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;

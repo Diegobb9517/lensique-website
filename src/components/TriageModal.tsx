@@ -74,8 +74,8 @@ export const TriageModal: React.FC<TriageModalProps> = ({ onClose, onSelectServi
     if (!finalRoute) {
       return (
         <div className="triage-step-1" style={{ position: 'relative' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '8px', textAlign: 'center' }}>¿Cuál es el motivo de su visita?</h2>
-          <p style={{ color: '#4b5563', marginBottom: '20px', textAlign: 'center', fontSize: '0.95rem' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '8px', textAlign: 'center', padding: '0 36px', marginTop: '6px' }}>¿Cuál es el motivo de su visita?</h2>
+          <p style={{ color: '#4b5563', marginBottom: '20px', textAlign: 'center', fontSize: '0.95rem', padding: '0 16px' }}>
             Seleccione todas las opciones que apliquen. Le indicaremos el tipo de cita adecuado.
           </p>
           <div className="triage-options-list" style={{
@@ -397,7 +397,7 @@ export const TriageModal: React.FC<TriageModalProps> = ({ onClose, onSelectServi
         maxHeight: '90vh',
         overflowY: 'auto',
         position: 'relative',
-        padding: '24px 20px',
+        padding: '28px 20px 24px',
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
       }}>
         <button

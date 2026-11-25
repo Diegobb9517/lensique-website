@@ -1937,7 +1937,9 @@ function App() {
 
             return (
               <motion.div
+                key="product-detail-modal-overlay"
                 className="product-detail-overlay"
+                style={{ zIndex: 99999 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -1990,9 +1992,6 @@ function App() {
                     </div>
                     {specs && (
                       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', margin: '8px 0 12px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#334155', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '3px 10px', whiteSpace: 'nowrap' }}>
-                          {specs.bc} · {specs.dia}
-                        </span>
                         <span style={{ fontSize: '11px', fontWeight: 500, color: '#475569', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '999px', padding: '3px 10px', whiteSpace: 'nowrap' }}>
                           {specs.usage}
                         </span>
@@ -2047,12 +2046,14 @@ function App() {
 
           return (
             <motion.div
-              className="product-detail-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedProductDetail(null)}
-            >
+                key="product-detail-modal-overlay"
+                className="product-detail-overlay"
+                style={{ zIndex: 99999 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedProductDetail(null)}
+              >
               <motion.div
                 className="product-detail-modal"
                 initial={{ opacity: 0, y: 40 }}
@@ -2477,17 +2478,7 @@ function App() {
           <TriageModal onClose={() => setIsTriageOpen(false)} onSelectService={handleOpenBooking} />
         )}
 
-        {!isCartOpen && !isBookingOpen && !selectedInfoPage && !configuratorProduct && !selectedProductDetail && (
-          <div className="mobile-sticky-agenda-bar">
-            <button
-              className="mobile-sticky-agenda-btn"
-              onClick={() => handleOpenBooking('Examen de la Vista')}
-            >
-              <Calendar size={18} />
-              <span>Agenda tu examen</span>
-            </button>
-          </div>
-        )}
+        {/* Mobile sticky agenda bar removed - Agenda CTA is strategic in hero, nav and service cards */}
 
         {/* Booking Modal */}
         <AnimatePresence>

@@ -151,16 +151,6 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
             options={getAddOptions()}
             onChange={(val: string) => setValues({ ...values, add: val })}
           />
-          
-          <div className="cl-wp-input-wrapper is-readonly">
-            <label>Curva Base (BC)</label>
-            <input type="text" value="8.6" readOnly />
-          </div>
-
-          <div className="cl-wp-input-wrapper is-readonly">
-            <label>Diámetro (DIA)</label>
-            <input type="text" value="14.5" readOnly />
-          </div>
         </div>
       </div>
     );
@@ -319,8 +309,8 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
                 <img src={eyeExamImg} alt="Examen de vista" className="clq-exam-img" />
                 <h3 className="clq-step-title">¡No te preocupes!</h3>
                 <p className="clq-step-desc" style={{marginBottom:'24px', maxWidth:'500px', margin:'0 auto 16px'}}>
-                  Para usar lentes de contacto por primera vez o renovarlos, necesitas una <strong>adaptación especial</strong> y medidas precisas de tu ojo (curva base, diámetro, graduación exacta).<br/><br/>
-                  Agenda una cita con nuestro oftalmólogo certificado. Nosotros nos encargamos de todo para que uses lentes de contacto con total seguridad y comodidad.
+                  Para usar lentes de contacto por primera vez o renovarlos, te recomendamos realizarte una valoración visual para determinar tu graduación adecuada y el tipo de lente ideal para tus ojos.<br/><br/>
+                  Agenda una cita con nuestro oftalmólogo certificado. Nosotros te asesoramos para que uses lentes de contacto con total seguridad y comodidad.
                 </p>
                 <div className="clq-actions">
                   <button className="clq-btn-back" onClick={handleBack}>Regresar</button>

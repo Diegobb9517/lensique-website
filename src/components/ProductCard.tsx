@@ -53,6 +53,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     onClick(product);
   };
   
@@ -64,6 +65,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         className={`product-card-editorial hover-scale ${isContactLens ? 'contact-lens-card' : ''} ${className}`}
         style={{ cursor: 'pointer', ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {}), ...style }}
+        onClick={handleCardClick}
+        role="button"
+        tabIndex={0}
       >
         <a 
           href={href} 
@@ -143,12 +147,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div 
       className={`${isContactLens ? 'contact-lens-card' : ''} ${className}`}
-      style={{ ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {}), ...style }}
+      style={{ ...(isContactLens ? { background: '#ffffff', backgroundColor: '#ffffff' } : {}), cursor: 'pointer', ...style }}
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
     >
       <a 
         href={href}
         onClick={handleCardClick}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}
+        style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%', cursor: 'pointer' }}
       >
         <div className="product-card-badge-row" style={{ minHeight: '22px', marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
           {isFrame ? (
@@ -211,7 +218,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           
           {onSelectAction && (
             <span className="wp-card-cta-hover">
-              Personalizar ›
+              {isContactLens ? 'Ver detalles ›' : 'Personalizar ›'}
             </span>
           )}
         </div>

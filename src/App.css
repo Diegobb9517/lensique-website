@@ -4677,8 +4677,9 @@ body.no-scroll .whatsapp-float {
   .whatsapp-float {
     width: 56px !important;
     height: 56px !important;
-    bottom: 20px !important;
-    right: 16px !important;
+    bottom: 24px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
     background-color: #25D366 !important;
     box-shadow: 0 8px 25px rgba(37, 211, 102, 0.45) !important;
   }
@@ -6218,7 +6219,7 @@ body.no-scroll .whatsapp-float {
 }
 
 .mobile-sticky-agenda-bar {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 768px) {
@@ -6262,6 +6263,6 @@ body.no-scroll .whatsapp-float {
   }
 
   body {
-    padding-bottom: 72px;
+    /* padding-bottom: 72px removed */
   }
 }

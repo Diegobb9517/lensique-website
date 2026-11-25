@@ -459,7 +459,7 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
             <span className="cl-eyebrow">Variedad y tecnología</span>
             <h2 className="cl-section-title">Tipos que manejamos</h2>
             <p className="cl-section-desc">
-              Cada estilo de vida y necesidad visual cuenta con una opción de reemplazo y curvatura diseñada para ti.
+              Cada estilo de vida y necesidad visual cuenta con una opción de reemplazo y graduación diseñada para ti.
             </p>
           </div>
 

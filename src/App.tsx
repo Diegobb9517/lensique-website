@@ -34,7 +34,6 @@ import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLens
 import { getOfficialHdImage, getContactLensCardSpecs } from './lib/productImages';
 import { BASE_LENS_PRICE } from './lib/constants';
 import MicaDetailModal from './components/MicaDetailModal';
-import QuickBookingModal from './components/QuickBookingModal';
 import { ProductCard, FormatProductName } from './components/ProductCard';
 import { CollectionRow } from './components/CollectionRow';
 import { CustomSelect } from './components/CustomSelect';
@@ -1304,22 +1303,6 @@ function App() {
 
   
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [isQuickBookingOpen, setIsQuickBookingOpen] = useState(false);
-  const [quickBookingService, setQuickBookingService] = useState('Examen de la vista');
-  const [quickBookingSource, setQuickBookingSource] = useState('unknown');
-
-  const handleOpenQuickBooking = (service = 'Examen de la vista', source = 'unknown') => {
-    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'agendar_cita', {
-        service,
-        source,
-        pagina: window.location.pathname
-      });
-    }
-    setQuickBookingService(service);
-    setQuickBookingSource(source);
-    setIsQuickBookingOpen(true);
-  };
   const [isBookingFromTriage, setIsBookingFromTriage] = useState(false);
   const [bookingReasons, setBookingReasons] = useState<string | null>(null);
   const [selectedInfoPage, setSelectedInfoPage] = useState<InfoPageData | null>(null);
@@ -2494,18 +2477,11 @@ function App() {
           <TriageModal onClose={() => setIsTriageOpen(false)} onSelectService={handleOpenBooking} />
         )}
 
-        <QuickBookingModal
-          isOpen={isQuickBookingOpen}
-          onClose={() => setIsQuickBookingOpen(false)}
-          initialService={quickBookingService}
-          source={quickBookingSource}
-        />
-
-        {!isCartOpen && !isQuickBookingOpen && !isBookingOpen && !selectedInfoPage && !configuratorProduct && !selectedProductDetail && (
+        {!isCartOpen && !isBookingOpen && !selectedInfoPage && !configuratorProduct && !selectedProductDetail && (
           <div className="mobile-sticky-agenda-bar">
             <button
               className="mobile-sticky-agenda-btn"
-              onClick={() => handleOpenQuickBooking('Examen de la vista', 'mobile_sticky_bar')}
+              onClick={() => handleOpenBooking('Examen de la Vista')}
             >
               <Calendar size={18} />
               <span>Agenda tu examen</span>
@@ -2700,7 +2676,7 @@ function App() {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else if (link.name === 'Examen') {
                       e.preventDefault();
-                      handleOpenQuickBooking('Examen de la vista', 'header_nav_link');
+                      handleOpenBooking('Examen de la Vista');
                     }
                   }}
                 >
@@ -2751,7 +2727,7 @@ function App() {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else if (link.name === 'Examen') {
                       e.preventDefault();
-                      handleOpenQuickBooking('Examen de la vista', 'mobile_menu_link');
+                      handleOpenBooking('Examen de la Vista');
                     }
                     setIsMobileMenuOpen(false);
                   }}
@@ -2936,7 +2912,7 @@ function App() {
             <div className="hero-actions-left">
               <button 
                 className="btn btn-wp-primary" 
-                onClick={() => handleOpenQuickBooking('Examen de la vista', 'hero')}
+                onClick={() => handleOpenBooking('Examen de la Vista')}
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <Calendar size={18} />

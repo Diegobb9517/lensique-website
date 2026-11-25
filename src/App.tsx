@@ -2271,8 +2271,7 @@ function App() {
                 configText += `- Ojo Izquierdo (OS):\n  ${formatEye(clConfig.prescriptionOS)}\n`;
               }
             }
-            configText += `- Curva Base (BC): ${clConfig.prescriptionOD.bc || '8.6'}\n`;
-            configText += `- Diámetro (DIA): ${clConfig.prescriptionOD.dia || '14.5'}\n`;
+            // Curva base y diametro removed as requested
             configText += `- Cantidad: ${clConfig.quantityOD} OD / ${clConfig.quantityOS} OS\n`;
             
             if (clConfig.hasPhoto) {

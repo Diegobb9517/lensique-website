@@ -51,7 +51,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const minWithLenses = displayPrice + 1899;
   const specs = isContactLens ? getContactLensCardSpecs(product) : null;
 
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleCardClick = (e: React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onClick(product);

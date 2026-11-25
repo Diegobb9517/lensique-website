@@ -3200,9 +3200,11 @@ body.no-scroll {
   position: relative;
   overflow: hidden;
 }
-.wp-product-card:hover {
-  box-shadow: 0 12px 32px rgba(0,0,0,0.05);
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .wp-product-card:hover {
+    box-shadow: 0 12px 32px rgba(0,0,0,0.05);
+    transform: translateY(-4px);
+  }
 }
 
 .wp-card-header {
@@ -3347,9 +3349,11 @@ body.no-scroll {
   transform: translateY(10px);
   transition: all 0.3s var(--swift);
 }
-.wp-product-card:hover .wp-card-cta-hover {
-  opacity: 1;
-  transform: translateY(0);
+@media (hover: hover) and (pointer: fine) {
+  .wp-product-card:hover .wp-card-cta-hover {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .wp-card-btn {
@@ -6218,51 +6222,12 @@ body.no-scroll .whatsapp-float {
   box-shadow: 0 4px 12px rgba(22, 34, 63, 0.15);
 }
 
-.mobile-sticky-agenda-bar {
-  display: none !important;
-}
+/* mobile sticky bar removed */
 
 @media (max-width: 768px) {
-  .mobile-sticky-agenda-bar {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-sticky-agenda-btn {
-    width: 100%;
-    background-color: #0b3d91;
-    color: #ffffff;
-    border: none;
-    border-radius: 999px;
-    padding: 14px 20px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 14px rgba(11, 61, 145, 0.25);
-    transition: transform 0.15s ease;
-  }
-
-  .mobile-sticky-agenda-btn:active {
-    transform: scale(0.98);
-  }
-
-  body {
-    /* padding-bottom: 72px removed */
+  .wp-card-cta-hover {
+    opacity: 1 !important;
+    transform: none !important;
+    display: inline-block !important;
   }
 }

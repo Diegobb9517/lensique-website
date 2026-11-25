@@ -91,9 +91,7 @@ export const RxGuide: React.FC<RxGuideProps> = ({ isToric, isMultifocal }) => {
           </div>
         )}
         
-        <div style={{ marginTop: '12px', fontSize: '11px', color: '#64748b' }}>
-          *Nota: La Curva Base (BC) y Diámetro (DIA) ya vienen preconfigurados por el fabricante.
-        </div>
+        
       </div>
 
     </div>

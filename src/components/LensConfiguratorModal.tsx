@@ -1405,7 +1405,7 @@ export default function LensConfiguratorModal({
                     <span>· Paso 3 de 3</span>
                   </div>
                   <h2 className="lsq-title">Resumen</h2>
-                  <p className="lsq-sub">Revisa tu configuración.</p>
+                  <p className="lsq-sub">Revisa tu selección de micas.</p>
 
                   {/* Alerta de prescripción fuera de rango en línea */}
                   {tab === 'rx' && feasibleIndices.length === 0 && (

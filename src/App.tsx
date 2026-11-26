@@ -2171,7 +2171,7 @@ function App() {
                       }
                     }}
                   >
-                    {isSun ? 'Comprar por WhatsApp' : 'Elegir micas y graduación'}
+                    {isSun ? 'Comprar por WhatsApp' : 'Elegir micas'}
                   </button>
 
 

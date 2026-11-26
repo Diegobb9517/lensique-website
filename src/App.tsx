@@ -1398,9 +1398,15 @@ function App() {
           setSelectedProduct('Examen de la Vista');
           setIsBookingOpen(true);
         } else if (path === '/catalogo') {
-          setCatalogInitialFilter(getInitialCatalogFilter());
-          setIsCatalogOpen(true);
-          setCurrentPath('/catalogo');
+          if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('servicios')) {
+            setIsCatalogOpen(false);
+            setCurrentPath('/');
+            window.history.replaceState(null, '', '/#servicios');
+          } else {
+            setCatalogInitialFilter(getInitialCatalogFilter());
+            setIsCatalogOpen(true);
+            setCurrentPath('/catalogo');
+          }
         } else if (path.startsWith('/marca/')) {
           const slug = path.replace(/^\/marca\//, '').replace(/\/$/, '');
           const catalog = safeJsonParse(settings.full_catalog_data, []);
@@ -2669,7 +2675,7 @@ function App() {
                   href={link.href} 
                   className="nav-link"
                   onClick={(e) => {
-                    if (link.name === 'Catálogo') {
+                    if (link.name === 'Catálogo' || link.href === '/catalogo') {
                       e.preventDefault();
                       setCatalogInitialFilter('Todas');
                       setIsCatalogOpen(true);
@@ -2679,6 +2685,41 @@ function App() {
                     } else if (link.name === 'Examen') {
                       e.preventDefault();
                       handleOpenBooking('Examen de la Vista');
+                    } else if (link.name === 'Servicios' || link.href === '#servicios' || link.href.startsWith('#')) {
+                      e.preventDefault();
+                      const targetHash = link.href.startsWith('#') ? link.href : '#servicios';
+                      const targetId = targetHash.replace('#', '');
+                      setIsCatalogOpen(false);
+                      if (currentPath !== '/') {
+                        setCurrentPath('/');
+                        window.history.pushState(null, '', '/' + targetHash);
+                        setTimeout(() => {
+                          const target = document.getElementById(targetId) || document.querySelector(targetHash);
+                          if (target) target.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                      } else {
+                        window.history.pushState(null, '', targetHash);
+                        const target = document.getElementById(targetId) || document.querySelector(targetHash);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    } else if (link.href === '/micas') {
+                      e.preventDefault();
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/micas');
+                      window.history.pushState(null, '', '/micas');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.href === '/blog') {
+                      e.preventDefault();
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/blog');
+                      window.history.pushState(null, '', '/blog');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.href === '/nosotros') {
+                      e.preventDefault();
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/nosotros');
+                      window.history.pushState(null, '', '/nosotros');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                   }}
                 >
@@ -2767,17 +2808,21 @@ function App() {
                       setCurrentPath('/nosotros');
                       window.history.pushState(null, '', '/nosotros');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else if (link.href.startsWith('#')) {
+                    } else if (link.href.startsWith('#') || link.name === 'Servicios') {
                       e.preventDefault();
+                      const targetHash = link.href.startsWith('#') ? link.href : '#servicios';
+                      const targetId = targetHash.replace('#', '');
+                      setIsCatalogOpen(false);
                       if (currentPath !== '/') {
                         setCurrentPath('/');
-                        window.history.pushState(null, '', '/' + link.href);
+                        window.history.pushState(null, '', '/' + targetHash);
                         setTimeout(() => {
-                          const target = document.querySelector(link.href);
+                          const target = document.getElementById(targetId) || document.querySelector(targetHash);
                           if (target) target.scrollIntoView({ behavior: 'smooth' });
                         }, 100);
                       } else {
-                        const target = document.querySelector(link.href);
+                        window.history.pushState(null, '', targetHash);
+                        const target = document.getElementById(targetId) || document.querySelector(targetHash);
                         if (target) target.scrollIntoView({ behavior: 'smooth' });
                       }
                     }

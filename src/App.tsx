@@ -2705,22 +2705,41 @@ function App() {
         </nav>
       )}
 
-      {currentPath !== '/catalogo' && !currentPath.startsWith('/marca/') && (
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mobile-menu"
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="mobile-menu"
+          >
+            <a
+              href="/"
+              className="mobile-link"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsMobileMenuOpen(false);
+                setIsCatalogOpen(false);
+                setCurrentPath('/');
+                window.history.pushState(null, '', '/');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
-              {safeJsonParse(settings.nav_links).map((link: any, i: number) => (
+              <span>Inicio</span>
+              <span style={{ fontSize: '15px', color: '#94a3b8' }}>›</span>
+            </a>
+
+            {safeJsonParse(settings.nav_links).map((link: any, i: number) => {
+              if (link.name === 'Inicio' || link.href === '/') return null;
+              return (
                 <a 
                   key={`mob-${i}-${link.name}`} 
                   href={link.href} 
                   className="mobile-link" 
                   onClick={(e) => {
-                    if (link.name === 'Catálogo') {
+                    setIsMobileMenuOpen(false);
+                    if (link.name === 'Catálogo' || link.href === '/catalogo') {
                       e.preventDefault();
                       setCatalogInitialFilter('Todas');
                       setIsCatalogOpen(true);
@@ -2730,17 +2749,97 @@ function App() {
                     } else if (link.name === 'Examen') {
                       e.preventDefault();
                       handleOpenBooking('Examen de la Vista');
+                    } else if (link.href === '/micas') {
+                      e.preventDefault();
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/micas');
+                      window.history.pushState(null, '', '/micas');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.href === '/blog') {
+                      e.preventDefault();
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/blog');
+                      window.history.pushState(null, '', '/blog');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.href === '/nosotros') {
+                      e.preventDefault();
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/nosotros');
+                      window.history.pushState(null, '', '/nosotros');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.href.startsWith('#')) {
+                      e.preventDefault();
+                      if (currentPath !== '/') {
+                        setCurrentPath('/');
+                        window.history.pushState(null, '', '/' + link.href);
+                        setTimeout(() => {
+                          const target = document.querySelector(link.href);
+                          if (target) target.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                      } else {
+                        const target = document.querySelector(link.href);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                      }
                     }
-                    setIsMobileMenuOpen(false);
                   }}
                 >
-                  {link.name}
+                  <span>{link.name}</span>
+                  <span style={{ fontSize: '15px', color: '#94a3b8' }}>›</span>
                 </a>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
+              );
+            })}
+
+            <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleOpenBooking('Examen de la Vista');
+                }}
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  background: '#16223f',
+                  color: '#ffffff',
+                  borderRadius: '50px',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Calendar size={18} />
+                <span>Agendar examen de vista</span>
+              </button>
+              <a
+                href="https://wa.me/523316929111"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  if (typeof window !== 'undefined' && (window as any).fbq) (window as any).fbq('track', 'Lead');
+                }}
+                style={{
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  color: '#16a34a',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '6px'
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>💬</span> ¿Dudas? Escríbenos por WhatsApp
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main>
         {(currentPath === '/catalogo' || currentPath === '/armazones' || currentPath.startsWith('/marca/')) && (

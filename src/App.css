@@ -138,22 +138,41 @@ body.no-scroll {
 
 .mobile-menu {
   position: fixed;
-  top: 100px; /* offset for nav + banner */
+  top: 0;
   left: 0;
-  width: 100%;
-  height: calc(100vh - 100px);
-  background: white;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #ffffff;
   z-index: 999;
-  padding: 40px;
+  padding: 110px 24px 32px;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 6px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 .mobile-link {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--text-primary);
+  font-size: 19px;
+  font-weight: 600;
+  color: #16223f;
+  text-decoration: none;
+  padding: 14px 4px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s ease;
+}
+
+.mobile-link:active {
+  color: #2f6bff;
+  background: #f8fafc;
 }
 
 /* Hero Full-bleed */

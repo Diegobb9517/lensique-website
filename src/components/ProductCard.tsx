@@ -126,7 +126,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
             
             {onSelectAction && (
-              <button 
+              <span 
+                role="button"
+                tabIndex={0}
                 className="product-main-view-btn"
                 onClick={(e) => {
                   e.preventDefault();
@@ -135,7 +137,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 }}
               >
                 Elegir micas
-              </button>
+              </span>
             )}
           </div>
         </a>
@@ -217,7 +219,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           
           {onSelectAction && (
-            <span className="wp-card-cta-hover">
+            <span 
+              className="wp-card-cta-hover"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSelectAction(product);
+              }}
+            >
               {isContactLens ? 'Ver detalles ›' : 'Elegir micas ›'}
             </span>
           )}

@@ -1358,7 +1358,18 @@ function App() {
         if (catalog.length > 0) {
           const product = findProductBySlug(catalog, slug);
           if (product) {
-            setSelectedProductDetail(product);
+            const isContact = String(product.category || '').toLowerCase().includes('contacto');
+            const searchParams = new URLSearchParams(window.location.search);
+            const autoConfigure = searchParams.has('configurar') || searchParams.has('micas');
+            if (autoConfigure) {
+              if (isContact) {
+                setContactConfiguratorProduct(product);
+              } else {
+                setConfiguratorProduct(product);
+              }
+            } else {
+              setSelectedProductDetail(product);
+            }
             setIs404Product(false);
           } else {
             setSelectedProductDetail(null);

@@ -15,7 +15,7 @@
   inset: 0;
   background-color: rgba(22, 34, 63, 0.45);
   backdrop-filter: blur(4px);
-  z-index: 100000;
+  z-index: 200000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -245,7 +245,7 @@
 
 @media (max-width: 860px) {
   .lsq-right {
-    padding: 20px 16px;
+    padding: 20px 16px 96px;
     height: auto;
     overflow-y: visible;
   }
@@ -1225,6 +1225,7 @@
     background: #ffffff !important;
     border-top: 1px solid var(--lsq-line) !important;
     padding: 12px 16px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
     z-index: 500 !important;
     box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.08) !important;
   }

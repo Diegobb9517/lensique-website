@@ -946,6 +946,80 @@ sitemapUrls.push(blogIndexCanonical);
 
 const blogPostsData = [
     {
+      slug: 'guia-indices-micas-lentes-delgados-zeiss-174',
+      title: 'Índice de refracción en micas: cómo tener lentes delgados y estéticos con graduación alta (1.50 vs 1.60 vs 1.67 vs 1.74) | Óptica Lensique',
+      metaDescription: '¿Tienes miopía o astigmatismo alto y temes que tus micas queden gruesas o pesadas? Guía completa sobre los índices de refracción (1.50, 1.60, 1.67 y ZEISS 1.74 Ultra Delgada), comparativa de grosor y cómo elegir armazón en Lensique, Zapopan.',
+      image: 'https://www.lensique.com.mx/assets/DSC09710.jpg',
+      author: 'Equipo Óptica Lensique (revisado por oftalmólogo)',
+      datePublished: '2024-03-26T10:00:00Z',
+      excerpt: '¿Graduación alta y miedo al efecto "fondo de botella"? Conoce cómo funcionan los índices de refracción (1.50, 1.60, 1.67 y ZEISS 1.74), qué tanto adelgazan tus micas y cómo elegir el armazón ideal.',
+      body: `# Índice de refracción en micas: cómo tener lentes delgados con graduación alta (1.50 vs 1.60 vs 1.67 vs 1.74)
+
+Si tienes miopía, hipermetropía o astigmatismo medio o alto (más de 3, 4 o hasta 8 dioptrías), es muy probable que hayas pasado por esta frustración: vas a una óptica, eliges un armazón bonito y ligero, pero al momento de la entrega las micas sobresalen por los lados, pesan sobre la nariz y hacen que tus ojos se vean notablemente más pequeños detrás del lente.
+
+Durante décadas, la respuesta común era resignarse: *"con esa graduación, es normal que quede grueso"*, o te obligaban a usar armazones toscos de pasta negra para ocultar el borde del lente.
+
+Afortunadamente, la tecnología óptica ha evolucionado. Hoy en día, gracias a los **materiales de alto índice de refracción y el tallado digital de precisión alemana (como ZEISS)**, es totalmente posible tener lentes graduados delgados, ligeros y estéticos, incluso con recetas elevadas. Aquí te explicamos sin tecnicismos cómo funciona y cuál índice le corresponde a tus ojos.
+
+## ¿Qué es el "índice de refracción" en español sencillo?
+
+En óptica, el índice de refracción es simplemente un número que mide **qué tan eficiente es el material de la mica para doblar y enfocar la luz**.
+
+- **A menor índice:** el material necesita **más volumen y espesor** para lograr desviar los rayos de luz y corregir tu vista.
+- **A mayor índice:** el material desvía la luz con mayor facilidad, por lo que se requiere **mucho menos grosor de material** para lograr exactamente la misma graduación.
+
+El resultado práctico: dos micas con exactamente la misma graduación pueden tener un espesor drásticamente distinto dependiendo del índice de refracción con el que fueron fabricadas.
+
+## Comparativa de índices: ¿cuál es la diferencia entre 1.50, 1.60, 1.67 y 1.74?
+
+### 1. Índice 1.50 (Estándar · El material clásico)
+Es el material orgánico convencional (CR-39) que se utiliza de base en la mayoría de las ópticas.
+- **Para quién es:** graduaciones bajas (entre 0.00 y ±2.00 dioptrías).
+- **Ventajas:** excelente claridad óptica y precio más económico.
+- **Limitación:** en graduaciones mayores a -2.50 D, el borde de la mica comienza a engrosarse visiblemente y a ganar peso.
+
+### 2. Índice 1.60 (Adelgazada · 20% más fina)
+Es el primer salto hacia el alto índice.
+- **Para quién es:** graduaciones medias (entre ±2.00 y ±4.00 dioptrías).
+- **Ventajas:** es aproximadamente un **20% más delgada y ligera** que la mica estándar. Además, es un material con altísima resistencia a impactos y fracturas, ideal para armazones ranurados o perforados.
+- **Limitación:** en graduaciones superiores a -4.50 D, el borde aún puede asomarse en armazones delgados de metal.
+
+### 3. Índice 1.67 (Extra Delgada · 30% a 35% más fina)
+Un material de alto índice diseñado para quienes buscan mayor estética y ligereza.
+- **Para quién es:** graduaciones medias a altas (entre ±4.00 y ±6.00 dioptrías).
+- **Ventajas:** hasta **35% más delgada** que una mica estándar. Reduce drásticamente el peso sobre el puente nasal y oculta el espesor en la mayoría de armazones de acetato o metal.
+
+### 4. Índice 1.74 (ZEISS Ultra Delgada · La máxima delgadez mundial)
+El material orgánico más delgado y avanzado disponible en la industria óptica moderna.
+- **Para quién es:** miopías y astigmatismos altos (desde -4.00 hasta -12.00 dioptrías o más).
+- **Ventajas:** hasta **40% más delgada y ligera** que una mica convencional. Su diseño asférico y tallado digital punto por punto de ZEISS permite que el lente quede **al ras del armazón**, eliminando el temido borde pesado y desbordado.
+- **Beneficio estético único:** mantiene la proporción y el tamaño natural de tus ojos sin distorsiones en la mirada.
+
+## ¿Por qué se ven los ojos "chiquitos" con miopía y cómo lo soluciona el 1.74?
+
+Las micas para miopía son cóncavas: delgadas en el centro y gruesas en los extremos. Ópticamente, funcionan como un lente reductor, lo que provoca el famoso efecto de "ojos achicados" cuando alguien te mira desde afuera.
+
+Al usar una mica de **alto índice 1.74 con tecnología ZEISS**:
+1. **La curvatura es mucho más plana (diseño asférico):** la mica se coloca más cerca del ojo, disminuyendo el efecto óptico de minimización.
+2. **Menos peso y menos presión:** al pesar hasta un 40% menos, el armazón no se desliza constantemente por tu nariz a lo largo del día.
+3. **Nitidez periférica total:** se eliminan las distorsiones molestas en los extremos laterales del campo visual.
+
+## 3 Consejos de oro para elegir armazón con graduación alta
+
+1. **Cuida el tamaño del armazón (calibre):** en miopía, el grosor aumenta conforme te alejas del centro hacia los bordes. Un armazón con aros de tamaño mediano (48 a 52 mm) reduce drásticamente el grosor visible frente a un armazón gigante "oversize".
+2. **Formas redondeadas o suaves:** los armazones con esquinas muy afiladas o rectangulares alargadas tienden a mostrar más grosor en los vértices externos. Las formas ligeramente redondeadas o tipo panto disimulan el grosor a la perfección.
+3. **Centrado pupilar exacto:** en Lensique medimos tu distancia interpupilar y altura de montaje milimétricamente con equipo de diagnóstico digital, asegurando que el centro óptico quede justo frente a tu pupila.
+
+## ¿Tienes dudas sobre qué índice necesita tu receta?
+
+En **Óptica Lensique (Zapopan, Guadalajara)** contamos con optometristas y respaldo de oftalmólogo para revisar tu graduación de forma personalizada. 
+
+- Puedes **enviarnos una foto de tu receta por WhatsApp** y te decimos con total honestidad qué material te conviene.
+- O puedes **agendar tu examen de la vista completo** en nuestro consultorio en Av. Guadalupe.
+
+[Agenda tu examen de la vista en Zapopan](/#servicios) · [Ver catálogo de armazones](/catalogo) · [Conoce nuestras micas ZEISS](/micas) · [Cotizador en línea](/cotizador)`
+    },
+    {
     slug: 'monofocal-bifocal-o-progresivo',
     title: 'Monofocales, bifocales o progresivos: ¿cuál necesitas? | Óptica Lensique',
     metaDescription: 'Diferencias claras entre micas monofocales, bifocales y progresivas: para quién es cada una, ventajas, adaptación y precio. Explicado por Óptica Lensique, Zapopan.',

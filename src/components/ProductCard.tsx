@@ -118,10 +118,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <div style={{ textAlign: 'center' }}>
               <span className="product-price-label tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
             </div>
-            {isFrame && (
-              <p style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
-                Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
-              </p>
+            {isFrame ? (
+              <>
+                <p style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
+                  Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
+                </p>
+                {minWithLenses >= 2500 && (
+                  <p style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '2px' }}>
+                    o desde ${Math.round(minWithLenses / 12).toLocaleString('es-MX')}/mes a 12 MSI
+                  </p>
+                )}
+              </>
+            ) : (
+              displayPrice >= 2500 && (
+                <p style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '2px' }}>
+                  o desde ${Math.round(displayPrice / 12).toLocaleString('es-MX')}/mes a 12 MSI
+                </p>
+              )
             )}
 
             
@@ -211,10 +224,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div style={{ textAlign: 'center', marginTop: '6px' }}>
             <span className="wp-product-price tabular-nums">${displayPrice.toLocaleString('es-MX')}{isContactLens ? ' / caja' : ''}</span>
           </div>
-          {isFrame && (
-            <p style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
-              Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
-            </p>
+          {isFrame ? (
+            <>
+              <p style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
+                Armazón solo · desde ${minWithLenses.toLocaleString('es-MX')} con micas
+              </p>
+              {minWithLenses >= 2500 && (
+                <p style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '2px' }}>
+                  o desde ${Math.round(minWithLenses / 12).toLocaleString('es-MX')}/mes a 12 MSI
+                </p>
+              )}
+            </>
+          ) : (
+            displayPrice >= 2500 && (
+              <p style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '2px' }}>
+                o desde ${Math.round(displayPrice / 12).toLocaleString('es-MX')}/mes a 12 MSI
+              </p>
+            )
           )}
 
           

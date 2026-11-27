@@ -79,24 +79,29 @@ export const trackAddToCart = (product: any, value: number) => {
 export const trackBeginCheckout = (cartTotal: number, items: any[]) => {
   if (typeof window === 'undefined') return;
   
-  const mappedItems = items.map(i => ({
-    item_id: i.id || i.product?.id || 'custom',
-    item_name: i.name || i.product?.name || 'Micas',
-    price: i.price
-  }));
+  const mappedItems = (items || [])
+    .filter(i => i.id !== 'SHIPPING' && !i._buyerInfo)
+    .map(i => ({
+      item_id: String(i.id || i.product?.id || 'custom'),
+      item_name: String(i.title || i.name || i.product?.name || 'Producto Lensique'),
+      price: Number(i.unit_price ?? i.price ?? 0),
+      quantity: Number(i.quantity ?? 1)
+    }));
+
+  const numericTotal = Number(cartTotal || 0);
 
   if (window.gtag) {
     window.gtag('event', 'begin_checkout', {
       currency: 'MXN',
-      value: cartTotal,
+      value: numericTotal,
       items: mappedItems
     });
   }
   if (window.fbq) {
     window.fbq('track', 'InitiateCheckout', {
-      value: cartTotal,
+      value: numericTotal,
       currency: 'MXN',
-      num_items: items.length,
+      num_items: mappedItems.reduce((acc, curr) => acc + curr.quantity, 0),
       content_ids: mappedItems.map(i => i.item_id)
     });
   }
@@ -107,34 +112,39 @@ export const trackPurchase = (transactionId: string, value: number, items: any[]
   
   // Guard anti-duplicado persistente (localStorage)
   const trackedOrders = JSON.parse(window.localStorage.getItem('lensique_tracked_orders') || '[]');
-  if (trackedOrders.includes(transactionId)) {
+  if (trackedOrders.includes(String(transactionId))) {
     return; // Ya se registró esta compra antes
   }
   
-  trackedOrders.push(transactionId);
+  trackedOrders.push(String(transactionId));
   window.localStorage.setItem('lensique_tracked_orders', JSON.stringify(trackedOrders));
   
-  const mappedItems = items.map(i => ({
-    item_id: i.id || i.product?.id || 'custom',
-    item_name: i.name || i.product?.name || 'Lente',
-    price: i.price
-  }));
+  const mappedItems = (items || [])
+    .filter(i => i.id !== 'SHIPPING' && !i._buyerInfo)
+    .map(i => ({
+      item_id: String(i.id || i.product?.id || 'custom'),
+      item_name: String(i.title || i.name || i.product?.name || 'Producto Lensique'),
+      price: Number(i.unit_price ?? i.price ?? 0),
+      quantity: Number(i.quantity ?? 1)
+    }));
+
+  const numericValue = Number(value || 0);
 
   if (window.gtag) {
     window.gtag('event', 'purchase', {
-      transaction_id: transactionId,
-      value: value,
+      transaction_id: String(transactionId),
+      value: numericValue,
       currency: 'MXN',
       items: mappedItems
     });
   }
   if (window.fbq) {
     window.fbq('track', 'Purchase', {
-      value: value,
+      value: numericValue,
       currency: 'MXN',
       content_ids: mappedItems.map(i => i.item_id),
       content_type: 'product'
-    }, { eventID: transactionId });
+    }, { eventID: String(transactionId) });
   }
 };
 

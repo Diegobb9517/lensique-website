@@ -47,6 +47,10 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const hasKit = items.some(isKitItem);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'MERCADOPAGO' | 'PAYPAL'>('MERCADOPAGO');
+  const [paypalClientId, setPaypalClientId] = useState<string>('');
+  const [paypalSdkReady, setPaypalSdkReady] = useState(false);
+  const currentPaypalCheckoutIdRef = React.useRef<number | null>(null);
   
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
@@ -66,6 +70,40 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const [zipError, setZipError] = useState('');
   const [paymentError, setPaymentError] = useState('');
   const [priceNotice, setPriceNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/checkout/paypal/client-id`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.clientId) {
+          setPaypalClientId(data.clientId);
+        }
+      })
+      .catch(err => console.warn('Could not load PayPal client ID:', err));
+  }, []);
+
+  useEffect(() => {
+    if (!paypalClientId || typeof window === 'undefined') return;
+
+    if ((window as any).paypal) {
+      setPaypalSdkReady(true);
+      return;
+    }
+
+    const scriptId = 'paypal-sdk-script';
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=MXN&components=buttons&enable-funding=card`;
+      script.async = true;
+      script.onload = () => setPaypalSdkReady(true);
+      script.onerror = () => console.error('Error cargando PayPal SDK script');
+      document.body.appendChild(script);
+    } else {
+      script.addEventListener('load', () => setPaypalSdkReady(true));
+    }
+  }, [paypalClientId]);
 
   const handleInputFocus = (e: React.FocusEvent<HTMLElement>) => {
     setTimeout(() => {
@@ -264,6 +302,128 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
       });
     }
   }, [showCheckoutForm]);
+
+  // Montar botones de PayPal cuando el usuario seleccione PayPal en el Paso 2
+  useEffect(() => {
+    if (!showCheckoutForm || selectedPaymentMethod !== 'PAYPAL' || !paypalSdkReady || !(window as any).paypal) {
+      return;
+    }
+
+    const container = document.getElementById('paypal-button-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    try {
+      const buttons = (window as any).paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal'
+        },
+        createOrder: async () => {
+          if (!buyerName.trim() || !buyerPhone.trim()) {
+            setFormError('Nombre y teléfono son obligatorios.');
+            throw new Error('Nombre y teléfono son obligatorios.');
+          }
+          const phoneClean = buyerPhone.replace(/\D/g, '');
+          if (phoneClean.length !== 10) {
+            setFormError('El teléfono debe tener 10 dígitos.');
+            throw new Error('El teléfono debe tener 10 dígitos.');
+          }
+          if (buyerEmail.trim() && !/^\S+@\S+\.\S+$/.test(buyerEmail)) {
+            setFormError('Ingresa un correo electrónico válido.');
+            throw new Error('Ingresa un correo electrónico válido.');
+          }
+          if (deliveryMethod === 'HOME_DELIVERY' && (!addressDetails.street || !addressDetails.exterior || !addressDetails.colony || !addressDetails.zip || !addressDetails.city || !addressDetails.state)) {
+            setFormError('Por favor completa todos los campos requeridos de la dirección de envío.');
+            throw new Error('Dirección de envío incompleta.');
+          }
+          setFormError('');
+          setIsProcessing(true);
+          setPaymentError('');
+
+          try {
+            localStorage.setItem('lensique_last_order_delivery', maxDelStr);
+            localStorage.setItem('lensique_last_order_delivery_method', deliveryMethod);
+            if (deliveryMethod === 'HOME_DELIVERY') {
+              const fullAddress = `${addressDetails.street} ${addressDetails.exterior} ${addressDetails.interior ? `Int. ${addressDetails.interior}` : ''}, ${addressDetails.colony}, C.P. ${addressDetails.zip}, ${addressDetails.city}, ${addressDetails.state}${addressDetails.references ? ` (Ref: ${addressDetails.references})` : ''}`.trim();
+              localStorage.setItem('lensique_last_order_shipping_address', fullAddress);
+            }
+            localStorage.setItem('lensique_last_order_items', JSON.stringify(items));
+            localStorage.setItem('lensique_last_order_total', finalTotal.toString());
+
+            const res = await fetch(`${API_BASE}/api/checkout/paypal/create-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                amount: finalTotal,
+                cart: items,
+                estimatedDelivery: maxDelStr,
+                buyerInfo: {
+                  name: buyerName.trim(),
+                  phone: phoneClean,
+                  email: buyerEmail.trim(),
+                  deliveryMethod,
+                  shippingAddress: deliveryMethod === 'HOME_DELIVERY' ? addressDetails : null
+                }
+              })
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.orderID) {
+              throw new Error(data.error || 'No se pudo iniciar el pedido con PayPal');
+            }
+            currentPaypalCheckoutIdRef.current = data.checkoutId;
+            return data.orderID;
+          } catch (err: any) {
+            setIsProcessing(false);
+            setPaymentError(err.message || 'Error al conectar con PayPal');
+            throw err;
+          }
+        },
+        onApprove: async (data: any) => {
+          setIsProcessing(true);
+          setPaymentError('');
+          try {
+            const checkoutId = currentPaypalCheckoutIdRef.current;
+            const res = await fetch(`${API_BASE}/api/checkout/paypal/capture-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderID: data.orderID,
+                checkoutId: checkoutId
+              })
+            });
+
+            const resData = await res.json();
+            if (!res.ok || !resData.success) {
+              throw new Error(resData.error || 'No se pudo confirmar la transacción');
+            }
+
+            window.location.href = resData.redirectUrl || `/pago/exito?ref=${checkoutId}`;
+          } catch (err: any) {
+            setIsProcessing(false);
+            setPaymentError(err.message || 'Error al validar el pago con el servidor');
+          }
+        },
+        onError: (err: any) => {
+          console.error('PayPal onError:', err);
+          setIsProcessing(false);
+          setPaymentError('Hubo un inconveniente con PayPal. Puedes intentar de nuevo o seleccionar Mercado Pago.');
+        },
+        onCancel: () => {
+          setIsProcessing(false);
+        }
+      });
+
+      buttons.render('#paypal-button-container').catch((err: any) => {
+        console.warn('PayPal button render catch:', err);
+      });
+    } catch (e) {
+      console.error('Failed to create PayPal buttons:', e);
+    }
+  }, [showCheckoutForm, selectedPaymentMethod, paypalSdkReady, finalTotal, buyerName, buyerPhone, buyerEmail, deliveryMethod, addressDetails, items, maxDelStr]);
 
   // ============================================================
   // PAGAR ONLINE (MERCADO PAGO) CON MANEJO SUAVE DE PRECIOS
@@ -841,39 +1001,119 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
                     )}
 
+                    {/* Selector de Método de Pago */}
+                    <div style={{ marginBottom: '18px' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>
+                        Elige tu método de pago
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        {/* Opción Mercado Pago */}
+                        <div
+                          onClick={() => {
+                            setSelectedPaymentMethod('MERCADOPAGO');
+                            setPaymentError('');
+                          }}
+                          style={{
+                            border: selectedPaymentMethod === 'MERCADOPAGO' ? '2px solid #009ee3' : '1px solid #e2e8f0',
+                            background: selectedPaymentMethod === 'MERCADOPAGO' ? '#f0f9ff' : '#ffffff',
+                            borderRadius: '12px',
+                            padding: '12px 14px',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            minHeight: '84px'
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>Mercado Pago</span>
+                            <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: selectedPaymentMethod === 'MERCADOPAGO' ? 'none' : '2px solid #cbd5e1', background: selectedPaymentMethod === 'MERCADOPAGO' ? '#009ee3' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {selectedPaymentMethod === 'MERCADOPAGO' && <Check size={12} color="#fff" />}
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#475569', marginTop: '6px', lineHeight: 1.35 }}>
+                            Tarjetas · <b>3, 6, 12 MSI</b> · OXXO · SPEI
+                          </div>
+                        </div>
+
+                        {/* Opción PayPal */}
+                        <div
+                          onClick={() => {
+                            setSelectedPaymentMethod('PAYPAL');
+                            setPaymentError('');
+                          }}
+                          style={{
+                            border: selectedPaymentMethod === 'PAYPAL' ? '2px solid #003087' : '1px solid #e2e8f0',
+                            background: selectedPaymentMethod === 'PAYPAL' ? '#f0f7ff' : '#ffffff',
+                            borderRadius: '12px',
+                            padding: '12px 14px',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            minHeight: '84px'
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>PayPal</span>
+                            <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: selectedPaymentMethod === 'PAYPAL' ? 'none' : '2px solid #cbd5e1', background: selectedPaymentMethod === 'PAYPAL' ? '#003087' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {selectedPaymentMethod === 'PAYPAL' && <Check size={12} color="#fff" />}
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#475569', marginTop: '6px', lineHeight: 1.35 }}>
+                            Saldo PayPal · Tarjeta sin cuenta (Guest)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     {paymentError && (
                       <div style={{ padding: '10px 12px', background: '#fef2f2', color: '#b91c1c', borderRadius: '10px', fontSize: '12.5px', marginBottom: '14px', border: '1px solid #fecaca' }}>
                         ⚠️ {paymentError}
                       </div>
                     )}
 
-                    {/* Botón Pagar con Mercado Pago (Verde) */}
-                    <button 
-                      onClick={payOnline}
-                      disabled={isProcessing}
-                      style={{ 
-                        width: '100%', 
-                        padding: '15px 20px', 
-                        background: isProcessing ? '#94a3b8' : '#16a34a', 
-                        color: '#fff', 
-                        border: 'none', 
-                        borderRadius: '14px', 
-                        fontWeight: 700, 
-                        fontSize: '15.5px', 
-                        cursor: isProcessing ? 'not-allowed' : 'pointer',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        gap: '8px',
-                        transition: 'all 0.2s ease',
-                        boxShadow: '0 4px 14px rgba(22, 163, 74, 0.22)'
-                      }}
-                    >
-                      <CreditCard size={19} />
-                      {isProcessing ? 'Procesando pago...' : 'Pagar con Mercado Pago'}
-                    </button>
+                    {/* Botón según método seleccionado */}
+                    {selectedPaymentMethod === 'MERCADOPAGO' ? (
+                      <button 
+                        onClick={payOnline}
+                        disabled={isProcessing}
+                        style={{ 
+                          width: '100%', 
+                          padding: '15px 20px', 
+                          background: isProcessing ? '#94a3b8' : '#16a34a', 
+                          color: '#fff', 
+                          border: 'none', 
+                          borderRadius: '14px', 
+                          fontWeight: 700, 
+                          fontSize: '15.5px', 
+                          cursor: isProcessing ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 14px rgba(22, 163, 74, 0.22)'
+                        }}
+                      >
+                        <CreditCard size={19} />
+                        {isProcessing ? 'Procesando pago...' : 'Pagar con Mercado Pago'}
+                      </button>
+                    ) : (
+                      <div style={{ minHeight: '110px' }}>
+                        {!paypalSdkReady && (
+                          <div style={{ padding: '16px', textAlign: 'center', color: '#64748b', fontSize: '13px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '8px' }}>
+                            Cargando opciones de pago seguro con PayPal...
+                          </div>
+                        )}
+                        <div id="paypal-button-container" style={{ width: '100%' }} />
+                      </div>
+                    )}
 
-                    {/* Sello de confianza, garantías y privacidad unificado */}
+                    {/* Sello de confianza, métodos aceptados y garantías */}
                     <div style={{
                       marginTop: '16px',
                       padding: '14px',
@@ -887,10 +1127,22 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: '#0f172a' }}>
                         <ShieldCheck size={16} color="#16a34a" />
-                        <span>Pago 100% seguro con Mercado Pago</span>
+                        <span>Pago 100% protegido y cifrado SSL</span>
                       </div>
+
+                      {/* Badges de métodos de pago aceptados */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center', alignItems: 'center', margin: '4px 0' }}>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#1a1f71', letterSpacing: '0.04em' }}>VISA</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#eb001b', letterSpacing: '0.04em' }}>Mastercard</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#006fcf', letterSpacing: '0.04em' }}>AMEX</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#003087', letterSpacing: '0.04em' }}>PayPal</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#009ee3', letterSpacing: '0.04em' }}>Mercado Pago</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#e31b23', letterSpacing: '0.04em' }}>OXXO</span>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', letterSpacing: '0.04em' }}>SPEI</span>
+                      </div>
+
                       <div style={{ fontSize: '12px', color: '#475569', lineHeight: 1.45 }}>
-                        Tarjetas de crédito, débito, OXXO y SPEI
+                        Tarjetas de crédito y débito · 3, 6 y 12 MSI · OXXO · SPEI · PayPal
                       </div>
                       <div style={{ fontSize: '11.5px', color: '#475569', lineHeight: 1.45, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
                         Garantía de 30 días · validación por optometrista.{' '}
@@ -1398,6 +1650,17 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         ⚠️ {paymentError}
                       </div>
                     )}
+
+                    {/* Métodos de pago aceptados */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '12px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#1a1f71', letterSpacing: '0.04em' }}>VISA</span>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#eb001b', letterSpacing: '0.04em' }}>Mastercard</span>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#006fcf', letterSpacing: '0.04em' }}>AMEX</span>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#003087', letterSpacing: '0.04em' }}>PayPal</span>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#009ee3', letterSpacing: '0.04em' }}>Mercado Pago</span>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#e31b23', letterSpacing: '0.04em' }}>OXXO</span>
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#0f172a', letterSpacing: '0.04em' }}>SPEI</span>
+                    </div>
 
                     {/* Botón Continuar (Paso 1 = Azul Marino) */}
                     <button 

@@ -1035,9 +1035,15 @@ function PaymentSuccessView() {
   const [deliveryMethod, setDeliveryMethod] = useState<'HOME_DELIVERY' | 'STORE_PICKUP' | null>(null);
   const [shippingAddress, setShippingAddress] = useState<string | null>(null);
   const [estimatedDelivery, setEstimatedDelivery] = useState<string | null>(null);
+  const [orderInfo, setOrderInfo] = useState<{ folio?: string; publicToken?: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Limpiar carrito de compras en localStorage al confirmarse el pago
+    try {
+      localStorage.removeItem('lensique_cart');
+    } catch(e) {}
+
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref') || urlParams.get('external_reference');
     const loadFromLocal = () => {
@@ -1050,21 +1056,36 @@ function PaymentSuccessView() {
     if (ref) {
       const savedItems = JSON.parse(localStorage.getItem('lensique_last_order_items') || '[]');
       const savedTotal = Number(localStorage.getItem('lensique_last_order_total') || '0');
-      import('./lib/analytics').then(({ trackPurchase }) => trackPurchase(ref, savedTotal, savedItems));
 
-      fetch(`https://lensique-pos.onrender.com/api/checkout/${ref}/buyer-info`)
+      fetch(`https://lensique-pos.onrender.com/api/checkout/${ref}/public-summary`)
         .then(res => res.json())
         .then(data => {
-          if (data && data.deliveryMethod) {
-            setDeliveryMethod(data.deliveryMethod);
+          if (data && !data.error) {
+            setDeliveryMethod(data.deliveryMethod || 'STORE_PICKUP');
             setShippingAddress(data.shippingAddress);
             setEstimatedDelivery(localStorage.getItem('lensique_last_order_delivery'));
+            if (data.order) {
+              setOrderInfo(data.order);
+            }
             setIsLoading(false);
+
+            // Registro preciso de compra en GA4 y Meta Pixel con datos del servidor
+            const purchaseItems = (data.items && data.items.length > 0) ? data.items : savedItems;
+            const purchaseTotal = Number(data.amount || savedTotal || 0);
+            import('./lib/analytics').then(({ trackPurchase }) => trackPurchase(ref, purchaseTotal, purchaseItems));
           } else {
+            if (savedTotal > 0) {
+              import('./lib/analytics').then(({ trackPurchase }) => trackPurchase(ref, savedTotal, savedItems));
+            }
             loadFromLocal();
           }
         })
-        .catch(() => loadFromLocal());
+        .catch(() => {
+          if (savedTotal > 0) {
+            import('./lib/analytics').then(({ trackPurchase }) => trackPurchase(ref, savedTotal, savedItems));
+          }
+          loadFromLocal();
+        });
     } else {
       loadFromLocal();
     }
@@ -1085,9 +1106,11 @@ function PaymentSuccessView() {
         </div>
 
         <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1b2436', margin: '0 0 8px' }}>¡Pago Exitoso!</h2>
-        <p style={{ fontSize: '15px', color: '#666', margin: '0 0 32px', lineHeight: 1.5 }}>Tu orden ha sido confirmada y procesada correctamente.</p>
+        <p style={{ fontSize: '15px', color: '#666', margin: '0 0 24px', lineHeight: 1.5 }}>
+          {orderInfo?.folio ? `Tu pedido ${orderInfo.folio} ha sido confirmado y procesado correctamente.` : 'Tu orden ha sido confirmada y procesada correctamente.'}
+        </p>
         
-        <div style={{ background: '#f0f7ff', border: '1px solid #d0e3f7', borderRadius: '14px', padding: '24px', marginBottom: '32px', textAlign: 'left' as const }}>
+        <div style={{ background: '#f0f7ff', border: '1px solid #d0e3f7', borderRadius: '14px', padding: '24px', marginBottom: '24px', textAlign: 'left' as const }}>
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#1a3a5c', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             {deliveryMethod === 'HOME_DELIVERY' ? 'Instrucciones de Entrega' : 'Instrucciones de Recolección'}
@@ -1112,6 +1135,18 @@ function PaymentSuccessView() {
             <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #d0e3f7', display: 'flex', alignItems: 'center', gap: '8px', color: '#16a34a', fontWeight: 600, fontSize: '14px' }}>
               <Clock size={16} />
               <span>Entrega estimada: {estimatedDelivery}</span>
+            </div>
+          )}
+          {orderInfo?.publicToken && (
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #d0e3f7', textAlign: 'center' }}>
+              <a
+                href={`/p/${orderInfo.publicToken}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: '13.5px', color: '#0066cc', fontWeight: 600, textDecoration: 'underline' }}
+              >
+                Rastrear estado de mi pedido en línea ›
+              </a>
             </div>
           )}
         </div>

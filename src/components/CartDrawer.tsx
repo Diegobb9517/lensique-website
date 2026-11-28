@@ -1223,7 +1223,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         </a>
                       </div>
 
-                      <div style={{ fontSize: '10.5px', color: '#94a3b8', lineHeight: 1.35 }}>
+                      <div style={{ fontSize: '11px', color: '#4b5563', lineHeight: 1.35 }}>
                         Al pagar aceptas nuestro{' '}
                         <a 
                           href="#privacidad" 
@@ -1338,7 +1338,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         <span style={{ fontWeight: 700, color: '#0f172a' }}>
                           1. Entrega
                         </span>
-                        <span style={{ fontWeight: 500, color: '#94a3b8' }}>
+                        <span style={{ fontWeight: 500, color: '#4b5563' }}>
                           2. Datos y pago
                         </span>
                       </div>

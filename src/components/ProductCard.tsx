@@ -23,7 +23,7 @@ export const FormatProductName = ({ product }: { product: any }) => {
   const cleanName = getCardDisplayName(product);
   const isProv = isProvisionalName(product);
   if (isProv) {
-    return <span className="fpn-main provisional-name" style={{ color: '#888', fontSize: '0.9em', fontWeight: 'normal', textTransform: 'uppercase' }}>{cleanName}</span>;
+    return <span className="fpn-main provisional-name" style={{ color: '#4b5563', fontSize: '0.9em', fontWeight: 'normal', textTransform: 'uppercase' }}>{cleanName}</span>;
   }
   return <span className="fpn-main">{cleanName}</span>;
 };

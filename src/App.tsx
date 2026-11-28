@@ -2716,7 +2716,7 @@ function App() {
         </div>
           <div className="nav-content">
             <div className="nav-left">
-              <a href="/" className="logo">
+              <a href="/" className="logo" aria-label="Ir al inicio - Óptica Lensique">
                 <img src={logo} alt="Lensique" className="logo-img" width="160" height="40" />
               </a>
             </div>
@@ -3249,7 +3249,7 @@ function App() {
 
                 <div style={{ marginTop: '48px', background: 'linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%)', borderRadius: '24px', padding: '48px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
                   <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#1d1d1f', marginBottom: '12px' }}>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
-                  <p style={{ color: '#86868b', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
+                  <p style={{ color: '#4b5563', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
                   <button className="glow-btn" style={{ padding: '16px 32px', width: 'auto', fontSize: '16px' }} onClick={() => { setIsContactQuizOpen(true); }}>
                     Iniciar guía interactiva
                   </button>

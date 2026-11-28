@@ -1015,8 +1015,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             setPaymentError('');
                           }}
                           style={{
-                            border: selectedPaymentMethod === 'MERCADOPAGO' ? '2px solid #009ee3' : '1px solid #e2e8f0',
-                            background: selectedPaymentMethod === 'MERCADOPAGO' ? '#f0f9ff' : '#ffffff',
+                            border: selectedPaymentMethod === 'MERCADOPAGO' ? '2px solid #16223f' : '1px solid #e2e8f0',
+                            background: selectedPaymentMethod === 'MERCADOPAGO' ? '#f8fafc' : '#ffffff',
                             borderRadius: '12px',
                             padding: '12px 14px',
                             cursor: 'pointer',
@@ -1024,16 +1024,16 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
-                            minHeight: '84px'
+                            minHeight: '78px'
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>Mercado Pago</span>
-                            <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: selectedPaymentMethod === 'MERCADOPAGO' ? 'none' : '2px solid #cbd5e1', background: selectedPaymentMethod === 'MERCADOPAGO' ? '#009ee3' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: selectedPaymentMethod === 'MERCADOPAGO' ? 'none' : '2px solid #cbd5e1', background: selectedPaymentMethod === 'MERCADOPAGO' ? '#16223f' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                               {selectedPaymentMethod === 'MERCADOPAGO' && <Check size={12} color="#fff" />}
                             </div>
                           </div>
-                          <div style={{ fontSize: '11px', color: '#475569', marginTop: '6px', lineHeight: 1.35 }}>
+                          <div style={{ fontSize: '11px', color: '#64748b', marginTop: '6px', lineHeight: 1.35 }}>
                             Tarjetas · <b>3, 6, 12 MSI</b> · OXXO · SPEI
                           </div>
                         </div>
@@ -1045,8 +1045,8 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             setPaymentError('');
                           }}
                           style={{
-                            border: selectedPaymentMethod === 'PAYPAL' ? '2px solid #003087' : '1px solid #e2e8f0',
-                            background: selectedPaymentMethod === 'PAYPAL' ? '#f0f7ff' : '#ffffff',
+                            border: selectedPaymentMethod === 'PAYPAL' ? '2px solid #16223f' : '1px solid #e2e8f0',
+                            background: selectedPaymentMethod === 'PAYPAL' ? '#f8fafc' : '#ffffff',
                             borderRadius: '12px',
                             padding: '12px 14px',
                             cursor: 'pointer',
@@ -1054,16 +1054,16 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
-                            minHeight: '84px'
+                            minHeight: '78px'
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a' }}>PayPal</span>
-                            <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: selectedPaymentMethod === 'PAYPAL' ? 'none' : '2px solid #cbd5e1', background: selectedPaymentMethod === 'PAYPAL' ? '#003087' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: selectedPaymentMethod === 'PAYPAL' ? 'none' : '2px solid #cbd5e1', background: selectedPaymentMethod === 'PAYPAL' ? '#16223f' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                               {selectedPaymentMethod === 'PAYPAL' && <Check size={12} color="#fff" />}
                             </div>
                           </div>
-                          <div style={{ fontSize: '11px', color: '#475569', marginTop: '6px', lineHeight: 1.35 }}>
+                          <div style={{ fontSize: '11px', color: '#64748b', marginTop: '6px', lineHeight: 1.35 }}>
                             Saldo PayPal · Tarjeta sin cuenta (Guest)
                           </div>
                         </div>
@@ -1084,22 +1084,22 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                         style={{ 
                           width: '100%', 
                           padding: '15px 20px', 
-                          background: isProcessing ? '#94a3b8' : '#16a34a', 
+                          background: isProcessing ? '#94a3b8' : '#16223f', 
                           color: '#fff', 
                           border: 'none', 
                           borderRadius: '14px', 
                           fontWeight: 700, 
-                          fontSize: '15.5px', 
+                          fontSize: '15px', 
                           cursor: isProcessing ? 'not-allowed' : 'pointer',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
                           gap: '8px',
-                          transition: 'all 0.2s ease',
-                          boxShadow: '0 4px 14px rgba(22, 163, 74, 0.22)'
+                          transition: 'background 0.2s ease',
+                          boxShadow: '0 4px 14px rgba(22, 34, 63, 0.18)'
                         }}
                       >
-                        <CreditCard size={19} />
+                        <CreditCard size={18} />
                         {isProcessing ? 'Procesando pago...' : 'Pagar con Mercado Pago'}
                       </button>
                     ) : (
@@ -1113,46 +1113,36 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
                     )}
 
-                    {/* Sello de confianza, métodos aceptados y garantías */}
+                    {/* Sello de confianza, métodos aceptados y garantías (diseño minimalista y limpio) */}
                     <div style={{
                       marginTop: '16px',
-                      padding: '14px',
+                      padding: '12px 14px',
                       background: '#f8fafc',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #f1f5f9',
                       borderRadius: '12px',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '8px',
                       textAlign: 'center'
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: '#0f172a' }}>
-                        <ShieldCheck size={16} color="#16a34a" />
-                        <span>Pago 100% protegido y cifrado SSL</span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: '#334155' }}>
+                        <ShieldCheck size={15} color="#0f172a" />
+                        <span>Pago seguro y cifrado SSL de 256 bits</span>
                       </div>
 
-                      {/* Badges de métodos de pago aceptados */}
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center', alignItems: 'center', margin: '4px 0' }}>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#1a1f71', letterSpacing: '0.04em' }}>VISA</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#eb001b', letterSpacing: '0.04em' }}>Mastercard</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#006fcf', letterSpacing: '0.04em' }}>AMEX</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#003087', letterSpacing: '0.04em' }}>PayPal</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#009ee3', letterSpacing: '0.04em' }}>Mercado Pago</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#e31b23', letterSpacing: '0.04em' }}>OXXO</span>
-                        <span style={{ fontSize: '10.5px', fontWeight: 800, padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', letterSpacing: '0.04em' }}>SPEI</span>
+                      <div style={{ fontSize: '11.5px', color: '#64748b', lineHeight: 1.4 }}>
+                        Aceptamos Visa · Mastercard · AMEX · MSI · PayPal · OXXO · SPEI
                       </div>
 
-                      <div style={{ fontSize: '12px', color: '#475569', lineHeight: 1.45 }}>
-                        Tarjetas de crédito y débito · 3, 6 y 12 MSI · OXXO · SPEI · PayPal
-                      </div>
-                      <div style={{ fontSize: '11.5px', color: '#475569', lineHeight: 1.45, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
-                        Garantía de 30 días · validación por optometrista.{' '}
+                      <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.4, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
+                        Garantía de 30 días con validación por optometrista.{' '}
                         <a href="/devoluciones" target="_blank" rel="noopener noreferrer" style={{ color: '#0f172a', fontWeight: 600, textDecoration: 'underline' }}>
                           Ver política
                         </a>
                       </div>
-                      <div style={{ fontSize: '11.5px', color: '#64748b', lineHeight: 1.45, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
-                        🔒 Tus datos personales y de salud están protegidos.<br />
-                        Al pagar aceptas el{' '}
+
+                      <div style={{ fontSize: '10.5px', color: '#94a3b8', lineHeight: 1.35 }}>
+                        Al pagar aceptas nuestro{' '}
                         <a 
                           href="#privacidad" 
                           onClick={(e) => { 
@@ -1161,7 +1151,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             setIsCartOpen(false); 
                             document.getElementById('footer-privacy-link')?.click(); 
                           }} 
-                          style={{ color: '#0f172a', textDecoration: 'underline', fontWeight: 600 }}
+                          style={{ color: '#64748b', textDecoration: 'underline' }}
                         >
                           Aviso de Privacidad
                         </a>.
@@ -1651,15 +1641,9 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
                     )}
 
-                    {/* Métodos de pago aceptados */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '12px' }}>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#1a1f71', letterSpacing: '0.04em' }}>VISA</span>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#eb001b', letterSpacing: '0.04em' }}>Mastercard</span>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#006fcf', letterSpacing: '0.04em' }}>AMEX</span>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#003087', letterSpacing: '0.04em' }}>PayPal</span>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#009ee3', letterSpacing: '0.04em' }}>Mercado Pago</span>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#e31b23', letterSpacing: '0.04em' }}>OXXO</span>
-                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#0f172a', letterSpacing: '0.04em' }}>SPEI</span>
+                    {/* Métodos de pago aceptados - limpio y minimalista */}
+                    <div style={{ textAlign: 'center', fontSize: '11px', color: '#64748b', marginBottom: '12px', letterSpacing: '0.02em' }}>
+                      Aceptamos tarjetas de crédito y débito · MSI · PayPal · OXXO · SPEI
                     </div>
 
                     {/* Botón Continuar (Paso 1 = Azul Marino) */}

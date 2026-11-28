@@ -1116,7 +1116,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             </div>
                           </div>
                           <div style={{ fontSize: '11px', color: '#64748b', marginTop: '6px', lineHeight: 1.35 }}>
-                            Tarjetas · <b>3, 6, 12 MSI</b> · OXXO · SPEI
+                            Tarjetas · <b>3, 6 MSI</b> · OXXO · SPEI
                           </div>
                         </div>
 
@@ -1213,7 +1213,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       </div>
 
                       <div style={{ fontSize: '11.5px', color: '#64748b', lineHeight: 1.4 }}>
-                        Aceptamos Visa · Mastercard · AMEX · MSI · PayPal · OXXO · SPEI
+                        Aceptamos Visa · Mastercard · AMEX · hasta 6 Meses Sin Intereses · PayPal · OXXO · SPEI
                       </div>
 
                       <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.4, paddingTop: '8px', borderTop: '1px solid #e2e8f0' }}>
@@ -1728,7 +1728,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
 
                     {/* Métodos de pago aceptados - limpio y minimalista */}
                     <div style={{ textAlign: 'center', fontSize: '11px', color: '#64748b', marginBottom: '12px', letterSpacing: '0.02em' }}>
-                      Aceptamos tarjetas de crédito y débito · MSI · PayPal · OXXO · SPEI
+                      Aceptamos tarjetas de crédito y débito (hasta 6 Meses Sin Intereses) · PayPal · OXXO · SPEI
                     </div>
 
                     {/* Botón Continuar (Paso 1 = Azul Marino) */}

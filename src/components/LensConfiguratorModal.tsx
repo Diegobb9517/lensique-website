@@ -837,11 +837,14 @@ export default function LensConfiguratorModal({
                   <>
                     <b className="lsq-price-val">${framePrice.toLocaleString('es-MX')}</b>
                     <div className="lsq-pnote">solo el armazón</div>
-                    {framePrice >= 2500 && (
-                      <div style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '4px' }}>
-                        o desde ${Math.round(framePrice / 12).toLocaleString('es-MX')}/mes a 12 MSI
-                      </div>
-                    )}
+                    {(() => {
+                      const msi = getMsiInfo(framePrice);
+                      return msi.n > 0 ? (
+                        <div style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '4px' }}>
+                          o desde ${msi.monthly.toLocaleString('es-MX')}/mes a {msi.n} MSI
+                        </div>
+                      ) : null;
+                    })()}
                   </>
                 ) : (
                   <>
@@ -850,11 +853,15 @@ export default function LensConfiguratorModal({
                       ${(need === 'mono' ? lowestMonoPrice : lowestProgPrice).toLocaleString('es-MX')}
                     </b>
                     <div className="lsq-pnote">con micas incluidas</div>
-                    {((need === 'mono' ? lowestMonoPrice : lowestProgPrice) >= 2500) && (
-                      <div style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '4px' }}>
-                        o desde ${Math.round((need === 'mono' ? lowestMonoPrice : lowestProgPrice) / 12).toLocaleString('es-MX')}/mes a 12 MSI
-                      </div>
-                    )}
+                    {(() => {
+                      const basePrice = need === 'mono' ? lowestMonoPrice : lowestProgPrice;
+                      const msi = getMsiInfo(basePrice);
+                      return msi.n > 0 ? (
+                        <div style={{ fontSize: '11px', color: '#047857', fontWeight: 600, marginTop: '4px' }}>
+                          o desde ${msi.monthly.toLocaleString('es-MX')}/mes a {msi.n} MSI
+                        </div>
+                      ) : null;
+                    })()}
                   </>
                 )}
               </div>

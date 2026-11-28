@@ -12,7 +12,168 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap">
+    </noscript>
+
+    <!-- Critical CSS for Hero & Navbar (Immediate FCP & LCP with 0 CLS) -->
+    <style id="critical-hero-css">
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f7;
+        --text-primary: #1d1d1f;
+        --text-secondary: #86868b;
+        --accent: #0071e3;
+        --border: rgba(0, 0, 0, 0.08);
+        --swift: cubic-bezier(0.4, 0, 0.2, 1);
+        --max-width: 1200px;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #ffffff;
+        color: #1d1d1f;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      .app-container { min-height: 100vh; background-color: #ffffff; }
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 99999;
+        background: white;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .announcement-bar {
+        background: #0071e3;
+        color: white;
+        padding: 10px 20px;
+        font-size: 13.5px;
+        line-height: 1.45;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        height: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 40px;
+      }
+      .nav-left { display: flex; align-items: center; gap: 40px; }
+      .logo { display: flex; align-items: center; height: 100%; text-decoration: none; }
+      .logo-img { height: 24px; max-height: 24px; width: auto; object-fit: contain; display: block; }
+      .nav-links { display: flex; gap: 24px; }
+      .nav-link { font-size: 15px; font-weight: 500; color: #1d1d1f; text-decoration: none; opacity: 0.9; }
+      .nav-right { display: flex; align-items: center; gap: 20px; }
+      .nav-icon-btn { background: none; border: none; cursor: pointer; color: #1d1d1f; display: flex; align-items: center; justify-content: center; padding: 6px; }
+      .mobile-menu-btn { display: none; }
+      .main-content { display: block; }
+      .hero {
+        position: relative;
+        height: calc(100vh - 100px);
+        min-height: 600px;
+        width: 100%;
+        margin-top: 90px;
+        display: flex;
+        align-items: center;
+        padding: 0 5%;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+        z-index: 1;
+      }
+      .hero-background-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        z-index: 1;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 10;
+        max-width: 500px;
+        text-align: left;
+      }
+      .hero-eyebrow { display: none; }
+      .hero-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(48px, 6vw, 75px);
+        font-weight: 300;
+        line-height: 1.1;
+        color: #ffffff;
+        margin-bottom: 20px;
+        text-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+      }
+      .hero-subheading { display: none; }
+      .hero-actions-left {
+        display: flex;
+        gap: 16px;
+        margin-top: 30px;
+      }
+      .btn-wp-primary {
+        background-color: #0b3d91;
+        color: white;
+        padding: 16px 32px;
+        border-radius: 980px;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: inherit;
+        text-decoration: none;
+      }
+      .btn-wp-secondary {
+        background-color: #1d1d1f;
+        color: white;
+        padding: 16px 32px;
+        border-radius: 980px;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        font-family: inherit;
+        text-decoration: none;
+      }
+      @media (max-width: 768px) {
+        .announcement-bar { padding: 9px 16px; font-size: 12.5px; }
+        .nav-content { padding: 0 20px; }
+        .nav-left { gap: 10px; }
+        .d-none-mobile { display: none !important; }
+        .mobile-menu-btn { display: block; }
+        .hero {
+          height: calc(100vh - 100px);
+          min-height: 600px;
+          margin-top: 90px;
+          padding: 0 5%;
+        }
+        .hero-content { margin: 0 auto; text-align: center; max-width: 100%; }
+        .hero-actions-left { flex-direction: column; }
+      }
+    </style>
     
     <!-- SEO Básico -->
     <title>Lensique | Óptica en Zapopan, Guadalajara — Examen con oftalmólogo</title>

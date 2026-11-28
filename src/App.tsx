@@ -62,13 +62,7 @@ import cv7600Img from './assets/cv-7600.jpg';
 import clinicRoomImg from './assets/clinic-room.jpg';
 import eyeExamImg1 from './assets/eye_exam_1.jpg';
 import eyeExamImg2 from './assets/eye_exam_2.jpg';
-import editorialImg1 from './assets/DSC09657.jpg';
-import editorialCk from './assets/editorial-ck.jpg';
-import editorialCarrera from './assets/editorial-carrera.jpg';
-import editorialArmazon from './assets/editorial_armazon.jpg';
-import storeInteriorImg from './assets/DSC09639.jpg';
 import armazonesServiceImg from './assets/DSC09746.jpg';
-import micasImg from './assets/DSC09710.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
 import lsBluelight from './assets/lifestyle_bluelight.png';
 import lsProgressives from './assets/lifestyle_progressives.png';
@@ -3343,7 +3337,7 @@ function App() {
                   onClick={service.action}
                 >
                   <div className="wp-service-img-area">
-                    <img src={service.img} alt={service.title} className="wp-service-img" width="400" height="300" loading="lazy" />
+                    <img src={service.img} alt={service.title} className="wp-service-img" width="400" height="300" loading="lazy" decoding="async" />
                   </div>
                   <div className="wp-service-name-strip">
                     <span className="wp-service-name">{service.title}</span>
@@ -3369,7 +3363,7 @@ function App() {
             <div className="zeiss-tech-grid">
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissBlueGuardImg} alt="ZEISS BlueGuard" loading="lazy" width="300" height="200" />
+                  <img src={zeissBlueGuardImg} alt="ZEISS BlueGuard" loading="lazy" decoding="async" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS BlueGuard</h3>
@@ -3379,7 +3373,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissPhotoFusionImg} alt="ZEISS PhotoFusion X" loading="lazy" width="300" height="200" />
+                  <img src={zeissPhotoFusionImg} alt="ZEISS PhotoFusion X" loading="lazy" decoding="async" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS PhotoFusion X</h3>
@@ -3389,7 +3383,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissDuraVisionImg} alt="ZEISS DuraVision" loading="lazy" width="300" height="200" />
+                  <img src={zeissDuraVisionImg} alt="ZEISS DuraVision" loading="lazy" decoding="async" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS DuraVision</h3>
@@ -3399,7 +3393,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissSmartLifeImg} alt="ZEISS Progresivo" loading="lazy" width="300" height="200" />
+                  <img src={zeissSmartLifeImg} alt="ZEISS Progresivo" loading="lazy" decoding="async" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS Progresivo</h3>
@@ -3409,7 +3403,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissUVProtectImg} alt="ZEISS UVProtect" loading="lazy" width="300" height="200" />
+                  <img src={zeissUVProtectImg} alt="ZEISS UVProtect" loading="lazy" decoding="async" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS UVProtect</h3>

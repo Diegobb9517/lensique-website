@@ -218,7 +218,7 @@ export const ExamenVistaPage: React.FC<ExamenVistaPageProps> = ({
         <div className="examen-tech-grid">
           <div className="examen-tech-card">
             <div className="examen-tech-imgwrap">
-              <img src={cv7600Img} alt="Foróptero digital CV-7600 en Óptica Lensique" loading="lazy" width="400" height="220" />
+              <img src={cv7600Img} alt="Foróptero digital CV-7600 en Óptica Lensique" loading="lazy" decoding="async" width="400" height="220" />
             </div>
             <div className="examen-tech-body">
               <h3 className="examen-tech-name">Foróptero digital CV-7600</h3>
@@ -230,7 +230,7 @@ export const ExamenVistaPage: React.FC<ExamenVistaPageProps> = ({
 
           <div className="examen-tech-card">
             <div className="examen-tech-imgwrap">
-              <img src={clinicRoomImg} alt="Consultorio optométrico en Zapopan Lensique" loading="lazy" width="400" height="220" />
+              <img src={clinicRoomImg} alt="Consultorio optométrico en Zapopan Lensique" loading="lazy" decoding="async" width="400" height="220" />
             </div>
             <div className="examen-tech-body">
               <h3 className="examen-tech-name">Consultorio clínico privado</h3>
@@ -242,7 +242,7 @@ export const ExamenVistaPage: React.FC<ExamenVistaPageProps> = ({
 
           <div className="examen-tech-card">
             <div className="examen-tech-imgwrap">
-              <img src={slitLampImg} alt="Examen con lámpara de hendidura en Lensique" loading="lazy" width="400" height="220" />
+              <img src={slitLampImg} alt="Examen con lámpara de hendidura en Lensique" loading="lazy" decoding="async" width="400" height="220" />
             </div>
             <div className="examen-tech-body">
               <h3 className="examen-tech-name">Biomicroscopía ocular</h3>

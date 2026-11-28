@@ -1449,5 +1449,15 @@ fs.writeFileSync(path.join(distDir, '404.html'), fourOhFourHtml, 'utf8');
 fs.writeFileSync(path.join(rootDir, 'public', '404.html'), fourOhFourHtml, 'utf8');
 console.log('✅ Generated /404.html page.');
 
+// 5. Prerender Hero into dist/index.html for immediate mobile LCP paint
+if (fs.existsSync(templatePath)) {
+  let homeHtml = fs.readFileSync(templatePath, 'utf8');
+  const heroPrerender = `<div class="app-container"><header class="navbar" style="position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);padding:12px 20px;"><div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;"><a href="/" class="logo"><img src="/logo.png" alt="Lensique" class="logo-img" width="160" height="40" style="display:block;max-height:38px;width:auto;" /></a></div></header><main class="main-content"><section class="hero" style="position:relative;overflow:hidden;display:flex;align-items:center;min-height:85vh;"><picture style="position:absolute;top:0;left:0;width:100%;height:100%;"><source srcset="/hero-mobile.webp" media="(max-width: 768px)" width="1080" height="1350" /><img src="/hero-desktop.webp" alt="Persona probándose lentes en una óptica" class="hero-background-img" loading="eager" fetchpriority="high" width="1920" height="1080" style="position:relative;width:100%;height:100%;object-fit:cover;" /></picture><div class="hero-content" style="position:relative;z-index:2;padding:40px 24px;max-width:650px;"><span class="hero-eyebrow" style="display:inline-block;font-size:13px;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;color:#1b2436;margin-bottom:12px;">Óptica Boutique en Zapopan</span><h1 class="hero-title" style="font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,56px);font-weight:700;color:#1b2436;line-height:1.15;margin:0 0 16px;">La perfección en tu mirada</h1><p class="hero-subheading" style="font-size:clamp(16px,2vw,18px);color:#475569;line-height:1.6;margin:0 0 28px;">Armazones de diseñador, micas de alta tecnología y examen visual respaldado por oftalmólogo.</p><div class="hero-actions-left" style="display:flex;gap:12px;flex-wrap:wrap;"><a href="#contacto" class="btn btn-wp-primary" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#1b2436;color:#ffffff;border-radius:50px;text-decoration:none;font-weight:600;"><span>Agenda tu examen</span></a><a href="/catalogo" class="btn btn-wp-secondary" style="display:inline-flex;align-items:center;padding:14px 28px;background:rgba(255,255,255,0.9);color:#1b2436;border:1px solid #e2e8f0;border-radius:50px;text-decoration:none;font-weight:600;">Ver Armazones</a></div></div></section></main></div>`;
+  homeHtml = homeHtml.replace('<div id="root"></div>', `<div id="root">${heroPrerender}</div>`);
+  fs.writeFileSync(templatePath, homeHtml, 'utf8');
+  console.log('✅ Injected Prerendered Hero into dist/index.html for near-instant LCP.');
+}
+
+
 
 

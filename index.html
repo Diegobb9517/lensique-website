@@ -4,10 +4,12 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta name="color-scheme" content="light">
+
+    <!-- Preload Hero Image (LCP Optimization) -->
+    <link rel="preload" as="image" href="/hero-mobile.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+    <link rel="preload" as="image" href="/hero-desktop.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
@@ -61,28 +63,44 @@
     }
     </script>
 
-    <!-- Google Analytics (Placeholder) -->
-    <!-- Reemplaza G-PZJ6FCTMWC con tu ID real de Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PZJ6FCTMWC"></script>
+    <!-- Google Analytics & Meta Pixel (Deferred for high mobile performance) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-PZJ6FCTMWC');
-    </script>
 
-    <!-- Meta Pixel Code (Placeholder) -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '773493978971025'); // ID real de Meta Pixel
-    fbq('track', 'PageView');
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];}(window, document,'script');
+      fbq('init', '773493978971025');
+      fbq('track', 'PageView');
+
+      function loadDeferredAnalytics() {
+        if (window.__analyticsLoaded) return;
+        window.__analyticsLoaded = true;
+        var ga = document.createElement('script');
+        ga.async = true;
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-PZJ6FCTMWC';
+        document.head.appendChild(ga);
+
+        var fb = document.createElement('script');
+        fb.async = true;
+        fb.src = 'https://connect.facebook.net/en_US/fbevents.js';
+        document.head.appendChild(fb);
+      }
+
+      if ('requestIdleCallback' in window) {
+        window.addEventListener('load', function() {
+          requestIdleCallback(loadDeferredAnalytics, { timeout: 3000 });
+        });
+      } else {
+        window.addEventListener('load', function() {
+          setTimeout(loadDeferredAnalytics, 1500);
+        });
+      }
     </script>
   </head>
   <body>

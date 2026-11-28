@@ -7,43 +7,43 @@ import {
   Maximize, Camera, Trash2, Sliders, Shield, ShieldCheck, Glasses, Sparkles, CreditCard, Stethoscope, AlertTriangle,
   Eye, Sun, Laptop, Layers, CheckCircle2
 } from 'lucide-react';
-import ProductCarousel from './components/ProductCarousel';
-import TechnologyInfoPage from './components/TechnologyInfoPage';
-import LensConfiguratorModal from './components/LensConfiguratorModal';
-import { StyleQuiz } from './components/StyleQuiz';
-import { ContactLensQuiz } from './components/ContactLensQuiz';
-import ContactLensConfiguratorModal from './components/ContactLensConfiguratorModal';
-import ServiceDetailsPage from './components/ServiceDetailsPage';
-import InfoPage, { type InfoPageData } from './components/InfoPage';
-import { type ServiceInfoData } from './components/ServiceInfoModal';
-import ServiceInfoModal from './components/ServiceInfoModal';
-import { FAQSection } from './components/FAQSection';
-import GoogleReviewsSection from './components/GoogleReviewsSection';
 import { ImageWithSkeleton } from './components/ImageWithSkeleton';
-import LensExplainer from './components/LensExplainer';
-import BlogList from './components/BlogList';
-import BlogPost from './components/BlogPost';
 import { blogPosts } from './data/blogPosts';
+import { type InfoPageData } from './components/InfoPage';
+import { type ServiceInfoData } from './components/ServiceInfoModal';
 
-import ProgressiveExplainer from './components/ProgressiveExplainer';
-import { ContactLensServicePage } from './components/ContactLensServicePage';
-import { FRAME_GRADUACION_OPTIONS, AR_OPTIONS, PHOTOCHROMIC_OPTIONS, TINTING_OPTIONS, MATERIAL_OPTIONS } from './lib/configuratorConstants';
+// Code-split heavy below-the-fold components and modals for mobile performance (saves ~327 KiB on initial load)
+const ProductCarousel = React.lazy(() => import('./components/ProductCarousel'));
+const TechnologyInfoPage = React.lazy(() => import('./components/TechnologyInfoPage'));
+const LensConfiguratorModal = React.lazy(() => import('./components/LensConfiguratorModal'));
+const StyleQuiz = React.lazy(() => import('./components/StyleQuiz').then(m => ({ default: m.StyleQuiz })));
+const ContactLensQuiz = React.lazy(() => import('./components/ContactLensQuiz').then(m => ({ default: m.ContactLensQuiz })));
+const ContactLensConfiguratorModal = React.lazy(() => import('./components/ContactLensConfiguratorModal'));
+const ServiceDetailsPage = React.lazy(() => import('./components/ServiceDetailsPage'));
+const InfoPage = React.lazy(() => import('./components/InfoPage'));
+const ServiceInfoModal = React.lazy(() => import('./components/ServiceInfoModal'));
+const FAQSection = React.lazy(() => import('./components/FAQSection').then(m => ({ default: m.FAQSection })));
+const GoogleReviewsSection = React.lazy(() => import('./components/GoogleReviewsSection'));
+const BlogList = React.lazy(() => import('./components/BlogList'));
+const BlogPost = React.lazy(() => import('./components/BlogPost'));
+const ContactLensServicePage = React.lazy(() => import('./components/ContactLensServicePage').then(m => ({ default: m.ContactLensServicePage })));
+const MicaDetailModal = React.lazy(() => import('./components/MicaDetailModal'));
+const CartDrawer = React.lazy(() => import('./components/CartDrawer').then(m => ({ default: m.CartDrawer })));
+const TriageModal = React.lazy(() => import('./components/TriageModal').then(m => ({ default: m.TriageModal })));
+const OrderTracking = React.lazy(() => import('./components/OrderTracking'));
+const MicasZeissPage = React.lazy(() => import('./components/MicasZeissPage').then(m => ({ default: m.MicasZeissPage })));
+const AboutUsPage = React.lazy(() => import('./components/AboutUsPage').then(m => ({ default: m.AboutUsPage })));
+
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
 import { getDisplayName, formatProductTitle, getContactLensUsage, getContactLensFormat, formatContactLensTitle, getProductSlug, findProductBySlug, slugify, isInStock, isProvisionalName, formatBrandName, toTitleCase } from './lib/format';
 import { getOfficialHdImage, getContactLensCardSpecs } from './lib/productImages';
 import { BASE_LENS_PRICE } from './lib/constants';
-import MicaDetailModal from './components/MicaDetailModal';
 import { ProductCard, FormatProductName } from './components/ProductCard';
 import { CollectionRow } from './components/CollectionRow';
 import { CustomSelect } from './components/CustomSelect';
 import { useCart } from './context/CartContext';
 import { calculateDeliveryTime, getDeliveryEstimate, addBusinessDays } from './lib/delivery';
-import { CartDrawer } from './components/CartDrawer';
-import { TriageModal } from './components/TriageModal';
-import OrderTracking from './components/OrderTracking';
-import { MicasZeissPage } from './components/MicasZeissPage';
-import { AboutUsPage } from './components/AboutUsPage';
 import initialContent from '../content2.json';
 const formatWhatsappNumber = (waStr: string) => {
   if (!waStr) return '+52 33 1692 9111';
@@ -392,6 +392,8 @@ function FullCatalog({
                 src={logo} 
                 alt="Lensique" 
                 className="catalog-header-logo" 
+                width="140"
+                height="35"
                 onClick={onClose}
                 style={{ cursor: 'pointer' }}
                 role="button"
@@ -1350,6 +1352,10 @@ function App() {
   const [isStyleQuizOpen, setIsStyleQuizOpen] = useState(false);
   const [isContactQuizOpen, setIsContactQuizOpen] = useState(false);
   const { addItem, items, setIsCartOpen, removeItem, isCartOpen } = useCart();
+  const [cartMounted, setCartMounted] = useState(false);
+  useEffect(() => {
+    if (isCartOpen) setCartMounted(true);
+  }, [isCartOpen]);
   const [isTryOnOpen, setIsTryOnOpen] = useState(false);
   const [tryOnProduct, setTryOnProduct] = useState<any>(null);
   const [isTriageOpen, setIsTriageOpen] = useState(false);
@@ -1961,15 +1967,17 @@ function App() {
     <div className="app-container">
       <AnimatePresence>
         {selectedTech && (
-          <TechnologyInfoPage 
-            tech={selectedTech} 
-            resolvedImage={resolveImageUrl(selectedTech.image_url, selectedTech.image) || heroImg}
-            onBack={() => setSelectedTech(null)} 
-            onBook={() => {
-              setSelectedTech(null);
-              handleOpenBooking(`Consulta ${selectedTech.title}`);
-            }}
-          />
+          <React.Suspense fallback={null}>
+            <TechnologyInfoPage 
+              tech={selectedTech} 
+              resolvedImage={resolveImageUrl(selectedTech.image_url, selectedTech.image) || heroImg}
+              onBack={() => setSelectedTech(null)} 
+              onBook={() => {
+                setSelectedTech(null);
+                handleOpenBooking(`Consulta ${selectedTech.title}`);
+              }}
+            />
+          </React.Suspense>
         )}
       </AnimatePresence>
 
@@ -2129,14 +2137,16 @@ function App() {
                     {isOutOfStock ? '● SOBRE PEDIDO' : '● EN EXISTENCIA'}
                   </div>
                   {(Array.isArray(selectedProductDetail.images) && selectedProductDetail.images.length > 0) ? (
-                    <ProductCarousel 
-                      images={selectedProductDetail.images.map((img: any) => ({
-                        id: img.id,
-                        image_url: resolveImageUrl(img.image_url, undefined)
-                      }))}
-                      alt={selectedProductDetail.name}
-                      hideTryOn={false}
-                    />
+                    <React.Suspense fallback={<div style={{ minHeight: '300px' }} />}>
+                      <ProductCarousel 
+                        images={selectedProductDetail.images.map((img: any) => ({
+                          id: img.id,
+                          image_url: resolveImageUrl(img.image_url, undefined)
+                        }))}
+                        alt={selectedProductDetail.name}
+                        hideTryOn={false}
+                      />
+                    </React.Suspense>
                   ) : (
                     <img
                       src={resolveImageUrl(selectedProductDetail.image_url, selectedProductDetail.image, 800) || heroImg}
@@ -2260,27 +2270,31 @@ function App() {
 
       {/* Full Catalog View */}
       {isStyleQuizOpen && (
-        <StyleQuiz 
-          catalogData={safeJsonParse(settings.full_catalog_data)}
-          onClose={() => setIsStyleQuizOpen(false)}
-          onViewProduct={(prod) => {
-            setIsStyleQuizOpen(false);
-            setSelectedProductDetail(prod);
-          }}
-          onBookAppointment={handleOpenBooking}
-        />
+        <React.Suspense fallback={null}>
+          <StyleQuiz 
+            catalogData={safeJsonParse(settings.full_catalog_data)}
+            onClose={() => setIsStyleQuizOpen(false)}
+            onViewProduct={(prod) => {
+              setIsStyleQuizOpen(false);
+              setSelectedProductDetail(prod);
+            }}
+            onBookAppointment={handleOpenBooking}
+          />
+        </React.Suspense>
       )}
 
       {isContactQuizOpen && (
-        <ContactLensQuiz
-          catalogData={safeJsonParse(settings.full_catalog_data)}
-          onClose={() => setIsContactQuizOpen(false)}
-          onViewProduct={(prod) => {
-            setIsContactQuizOpen(false);
-            setSelectedProductDetail(prod);
-          }}
-          onBookAppointment={handleOpenBooking}
-        />
+        <React.Suspense fallback={null}>
+          <ContactLensQuiz
+            catalogData={safeJsonParse(settings.full_catalog_data)}
+            onClose={() => setIsContactQuizOpen(false)}
+            onViewProduct={(prod) => {
+              setIsContactQuizOpen(false);
+              setSelectedProductDetail(prod);
+            }}
+            onBookAppointment={handleOpenBooking}
+          />
+        </React.Suspense>
       )}
 
 
@@ -2291,7 +2305,8 @@ function App() {
       />
 
       {contactConfiguratorProduct && (
-        <ContactLensConfiguratorModal
+        <React.Suspense fallback={null}>
+          <ContactLensConfiguratorModal
           product={contactConfiguratorProduct}
           onClose={() => setContactConfiguratorProduct(null)}
           onComplete={(config, checkoutNow, careKitToAdd) => {
@@ -2385,26 +2400,30 @@ function App() {
 
           }}
         />
+        </React.Suspense>
       )}
 
       {selectedMicaCard && currentPath === '/micas' && (
-        <MicaDetailModal
-          mica={selectedMicaCard}
-          onClose={() => setSelectedMicaCard(null)}
-          onOpenCotizador={() => {
-            const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' };
-            const initialType = micaContent[selectedMicaCard.id];
-            setSelectedMicaCard(null);
-            window.history.pushState({}, '', '/cotizador' + (initialType ? '?tipo=' + encodeURIComponent(initialType) : ''));
-            window.dispatchEvent(new PopStateEvent('popstate'));
-          }}
-        />
+        <React.Suspense fallback={null}>
+          <MicaDetailModal
+            mica={selectedMicaCard}
+            onClose={() => setSelectedMicaCard(null)}
+            onOpenCotizador={() => {
+              const micaContent = { m1: 'Monofocales', m2: 'Bifocales', m4: 'Progresivos', m5: 'Fotocromático' };
+              const initialType = micaContent[selectedMicaCard.id];
+              setSelectedMicaCard(null);
+              window.history.pushState({}, '', '/cotizador' + (initialType ? '?tipo=' + encodeURIComponent(initialType) : ''));
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+          />
+        </React.Suspense>
       )}
 
       
 
       {configuratorProduct && (
-        <LensConfiguratorModal
+        <React.Suspense fallback={null}>
+          <LensConfiguratorModal
           product={configuratorProduct}
           initialSection={configuratorInitialSection}
           onClose={() => {
@@ -2517,18 +2536,25 @@ function App() {
             setIsCartOpen(true);
           }}
         />
+        </React.Suspense>
       )}
 
-      <CartDrawer 
-        onOpenConfigurator={(productToOpen, section) => {
-          setConfiguratorInitialSection(section || '3');
-          setConfiguratorProduct(productToOpen);
-        }}
-      />
+      {cartMounted && (
+        <React.Suspense fallback={null}>
+          <CartDrawer 
+            onOpenConfigurator={(productToOpen, section) => {
+              setConfiguratorInitialSection(section || '3');
+              setConfiguratorProduct(productToOpen);
+            }}
+          />
+        </React.Suspense>
+      )}
 
-        {isTriageOpen && (
+      {isTriageOpen && (
+        <React.Suspense fallback={null}>
           <TriageModal onClose={() => setIsTriageOpen(false)} onSelectService={handleOpenBooking} />
-        )}
+        </React.Suspense>
+      )}
 
         {/* Mobile sticky agenda bar removed - Agenda CTA is strategic in hero, nav and service cards */}
 
@@ -2699,7 +2725,7 @@ function App() {
           <div className="nav-content">
             <div className="nav-left">
               <a href="/" className="logo">
-                <img src={logo} alt="Lensique" className="logo-img" />
+                <img src={logo} alt="Lensique" className="logo-img" width="160" height="40" />
               </a>
             </div>
 
@@ -2983,66 +3009,78 @@ function App() {
         )}
 
         {currentPath === '/lentes-de-contacto' && (
-          <ContactLensServicePage
-            onNavigateToCatalog={(cat) => {
-              setCatalogInitialFilter('Lentes de Contacto');
-              setIsCatalogOpen(true);
-              setCurrentPath('/catalogo');
-              window.history.pushState(null, '', '/catalogo?tipo=contacto');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onOpenWhatsApp={(msg) => {
-              const cleanPhone = (settings.contact_whatsapp || '523316929111').replace(/\D/g, '');
-              window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg || 'Hola, tengo dudas sobre lentes de contacto')}`, '_blank', 'noopener,noreferrer');
-            }}
-            onBookExam={() => handleOpenBooking()}
-            onViewProduct={(product) => setSelectedProductDetail(product)}
-            featuredProducts={safeJsonParse(settings.featured_contact_lenses).length > 0 ? safeJsonParse(settings.featured_contact_lenses) : safeJsonParse(settings.full_catalog_data).filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))}
-            contactWhatsapp={settings.contact_whatsapp}
-          />
+          <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+            <ContactLensServicePage
+              onNavigateToCatalog={(cat) => {
+                setCatalogInitialFilter('Lentes de Contacto');
+                setIsCatalogOpen(true);
+                setCurrentPath('/catalogo');
+                window.history.pushState(null, '', '/catalogo?tipo=contacto');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenWhatsApp={(msg) => {
+                const cleanPhone = (settings.contact_whatsapp || '523316929111').replace(/\D/g, '');
+                window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg || 'Hola, tengo dudas sobre lentes de contacto')}`, '_blank', 'noopener,noreferrer');
+              }}
+              onBookExam={() => handleOpenBooking()}
+              onViewProduct={(product) => setSelectedProductDetail(product)}
+              featuredProducts={safeJsonParse(settings.featured_contact_lenses).length > 0 ? safeJsonParse(settings.featured_contact_lenses) : safeJsonParse(settings.full_catalog_data).filter((p: any) => String(p.category || '').toLowerCase().includes('contacto'))}
+              contactWhatsapp={settings.contact_whatsapp}
+            />
+          </React.Suspense>
         )}
 
         {currentPath === '/blog' && (
           <div style={{ paddingTop: '80px', backgroundColor: '#f8fafc', paddingBottom: '80px' }}>
-            <BlogList />
+            <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+              <BlogList />
+            </React.Suspense>
           </div>
         )}
 
         
         {currentPath === '/micas' && (
-          <MicasZeissPage />
+          <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+            <MicasZeissPage />
+          </React.Suspense>
         )}
 
         {currentPath === '/nosotros' && (
-          <AboutUsPage
-            onOpenBooking={handleOpenBooking}
-            onOpenCatalog={(filter = 'Todas') => {
-              setCatalogInitialFilter(filter);
-              setIsCatalogOpen(true);
-              setCurrentPath('/catalogo');
-              window.history.pushState(null, '', filter === 'Todas' ? '/catalogo' : `/catalogo?tipo=${slugify(filter)}`);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            contactWhatsapp={settings.contact_whatsapp}
-            contactLocation={settings.contact_location}
-            aboutTitle={settings.about_title}
-            aboutText={settings.about_text}
-          />
+          <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+            <AboutUsPage
+              onOpenBooking={handleOpenBooking}
+              onOpenCatalog={(filter = 'Todas') => {
+                setCatalogInitialFilter(filter);
+                setIsCatalogOpen(true);
+                setCurrentPath('/catalogo');
+                window.history.pushState(null, '', filter === 'Todas' ? '/catalogo' : `/catalogo?tipo=${slugify(filter)}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              contactWhatsapp={settings.contact_whatsapp}
+              contactLocation={settings.contact_location}
+              aboutTitle={settings.about_title}
+              aboutText={settings.about_text}
+            />
+          </React.Suspense>
         )}
 
         {currentPath.startsWith('/blog/') && (
-          <BlogPost slug={currentPath.replace('/blog/', '')} />
+          <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+            <BlogPost slug={currentPath.replace('/blog/', '')} />
+          </React.Suspense>
         )}
 
         {(currentPath === '/seguimiento' || currentPath.startsWith('/p/')) && (
-          <OrderTracking
-            currentPath={currentPath}
-            contactWhatsapp={settings.contact_whatsapp}
-            onNavigate={(path) => {
-              setCurrentPath(path);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
+          <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+            <OrderTracking
+              currentPath={currentPath}
+              contactWhatsapp={settings.contact_whatsapp}
+              onNavigate={(path) => {
+                setCurrentPath(path);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          </React.Suspense>
         )}
 
         {!['/catalogo', '/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/') || currentPath.startsWith('/marca/')) && (
@@ -3276,7 +3314,7 @@ function App() {
                   onClick={service.action}
                 >
                   <div className="wp-service-img-area">
-                    <img src={service.img} alt={service.title} className="wp-service-img" />
+                    <img src={service.img} alt={service.title} className="wp-service-img" width="400" height="300" loading="lazy" />
                   </div>
                   <div className="wp-service-name-strip">
                     <span className="wp-service-name">{service.title}</span>
@@ -3302,7 +3340,7 @@ function App() {
             <div className="zeiss-tech-grid">
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissBlueGuardImg} alt="ZEISS BlueGuard" loading="lazy" />
+                  <img src={zeissBlueGuardImg} alt="ZEISS BlueGuard" loading="lazy" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS BlueGuard</h3>
@@ -3312,7 +3350,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissPhotoFusionImg} alt="ZEISS PhotoFusion X" loading="lazy" />
+                  <img src={zeissPhotoFusionImg} alt="ZEISS PhotoFusion X" loading="lazy" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS PhotoFusion X</h3>
@@ -3322,7 +3360,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissDuraVisionImg} alt="ZEISS DuraVision" loading="lazy" />
+                  <img src={zeissDuraVisionImg} alt="ZEISS DuraVision" loading="lazy" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS DuraVision</h3>
@@ -3332,7 +3370,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissSmartLifeImg} alt="ZEISS Progresivo" loading="lazy" />
+                  <img src={zeissSmartLifeImg} alt="ZEISS Progresivo" loading="lazy" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS Progresivo</h3>
@@ -3342,7 +3380,7 @@ function App() {
 
               <div className="zeiss-tech-card">
                 <div className="zeiss-tech-imgwrap">
-                  <img src={zeissUVProtectImg} alt="ZEISS UVProtect" loading="lazy" />
+                  <img src={zeissUVProtectImg} alt="ZEISS UVProtect" loading="lazy" width="300" height="200" />
                 </div>
                 <div className="zeiss-tech-cbody">
                   <h3 className="zeiss-tech-title">ZEISS UVProtect</h3>
@@ -3640,9 +3678,13 @@ function App() {
 
         
 
-        <GoogleReviewsSection />
+        <React.Suspense fallback={<div style={{ minHeight: '200px' }} />}>
+          <GoogleReviewsSection />
+        </React.Suspense>
 
-        <FAQSection limit={4} onOpenAll={() => setSelectedInfoPage(faqData)} />
+        <React.Suspense fallback={<div style={{ minHeight: '200px' }} />}>
+          <FAQSection limit={4} onOpenAll={() => setSelectedInfoPage(faqData)} />
+        </React.Suspense>
 
         <section id="contacto" className="location-section">
           <div className="location-grid">
@@ -3696,22 +3738,30 @@ function App() {
             </div>
           </section>
 
-          <ServiceDetailsPage
-            isOpen={!!selectedServiceInfo}
-            onClose={() => setSelectedServiceInfo(null)}
-            service={selectedServiceInfo}
-          />
+          {selectedServiceInfo && (
+            <React.Suspense fallback={null}>
+              <ServiceDetailsPage
+                isOpen={!!selectedServiceInfo}
+                onClose={() => setSelectedServiceInfo(null)}
+                service={selectedServiceInfo}
+              />
+            </React.Suspense>
+          )}
 
-          <InfoPage
-            isOpen={!!selectedInfoPage}
-            onClose={() => {
-              setSelectedInfoPage(null);
-              if (['/devoluciones', '/aviso-de-privacidad', '/privacidad', '/terminos', '/terminos-y-condiciones', '/cookies', '/politica-de-cookies'].includes(window.location.pathname)) {
-                window.history.pushState({}, '', '/');
-              }
-            }}
-            data={selectedInfoPage}
-          />
+          {selectedInfoPage && (
+            <React.Suspense fallback={null}>
+              <InfoPage
+                isOpen={!!selectedInfoPage}
+                onClose={() => {
+                  setSelectedInfoPage(null);
+                  if (['/devoluciones', '/aviso-de-privacidad', '/privacidad', '/terminos', '/terminos-y-condiciones', '/cookies', '/politica-de-cookies'].includes(window.location.pathname)) {
+                    window.history.pushState({}, '', '/');
+                  }
+                }}
+                data={selectedInfoPage}
+              />
+            </React.Suspense>
+          )}
 
                   </>
             )}

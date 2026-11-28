@@ -42,7 +42,7 @@ export default function ServiceInfoModal({ isOpen, onClose, service }: ServiceIn
             onClick={(e) => e.stopPropagation()}
             style={{ display: 'grid', gridTemplateColumns: '1.25fr 1fr', background: '#fff', borderRadius: '24px', overflow: 'hidden', width: '100%', maxWidth: '1100px', maxHeight: '90vh', position: 'relative' }}
           >
-            <button className="product-detail-close" onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.8)', border: 'none', cursor: 'pointer', zIndex: 10, width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+            <button className="product-detail-close" onClick={onClose} aria-label="Cerrar información de servicio" style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.8)', border: 'none', cursor: 'pointer', zIndex: 10, width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
               <X size={20} />
             </button>
 

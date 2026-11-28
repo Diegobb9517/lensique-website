@@ -670,7 +670,7 @@ function VirtualTryOn({
         <div className="vto-container">
           <div className="vto-header">
             <h3>Prueba Virtual: {product?.name}</h3>
-            <button className="vto-close" onClick={onClose}><X size={24} /></button>
+            <button className="vto-close" onClick={onClose} aria-label="Cerrar prueba virtual"><X size={24} /></button>
           </div>
 
           <div className="vto-viewport">
@@ -716,6 +716,7 @@ function VirtualTryOn({
                 step="0.01" 
                 value={scale} 
                 onChange={(e) => setScale(parseFloat(e.target.value))} 
+                aria-label="Ajustar tamaño de lentes"
               />
             </div>
             
@@ -729,6 +730,7 @@ function VirtualTryOn({
                   step="1" 
                   value={positionY} 
                   onChange={(e) => setPositionY(parseInt(e.target.value))} 
+                  aria-label="Ajustar posición vertical"
                 />
               </div>
               <div className="control-group">
@@ -740,6 +742,7 @@ function VirtualTryOn({
                   step="1" 
                   value={positionX} 
                   onChange={(e) => setPositionX(parseInt(e.target.value))} 
+                  aria-label="Ajustar posición horizontal"
                 />
               </div>
             </div>
@@ -2564,7 +2567,7 @@ function App() {
               className="booking-modal"
               onClick={e => e.stopPropagation()}
             >
-              <button className="modal-close" onClick={() => setIsBookingOpen(false)}>
+              <button className="modal-close" onClick={() => setIsBookingOpen(false)} aria-label="Cerrar ventana de agendar cita">
                 <X size={20} />
               </button>
 
@@ -2788,7 +2791,12 @@ function App() {
             </div>
 
             <div className="nav-right">
-              <button className="nav-icon-btn" onClick={() => setIsCartOpen(true)} style={{ position: 'relative' }}>
+              <button 
+                className="nav-icon-btn" 
+                onClick={() => setIsCartOpen(true)} 
+                aria-label="Ver carrito de compras"
+                style={{ position: 'relative' }}
+              >
                 <ShoppingBag size={24} />
                 {items.length > 0 && (
                   <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#009ee3', color: '#fff', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -2797,7 +2805,11 @@ function App() {
                 )}
               </button>
 
-              <button className="nav-icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              <button 
+                className="nav-icon-btn mobile-menu-btn" 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
@@ -3801,7 +3813,7 @@ function App() {
         className="whatsapp-float"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="WhatsApp"
+        aria-label="Contactar por WhatsApp"
         onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}
       >
         <svg viewBox="0 0 448 512" width="32" height="32" className="wa-svg" style={{ flexShrink: 0 }}>
@@ -3876,13 +3888,13 @@ function App() {
                   Estamos aquí para ayudarte. Revisa nuestras preguntas frecuentes o contáctanos directamente.
                 </p>
                 <div className="support-actions">
-                  <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }} className="support-action-item">
+                  <a href="#faq" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(faqData); }} className="support-action-item" aria-label="Preguntas frecuentes">
                     <div className="support-icon-circle">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     </div>
                     <span>FAQ</span>
                   </a>
-                  <a href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item" onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}>
+                  <a href={`https://wa.me/${(settings.contact_whatsapp || '523316929111').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="support-action-item" aria-label="Contactar por WhatsApp" onClick={() => { import('./lib/analytics').then(({ trackLead }) => trackLead()); }}>
                     <div className="support-icon-circle">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                     </div>
@@ -3891,10 +3903,10 @@ function App() {
                 </div>
                 
                 <div className="social-icons">
-                  <a href="https://www.instagram.com/thelensique/" target="_blank" rel="noopener noreferrer">
+                  <a href="https://www.instagram.com/thelensique/" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Instagram">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                   </a>
-                  <a href="https://www.facebook.com/profile.php?id=61579352515332" target="_blank" rel="noopener noreferrer">
+                  <a href="https://www.facebook.com/profile.php?id=61579352515332" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Facebook">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                   </a>
                 </div>

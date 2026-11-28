@@ -776,8 +776,8 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                   {/* Selector de color si es cosmético */}
                   {availableColors.length > 0 && (
                     <div className="cl-color-box">
-                      <label>🎨 Selecciona el color de tus lentes:</label>
-                      <select value={selectedColor} onChange={(e) => setSelectedColor(e.target.value)}>
+                      <label htmlFor="cl-color-select">🎨 Selecciona el color de tus lentes:</label>
+                      <select id="cl-color-select" aria-label="Color de lentes de contacto" value={selectedColor} onChange={(e) => setSelectedColor(e.target.value)}>
                         {availableColors.map((c) => (
                           <option key={c} value={c}>{c}</option>
                         ))}

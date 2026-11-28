@@ -204,7 +204,7 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
                 key={img.id}
                 ref={(el) => (thumbnailRefs.current[idx] = el)}
                 onClick={() => setCurrentIndex(idx)}
-                className={`lsq-thumb-btn ${idx === currentIndex ? 'active' : ''}`}
+                className={`lsq-thumb-btn ${idx === currentIndex ? 'active' : ''}`} aria-label={`Ver imagen ${idx + 1}`}
               >
                 <img src={img.image_url} alt={`Vista ${idx + 1}`} />
               </button>
@@ -235,10 +235,10 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
           {/* Navigation Arrows */}
           {images.length > 1 && (
             <>
-              <button className="lsq-nav-arrow lsq-arrow-left" onClick={prev}>
+              <button className="lsq-nav-arrow lsq-arrow-left" onClick={prev} aria-label="Imagen anterior">
                 <ChevronLeft size={32} strokeWidth={1.5} />
               </button>
-              <button className="lsq-nav-arrow lsq-arrow-right" onClick={next}>
+              <button className="lsq-nav-arrow lsq-arrow-right" onClick={next} aria-label="Imagen siguiente">
                 <ChevronRight size={32} strokeWidth={1.5} />
               </button>
             </>
@@ -268,6 +268,7 @@ export default function ProductCarousel({ images, alt, hideTryOn }: ProductCarou
             >
               <button
                 onClick={() => setShowLightbox(false)}
+                aria-label="Cerrar vista ampliada"
                 style={{ position: 'absolute', top: '30px', right: '30px', border: 'none', background: 'transparent', cursor: 'pointer' }}
               >
                 <X size={32} />

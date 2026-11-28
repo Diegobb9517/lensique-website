@@ -64,7 +64,7 @@ export default function MicaDetailModal({ mica, onClose, onOpenCotizador }: Mica
         onClick={(e) => e.stopPropagation()}
         style={{ background: '#fff', width: '100%', maxWidth: '1100px', maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}
       >
-        <button className="product-detail-close" onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.8)', border: 'none', cursor: 'pointer', zIndex: 10, width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+        <button className="product-detail-close" onClick={onClose} aria-label="Cerrar detalle de mica" style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.8)', border: 'none', cursor: 'pointer', zIndex: 10, width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
           <X size={20} />
         </button>
 

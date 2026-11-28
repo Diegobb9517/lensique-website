@@ -1084,6 +1084,7 @@ export default function LensConfiguratorModal({
                           className="lsq-axis-input"
                           value={odAxis}
                           onChange={(e) => handleOdAxisChange(e.target.value)}
+                          aria-label="Eje ojo derecho"
                         />
 
                         {/* Ojo Izquierdo (OI) */}
@@ -1111,6 +1112,7 @@ export default function LensConfiguratorModal({
                               className="lsq-axis-input"
                               value={oiAxis}
                               onChange={(e) => setOiAxis(e.target.value)}
+                              aria-label="Eje ojo izquierdo"
                             />
                           </>
                         ) : (
@@ -1145,8 +1147,9 @@ export default function LensConfiguratorModal({
                               />
                             </div>
                             <div className="lsq-rx-field">
-                              <label>Eje</label>
+                              <label htmlFor="lsq-od-axis-mobile">Eje</label>
                               <input
+                                id="lsq-od-axis-mobile"
                                 type="number"
                                 min={1}
                                 max={180}
@@ -1154,6 +1157,7 @@ export default function LensConfiguratorModal({
                                 className="lsq-axis-input"
                                 value={odAxis}
                                 onChange={(e) => handleOdAxisChange(e.target.value)}
+                                aria-label="Eje ojo derecho"
                               />
                             </div>
                           </div>
@@ -1183,8 +1187,9 @@ export default function LensConfiguratorModal({
                                 />
                               </div>
                               <div className="lsq-rx-field">
-                                <label>Eje</label>
+                                <label htmlFor="lsq-oi-axis-mobile">Eje</label>
                                 <input
+                                  id="lsq-oi-axis-mobile"
                                   type="number"
                                   min={1}
                                   max={180}
@@ -1192,6 +1197,7 @@ export default function LensConfiguratorModal({
                                   className="lsq-axis-input"
                                   value={oiAxis}
                                   onChange={(e) => setOiAxis(e.target.value)}
+                                  aria-label="Eje ojo izquierdo"
                                 />
                               </div>
                             </div>

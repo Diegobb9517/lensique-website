@@ -164,7 +164,7 @@ export function ContactLensQuiz({ catalogData, onClose, onViewProduct, onBookApp
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
       >
-        <button className="clq-close" onClick={onClose}><X size={24} /></button>
+        <button className="clq-close" onClick={onClose} aria-label="Cerrar cuestionario"><X size={24} /></button>
         
         <div className="clq-header">
           <h2>Encuentra tu lente ideal</h2>

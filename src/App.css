@@ -1144,7 +1144,7 @@ body.no-scroll {
 }
 
 .modal-header p {
-  color: #64748b;
+  color: #475569;
   font-size: 13px;
   margin: 0;
   line-height: 1.4;
@@ -1211,7 +1211,7 @@ body.no-scroll {
   text-align: center;
   font-size: 10.5px;
   font-weight: 600;
-  color: #94a3b8;
+  color: #475569;
   padding-bottom: 4px;
 }
 
@@ -1633,7 +1633,7 @@ body.no-scroll {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #475569;
   pointer-events: none;
 }
 
@@ -1644,7 +1644,7 @@ body.no-scroll {
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
@@ -1778,7 +1778,7 @@ body.no-scroll {
 .filter-label {
   font-size: 12px;
   font-weight: 700;
-  color: #86868b;
+  color: #4b5563;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -1797,7 +1797,7 @@ body.no-scroll {
   border-bottom: 2px solid transparent;
   font-size: 14px;
   font-weight: 500;
-  color: #6b7280;
+  color: #374151;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: var(--font-sans);
@@ -1816,7 +1816,7 @@ body.no-scroll {
 
 .catalog-count {
   font-size: 13px;
-  color: #888;
+  color: #4b5563;
   font-weight: 400;
   margin-left: auto;
 }
@@ -1922,7 +1922,7 @@ body.no-scroll {
 .catalog-sidebar-label {
   font-size: 11px;
   text-transform: uppercase;
-  color: #86868b;
+  color: #4b5563;
   letter-spacing: 0.12em;
   font-weight: 700;
   margin-bottom: 20px;
@@ -1995,7 +1995,7 @@ body.no-scroll {
 
 .catalog-sidebar-promo p {
   font-size: 13px;
-  color: #86868b;
+  color: #4b5563;
   margin-bottom: 20px;
   line-height: 1.4;
 }
@@ -2188,7 +2188,7 @@ body.no-scroll {
 
 .product-brand-sub {
   font-size: 13px;
-  color: #86868b;
+  color: #4b5563;
   margin-bottom: 20px;
   flex: 1; /* Esto empuja el botón hacia abajo */
 }
@@ -2310,7 +2310,7 @@ body.no-scroll {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #86868b;
+  color: #4b5563;
   margin-bottom: 10px;
 }
 
@@ -2344,7 +2344,7 @@ body.no-scroll {
 .no-results {
   text-align: center;
   padding: 120px 0;
-  color: #86868b;
+  color: #4b5563;
 }
 
 @media (max-width: 1068px) {
@@ -2593,7 +2593,7 @@ body.no-scroll {
 .hero-ad-brand {
   font-size: 14px;
   font-weight: 700;
-  color: #86868b;
+  color: #4b5563;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 8px;
@@ -2783,7 +2783,7 @@ body.no-scroll {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #86868b;
+  color: #4b5563;
   letter-spacing: 0.1em;
 }
 
@@ -3054,7 +3054,7 @@ body.no-scroll {
 }
 
 .apple-hero-card.dark-theme .apple-hero-subtitle {
-  color: #86868b;
+  color: #9ca3af;
 }
 
 /* --- Dark Bento Cards (MacBook Pro Style) --- */
@@ -3068,7 +3068,7 @@ body.no-scroll {
 }
 
 .bento-card.dark-theme p {
-  color: #86868b;
+  color: #9ca3af;
 }
 
 .bento-card.dark-theme .bento-img-wrapper {
@@ -3334,7 +3334,7 @@ body.no-scroll {
 
 .wp-card-category {
   font-size: 11px;
-  color: #888;
+  color: #4b5563;
   margin: 0 0 6px 0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -3524,7 +3524,7 @@ body.no-scroll {
 
 .wp-mica-desc-outside {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   text-align: center;
   margin: 0;
   line-height: 1.4;
@@ -3632,7 +3632,7 @@ body.no-scroll {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  color: #6b7280;
+  color: #4b5563;
   margin-bottom: 8px;
   display: block;
 }
@@ -3707,7 +3707,7 @@ body.no-scroll {
 }
 .product-detail-perks span {
   font-size: 11px;
-  color: #86868b;
+  color: #4b5563;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4355,7 +4355,7 @@ body.no-scroll {
 
 .fpn-wrapper { display: flex; flex-direction: column; gap: 4px; }
 .fpn-main { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fpn-sub { font-family: 'Inter', sans-serif; font-size: 0.75em; font-weight: 400; color: #86868b; letter-spacing: 0; line-height: 1.2; text-transform: none; }
+.fpn-sub { font-family: 'Inter', sans-serif; font-size: 0.75em; font-weight: 400; color: #4b5563; letter-spacing: 0; line-height: 1.2; text-transform: none; }
 .product-name-serif .fpn-sub { font-family: 'Inter', sans-serif; }
 
 /* Mobile optimizations for catalog filters */
@@ -4903,7 +4903,7 @@ body.no-scroll .whatsapp-float {
 
 .home-collection-card-item .wp-card-category {
   font-size: 11px !important;
-  color: #888888 !important;
+  color: #4b5563 !important;
   margin: 0 0 4px 0 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
@@ -4955,7 +4955,7 @@ body.no-scroll .whatsapp-float {
 
 .home-collection-card-item p[style*="micas antirreflejantes"] {
   font-size: 10.5px !important;
-  color: #9ca3af !important;
+  color: #4b5563 !important;
   margin-top: 4px !important;
   line-height: 1.2 !important;
 }
@@ -4980,7 +4980,7 @@ body.no-scroll .whatsapp-float {
 }
 
 .home-contact-quiz-banner p {
-  color: #6b7280;
+  color: #374151;
   font-size: 14px;
   line-height: 1.5;
   max-width: 540px;

@@ -70,7 +70,7 @@ export function CheckoutModal({ data, onClose, onWhatsApp }: CheckoutModalProps)
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           style={{ background: '#fff', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '90%', position: 'relative' }}
         >
-          <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button onClick={onClose} aria-label="Cerrar resumen de compra" style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer' }}>
             <X size={20} color="#64748b" />
           </button>
 

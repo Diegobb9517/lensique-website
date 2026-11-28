@@ -715,21 +715,26 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       <div className="lsq-checkout-field">
-                        <label className="lsq-checkout-label">Nombre completo *</label>
+                        <label htmlFor="checkout-buyer-name" className="lsq-checkout-label">Nombre completo *</label>
                         <input 
+                          id="checkout-buyer-name"
+                          name="buyerName"
                           type="text" 
                           value={buyerName} 
                           onChange={e => setBuyerName(e.target.value)} 
                           onFocus={handleInputFocus}
                           placeholder="Ej. Juan Pérez González"
                           className="lsq-checkout-input"
+                          aria-label="Nombre completo"
                         />
                       </div>
 
                       <div className="lsq-checkout-grid-2">
                         <div className="lsq-checkout-field">
-                          <label className="lsq-checkout-label">Teléfono / WhatsApp *</label>
+                          <label htmlFor="checkout-buyer-phone" className="lsq-checkout-label">Teléfono / WhatsApp *</label>
                           <input 
+                            id="checkout-buyer-phone"
+                            name="buyerPhone"
                             type="tel" 
                             value={buyerPhone} 
                             onChange={e => setBuyerPhone(e.target.value)} 
@@ -737,18 +742,22 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                             placeholder="10 dígitos"
                             maxLength={10}
                             className="lsq-checkout-input"
+                            aria-label="Teléfono o WhatsApp"
                           />
                         </div>
 
                         <div className="lsq-checkout-field">
-                          <label className="lsq-checkout-label">Correo electrónico (opcional)</label>
+                          <label htmlFor="checkout-buyer-email" className="lsq-checkout-label">Correo electrónico (opcional)</label>
                           <input 
+                            id="checkout-buyer-email"
+                            name="buyerEmail"
                             type="email" 
                             value={buyerEmail} 
                             onChange={e => setBuyerEmail(e.target.value)} 
                             onFocus={handleInputFocus}
                             placeholder="ejemplo@correo.com"
                             className="lsq-checkout-input"
+                            aria-label="Correo electrónico"
                           />
                         </div>
                       </div>
@@ -813,58 +822,72 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                         <div className="lsq-checkout-grid-3">
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Calle *</label>
+                            <label htmlFor="checkout-address-street" className="lsq-checkout-label">Calle *</label>
                             <input 
+                              id="checkout-address-street"
+                              name="street"
                               type="text" 
                               value={addressDetails.street} 
                               onChange={e => setAddressDetails({...addressDetails, street: e.target.value})} 
                               onFocus={handleInputFocus}
                               placeholder="Nombre de la calle"
                               className="lsq-checkout-input"
+                              aria-label="Nombre de la calle"
                             />
                           </div>
 
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Núm. Exterior *</label>
+                            <label htmlFor="checkout-address-exterior" className="lsq-checkout-label">Núm. Exterior *</label>
                             <input 
+                              id="checkout-address-exterior"
+                              name="exterior"
                               type="text" 
                               value={addressDetails.exterior} 
                               onChange={e => setAddressDetails({...addressDetails, exterior: e.target.value})} 
                               onFocus={handleInputFocus}
                               placeholder="Ej. 123"
                               className="lsq-checkout-input"
+                              aria-label="Número exterior"
                             />
                           </div>
 
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Núm. Interior</label>
+                            <label htmlFor="checkout-address-interior" className="lsq-checkout-label">Núm. Interior</label>
                             <input 
+                              id="checkout-address-interior"
+                              name="interior"
                               type="text" 
                               value={addressDetails.interior} 
                               onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} 
                               onFocus={handleInputFocus}
                               placeholder="Opcional"
                               className="lsq-checkout-input"
+                              aria-label="Número interior"
                             />
                           </div>
                         </div>
 
                         <div className="lsq-checkout-grid-2">
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Colonia *</label>
+                            <label htmlFor="checkout-address-colony" className="lsq-checkout-label">Colonia *</label>
                             <input 
+                              id="checkout-address-colony"
+                              name="colony"
                               type="text" 
                               value={addressDetails.colony} 
                               onChange={e => setAddressDetails({...addressDetails, colony: e.target.value})} 
                               onFocus={handleInputFocus}
                               placeholder="Colonia o fraccionamiento"
                               className="lsq-checkout-input"
+                              aria-label="Colonia o fraccionamiento"
                             />
                           </div>
 
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Código Postal *</label>
+                            <label htmlFor="checkout-address-zip" className="lsq-checkout-label">Código Postal *</label>
                             <input 
+                              id="checkout-address-zip"
+                              name="zip"
                               type="text" 
                               value={addressDetails.zip} 
                               onChange={e => {
@@ -875,6 +898,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                               placeholder="5 dígitos"
                               maxLength={5}
                               className="lsq-checkout-input"
+                              aria-label="Código Postal"
                             />
                             {zipError && (
                               <span style={{ fontSize: '11.5px', color: '#ef4444', marginTop: '2px' }}>{zipError}</span>
@@ -884,39 +908,48 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
 
                         <div className="lsq-checkout-grid-2">
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Ciudad o Municipio *</label>
+                            <label htmlFor="checkout-address-city" className="lsq-checkout-label">Ciudad o Municipio *</label>
                             <input 
+                              id="checkout-address-city"
+                              name="city"
                               type="text" 
                               value={addressDetails.city} 
                               onChange={e => setAddressDetails({...addressDetails, city: e.target.value})} 
                               onFocus={handleInputFocus}
                               placeholder="Ej. Guadalajara"
                               className="lsq-checkout-input"
+                              aria-label="Ciudad o Municipio"
                             />
                           </div>
 
                           <div className="lsq-checkout-field">
-                            <label className="lsq-checkout-label">Estado *</label>
+                            <label htmlFor="checkout-address-state" className="lsq-checkout-label">Estado *</label>
                             <input 
+                              id="checkout-address-state"
+                              name="state"
                               type="text" 
                               value={addressDetails.state} 
                               onChange={e => setAddressDetails({...addressDetails, state: e.target.value})} 
                               onFocus={handleInputFocus}
                               placeholder="Ej. Jalisco"
                               className="lsq-checkout-input"
+                              aria-label="Estado"
                             />
                           </div>
                         </div>
 
                         <div className="lsq-checkout-field">
-                          <label className="lsq-checkout-label">Referencias para la entrega (opcional)</label>
+                          <label htmlFor="checkout-address-references" className="lsq-checkout-label">Referencias para la entrega (opcional)</label>
                           <input 
+                            id="checkout-address-references"
+                            name="references"
                             type="text" 
                             value={addressDetails.references || ''} 
                             onChange={e => setAddressDetails({...addressDetails, references: e.target.value})} 
                             onFocus={handleInputFocus}
                             placeholder="Ej. Entre calles o color del portón"
                             className="lsq-checkout-input"
+                            aria-label="Referencias para la entrega"
                           />
                         </div>
                       </div>
@@ -1565,10 +1598,12 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
 
                         {deliveryMethod === 'HOME_DELIVERY' && (
                           <div style={{ marginTop: '10px', padding: '12px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
+                            <label htmlFor="checkout-step1-zip" style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '6px' }}>
                               Código Postal de entrega *
                             </label>
                             <input 
+                              id="checkout-step1-zip"
+                              name="step1Zip"
                               type="text" 
                               value={addressDetails.zip} 
                               onChange={e => {
@@ -1578,6 +1613,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
                               onFocus={handleInputFocus} 
                               placeholder="Ej. 45040"
                               maxLength={5}
+                              aria-label="Código Postal de entrega"
                               style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none', background: '#fff' }} 
                             />
                             {zipError && (

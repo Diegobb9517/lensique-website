@@ -418,11 +418,13 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
           }}>
             <form onSubmit={handleSearch} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                <label htmlFor="trackingFolio" style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                   Folio del Pedido o Número de Guía
                 </label>
                 <div style={{ position: 'relative' }}>
                   <input
+                    id="trackingFolio"
+                    aria-label="Folio del Pedido o Número de Guía"
                     type="text"
                     value={folio}
                     onChange={(e) => setFolio(e.target.value.toUpperCase())}
@@ -444,10 +446,12 @@ export default function OrderTracking({ currentPath, contactWhatsapp, onNavigate
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                <label htmlFor="trackingPhone" style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                   Teléfono celular (opcional si ingresas número de guía)
                 </label>
                 <input
+                  id="trackingPhone"
+                  aria-label="Teléfono celular"
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}

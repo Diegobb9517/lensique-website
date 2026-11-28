@@ -763,7 +763,7 @@ const examenBodyInjection = `
           <a href="https://wa.me/523316929111?text=Hola,%20me%20gustar%C3%ADa%20agendar%20un%20examen%20de%20la%20vista%20en%20Lensique" style="display: inline-block; padding: 12px 24px; background: #15223e; color: #fff; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 14px;">Agendar cita por WhatsApp</a>
         </div>
         <div style="min-height: 260px; border-radius: 14px; overflow: hidden;">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.3776262453664!2d-103.4009712850734!3d20.65431698620248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428ae7d4a46a489%3A0x6b8f75c6c06b29f!2sAv.%20Guadalupe%201296%2C%20Chapalita%2C%2044500%20Guadalajara%2C%20Jal.%2C%20Mexico!5e0!3m2!1sen!2sus!4v1711949100000!5m2!1sen!2sus" width="100%" height="100%" style="border: 0; min-height: 260px;" allowfullscreen="" loading="lazy"></iframe>
+          <iframe title="Ubicación de Óptica Lensique en Zapopan" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.3776262453664!2d-103.4009712850734!3d20.65431698620248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428ae7d4a46a489%3A0x6b8f75c6c06b29f!2sAv.%20Guadalupe%201296%2C%20Chapalita%2C%2044500%20Guadalajara%2C%20Jal.%2C%20Mexico!5e0!3m2!1sen!2sus!4v1711949100000!5m2!1sen!2sus" width="100%" height="100%" style="border: 0; min-height: 260px;" allowfullscreen="" loading="lazy"></iframe>
         </div>
       </div>
     </section>

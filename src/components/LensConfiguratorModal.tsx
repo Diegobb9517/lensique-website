@@ -1215,6 +1215,7 @@ export default function LensConfiguratorModal({
                       <label className="lsq-same-eye-label">
                         <input
                           type="checkbox"
+                          aria-label="Mi graduación es la misma en ambos ojos"
                           checked={sameEye}
                           onChange={(e) => handleToggleSameEye(e.target.checked)}
                           style={{ width: '16px', height: '16px' }}
@@ -1298,6 +1299,7 @@ export default function LensConfiguratorModal({
                         <span>Toma una foto o adjunta el archivo. Un optometrista la lee por ti y confirma los valores.</span>
                         <input
                           type="file"
+                          aria-label="Subir foto o archivo PDF de receta"
                           accept="image/*,application/pdf,.pdf"
                           style={{ display: 'none' }}
                           onChange={handlePhotoUpload}
@@ -1359,7 +1361,7 @@ export default function LensConfiguratorModal({
                         <div style={{ marginTop: '4px' }}>
                           <label className="lsq-link">
                             + Subir foto con tus lentes actuales puestos (opcional)
-                            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAltPhotoUpload} />
+                            <input type="file" aria-label="Subir foto con lentes actuales puestos" accept="image/*" style={{ display: 'none' }} onChange={handleAltPhotoUpload} />
                           </label>
                           {altPhotoName && (
                             <div style={{ fontSize: '12px', color: 'var(--lsq-green)', marginTop: '2px' }}>

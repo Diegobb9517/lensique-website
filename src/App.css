@@ -760,11 +760,12 @@ body.no-scroll {
     gap: 12px;
     margin-bottom: 32px;
   }
-  .info-item h4, .info-item p {
+  .info-item h3, .info-item h4, .info-item p {
     text-align: center;
   }
 }
 
+.info-item h3,
 .info-item h4 {
   font-size: 18px;
   font-weight: 600;
@@ -864,6 +865,7 @@ body.no-scroll {
   gap: 40px;
 }
 
+.footer-col h3,
 .footer-col h4 {
   font-size: 14px;
   font-weight: 600;

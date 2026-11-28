@@ -1153,6 +1153,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         <label className="cl-same">
                           <input 
                             type="checkbox" 
+                            aria-label="Mis datos son los mismos en ambos ojos"
                             checked={samePrescription} 
                             onChange={(e) => {
                               const checked = e.target.checked;
@@ -1177,6 +1178,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                         <input 
                           type="file" 
                           ref={fileInputRef}
+                          aria-label="Subir foto de receta médica"
                           accept="image/*,.pdf" 
                           style={{ display: 'none' }} 
                           onChange={handleFileChange}
@@ -1361,6 +1363,7 @@ export default function ContactLensConfiguratorModal({ product, onClose, onCompl
                       <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13.5px', fontWeight: 600, color: '#0f172a' }}>
                         <input 
                           type="checkbox" 
+                          aria-label="Agregar kit de cuidado (solución + estuche)"
                           checked={addCareKit} 
                           onChange={(e) => setAddCareKit(e.target.checked)} 
                           style={{ width: '18px', height: '18px', accentColor: '#16223f', cursor: 'pointer' }}

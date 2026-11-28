@@ -64,13 +64,6 @@ import eyeExamImg1 from './assets/eye_exam_1.jpg';
 import eyeExamImg2 from './assets/eye_exam_2.jpg';
 import armazonesServiceImg from './assets/DSC09746.jpg';
 import contactLensesImg from './assets/contact_lenses.png';
-import lsBluelight from './assets/lifestyle_bluelight.png';
-import lsProgressives from './assets/lifestyle_progressives.png';
-import lsAntifatigue from './assets/lifestyle_antifatigue.png';
-import lsPhotochromic from './assets/lifestyle_photochromic.png';
-import lsFlattop from './assets/lifestyle_flattop.png';
-import lsInvisible from './assets/lifestyle_invisible.png';
-import lsCustom from './assets/lifestyle_custom.png';
 
 import premiumMonofocal from './assets/premium_monofocal_1785865329187.jpg';
 import premiumBifocal from './assets/premium_bifocal_v2_1785866208612.jpg';
@@ -80,8 +73,6 @@ import premiumBluelight from './assets/premium_bluelight_1785865397362.jpg';
 import premiumCustom from './assets/premium_custom_1785865421645.jpg';
 import premiumAntireflective from './assets/premium_antireflective_1785865428939.jpg';
 import premiumPolarized from './assets/premium_polarized_1785866183086.jpg';
-import lsAntireflective from './assets/realistic_antireflective.png';
-import arnette4373 from './assets/arnette_0AN4373.png';
 import styleAviator from './assets/style_aviator.png';
 import styleCateye from './assets/style_cateye.png';
 import styleRectangular from './assets/style_rectangular.png';
@@ -2579,13 +2570,13 @@ function App() {
               <div className={`booking-content-grid ${selectedDate ? 'has-date' : ''}`}>
                 <div className={`calendar-container ${selectedDate ? 'hidden-on-mobile' : ''}`}>
                   <div className="calendar-nav">
-                    <button type="button" onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}>
+                    <button type="button" onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))} aria-label="Mes anterior">
                       <ChevronLeft size={18} />
                     </button>
                     <h3>
                       {currentMonth.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })}
                     </h3>
-                    <button type="button" onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}>
+                    <button type="button" onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))} aria-label="Mes siguiente">
                       <ChevronRight size={18} />
                     </button>
                   </div>
@@ -2613,6 +2604,7 @@ function App() {
                           className={`calendar-day ${isSelected ? 'selected' : ''} ${isDisabled ? 'past' : ''} ${isToday && !isSelected ? 'is-today' : ''}`}
                           disabled={isDisabled}
                           onClick={() => setSelectedDate(date)}
+                          aria-label={date.toLocaleDateString('es-MX', { dateStyle: 'full' })}
                         >
                           {date.getDate()}
                         </button>
@@ -2671,6 +2663,7 @@ function App() {
                                 className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
                                 onClick={() => setSelectedTime(time)}
                                 disabled={isPastTime}
+                                aria-label={`Horario ${time}`}
                               >
                                 {time}
                               </button>
@@ -2690,6 +2683,7 @@ function App() {
                           placeholder="Escribe tu nombre y apellido" 
                           value={bookingName}
                           onChange={(e) => setBookingName(e.target.value)}
+                          aria-label="Tu nombre completo"
                         />
                       </div>
                     </motion.div>
@@ -3729,21 +3723,21 @@ function App() {
               <div className="info-item">
                 <div className="info-icon"><MapPin /></div>
                 <div>
-                  <h4>Dirección</h4>
+                  <h3>Dirección</h3>
                   <p>{settings.contact_location || 'Av. Guadalupe 1296, Jardines de San Ignacio, 45040 Zapopan, Jal.'}</p>
                 </div>
               </div>
               <div className="info-item">
                 <div className="info-icon"><MessageCircle /></div>
                 <div>
-                  <h4>WhatsApp</h4>
+                  <h3>WhatsApp</h3>
                   <p>{formatWhatsappNumber(settings.contact_whatsapp)}</p>
                 </div>
               </div>
               <div className="info-item">
                 <div className="info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
                 <div>
-                  <h4>Horarios</h4>
+                  <h3>Horarios</h3>
                   <p>Lunes a Viernes: 10:00 AM - 8:00 PM<br/>Sábados: 10:00 AM - 5:00 PM</p>
                 </div>
               </div>
@@ -3757,6 +3751,7 @@ function App() {
             </div>
             <div className="location-visual map-container">
               <iframe 
+                title="Ubicación de Óptica Lensique en Zapopan"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.3776262453664!2d-103.4009712850734!3d20.65431698620248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428ae7d4a46a489%3A0x6b8f75c6c06b29f!2sAv.%20Guadalupe%201296%2C%20Chapalita%2C%2044500%20Guadalajara%2C%20Jal.%2C%20Mexico!5e0!3m2!1sen!2sus!4v1711949100000!5m2!1sen!2sus"
                 width="100%" 
                 height="100%" 
@@ -3827,7 +3822,7 @@ function App() {
             <div className="footer-main-grid">
               <div className="footer-links-wrapper">
                 <div className="footer-col">
-                  <h4>Productos</h4>
+                  <h3>Productos</h3>
                   <a href="/catalogo" onClick={(e) => { 
                     e.preventDefault(); 
                     setCatalogInitialFilter('Armazones'); 
@@ -3842,21 +3837,21 @@ function App() {
                 </div>
                 
                 <div className="footer-col">
-                  <h4>Servicios</h4>
+                  <h3>Servicios</h3>
                   <a href="/examen-de-la-vista" onClick={(e) => { e.preventDefault(); setCurrentPath('/examen-de-la-vista'); window.history.pushState(null, '', '/examen-de-la-vista'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Examen de la vista</a>
                   <a href="#consulta" onClick={(e) => { e.preventDefault(); handleOpenBooking('Consulta Oftalmológica'); }}>Consulta Médica</a>
                   <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Actualización de micas</a>
                   
-                  <h4 className="mt-8">Tiendas</h4>
+                  <h3 className="mt-8">Tiendas</h3>
                   <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Encuentra una sucursal</a>
                 </div>
 
                 <div className="footer-col">
-                  <h4>Nosotros</h4>
+                  <h3>Nosotros</h3>
                     <a href="/blog">Blog</a>
                   <a href="/nosotros">Nuestra historia</a>
                   <a href="https://share.google/oJONuX5T6QTj6xwPI" target="_blank" rel="noopener noreferrer">Reseñas de clientes</a>
-                  <h4 className="mt-8">Legal</h4>
+                  <h3 className="mt-8">Legal</h3>
                   <a id="footer-privacy-link" href="/aviso-de-privacidad" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(privacyData); window.history.pushState({}, '', '/aviso-de-privacidad'); }}>Aviso de Privacidad</a>
                     <a href="/devoluciones" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(returnsData); window.history.pushState({}, '', '/devoluciones'); }}>Devoluciones y Garantías</a>
                   <a href="/terminos" onClick={(e) => { e.preventDefault(); setSelectedInfoPage(termsData); window.history.pushState({}, '', '/terminos'); }}>Términos y Condiciones</a>
@@ -3864,7 +3859,7 @@ function App() {
                 </div>
 
                 <div className="footer-col">
-                  <h4>Soporte</h4>
+                  <h3>Soporte</h3>
                   <a 
                     href="/seguimiento" 
                     onClick={(e) => { 
@@ -3883,7 +3878,7 @@ function App() {
               </div>
 
               <div className="footer-support-block">
-                <h4 className="support-title">¿Necesitas ayuda?</h4>
+                <h3 className="support-title">¿Necesitas ayuda?</h3>
                 <p className="support-text">
                   Estamos aquí para ayudarte. Revisa nuestras preguntas frecuentes o contáctanos directamente.
                 </p>

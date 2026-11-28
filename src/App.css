@@ -249,11 +249,43 @@ body.no-scroll {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(11, 61, 145, 0.25);
 }
 
 .btn-wp-primary:hover {
-  opacity: 0.9;
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(11, 61, 145, 0.35);
+}
+
+.glow-btn {
+  background-color: #0b3d91;
+  color: #ffffff;
+  padding: 16px 32px;
+  border-radius: 980px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(11, 61, 145, 0.25);
+}
+
+.glow-btn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(11, 61, 145, 0.35);
 }
 
 .btn-wp-secondary {
@@ -4989,6 +5021,7 @@ body.no-scroll .whatsapp-float {
   margin: 0 auto 24px;
 }
 
+.home-contact-quiz-banner .btn-wp-primary,
 .home-contact-quiz-banner .glow-btn {
   padding: 14px 28px;
   width: auto;

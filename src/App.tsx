@@ -3250,7 +3250,10 @@ function App() {
                 <div style={{ marginTop: '48px', background: 'linear-gradient(145deg, #ffffff 0%, #f7f7f9 100%)', borderRadius: '24px', padding: '48px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
                   <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#1d1d1f', marginBottom: '12px' }}>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
                   <p style={{ color: '#4b5563', marginBottom: '32px', fontSize: '16px', maxWidth: '600px', margin: '0 auto 32px' }}>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
-                  <button className="glow-btn" style={{ padding: '16px 32px', width: 'auto', fontSize: '16px' }} onClick={() => { setIsContactQuizOpen(true); }}>
+                  <button 
+                    className="btn btn-wp-primary glow-btn" 
+                    onClick={() => { setIsContactQuizOpen(true); }}
+                  >
                     Iniciar guía interactiva
                   </button>
                 </div>
@@ -3279,7 +3282,10 @@ function App() {
             <div className="home-contact-quiz-banner">
               <h3>¿No estás seguro de cómo elegir tus lentes de contacto?</h3>
               <p>Nuestra guía interactiva te ayudará a encontrar el par perfecto basado en tu receta, tus necesidades visuales y la frecuencia de uso que prefieras.</p>
-              <button className="glow-btn" onClick={() => { setIsContactQuizOpen(true); }}>
+              <button 
+                className="btn btn-wp-primary glow-btn" 
+                onClick={() => { setIsContactQuizOpen(true); }}
+              >
                 Iniciar guía interactiva
               </button>
             </div>

@@ -711,14 +711,6 @@ const examenBodyInjection = `
           <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Evaluación de visión lejana, intermedia (computadora) y cercana (lectura/celular), asegurando que ambos ojos trabajen en perfecta armonía.</p>
         </div>
         <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
-          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Inspección con lámpara de hendidura</h3>
-          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Revisión biomicroscópica de las estructuras del segmento anterior: córnea, conjuntiva, párpados y cristalino, detectando resequedad o irritaciones.</p>
-        </div>
-        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
-          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Afinación y prueba en caja de pruebas</h3>
-          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Te pruebas tu graduación final caminando y enfocando en el entorno real para asegurar total comodidad antes de mandar a fabricar tus micas.</p>
-        </div>
-        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
           <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Asesoría óptica personalizada</h3>
           <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Te explicamos con honestidad qué tipo de micas (monofocales, progresivos, filtro azul ZEISS BlueGuard o fotocromáticos) se adaptan mejor a tu estilo de vida.</p>
         </div>

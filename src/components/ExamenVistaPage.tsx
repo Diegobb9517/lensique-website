@@ -94,8 +94,8 @@ export const ExamenVistaPage: React.FC<ExamenVistaPageProps> = ({
           <div className="examen-pillar-item">
             <div className="examen-pillar-icon"><Clock size={22} /></div>
             <div>
-              <div className="examen-pillar-title">Sin prisas (30-40 min)</div>
-              <div className="examen-pillar-desc">El tiempo que tus ojos necesitan para una revisión minuciosa.</div>
+              <div className="examen-pillar-title">Rápido y preciso (10-15 min)</div>
+              <div className="examen-pillar-desc">Evaluación ágil y exacta con tecnología digital, sin esperas.</div>
             </div>
           </div>
         </div>
@@ -139,22 +139,6 @@ export const ExamenVistaPage: React.FC<ExamenVistaPageProps> = ({
 
           <div className="examen-step-card">
             <span className="examen-step-number">Paso 04</span>
-            <h3 className="examen-step-title">Inspección con lámpara de hendidura</h3>
-            <p className="examen-step-desc">
-              Revisión biomicroscópica de las estructuras del segmento anterior: córnea, conjuntiva, párpados y cristalino, detectando resequedad o irritaciones.
-            </p>
-          </div>
-
-          <div className="examen-step-card">
-            <span className="examen-step-number">Paso 05</span>
-            <h3 className="examen-step-title">Afinación y prueba en caja de pruebas</h3>
-            <p className="examen-step-desc">
-              Te pruebas tu graduación final caminando y enfocando en el entorno real para asegurar total comodidad antes de mandar a fabricar tus micas.
-            </p>
-          </div>
-
-          <div className="examen-step-card">
-            <span className="examen-step-number">Paso 06</span>
             <h3 className="examen-step-title">Asesoría óptica personalizada</h3>
             <p className="examen-step-desc">
               Te explicamos con honestidad qué tipo de micas (monofocales, progresivos, filtro azul ZEISS BlueGuard o fotocromáticos) se adaptan mejor a tu estilo de vida.

@@ -21,9 +21,24 @@ interface CartDrawerProps {
   onOpenConfigurator?: (product: any, section?: string) => void;
 }
 
+function getCartSessionId(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    let id = sessionStorage.getItem('lensique_cart_session_id');
+    if (!id) {
+      id = `cart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      sessionStorage.setItem('lensique_cart_session_id', id);
+    }
+    return id;
+  } catch (e) {
+    return `cart_${Date.now()}`;
+  }
+}
+
 export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, setCartItems, total, clearCart, addItem } = useCart();
   const [careKit, setCareKit] = useState<{ id: number; name: string; price_incl_tax: number; image_url?: string } | null>(DEFAULT_CARE_KIT);
+  const cartSessionIdRef = React.useRef<string>(getCartSessionId());
 
   useEffect(() => {
     fetch(`${API_BASE}/api/website/care-kit`)
@@ -175,6 +190,37 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
     const timeout = setTimeout(fetchShippingQuote, 500);
     return () => clearTimeout(timeout);
   }, [deliveryMethod, addressDetails.zip, total, isFreeShipping]);
+
+  // Rescate de Carritos Abandonados: Guardar automáticamente datos de contacto al escribirlos en Paso 2
+  useEffect(() => {
+    if (!showCheckoutForm || items.length === 0) return;
+    const nameClean = buyerName.trim();
+    const phoneClean = buyerPhone.replace(/\D/g, '');
+    if (nameClean.length < 3 || phoneClean.length !== 10) return;
+
+    const timer = setTimeout(() => {
+      fetch(`${API_BASE}/api/abandoned-carts/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: cartSessionIdRef.current,
+          buyerInfo: {
+            name: nameClean,
+            phone: phoneClean,
+            email: buyerEmail.trim(),
+            deliveryMethod,
+            shippingAddress: deliveryMethod === 'HOME_DELIVERY' ? addressDetails : null
+          },
+          cart: items,
+          total: finalTotal
+        })
+      }).catch(() => {
+        // Silencioso: el tracking nunca interrumpe la experiencia del cliente
+      });
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [showCheckoutForm, buyerName, buyerPhone, buyerEmail, deliveryMethod, addressDetails, items, finalTotal]);
 
   // Cálculo de fechas hábiles de entrega
   let finalMaxDeliveryDays = items.length > 0 ? Math.max(...items.map(i => {
@@ -357,6 +403,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
+                sessionId: cartSessionIdRef.current,
                 amount: finalTotal,
                 cart: items,
                 estimatedDelivery: maxDelStr,
@@ -493,6 +540,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
+          sessionId: cartSessionIdRef.current,
           amount: finalTotal, 
           cart: items,
           estimatedDelivery: maxDelStr,
@@ -551,6 +599,7 @@ export function CartDrawer({ onOpenConfigurator }: CartDrawerProps = {}) {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
+                sessionId: cartSessionIdRef.current,
                 amount: newFinalTotal,
                 cart: updatedItems,
                 estimatedDelivery: maxDelStr,

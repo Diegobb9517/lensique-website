@@ -53,6 +53,19 @@ const getProductSlug = (product) => {
 let products = [];
 const indexTemplate = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf8') : '';
 
+const injectMetaAndContent = (baseHtml, headTags, bodyContent) => {
+  let html = baseHtml;
+  html = html.replace(/<title>.*?<\/title>/s, '');
+  html = html.replace(/<meta\s+name=["']description["']\s+content=["'][^"']*["']\s*\/?>/is, '');
+  html = html.replace(/<meta\s+property=["']og:[^"']*["']\s+content=["'][^"']*["']\s*\/?>/gis, '');
+  html = html.replace(/<link\s+rel=["']canonical["']\s+href=["'][^"']*["']\s*\/?>/is, '');
+  html = html.replace('</head>', `${headTags}\n</head>`);
+  if (bodyContent) {
+    html = html.replace('<div id="root"></div>', `<div id="root">${bodyContent}</div>`);
+  }
+  return html;
+};
+
 // Extract historical/existing slugs from public/sitemap.xml
 const sitemapSlugs = new Set();
 const existingSitemapPath = path.join(rootDir, 'public', 'sitemap.xml');
@@ -69,6 +82,10 @@ const sitemapUrls = [
   'https://www.lensique.com.mx/',
   'https://www.lensique.com.mx/armazones',
   'https://www.lensique.com.mx/lentes-de-contacto',
+  'https://www.lensique.com.mx/examen-de-la-vista',
+  'https://www.lensique.com.mx/micas',
+  'https://www.lensique.com.mx/nosotros',
+  'https://www.lensique.com.mx/cotizador',
   'https://www.lensique.com.mx/agendar-cita'
 ];
 
@@ -483,8 +500,8 @@ console.log(`✅ Pre-rendered ${generatedCount} static product HTML pages in /di
 
 
 // Generate /micas prerender
-const micasTitle = "Micas ZEISS · Lensique";
-const micasDesc = "Todas nuestras micas son ZEISS: tecnología óptica alemana de precisión, diseñada para cada necesidad de tu vista.";
+const micasTitle = "Micas ZEISS en Zapopan y Guadalajara | Lentes a tu medida · Lensique";
+const micasDesc = "Micas ZEISS, tecnología óptica alemana: antirreflejante, filtro de luz azul y progresivos. A tu medida en Zapopan. Cotiza en línea o agenda tu cita.";
 const micasCanonical = "https://www.lensique.com.mx/micas";
 
 const micasHeadInjection = `
@@ -495,14 +512,30 @@ const micasHeadInjection = `
     <meta property="og:description" content="${micasDesc}" />
     <meta property="og:url" content="${micasCanonical}" />
     <meta property="og:type" content="website" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Micas Graduadas ZEISS",
+      "description": "${micasDesc}",
+      "brand": { "@type": "Brand", "name": "ZEISS" },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "MXN",
+        "lowPrice": "1200",
+        "highPrice": "9500",
+        "offerCount": "12"
+      }
+    }
+    </script>
 `;
 
 const micasBodyInjection = `
   <div class="micas-zeiss-page">
     <div class="mz-hero">
       <img class="mz-zl" src="/assets/zeiss_logo.png" alt="ZEISS" />
-      <h1>Micas ZEISS</h1>
-      <p>Todas nuestras micas son ZEISS: tecnología óptica alemana de precisión, diseñada para cada necesidad de tu vista.</p>
+      <h1>Micas ZEISS en Zapopan</h1>
+      <p>Micas ZEISS con tecnología óptica alemana de precisión en Zapopan y Guadalajara. Tratamientos antirreflejantes, protección contra luz azul y micas progresivas personalizadas para una visión nítida y confortable.</p>
     </div>
     <div class="mz-wrap">
       <div class="mz-lead">
@@ -535,6 +568,36 @@ const micasBodyInjection = `
         <a href="#cotizador-micas">Elegir mis micas</a>
         <span class="mz-s">Cotiza tus micas en menos de un minuto con tecnología ZEISS.</span>
       </div>
+
+      <section class="mz-guide-section" style="margin-top: 50px; padding-top: 40px; border-top: 1px solid #e8eaed;">
+        <div class="mz-lead" style="margin-bottom: 24px;">
+          <div class="mz-k" style="font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #2f6bff; font-weight: 700;">Guía de Elección</div>
+          <h2>¿Qué tipo de mica necesito para mis lentes?</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; text-align: left;">
+          <div style="background: #f8fafc; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #16223f; margin: 0 0 8px;">Micas Monofocales</h3>
+            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Corrigen una sola distancia de enfoque: ideales para miopía, astigmatismo o hipermetropía. Proporcionan nitidez completa de lejos o exclusiva para lectura.</p>
+          </div>
+          <div style="background: #f8fafc; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #16223f; margin: 0 0 8px;">Micas Progresivas</h3>
+            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">La solución más avanzada para presbicia (vista cansada a partir de los 40 años). Permiten enfocar de lejos, distancia intermedia (computadora) y lectura sin líneas divisorias.</p>
+          </div>
+          <div style="background: #f8fafc; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="font-size: 18px; font-weight: 700; color: #16223f; margin: 0 0 8px;">Tratamientos Antirreflejantes</h3>
+            <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">ZEISS DuraVision elimina reflejos molestos de luces nocturnas y pantallas, otorga mayor transparencia y facilita la limpieza repeliendo polvo y agua.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mz-progresivos-section" style="margin-top: 40px; padding-top: 30px;">
+        <div class="mz-lead" style="margin-bottom: 20px;">
+          <div class="mz-k" style="font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #2f6bff; font-weight: 700;">Tecnología Especializada</div>
+          <h2>Micas progresivas ZEISS: visión nítida en todas las distancias</h2>
+        </div>
+        <p style="font-size: 15px; color: #475569; line-height: 1.7; max-width: 800px; margin: 0 auto 24px;">A diferencia de los bifocales tradicionales con línea divisoria visible, las micas progresivas ZEISS SmartLife ofrecen una transición óptica imperceptible y suave entre zonas de visión. En Óptica Lensique en Zapopan, tomamos medidas de centrado y alturas pupilares con precisión digital para asegurar una rápida adaptación y máximo confort visual en tu jornada diaria.</p>
+      </section>
+
       <div class="mz-note">Imágenes y marca ZEISS usadas con autorización. © Carl Zeiss. Lensique es distribuidor autorizado de lentes oftálmicos Carl Zeiss Vision en México.</div>
     </div>
     <section id="cotizador-micas" class="mz-cotizador-section" style="padding: 72px 24px 96px; background-color: #f8fafc; border-top: 1px solid #e8eaed;">
@@ -549,13 +612,175 @@ const micasBodyInjection = `
     </section>
   </div>
 `;
-let micasHtml = fs.readFileSync(templatePath, 'utf8').replace(/<title>.*<\/title>/, '');
-micasHtml = micasHtml.replace('</head>', micasHeadInjection + '</head>');
-micasHtml = micasHtml.replace('<div id="root"></div>', `<div id="root">${micasBodyInjection}</div>`);
+let micasHtml = injectMetaAndContent(templatePath && fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf8') : indexTemplate, micasHeadInjection, micasBodyInjection);
 const micasDir = path.join(distDir, 'micas');
 if (!fs.existsSync(micasDir)) fs.mkdirSync(micasDir, { recursive: true });
 fs.writeFileSync(path.join(micasDir, 'index.html'), micasHtml, 'utf8');
 console.log('✅ Pre-rendered /micas/index.html');
+
+// Generate /examen-de-la-vista prerender
+const examenTitle = "Examen de la vista en Zapopan y Guadalajara | Óptica Lensique";
+const examenDesc = "Examen de la vista con especialista en Chapalita, Zapopan. Cuidamos tu salud visual con equipo de precisión. Agenda tu cita en Lensique.";
+const examenCanonical = "https://www.lensique.com.mx/examen-de-la-vista";
+
+const examenHeadInjection = `
+    <title>${examenTitle}</title>
+    <meta name="description" content="${examenDesc}" />
+    <link rel="canonical" href="${examenCanonical}" />
+    <meta property="og:title" content="${examenTitle}" />
+    <meta property="og:description" content="${examenDesc}" />
+    <meta property="og:url" content="${examenCanonical}" />
+    <meta property="og:type" content="website" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalBusiness",
+      "name": "Óptica Lensique - Examen de la Vista",
+      "image": "https://www.lensique.com.mx/hero-desktop.jpg",
+      "@id": "https://www.lensique.com.mx/examen-de-la-vista",
+      "url": "https://www.lensique.com.mx/examen-de-la-vista",
+      "telephone": "+523316929111",
+      "priceRange": "$$",
+      "areaServed": [
+        { "@type": "City", "name": "Zapopan" },
+        { "@type": "City", "name": "Guadalajara" }
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Av. Guadalupe 1296, Jardines de San Ignacio",
+        "addressLocality": "Zapopan",
+        "addressRegion": "Jalisco",
+        "postalCode": "45040",
+        "addressCountry": "MX"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 20.6543169,
+        "longitude": -103.4009712
+      },
+      "openingHours": [
+        "Mo-Fr 10:00-20:00",
+        "Sa 10:00-17:00"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de Salud Visual",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Examen de la vista profesional",
+              "description": "Evaluación clínica integral de refracción digital computarizada, agudeza visual y salud ocular con respaldo de especialista en Zapopan."
+            }
+          }
+        ]
+      }
+    }
+    </script>
+`;
+
+const examenBodyInjection = `
+  <main style="max-width: 1040px; margin: 40px auto; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b;">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <span style="display: inline-block; padding: 6px 16px; border-radius: 999px; background: #eaf3ec; color: #2c4436; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">Salud Visual · Zapopan y Guadalajara</span>
+      <h1 style="font-family: Georgia, serif; font-size: clamp(32px, 5vw, 52px); font-weight: 700; color: #15223e; margin: 0 0 16px;">Examen de la vista en Zapopan</h1>
+      <p style="font-size: 18px; line-height: 1.65; color: #475569; max-width: 760px; margin: 0 auto 28px;">
+        Evaluación clínica integral realizada por especialista y con respaldo de oftalmólogo en Chapalita. Tecnología diagnóstica digital para determinar tu graduación exacta con absoluta precisión y comodidad.
+      </p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="https://wa.me/523316929111?text=Hola,%20me%20gustar%C3%ADa%20agendar%20un%20examen%20de%20la%20vista%20en%20Lensique" style="display: inline-block; padding: 14px 28px; background: #15223e; color: #fff; text-decoration: none; border-radius: 50px; font-weight: 600;">Agendar mi examen</a>
+        <a href="/catalogo" style="display: inline-block; padding: 14px 28px; background: #fff; color: #15223e; border: 1px solid #cbd5e1; text-decoration: none; border-radius: 50px; font-weight: 600;">Ver Catálogo de Armazones</a>
+      </div>
+    </div>
+
+    <section style="margin-bottom: 60px;">
+      <h2 style="font-family: Georgia, serif; font-size: 30px; font-weight: 700; color: #15223e; text-align: center; margin-bottom: 12px;">¿Qué incluye tu examen de la vista en Lensique?</h2>
+      <p style="text-align: center; color: #64748b; font-size: 16px; max-width: 700px; margin: 0 auto 36px;">Un examen visual profesional va mucho más allá de leer letras en una cartilla. Realizamos una valoración clínica completa para cuidar tu salud visual y tu rendimiento diario.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Refracción digital computarizada</h3>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Medición automatizada de tu sistema óptico para detectar con precisión milimétrica miopía, astigmatismo, hipermetropía o presbicia.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Graduación con foróptero digital</h3>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Utilizamos el foróptero computarizado CV-7600 para alternar lentes al instante, evitando el cansancio visual y logrando la graduación más nítida.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Agudeza y balance binocular</h3>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Evaluación de visión lejana, intermedia (computadora) y cercana (lectura/celular), asegurando que ambos ojos trabajen en perfecta armonía.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Inspección con lámpara de hendidura</h3>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Revisión biomicroscópica de las estructuras del segmento anterior: córnea, conjuntiva, párpados y cristalino, detectando resequedad o irritaciones.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Afinación y prueba en caja de pruebas</h3>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Te pruebas tu graduación final caminando y enfocando en el entorno real para asegurar total comodidad antes de mandar a fabricar tus micas.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
+          <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Asesoría óptica personalizada</h3>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Te explicamos con honestidad qué tipo de micas (monofocales, progresivos, filtro azul ZEISS BlueGuard o fotocromáticos) se adaptan mejor a tu estilo de vida.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom: 60px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 36px 28px;">
+      <h2 style="font-family: Georgia, serif; font-size: 28px; font-weight: 700; color: #15223e; text-align: center; margin-bottom: 12px;">¿Cada cuánto debes realizarte un examen de la vista?</h2>
+      <p style="text-align: center; color: #64748b; font-size: 15px; margin-bottom: 30px;">La visión cambia de manera gradual. Un chequeo oportuno previene dolores de cabeza, fatiga visual y deterioro no detectado.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <div style="background: #fff; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0;">
+          <span style="display: inline-block; padding: 4px 10px; background: #eff6ff; color: #1d4ed8; font-size: 12px; font-weight: 700; border-radius: 999px; margin-bottom: 10px;">Niños y Jóvenes (hasta 17 años)</span>
+          <h3 style="font-size: 16px; font-weight: 700; color: #15223e; margin: 0 0 6px;">Desarrollo visual y aprendizaje</h3>
+          <p style="font-size: 14px; color: #0284c7; font-weight: 600; margin: 0 0 8px;">Revisión recomendada: Cada año</p>
+          <p style="font-size: 13px; color: #475569; line-height: 1.5; margin: 0;">El 80% de lo que aprende un niño entra por la vista. Un examen anual descarta miopía progresiva, astigmatismo y problemas de enfoque escolar.</p>
+        </div>
+        <div style="background: #fff; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0;">
+          <span style="display: inline-block; padding: 4px 10px; background: #eff6ff; color: #1d4ed8; font-size: 12px; font-weight: 700; border-radius: 999px; margin-bottom: 10px;">Adultos (18 a 39 años)</span>
+          <h3 style="font-size: 16px; font-weight: 700; color: #15223e; margin: 0 0 6px;">Trabajo digital y pantallas</h3>
+          <p style="font-size: 14px; color: #0284c7; font-weight: 600; margin: 0 0 8px;">Revisión recomendada: Cada 1 a 2 años</p>
+          <p style="font-size: 13px; color: #475569; line-height: 1.5; margin: 0;">Indispensable si trabajas más de 6 horas diarias frente a computadora o celular. Monitoreamos fatiga visual, resequedad y ligeros cambios de graduación.</p>
+        </div>
+        <div style="background: #fff; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0;">
+          <span style="display: inline-block; padding: 4px 10px; background: #eff6ff; color: #1d4ed8; font-size: 12px; font-weight: 700; border-radius: 999px; margin-bottom: 10px;">A partir de los 40 años</span>
+          <h3 style="font-size: 16px; font-weight: 700; color: #15223e; margin: 0 0 6px;">Presbicia y salud preventiva</h3>
+          <p style="font-size: 14px; color: #0284c7; font-weight: 600; margin: 0 0 8px;">Revisión recomendada: Cada año</p>
+          <p style="font-size: 13px; color: #475569; line-height: 1.5; margin: 0;">A partir de los 40 años disminuye la elasticidad natural del cristalino (dificultad para leer de cerca). Valoramos soluciones progresivas personalizadas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom: 60px;">
+      <h2 style="font-family: Georgia, serif; font-size: 28px; font-weight: 700; color: #15223e; text-align: center; margin-bottom: 24px;">Visítanos en Chapalita, Zapopan</h2>
+      <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+        <div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #15223e; margin: 0 0 4px;">Dirección</h3>
+          <p style="font-size: 14px; color: #475569; margin: 0 0 16px;">Av. Guadalupe 1296, Jardines de San Ignacio / Chapalita, 45040 Zapopan, Jal.</p>
+          <h3 style="font-size: 16px; font-weight: 700; color: #15223e; margin: 0 0 4px;">Horarios de atención</h3>
+          <p style="font-size: 14px; color: #475569; margin: 0 0 16px;">Lunes a Viernes: 10:00 AM – 8:00 PM<br/>Sábados: 10:00 AM – 5:00 PM</p>
+          <h3 style="font-size: 16px; font-weight: 700; color: #15223e; margin: 0 0 4px;">WhatsApp y Citas</h3>
+          <p style="font-size: 14px; color: #475569; margin: 0 0 24px;">+52 33 1692 9111</p>
+          <a href="https://wa.me/523316929111?text=Hola,%20me%20gustar%C3%ADa%20agendar%20un%20examen%20de%20la%20vista%20en%20Lensique" style="display: inline-block; padding: 12px 24px; background: #15223e; color: #fff; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 14px;">Agendar cita por WhatsApp</a>
+        </div>
+        <div style="min-height: 260px; border-radius: 14px; overflow: hidden;">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.3776262453664!2d-103.4009712850734!3d20.65431698620248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428ae7d4a46a489%3A0x6b8f75c6c06b29f!2sAv.%20Guadalupe%201296%2C%20Chapalita%2C%2044500%20Guadalajara%2C%20Jal.%2C%20Mexico!5e0!3m2!1sen!2sus!4v1711949100000!5m2!1sen!2sus" width="100%" height="100%" style="border: 0; min-height: 260px;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <div style="background: linear-gradient(135deg, #15223e 0%, #1e3a5f 100%); color: #fff; border-radius: 20px; padding: 40px 24px; text-align: center;">
+      <h2 style="font-family: Georgia, serif; font-size: 28px; margin: 0 0 12px;">Tu salud visual merece la mejor atención</h2>
+      <p style="font-size: 16px; color: #cbd5e1; max-width: 600px; margin: 0 auto 24px;">Agenda tu examen de la vista hoy mismo en Zapopan. Vive una experiencia clínica confortable y obtén una graduación respaldada por especialistas.</p>
+      <a href="https://wa.me/523316929111?text=Hola,%20me%20gustar%C3%ADa%20agendar%20un%20examen%20de%20la%20vista%20en%20Lensique" style="display: inline-block; padding: 14px 28px; background: #fff; color: #15223e; text-decoration: none; border-radius: 50px; font-weight: 700;">Agendar mi cita en Lensique</a>
+    </div>
+  </main>
+`;
+
+let examenHtml = injectMetaAndContent(templatePath && fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf8') : indexTemplate, examenHeadInjection, examenBodyInjection);
+const examenDir = path.join(distDir, 'examen-de-la-vista');
+if (!fs.existsSync(examenDir)) fs.mkdirSync(examenDir, { recursive: true });
+fs.writeFileSync(path.join(examenDir, 'index.html'), examenHtml, 'utf8');
+console.log('✅ Pre-rendered /examen-de-la-vista/index.html');
 
 // Generate /lentes-de-contacto prerender
 const lentesContactoTitle = "Lentes de Contacto en Zapopan y Guadalajara | Guía y Compra | Lensique";
@@ -574,8 +799,8 @@ const lentesContactoHeadInjection = `
 
 const lentesContactoBodyInjection = `
   <main style="max-width: 960px; margin: 40px auto; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a;">
-    <h1 style="font-size: 38px; font-weight: 700; margin-bottom: 8px;">Lentes de contacto</h1>
-    <p style="font-size: 22px; color: #475569; font-style: italic; margin-bottom: 24px;">Visión libre y cómoda</p>
+    <h1 style="font-size: 38px; font-weight: 700; margin-bottom: 8px;">Lentes de contacto en Zapopan</h1>
+    <p style="font-size: 22px; color: #475569; font-style: italic; margin-bottom: 24px;">Visión libre, cómoda y con validación de especialista</p>
     <p style="font-size: 18px; line-height: 1.6; color: #334155; margin-bottom: 32px;">
       Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la validación de un optometrista de por medio. La idea es que los uses con seguridad y comodidad, no a prueba y error.
     </p>
@@ -648,12 +873,7 @@ const lentesContactoBodyInjection = `
   </main>
 `;
 
-let lentesContactoHtml = indexTemplate;
-if (lentesContactoHtml.includes('<title>')) {
-  lentesContactoHtml = lentesContactoHtml.replace(/<title>.*?<\/title>/s, `<title>${lentesContactoTitle}</title>`);
-}
-lentesContactoHtml = lentesContactoHtml.replace('</head>', `${lentesContactoHeadInjection}\n</head>`);
-lentesContactoHtml = lentesContactoHtml.replace('<div id="root"></div>', `<div id="root">${lentesContactoBodyInjection}</div>`);
+let lentesContactoHtml = injectMetaAndContent(indexTemplate, lentesContactoHeadInjection, lentesContactoBodyInjection);
 
 const lentesContactoDir = path.join(distDir, 'lentes-de-contacto');
 if (!fs.existsSync(lentesContactoDir)) {
@@ -1452,7 +1672,7 @@ console.log('✅ Generated /404.html page.');
 // 5. Prerender Hero into dist/index.html for immediate mobile LCP paint
 if (fs.existsSync(templatePath)) {
   let homeHtml = fs.readFileSync(templatePath, 'utf8');
-  const heroPrerender = `<div class="app-container"><header class="navbar" style="position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);padding:12px 20px;"><div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;"><a href="/" class="logo"><img src="/logo.png" alt="Lensique" class="logo-img" width="160" height="40" style="display:block;max-height:38px;width:auto;" /></a></div></header><main class="main-content"><section class="hero" style="position:relative;overflow:hidden;display:flex;align-items:center;min-height:85vh;"><picture style="position:absolute;top:0;left:0;width:100%;height:100%;"><source srcset="/hero-mobile.webp" media="(max-width: 768px)" width="1080" height="1350" /><img src="/hero-desktop.webp" alt="Persona probándose lentes en una óptica" class="hero-background-img" loading="eager" fetchpriority="high" width="1920" height="1080" style="position:relative;width:100%;height:100%;object-fit:cover;" /></picture><div class="hero-content" style="position:relative;z-index:2;padding:40px 24px;max-width:650px;"><span class="hero-eyebrow" style="display:inline-block;font-size:13px;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;color:#1b2436;margin-bottom:12px;">Óptica Boutique en Zapopan</span><h1 class="hero-title" style="font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,56px);font-weight:700;color:#1b2436;line-height:1.15;margin:0 0 16px;">La perfección en tu mirada</h1><p class="hero-subheading" style="font-size:clamp(16px,2vw,18px);color:#475569;line-height:1.6;margin:0 0 28px;">Armazones de diseñador, micas de alta tecnología y examen visual respaldado por oftalmólogo.</p><div class="hero-actions-left" style="display:flex;gap:12px;flex-wrap:wrap;"><a href="#contacto" class="btn btn-wp-primary" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#1b2436;color:#ffffff;border-radius:50px;text-decoration:none;font-weight:600;"><span>Agenda tu examen</span></a><a href="/catalogo" class="btn btn-wp-secondary" style="display:inline-flex;align-items:center;padding:14px 28px;background:rgba(255,255,255,0.9);color:#1b2436;border:1px solid #e2e8f0;border-radius:50px;text-decoration:none;font-weight:600;">Ver Armazones</a></div></div></section></main></div>`;
+  const heroPrerender = `<div class="app-container"><header class="navbar" style="position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);padding:12px 20px;"><div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;"><a href="/" class="logo"><img src="/logo.png" alt="Lensique" class="logo-img" width="160" height="40" style="display:block;max-height:38px;width:auto;" /></a><div style="display:flex;gap:20px;align-items:center;"><a href="/catalogo" style="color:#1b2436;text-decoration:none;font-weight:500;font-size:14px;">Catálogo</a><a href="/examen-de-la-vista" style="color:#1b2436;text-decoration:none;font-weight:500;font-size:14px;">Examen</a><a href="/micas" style="color:#1b2436;text-decoration:none;font-weight:500;font-size:14px;">Micas</a><a href="/blog" style="color:#1b2436;text-decoration:none;font-weight:500;font-size:14px;">Blog</a><a href="/nosotros" style="color:#1b2436;text-decoration:none;font-weight:500;font-size:14px;">Nosotros</a></div></div></header><main class="main-content"><section class="hero" style="position:relative;overflow:hidden;display:flex;align-items:center;min-height:85vh;"><picture style="position:absolute;top:0;left:0;width:100%;height:100%;"><source srcset="/hero-mobile.webp" media="(max-width: 768px)" width="1080" height="1350" /><img src="/hero-desktop.webp" alt="Persona probándose lentes en una óptica" class="hero-background-img" loading="eager" fetchpriority="high" width="1920" height="1080" style="position:relative;width:100%;height:100%;object-fit:cover;" /></picture><div class="hero-content" style="position:relative;z-index:2;padding:40px 24px;max-width:650px;"><span class="hero-eyebrow" style="display:inline-block;font-size:13px;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;color:#1b2436;margin-bottom:12px;">Óptica Boutique en Zapopan</span><h1 class="hero-title" style="font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,56px);font-weight:700;color:#1b2436;line-height:1.15;margin:0 0 16px;">La perfección en tu mirada</h1><h2 class="hero-subheading" style="font-size:clamp(16px,2vw,18px);color:#475569;line-height:1.6;margin:0 0 28px;font-weight:400;">Óptica en Zapopan con examen por especialista. Armazones de diseñador y micas de precisión ZEISS.</h2><div class="hero-actions-left" style="display:flex;gap:12px;flex-wrap:wrap;"><a href="/examen-de-la-vista" class="btn btn-wp-primary" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:#1b2436;color:#ffffff;border-radius:50px;text-decoration:none;font-weight:600;"><span>Agenda tu examen</span></a><a href="/catalogo" class="btn btn-wp-secondary" style="display:inline-flex;align-items:center;padding:14px 28px;background:rgba(255,255,255,0.9);color:#1b2436;border:1px solid #e2e8f0;border-radius:50px;text-decoration:none;font-weight:600;">Ver Armazones</a></div></div></section></main></div>`;
   homeHtml = homeHtml.replace('<div id="root"></div>', `<div id="root">${heroPrerender}</div>`);
   fs.writeFileSync(templatePath, homeHtml, 'utf8');
   console.log('✅ Injected Prerendered Hero into dist/index.html for near-instant LCP.');

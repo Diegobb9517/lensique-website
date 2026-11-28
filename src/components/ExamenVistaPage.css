@@ -1,0 +1,496 @@
+/* ==========================================================================
+   Página Examen de la Vista - Óptica Lensique (Zapopan / Guadalajara)
+   ========================================================================== */
+
+.examen-page-wrapper {
+  padding-top: 80px;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   1. Hero Editorial
+   -------------------------------------------------------------------------- */
+.examen-hero {
+  position: relative;
+  padding: 70px 24px 50px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.examen-hero-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.examen-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background-color: #eaf3ec;
+  color: #2c4436;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.examen-hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 700;
+  color: #15223e;
+  line-height: 1.15;
+  margin: 0 0 20px;
+}
+
+.examen-hero-text {
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.65;
+  color: #475569;
+  margin: 0 auto 32px;
+  max-width: 760px;
+}
+
+.examen-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.examen-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background-color: #15223e;
+  color: #ffffff;
+  border: 1px solid #15223e;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.examen-btn-primary:hover {
+  background-color: #0d172a;
+  transform: translateY(-1px);
+}
+
+.examen-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background-color: #ffffff;
+  color: #15223e;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.examen-btn-secondary:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   2. Highlights / Key Pillars Bar
+   -------------------------------------------------------------------------- */
+.examen-pillars-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 24px;
+}
+
+.examen-pillars-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.examen-pillar-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.examen-pillar-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.examen-pillar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #15223e;
+  margin-bottom: 2px;
+}
+
+.examen-pillar-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   3. Content Sections
+   -------------------------------------------------------------------------- */
+.examen-section {
+  padding: 70px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.examen-section-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 48px;
+}
+
+.examen-section-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0284c7;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.examen-section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  color: #15223e;
+  line-height: 1.25;
+  margin: 0 0 16px;
+}
+
+.examen-section-subtitle {
+  font-size: 17px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Steps / What includes Grid */
+.examen-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.examen-step-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 30px 24px;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.examen-step-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.06);
+  border-color: #cbd5e1;
+}
+
+.examen-step-number {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0284c7;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.examen-step-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #15223e;
+  margin: 0 0 10px;
+}
+
+.examen-step-desc {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. Frequency by Age Section
+   -------------------------------------------------------------------------- */
+.examen-freq-bg {
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.examen-freq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.examen-freq-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 28px;
+  position: relative;
+}
+
+.examen-freq-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.examen-freq-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #15223e;
+  margin: 0 0 10px;
+}
+
+.examen-freq-cadence {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0284c7;
+  margin-bottom: 12px;
+}
+
+.examen-freq-text {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   5. Equipment & Clinic Gallery
+   -------------------------------------------------------------------------- */
+.examen-tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.examen-tech-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.examen-tech-imgwrap {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f1f5f9;
+}
+
+.examen-tech-imgwrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.examen-tech-card:hover .examen-tech-imgwrap img {
+  transform: scale(1.04);
+}
+
+.examen-tech-body {
+  padding: 24px;
+}
+
+.examen-tech-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #15223e;
+  margin: 0 0 8px;
+}
+
+.examen-tech-desc {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. Location & Map Section
+   -------------------------------------------------------------------------- */
+.examen-location-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.examen-location-info {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.examen-loc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.examen-loc-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #f1f5f9;
+  color: #15223e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.examen-loc-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #15223e;
+  margin: 0 0 4px;
+}
+
+.examen-loc-desc {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.examen-map-wrap {
+  width: 100%;
+  min-height: 380px;
+}
+
+.examen-map-frame {
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Final CTA Banner
+   -------------------------------------------------------------------------- */
+.examen-cta-banner {
+  background: linear-gradient(135deg, #15223e 0%, #1e3a5f 100%);
+  color: #ffffff;
+  border-radius: 24px;
+  padding: 50px 32px;
+  text-align: center;
+  margin: 40px auto 70px;
+  max-width: 1100px;
+}
+
+.examen-cta-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(26px, 3.5vw, 38px);
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: #ffffff;
+}
+
+.examen-cta-text {
+  font-size: 17px;
+  color: #cbd5e1;
+  max-width: 650px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+.examen-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 34px;
+  background-color: #ffffff;
+  color: #15223e;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.examen-cta-btn:hover {
+  background-color: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .examen-hero {
+    padding: 40px 20px 30px;
+  }
+  .examen-section {
+    padding: 50px 20px;
+  }
+  .examen-location-card {
+    grid-template-columns: 1fr;
+  }
+  .examen-location-info {
+    padding: 24px;
+  }
+  .examen-map-wrap {
+    min-height: 280px;
+  }
+  .examen-cta-banner {
+    padding: 36px 20px;
+    margin: 20px 16px 50px;
+  }
+}

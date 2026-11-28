@@ -104,8 +104,8 @@ export const ContactLensServicePage: React.FC<ContactLensServicePageProps> = ({
             <span>Servicio Profesional & Guía Práctica</span>
           </div>
 
-          <h1 className="cl-hero-title">Lentes de contacto</h1>
-          <p className="cl-hero-subtitle">Visión libre y cómoda</p>
+          <h1 className="cl-hero-title">Lentes de contacto en Zapopan</h1>
+          <p className="cl-hero-subtitle">Visión libre, cómoda y con validación de especialista</p>
 
           <p className="cl-hero-intro">
             Los lentes de contacto te dan libertad: ver bien sin que un armazón se interponga, para el deporte, el trabajo o simplemente para verte distinto. Pero no son «una caja que pides y ya» — cada ojo es diferente. Aquí te explicamos cómo usarlos, cómo cuidarlos y cómo elegirlos bien, con la validación de un optometrista de por medio. La idea es que los uses con <strong>seguridad y comodidad</strong>, no a prueba y error.

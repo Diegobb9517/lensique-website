@@ -33,6 +33,7 @@ const TriageModal = React.lazy(() => import('./components/TriageModal').then(m =
 const OrderTracking = React.lazy(() => import('./components/OrderTracking'));
 const MicasZeissPage = React.lazy(() => import('./components/MicasZeissPage').then(m => ({ default: m.MicasZeissPage })));
 const AboutUsPage = React.lazy(() => import('./components/AboutUsPage').then(m => ({ default: m.AboutUsPage })));
+const ExamenVistaPage = React.lazy(() => import('./components/ExamenVistaPage').then(m => ({ default: m.ExamenVistaPage })));
 
 import logo from './assets/logo.png';
 const heroImg = '/hero-desktop.jpg';
@@ -1311,14 +1312,14 @@ function App() {
   const [selectedMicaCard, setSelectedMicaCard] = useState<any>(null);
   const [settings, setSettings] = useState<any>({
     hero_title: 'La perfección en tu mirada.',
-    hero_subtitle: 'Diseño minimalista y tecnología óptica de vanguardia.',
+    hero_subtitle: 'Óptica en Zapopan con examen por especialista. Armazones de diseñador y micas de precisión ZEISS.',
     hero_eyebrow: 'Lensique Premium',
     about_title: 'Nuestro Compromiso',
     about_text: 'Lensique nació en Zapopan con una idea simple: comprar lentes no debería ser aburrido, complicado, ni costoso. Nos dimos cuenta de que la gente tenía que elegir entre diseños increíbles a precios inalcanzables, o armazones genéricos de mala calidad. Por eso decidimos cambiar las reglas. Traemos los armazones con más estilo y usamos tecnología de última generación en nuestro consultorio clínico para darte una graduación perfecta. Todo esto con un trato humano, directo y transparente. Porque ver bien y verte bien es tu derecho, no un lujo.',
     nav_links: JSON.stringify([
       { name: 'Catálogo', href: '/catalogo' },
       { name: 'Servicios', href: '#servicios' },
-      { name: 'Examen', href: '#servicios' },
+      { name: 'Examen', href: '/examen-de-la-vista' },
       { name: 'Micas', href: '/micas' },
         { name: 'Blog', href: '/blog' },
       { name: 'Nosotros', href: '/nosotros' }
@@ -2743,9 +2744,12 @@ function App() {
                       setCurrentPath('/catalogo');
                       window.history.pushState(null, '', '/catalogo');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else if (link.name === 'Examen') {
+                    } else if (link.name === 'Examen' || link.href === '/examen-de-la-vista') {
                       e.preventDefault();
-                      handleOpenBooking('Examen de la Vista');
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/examen-de-la-vista');
+                      window.history.pushState(null, '', '/examen-de-la-vista');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else if (link.name === 'Servicios' || link.href === '#servicios' || link.href.startsWith('#')) {
                       e.preventDefault();
                       const targetHash = link.href.startsWith('#') ? link.href : '#servicios';
@@ -2848,9 +2852,12 @@ function App() {
                       setCurrentPath('/catalogo');
                       window.history.pushState(null, '', '/catalogo');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else if (link.name === 'Examen') {
+                    } else if (link.name === 'Examen' || link.href === '/examen-de-la-vista') {
                       e.preventDefault();
-                      handleOpenBooking('Examen de la Vista');
+                      setIsCatalogOpen(false);
+                      setCurrentPath('/examen-de-la-vista');
+                      window.history.pushState(null, '', '/examen-de-la-vista');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else if (link.href === '/micas') {
                       e.preventDefault();
                       setIsCatalogOpen(false);
@@ -3083,10 +3090,32 @@ function App() {
           </React.Suspense>
         )}
 
-        {!['/catalogo', '/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/') || currentPath.startsWith('/marca/')) && (
+        {currentPath === '/examen-de-la-vista' && (
+          <React.Suspense fallback={<div style={{ minHeight: '600px' }} />}>
+            <ExamenVistaPage
+              onOpenBooking={handleOpenBooking}
+              onOpenCatalog={() => {
+                setCatalogInitialFilter('Todas');
+                setIsCatalogOpen(true);
+                setCurrentPath('/catalogo');
+                window.history.pushState(null, '', '/catalogo');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenCotizador={() => {
+                setCurrentPath('/cotizador');
+                window.history.pushState(null, '', '/cotizador');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              contactWhatsapp={settings.contact_whatsapp}
+              contactLocation={settings.contact_location}
+            />
+          </React.Suspense>
+        )}
+
+        {!['/catalogo', '/armazones', '/cotizador', '/lentes-de-contacto', '/blog', '/micas', '/nosotros', '/seguimiento', '/examen-de-la-vista'].some(p => currentPath === p || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/') || currentPath.startsWith('/marca/')) && (
           <div>
             {(() => {
-              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/privacidad', '/terminos', '/terminos-y-condiciones', '/cookies', '/politica-de-cookies', '/seguimiento'];
+              const validStaticRoutes = ['/', '/catalogo', '/armazones', '/lentes-de-contacto', '/micas', '/cotizador', '/nosotros', '/agendar-cita', '/devoluciones', '/blog', '/pago/exito', '/garantias', '/faq', '/aviso-de-privacidad', '/privacidad', '/terminos', '/terminos-y-condiciones', '/cookies', '/politica-de-cookies', '/seguimiento', '/examen-de-la-vista'];
               const isDynamicRoute = currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/') || currentPath.startsWith('/blog/') || currentPath.startsWith('/p/');
               const is404Title = typeof document !== 'undefined' && document.title.includes('404');
               const is404 = (!validStaticRoutes.includes(currentPath) && !isDynamicRoute) || is404Product || ((currentPath.startsWith('/producto/') || currentPath.startsWith('/marca/')) && is404Title);
@@ -3127,7 +3156,7 @@ function App() {
           <div className="hero-content">
             <span className="hero-eyebrow">{settings.hero_eyebrow}</span>
             <h1 className="hero-title">{settings.hero_title}</h1>
-            <p className="hero-subheading">{settings.hero_subtitle}</p>
+            <h2 className="hero-subheading" style={{ fontSize: 'inherit', fontWeight: 'inherit', margin: 'inherit', color: 'inherit', lineHeight: 'inherit' }}>{settings.hero_subtitle}</h2>
             <div className="hero-actions-left">
               <button 
                 className="btn btn-wp-primary" 
@@ -3808,7 +3837,7 @@ function App() {
                 
                 <div className="footer-col">
                   <h4>Servicios</h4>
-                  <a href="#examen" onClick={(e) => { e.preventDefault(); handleOpenBooking('Examen de la Vista'); }}>Examen de la vista</a>
+                  <a href="/examen-de-la-vista" onClick={(e) => { e.preventDefault(); setCurrentPath('/examen-de-la-vista'); window.history.pushState(null, '', '/examen-de-la-vista'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Examen de la vista</a>
                   <a href="#consulta" onClick={(e) => { e.preventDefault(); handleOpenBooking('Consulta Oftalmológica'); }}>Consulta Médica</a>
                   <a href="#micas" onClick={(e) => { e.preventDefault(); document.getElementById('micas')?.scrollIntoView({ behavior: 'smooth' }); }}>Actualización de micas</a>
                   

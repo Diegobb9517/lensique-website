@@ -697,7 +697,7 @@ const examenBodyInjection = `
     <section style="margin-bottom: 60px;">
       <h2 style="font-family: Georgia, serif; font-size: 30px; font-weight: 700; color: #15223e; text-align: center; margin-bottom: 12px;">¿Qué incluye tu examen de la vista en Lensique?</h2>
       <p style="text-align: center; color: #64748b; font-size: 16px; max-width: 700px; margin: 0 auto 36px;">Un examen visual profesional va mucho más allá de leer letras en una cartilla. Realizamos una valoración clínica completa para cuidar tu salud visual y tu rendimiento diario.</p>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      <div class="examen-steps-grid" style="display: grid; gap: 24px;">
         <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px;">
           <h3 style="font-size: 18px; font-weight: 700; color: #15223e; margin: 0 0 8px;">Refracción digital computarizada</h3>
           <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0;">Medición automatizada de tu sistema óptico para detectar con precisión milimétrica miopía, astigmatismo, hipermetropía o presbicia.</p>

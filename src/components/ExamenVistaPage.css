@@ -202,8 +202,27 @@
 /* Steps / What includes Grid */
 .examen-steps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+}
+
+.examen-steps-grid > :nth-child(4):last-child {
+  grid-column: 2;
+}
+
+@media (max-width: 900px) {
+  .examen-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .examen-steps-grid > :nth-child(4):last-child {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .examen-steps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .examen-step-card {
